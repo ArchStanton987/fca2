@@ -28,7 +28,9 @@ module.exports = function (api) {
             utils: "./utils"
           }
         }
-      ]
+      ],
+      "@babel/plugin-proposal-export-namespace-from",
+      "react-native-reanimated/plugin"
     ]
   }
 }
