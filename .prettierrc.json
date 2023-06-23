@@ -1,0 +1,25 @@
+{
+  "printWidth": 100,
+  "tabWidth": 2,
+  "useTabs": false,
+  "quoteProps": "as-needed",
+  "jsxSingleQuote": false,
+  "trailingComma": "none",
+  "bracketSpacing": true,
+  "jsxBracketSameLine": false,
+  "arrowParens": "avoid",
+  "htmlWhitespaceSensitivity": "css",
+  "semi": false,
+  "endOfLine": "auto",
+  "importOrder": [
+    "^(react|react-native|react-native-paper)$",
+    "expo-router",
+    "<THIRD_PARTY_MODULES>",
+    "^(api|app|assets|components|containers|contexts|constants|lang|hooks|models|navigation|providers|screens|styles|utils)/.*",
+    "^[./]",
+    ".*.styles",
+    "lang"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
+}
