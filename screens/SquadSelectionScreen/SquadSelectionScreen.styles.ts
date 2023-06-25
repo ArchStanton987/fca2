@@ -1,24 +1,20 @@
 import { StyleSheet } from "react-native"
 
+import typos from "styles/typos"
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    padding: 24
-  },
-  main: {
-    flex: 1,
-    justifyContent: "center",
-    maxWidth: 960,
-    marginHorizontal: "auto"
+    alignItems: "center"
   },
   title: {
-    fontSize: 64,
-    fontWeight: "bold"
+    fontFamily: typos.jukebox,
+    fontSize: 100
   },
-  subtitle: {
-    fontSize: 36,
-    color: "#38434D"
+  text: {
+    fontSize: 18,
+    textAlign: "center"
   }
 })
+
 export default styles
