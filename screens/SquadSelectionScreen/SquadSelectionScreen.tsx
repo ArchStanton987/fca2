@@ -1,5 +1,7 @@
 import { View } from "react-native"
 
+import { useLocalSearchParams } from "expo-router"
+
 import database from "config/firebase"
 import { onValue, ref } from "firebase/database"
 
@@ -17,17 +19,17 @@ interface SquadDbType {
 }
 
 export default function SquadSelectionScreen() {
-  let squads
+  // let squads
 
-  const squadsRef = ref(database, "squads")
-  onValue(squadsRef, snapshot => {
-    squads = snapshot.val()
-  })
+  // const squadsRef = ref(database, "squads")
+  // onValue(squadsRef, snapshot => {
+  //   squads = snapshot.val()
+  // })
 
-  const squadsArray = Object.entries(squads).map(([key, value]) => ({
-    id: key,
-    ...value
-  }))
+  // const squadsArray = Object.entries(squads).map(([key, value]) => ({
+  //   id: key,
+  //   ...value
+  // }))
 
   return (
     <View style={styles.container}>
@@ -37,13 +39,15 @@ export default function SquadSelectionScreen() {
       <Spacer y={20} />
       <Txt style={styles.text}>Bienvenue !</Txt>
       <Spacer y={10} />
-      <Txt style={styles.text}>Choisissez votre équipe</Txt>
+      <Txt style={styles.text}>Choisissez votre personnage</Txt>
       <Spacer y={20} />
-      {squadsArray.map(squad => (
-        <RevertColorPressable key={squad.label}>
-          <Txt>{squad.label}</Txt>
+      {/* {squadsArray.members.map(member => (
+        <RevertColorPressable key={member.id}>
+          <Txt>{member.firstname}</Txt>
+          <Txt>{member.lastname}</Txt>
+          <Txt>{member.exp}</Txt>
         </RevertColorPressable>
-      ))}
+      ))} */}
     </View>
   )
 }
