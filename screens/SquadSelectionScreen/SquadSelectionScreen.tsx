@@ -1,14 +1,30 @@
 import { View } from "react-native"
 
+import database from "config/firebase"
+import { onValue, ref } from "firebase/database"
+
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import RevertColorPressable from "components/wrappers/RevertColorsPressable/RevertColorsPressable"
 
-import db from "../../db/fca-back-23-01-30 copy.json"
 import styles from "./SquadSelectionScreen.styles"
 
+interface SquadDbType {
+  id: string
+  label: string
+  members: string[]
+  datetime: string
+}
+
 export default function SquadSelectionScreen() {
-  const squadsArray = Object.entries(db.squads).map(([key, value]) => ({
+  let squads
+
+  const squadsRef = ref(database, "squads")
+  onValue(squadsRef, snapshot => {
+    squads = snapshot.val()
+  })
+
+  const squadsArray = Object.entries(squads).map(([key, value]) => ({
     id: key,
     ...value
   }))
