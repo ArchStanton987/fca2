@@ -1,0 +1,31 @@
+export const rangeMap: Record<number, number> = {
+  10: 70,
+  9: 60,
+  8: 50,
+  7: 40,
+  6: 30,
+  5: 20,
+  4: 15,
+  3: 10,
+  2: 5,
+  1: 2,
+}
+
+export const actionPointsMap: Record<number, number> = {
+  16: 13,
+  15: 12,
+  14: 12,
+  13: 11,
+  12: 11,
+  11: 10,
+  10: 10,
+  9: 9,
+  8: 9,
+  7: 8,
+  6: 8,
+  5: 7,
+  4: 7,
+  3: 6,
+  2: 6,
+  1: 5,
+}
