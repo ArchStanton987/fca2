@@ -7,8 +7,8 @@ import { onValue, ref } from "firebase/database"
 
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import RevertColorPressable from "components/wrappers/RevertColorsPressable/RevertColorsPressable"
 
+// import RevertColorPressable from "components/wrappers/RevertColorsPressable/RevertColorsPressable"
 import styles from "./SquadSelectionScreen.styles"
 
 interface SquadDbType {
@@ -19,12 +19,13 @@ interface SquadDbType {
 }
 
 export default function SquadSelectionScreen() {
-  // let squads
+  let squads
 
-  // const squadsRef = ref(database, "squads")
-  // onValue(squadsRef, snapshot => {
-  //   squads = snapshot.val()
-  // })
+  const squadsRef = ref(database, "squads")
+  onValue(squadsRef, snapshot => {
+    squads = snapshot.val()
+    console.log(squads)
+  })
 
   // const squadsArray = Object.entries(squads).map(([key, value]) => ({
   //   id: key,
