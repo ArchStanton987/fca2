@@ -53,6 +53,19 @@ const secAttr: Record<SecAttrId, SecAttr> = {
     short: "resRad",
     unit: "%",
     calc: SPECIAL => 2 * SPECIAL.endurance
+  },
+  healHpPerHour: {
+    id: "healHpPerHour",
+    label: "Régénération des PV",
+    short: "HP/h",
+    unit: "HP/h",
+    calc: SPECIAL => SPECIAL.endurance / 2
+  },
+  place: {
+    id: "place",
+    label: "Place",
+    short: "PL",
+    calc: (SPECIAL, traits, perks) => SPECIAL.strength * 10
   }
 }
 

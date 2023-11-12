@@ -1,23 +1,9 @@
-import { KnowledgeId } from "models/abilities/knowledges/knowledge-types"
-import { SecAttrId } from "models/abilities/sec-attr/sec-attr-types"
-import { SkillId } from "models/abilities/skills/skills-types"
-import { SpecialId } from "models/abilities/special/special-types"
-import { CombatModId } from "models/combat-mod/combat-mod-types"
+import { SymptomContainer } from "./symptom-container"
 
-export type OperationType = "add" | "mult" | "abs"
-
-export type Symptom = {
-  id: SpecialId | SecAttrId | SkillId | CombatModId | KnowledgeId
-  operation: OperationType
-  value: number
-}
-
-export type Mod = Symptom
-
-export type Effect = {
+export type Effect = SymptomContainer & {
   id: EffectId
   label: string
-  symptoms: Symptom[]
+  // symptoms: Symptom[]
   length: number | null
   description: string
   od: number | null

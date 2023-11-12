@@ -1,8 +1,7 @@
-import { Symptom } from "models/effects/effect-types"
+import { Symptom } from "models/character/effects/effect-types"
+import { BodyPart } from "models/character/health/health-types"
 
 export type ClothingType = "light" | "medium" | "heavy"
-
-export type BodyPart = "head" | "torso" | "arms" | "groin" | "legs"
 
 export type Clothing = {
   id: ClothingId

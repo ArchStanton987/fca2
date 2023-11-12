@@ -258,7 +258,7 @@ const clothings: Record<ClothingId, Clothing> = {
     value: 1500,
     symptoms: [
       { id: "armorClass", operation: "add", value: 8 },
-      { id: "radRes", operation: "mult", value: 0.2 },
+      { id: "radsResist", operation: "mult", value: 0.2 },
       { id: "stealth", operation: "add", value: -15 },
       { id: "throw", operation: "add", value: -15 },
       { id: "manipulation", operation: "add", value: -15 },
@@ -567,7 +567,7 @@ const clothings: Record<ClothingId, Clothing> = {
     symptoms: [
       { id: "armorClass", operation: "add", value: 35 },
       { id: "strength", operation: "add", value: 3 },
-      { id: "recRad", operation: "mult", value: 0.01 },
+      { id: "radsResist", operation: "abs", value: 99.99 },
       { id: "stealth", operation: "add", value: -30 },
       { id: "throw", operation: "add", value: -30 },
       { id: "manipulation", operation: "add", value: -30 },
@@ -595,7 +595,7 @@ const clothings: Record<ClothingId, Clothing> = {
     symptoms: [
       { id: "armorClass", operation: "add", value: 40 },
       { id: "strength", operation: "add", value: 3 },
-      { id: "recRad", operation: "mult", value: 0.01 },
+      { id: "radsResist", operation: "abs", value: 99.99 },
       { id: "stealth", operation: "add", value: -30 },
       { id: "throw", operation: "add", value: -30 },
       { id: "manipulation", operation: "add", value: -30 },
@@ -623,7 +623,7 @@ const clothings: Record<ClothingId, Clothing> = {
     symptoms: [
       { id: "armorClass", operation: "add", value: 38 },
       { id: "strength", operation: "add", value: 3 },
-      { id: "recRad", operation: "mult", value: 0.01 },
+      { id: "radsResist", operation: "abs", value: 99.99 },
       { id: "stealth", operation: "add", value: -30 },
       { id: "throw", operation: "add", value: -30 },
       { id: "manipulation", operation: "add", value: -30 },
@@ -651,7 +651,7 @@ const clothings: Record<ClothingId, Clothing> = {
     symptoms: [
       { id: "armorClass", operation: "add", value: 43 },
       { id: "strength", operation: "add", value: 3 },
-      { id: "recRad", operation: "mult", value: 0.01 },
+      { id: "radsResist", operation: "abs", value: 99.99 },
       { id: "stealth", operation: "add", value: -30 },
       { id: "throw", operation: "add", value: -30 },
       { id: "manipulation", operation: "add", value: -30 },
@@ -679,7 +679,7 @@ const clothings: Record<ClothingId, Clothing> = {
     symptoms: [
       { id: "armorClass", operation: "add", value: 40 },
       { id: "strength", operation: "add", value: 3 },
-      { id: "recRad", operation: "mult", value: 0.01 },
+      { id: "radsResist", operation: "abs", value: 99.99 },
       { id: "stealth", operation: "add", value: -30 },
       { id: "throw", operation: "add", value: -30 },
       { id: "manipulation", operation: "add", value: -30 },
@@ -707,7 +707,7 @@ const clothings: Record<ClothingId, Clothing> = {
     symptoms: [
       { id: "armorClass", operation: "add", value: 45 },
       { id: "strength", operation: "add", value: 4 },
-      { id: "recRad", operation: "mult", value: 0.01 },
+      { id: "radsResist", operation: "abs", value: 99.99 },
       { id: "stealth", operation: "add", value: -30 },
       { id: "throw", operation: "add", value: -30 },
       { id: "manipulation", operation: "add", value: -30 },

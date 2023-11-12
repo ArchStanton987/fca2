@@ -1,4 +1,4 @@
-import { BodyPart } from "models/objects/clothings/clothing-types"
+import { BodyPart } from "models/character/health/health-types"
 
 import { SpecialValues } from "../special/special-types"
 
@@ -26,4 +26,8 @@ export type Skill = {
   short: string
   armorMalus: BodyPart[]
   calc: (SPECIAL: SpecialValues) => number
+}
+
+export type SkillsValues = {
+  [key in SkillId]: number
 }

@@ -1,8 +1,9 @@
-import { AmmoType } from "db/character/Ammo"
+import { KnowledgeId } from "models/character/knowledges/knowledge-types"
+import { SkillId } from "models/character/skills/skills-types"
 
-import { DamageType } from "models/DamageType"
-import { KnowledgeId } from "models/abilities/knowledges/knowledges"
-import { SkillId } from "models/abilities/skills/SkillId"
+import { AmmoType } from "../ammo/ammo-types"
+
+export type DamageType = "physical" | "fire" | "laser" | "plasma" | "electric" | "other"
 
 export type Weapon = {
   id: WeaponId

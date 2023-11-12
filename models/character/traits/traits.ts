@@ -33,8 +33,8 @@ const traits: Record<TraitId, Trait> = {
     description: "",
     label: "Junkie",
     symptoms: [
-      { id: "addictChance", operation: "add", value: 50 },
-      { id: "withDrawLength", operation: "mult", value: 0.5 }
+      // { id: "addictChance", operation: "add", value: 50 },
+      // { id: "withDrawLength", operation: "mult", value: 0.5 }
     ]
   },
   berserk: {
@@ -117,8 +117,8 @@ const traits: Record<TraitId, Trait> = {
     description: "",
     label: "Compétence",
     symptoms: [
-      { id: "compPointsPerLevel", operation: "abs", value: 5 },
-      { id: "levelsForSpec", operation: "add", value: 2 }
+      // { id: "compPointsPerLevel", operation: "abs", value: 5 },
+      // { id: "levelsForSpec", operation: "add", value: 2 }
     ]
   },
   fastMetabolism: {

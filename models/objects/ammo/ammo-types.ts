@@ -25,5 +25,6 @@ export type AmmoType =
   | "special"
 
 export type Ammo = {
-  [key in AmmoType]: number
+  id: AmmoType
+  label: string
 }

@@ -1,4 +1,4 @@
-import { Symptom } from "models/effects/effect-types"
+import { Symptom } from "../effects/effect-types"
 
 export type TraitId =
   | "heavy"
@@ -26,6 +26,6 @@ export type TraitId =
 export type Trait = {
   id: TraitId
   label: string
-  symptoms: Symptom[]
+  modifiers: Symptom[]
   description: string
 }

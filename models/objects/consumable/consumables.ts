@@ -195,7 +195,7 @@ const consumables: Record<ConsumableId, Consumable> = {
     id: "radAway",
     label: "Rad-Away",
     effectId: null,
-    mods: [{ id: "rads", operation: "add", value: -300 }],
+    modifiers: [{ id: "rads", operation: "add", value: -300 }],
     challengeLabel: "-300 RADS",
     od: 6,
     addict: "5-24",

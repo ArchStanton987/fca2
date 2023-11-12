@@ -1,6 +1,6 @@
-import { KnowledgeId } from "models/abilities/knowledges/knowledge-types"
-import { SkillId } from "models/abilities/skills/skills-types"
-import { EffectId, Mod } from "models/effects/effect-types"
+import { EffectId, Modifier } from "models/character/effects/effect-types"
+import { KnowledgeId } from "models/character/knowledges/knowledge-types"
+import { SkillId } from "models/character/skills/skills-types"
 
 export type Consumable = {
   id: ConsumableId
@@ -17,7 +17,7 @@ export type Consumable = {
   maxUsage: number
   knowledges?: KnowledgeId[]
   skillId?: SkillId
-  mods?: Mod[]
+  modifiers?: Modifier[]
 }
 
 export type ConsumableId =
