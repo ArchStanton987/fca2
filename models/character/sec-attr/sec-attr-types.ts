@@ -1,3 +1,6 @@
+import { EquipableObjectId } from "models/objects/object-types"
+
+import { Effect } from "../effects/effect-types"
 import { Symptom } from "../effects/symptom"
 import { PerkId } from "../perks/perks-types"
 import { SpecialValues } from "../special/special-types"
@@ -20,8 +23,21 @@ export type SecAttr = {
   label: string
   short: string
   unit?: string
-  get: (specialValues: SpecialValues, traits: TraitId[], perks: PerkId[]) => number
-  getMod: (symptoms: Symptom[]) => number
+  getBase: (specialValues: SpecialValues, traits: TraitId[], perks: PerkId[]) => number
+  getMod: (effects: Effect[], equipableObjects: EquipableObjectId[]) => number
+  getCurrent: ({
+    specialValues,
+    traits,
+    perks,
+    effects,
+    equipableObjects
+  }: {
+    specialValues: SpecialValues
+    traits: TraitId[]
+    perks: PerkId[]
+    effects: Effect[]
+    equipableObjects: EquipableObjectId[]
+  }) => number
 }
 
 export type SecAttrsValues = {

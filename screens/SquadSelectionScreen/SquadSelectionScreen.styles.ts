@@ -4,15 +4,27 @@ import typos from "styles/typos"
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: "center"
+    flex: 1
   },
   title: {
     fontFamily: typos.jukebox,
-    fontSize: 100
+    fontSize: 100,
+    textAlign: "center"
   },
   text: {
     fontSize: 18,
+    textAlign: "center"
+  },
+  squadContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flex: 1,
+    padding: 10,
+    marginVertical: 10,
+    marginHorizontal: 50
+  },
+  squadLabel: {
     textAlign: "center"
   }
 })
