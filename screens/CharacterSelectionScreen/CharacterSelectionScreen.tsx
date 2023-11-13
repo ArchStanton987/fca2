@@ -13,7 +13,7 @@ import styles from "./CharacterSelectionScreen.styles"
 
 export default function CharacterSelectionScreen() {
   const router = useRouter()
-  const { squadId } = useLocalSearchParams()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
   const squadMembers: DbObj<SquadMember> = useDbSubscribe(dbKeys.squadMembers(squadId))
   const members = Object.values(squadMembers || {})
 
@@ -21,7 +21,7 @@ export default function CharacterSelectionScreen() {
     router.push({ pathname: `/character/[characterId]`, params: { characterId: charId } })
 
   return (
-    <View style={styles.container}>
+    <>
       <Txt style={styles.title}>
         {"<"}Fallout Companion App{">"}
       </Txt>
@@ -45,6 +45,6 @@ export default function CharacterSelectionScreen() {
           </TouchableOpacity>
         ))}
       </View>
-    </View>
+    </>
   )
 }

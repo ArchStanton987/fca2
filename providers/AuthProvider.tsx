@@ -5,7 +5,7 @@ import { getAuth, onAuthStateChanged, signInAnonymously } from "firebase/auth"
 import AuthContext from "contexts/AuthContext"
 import LoadingScreen from "screens/LoadingScreen"
 
-export default function AuthContainer({ children }: PropsWithChildren) {
+export default function AuthProvider({ children }: PropsWithChildren) {
   const [userId, setUserId] = useState<string | null>(null)
 
   const auth = getAuth()

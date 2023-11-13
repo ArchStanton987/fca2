@@ -1,5 +1,5 @@
 import CharIndexScreen from "screens/CharIndexScreen/CharIndexScreen"
 
-export default function CharIndex() {
+export default function SpecialPage() {
   return <CharIndexScreen />
 }
