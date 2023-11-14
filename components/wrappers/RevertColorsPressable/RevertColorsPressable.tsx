@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactNode } from "react"
+import React, { ReactElement } from "react"
 import { Pressable, PressableProps, StyleSheet } from "react-native"
 
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
@@ -22,6 +22,21 @@ export interface AnimColor {
   endAnimColor?: string
 }
 
+function recursiveCloneChildren(children: ReactElement, newProps: any) {
+  return React.Children.map(children, (child: React.ReactElement) => {
+    if (!React.isValidElement(child)) return child
+
+    const childProps: ReactElement = {}
+    // Eg. String has no props
+    if (child.props.children) {
+      childProps.children = recursiveCloneChildren(child.props.children as ReactElement, newProps)
+      // child.props.children = recursiveCloneChildren(child.props.children, newProps)
+      return React.cloneElement(child as ReactElement, newProps)
+    }
+    return child
+  })
+}
+
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
 
 export default function RevertColorsPressable(
@@ -30,34 +45,23 @@ export default function RevertColorsPressable(
 ) {
   const backgroundColor = useSharedValue(initAnimColor)
 
-  const [isPressed, setIsPressed] = React.useState(false)
+  // const [isPressed, setIsPressed] = React.useState(false)
 
   const onPressIn = () => {
     backgroundColor.value = withTiming(endAnimColor, { duration: 200 })
-    setIsPressed(true)
+    // setIsPressed(true)
   }
 
   const onPressOut = () => {
     backgroundColor.value = withTiming(initAnimColor, { duration: 200 })
-    setIsPressed(false)
+    // setIsPressed(false)
   }
 
   const buttonStyle = useAnimatedStyle(() => ({
     backgroundColor: backgroundColor.value
   }))
 
-  const processChildren = (child: React.ReactNode): React.ReactNode => {
-    if (React.isValidElement(child)) {
-      return React.cloneElement(child as ReactElement, {
-        isPressed,
-        children: React.Children.map(child.props.children, processChildren)
-      })
-    }
-
-    return child
-  }
-
-  const processedChildren = React.Children.map(children as ReactNode, processChildren)
+  // const processedChildren = React.Children.map(children as ReactNode, processChildren)
 
   return (
     <AnimatedPressable
@@ -66,7 +70,8 @@ export default function RevertColorsPressable(
       style={[styles.container, buttonStyle, style]}
       {...rest}
     >
-      {processedChildren}
+      {/* {processedChildren} */}
+      {({ pressed }) => recursiveCloneChildren(children as ReactElement, { isPressed: pressed })}
     </AnimatedPressable>
   )
 }
