@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react"
+import React, { Attributes, ReactElement, ReactNode } from "react"
 import { Pressable, PressableProps, StyleSheet } from "react-native"
 
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
@@ -22,19 +22,46 @@ export interface AnimColor {
   endAnimColor?: string
 }
 
-function recursiveCloneChildren(children: ReactElement, newProps: any) {
-  return React.Children.map(children, (child: React.ReactElement) => {
-    if (!React.isValidElement(child)) return child
+// function recursiveCloneChildren(children: ReactElement, newProps: any) {
+//   return React.Children.map(children, (child: React.ReactElement) => {
+//     if (!React.isValidElement(child)) return child
 
-    const childProps: ReactElement = {}
-    // Eg. String has no props
-    if (child.props.children) {
-      childProps.children = recursiveCloneChildren(child.props.children as ReactElement, newProps)
-      // child.props.children = recursiveCloneChildren(child.props.children, newProps)
-      return React.cloneElement(child as ReactElement, newProps)
+//     const childProps: ReactElement = {}
+//     // Eg. String has no props
+//     if (child.props.children) {
+//       childProps.children = recursiveCloneChildren(child.props.children as ReactElement, newProps)
+//       // child.props.children = recursiveCloneChildren(child.props.children, newProps)
+//       return React.cloneElement(child as ReactElement, newProps)
+//     }
+//     return child
+//   })
+// }
+
+// GPT
+// Recursive cloning function
+const recursiveCloneWithProps = (
+  children: ReactNode,
+  newProps: (Partial<any> & Attributes) | undefined
+): ReactNode => {
+  const cloneChildren = (child: ReactNode): ReactNode => {
+    if (React.isValidElement(child) && child.type === "Text") {
+      // Clone the element and add the new props while preserving the previous ones
+      return React.cloneElement(child as ReactElement, {
+        ...child.props,
+        ...newProps,
+        children: recursiveCloneWithProps(child.props.children, newProps)
+      })
     }
+
+    if (Array.isArray(child)) {
+      // Recursively clone children if the child is an array
+      return child.map(cloneChildren)
+    }
+
     return child
-  })
+  }
+
+  return cloneChildren(children)
 }
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
@@ -71,7 +98,8 @@ export default function RevertColorsPressable(
       {...rest}
     >
       {/* {processedChildren} */}
-      {({ pressed }) => recursiveCloneChildren(children as ReactElement, { isPressed: pressed })}
+      {/* {({ pressed }) => recursiveCloneChildren(children as ReactElement, { isPressed: pressed })} */}
+      {({ pressed }) => recursiveCloneWithProps(children as ReactElement, { isPressed: pressed })}
     </AnimatedPressable>
   )
 }

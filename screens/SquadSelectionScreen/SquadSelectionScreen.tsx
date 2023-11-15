@@ -6,7 +6,9 @@ import { DbObj } from "db/db-types"
 
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import Bttn from "components/wrappers/Bttn/Bttn"
+// import Bttn from "components/wrappers/Bttn/Bttn"
+import RevertColorsPressable from "components/wrappers/RevertColorsPressable/RevertColorsPressable"
+import WithItemSeparator from "components/wrappers/WithItemSeparator"
 import useDbSubscribe from "hooks/db/useDbSubscribe"
 import { Squad } from "models/squad/squad-types"
 import { getDDMMYYYY } from "utils/date"
@@ -33,10 +35,20 @@ export default function SquadSelectionScreen() {
       <Txt style={styles.text}>Choisissez votre équipe</Txt>
       <Spacer y={20} />
       {squadsArray.map(squad => (
-        <Bttn onPress={() => toSquad(squad.id)} key={squad.id} style={styles.squadContainer}>
-          <Txt style={styles.squadLabel}>{squad.label}</Txt>
-          <Txt style={styles.squadLabel}>{getDDMMYYYY(new Date(squad.datetime * 1000))}</Txt>
-        </Bttn>
+        <WithItemSeparator ItemSeparatorComponent={<Spacer y={15} />}>
+          {/* <Bttn onPress={() => toSquad(squad.id)} key={squad.id} style={styles.squadContainer}>
+           <Txt style={styles.squadLabel}>{squad.label}</Txt>
+           <Txt style={styles.squadLabel}>{getDDMMYYYY(new Date(squad.datetime * 1000))}</Txt>
+          </Bttn> */}
+          <RevertColorsPressable
+            key={squad.id}
+            onPress={() => toSquad(squad.id)}
+            style={styles.squadContainer}
+          >
+            <Txt style={styles.squadLabel}>{squad.label}</Txt>
+            <Txt style={styles.squadLabel}>{getDDMMYYYY(new Date(squad.datetime * 1000))}</Txt>
+          </RevertColorsPressable>
+        </WithItemSeparator>
       ))}
     </ScrollView>
   )
