@@ -6,7 +6,7 @@ import colors from "styles/colors"
 import typos from "styles/typos"
 
 interface TxtProps extends TextProps {
-  isPressable?: boolean
+  withRevertColorAnim?: boolean
   isPressed?: boolean
   initAnimColor?: string
   endAnimColor?: string
@@ -15,7 +15,7 @@ interface TxtProps extends TextProps {
 export default function Txt({
   children,
   style,
-  isPressable = true,
+  withRevertColorAnim = true,
   isPressed,
   initAnimColor = colors.secColor,
   endAnimColor = colors.primColor,
@@ -31,7 +31,7 @@ export default function Txt({
     color: textColor.value
   }))
 
-  if (isPressable) {
+  if (withRevertColorAnim) {
     return (
       <Animated.Text
         style={[{ fontFamily: typos.monofonto, color: colors.secColor }, textAnimatedStyle, style]}

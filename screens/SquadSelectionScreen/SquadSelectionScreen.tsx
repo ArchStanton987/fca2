@@ -34,12 +34,8 @@ export default function SquadSelectionScreen() {
       <Spacer y={10} />
       <Txt style={styles.text}>Choisissez votre équipe</Txt>
       <Spacer y={20} />
-      {squadsArray.map(squad => (
-        <WithItemSeparator ItemSeparatorComponent={<Spacer y={15} />}>
-          {/* <Bttn onPress={() => toSquad(squad.id)} key={squad.id} style={styles.squadContainer}>
-           <Txt style={styles.squadLabel}>{squad.label}</Txt>
-           <Txt style={styles.squadLabel}>{getDDMMYYYY(new Date(squad.datetime * 1000))}</Txt>
-          </Bttn> */}
+      <WithItemSeparator ItemSeparatorComponent={<Spacer y={20} />}>
+        {squadsArray.map(squad => (
           <RevertColorsPressable
             key={squad.id}
             onPress={() => toSquad(squad.id)}
@@ -48,8 +44,8 @@ export default function SquadSelectionScreen() {
             <Txt style={styles.squadLabel}>{squad.label}</Txt>
             <Txt style={styles.squadLabel}>{getDDMMYYYY(new Date(squad.datetime * 1000))}</Txt>
           </RevertColorsPressable>
-        </WithItemSeparator>
-      ))}
+        ))}
+      </WithItemSeparator>
     </ScrollView>
   )
 }

@@ -21,7 +21,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
     padding: 10,
-    marginVertical: 10,
     marginHorizontal: 50
   },
   squadLabel: {

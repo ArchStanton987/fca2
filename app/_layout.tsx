@@ -1,4 +1,5 @@
 import { useEffect } from "react"
+import { Platform } from "react-native"
 
 import { Slot } from "expo-router"
 
@@ -16,6 +17,7 @@ export default function RootLayout() {
   const [fontsLoaded] = useFonts(fonts)
 
   const lockOrientation = async () => {
+    if (Platform.OS === "web") return
     await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_LEFT)
   }
 

@@ -1,23 +1,20 @@
 import { StyleSheet } from "react-native"
 
-import colors from "styles/colors"
 import typos from "styles/typos"
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: "center"
+    flex: 1
   },
   title: {
     fontFamily: typos.jukebox,
-    fontSize: 100
+    fontSize: 100,
+    textAlign: "center"
   },
   charButton: {
-    borderWidth: 2,
-    borderColor: colors.secColor,
+    flex: 1,
     padding: 20,
-    width: 160,
-    marginHorizontal: 20,
+    maxWidth: 160,
     alignItems: "center",
     justifyContent: "space-between"
   },
