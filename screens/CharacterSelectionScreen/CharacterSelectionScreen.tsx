@@ -8,6 +8,8 @@ import RevertColorsPressable from "components/wrappers/RevertColorsPressable/Rev
 import WithItemSeparator from "components/wrappers/WithItemSeparator"
 import useDbSubscribe from "hooks/db/useDbSubscribe"
 import { SquadMember } from "models/squad/squad-types"
+import { CharacterSelectionScreenParams } from "screens/CharacterSelectionScreen/CharacterSelectionScreen.params"
+import { SearchParams } from "screens/ScreenParams"
 
 import dbKeys from "../../db/db-keys"
 import { DbObj } from "../../db/db-types"
@@ -15,7 +17,7 @@ import styles from "./CharacterSelectionScreen.styles"
 
 export default function CharacterSelectionScreen() {
   const router = useRouter()
-  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const { squadId } = useLocalSearchParams() as SearchParams<CharacterSelectionScreenParams>
   const squadMembers: DbObj<SquadMember> = useDbSubscribe(dbKeys.squadMembers(squadId))
   const members = Object.values(squadMembers || {})
 
