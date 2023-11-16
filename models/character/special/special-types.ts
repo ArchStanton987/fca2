@@ -12,6 +12,7 @@ export type Special = {
   label: string
   short: string
   description: string
+  getBase: (baseSpecial: SpecialValues, traits, perks) => number
 }
 
 export type SpecialValues = {
