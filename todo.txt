@@ -1,2 +1,3 @@
 - check drawer (router nav)
 - static type router
+- check max place formula
