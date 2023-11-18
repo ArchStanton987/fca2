@@ -6,6 +6,7 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import RevertColorsPressable from "components/wrappers/RevertColorsPressable/RevertColorsPressable"
 import WithItemSeparator from "components/wrappers/WithItemSeparator"
+import routes from "constants/routes"
 import useDbSubscribe from "hooks/db/useDbSubscribe"
 import { SquadMember } from "models/squad/squad-types"
 import { CharacterSelectionScreenParams } from "screens/CharacterSelectionScreen/CharacterSelectionScreen.params"
@@ -21,8 +22,9 @@ export default function CharacterSelectionScreen() {
   const squadMembers: DbObj<SquadMember> = useDbSubscribe(dbKeys.squadMembers(squadId))
   const members = Object.values(squadMembers || {})
 
-  const toChar = (charId: string) =>
-    router.push({ pathname: `/character/[characterId]`, params: { characterId: charId } })
+  const toChar = (charId: string) => {
+    router.push({ pathname: routes.char.main.index, params: { charId } })
+  }
 
   return (
     <>

@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
   }
 })
 
-export interface AnimColor {
+export interface AnimColor extends PressableProps {
   initAnimColor?: string
   endAnimColor?: string
 }
@@ -66,10 +66,13 @@ const recursiveCloneWithProps = (
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
 
-export default function RevertColorsPressable(
-  { children, style, ...rest }: PressableProps,
-  { initAnimColor = colors.primColor, endAnimColor = colors.secColor }: AnimColor
-) {
+export default function RevertColorsPressable({
+  children,
+  style,
+  initAnimColor = colors.primColor,
+  endAnimColor = colors.secColor,
+  ...rest
+}: AnimColor) {
   const backgroundColor = useSharedValue(initAnimColor)
 
   // const [isPressed, setIsPressed] = React.useState(false)

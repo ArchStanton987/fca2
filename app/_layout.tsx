@@ -18,7 +18,7 @@ export default function RootLayout() {
 
   const lockOrientation = async () => {
     if (Platform.OS === "web") return
-    await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_LEFT)
+    await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT)
   }
 
   useEffect(() => {

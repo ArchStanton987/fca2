@@ -9,6 +9,7 @@ import Txt from "components/Txt"
 // import Bttn from "components/wrappers/Bttn/Bttn"
 import RevertColorsPressable from "components/wrappers/RevertColorsPressable/RevertColorsPressable"
 import WithItemSeparator from "components/wrappers/WithItemSeparator"
+import routes from "constants/routes"
 import useDbSubscribe from "hooks/db/useDbSubscribe"
 import { Squad } from "models/squad/squad-types"
 import { getDDMMYYYY } from "utils/date"
@@ -22,7 +23,7 @@ export default function SquadSelectionScreen() {
   const squadsArray = Object.values(squadsObj || {})
 
   const toSquad = (squadId: string) =>
-    router.push({ pathname: `/squad/[squadId]`, params: { squadId } })
+    router.push({ pathname: routes.charSelection, params: { squadId } })
 
   return (
     <ScrollView style={styles.container}>
