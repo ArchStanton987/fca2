@@ -8,7 +8,7 @@ import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
 
 export default function CharLayout() {
-  const { charId } = useLocalSearchParams() as SearchParams<DrawerParams>
+  const { charId, squadId } = useLocalSearchParams() as SearchParams<DrawerParams>
   return (
     <Drawer
       defaultStatus="open"
@@ -22,7 +22,7 @@ export default function CharLayout() {
         drawerLabelStyle: styles.navButtonText
       }}
       // eslint-disable-next-line react/no-unstable-nested-components
-      drawerContent={props => <CustomDrawer charId={charId} {...props} />}
+      drawerContent={props => <CustomDrawer charId={charId} squadId={squadId} {...props} />}
     >
       <Drawer.Screen name="main" options={{ title: "Perso" }} />
       <Drawer.Screen name="inventory" options={{ title: "Inventaire" }} />

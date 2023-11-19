@@ -19,11 +19,11 @@ import styles from "./CharacterSelectionScreen.styles"
 export default function CharacterSelectionScreen() {
   const router = useRouter()
   const { squadId } = useLocalSearchParams() as SearchParams<CharacterSelectionScreenParams>
-  const squadMembers: DbObj<SquadMember> = useDbSubscribe(dbKeys.squadMembers(squadId))
+  const squadMembers: DbObj<SquadMember> = useDbSubscribe(dbKeys.squad.members(squadId))
   const members = Object.values(squadMembers || {})
 
   const toChar = (charId: string) => {
-    router.push({ pathname: routes.char.main.index, params: { charId } })
+    router.push({ pathname: routes.main.index, params: { charId, squadId } })
   }
 
   return (

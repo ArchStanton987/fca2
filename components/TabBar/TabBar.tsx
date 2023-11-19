@@ -8,6 +8,7 @@ import { BottomTabBarProps } from "@react-navigation/bottom-tabs"
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import Txt from "components/Txt"
 import SmallLine from "components/draws/Line/Line"
+import { charRoute } from "constants/routes"
 import { SearchParams } from "screens/ScreenParams"
 
 import styles from "./TabBar.styles"
@@ -22,7 +23,7 @@ export default function TabBar(props: TabBarProps) {
   const { routes } = state
   const router = useRouter()
   const localParams = useLocalSearchParams() as SearchParams<DrawerParams>
-  const { charId } = localParams
+  const { charId, squadId } = localParams
   return (
     <View style={styles.container}>
       <SmallLine top left style={{ top: 4 }} />
@@ -31,12 +32,12 @@ export default function TabBar(props: TabBarProps) {
       {routes.map((route, index) => {
         const { options } = descriptors[route.key]
         const isFocused = state.index === index
-        const pathname = `/character/[charId]/${tabBarId}/${route.name}`
+        const pathname = `${charRoute}/${tabBarId}/${route.name}`
         return (
           <TouchableHighlight
             key={route.key}
             style={[styles.tabBarItem, isFocused && styles.tabBarItemActive]}
-            onPress={() => router.push({ pathname, params: { charId } })}
+            onPress={() => router.push({ pathname, params: { charId, squadId } })}
           >
             <Txt style={styles.label}>{options.title}</Txt>
           </TouchableHighlight>
