@@ -10,11 +10,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 0,
     left: 0,
     backgroundColor: colors.primColor,
-    borderWidth: 1,
+    borderWidth: 0,
+    borderTopWidth: 1,
     // HACK it seems that a glitch create a border on the right, so we need to set it to 0
     borderRightWidth: 0,
     borderTopColor: colors.secColor,
-    width: 180
+    width: 120
   },
   fcaContainer: {
     borderWidth: 0,
@@ -23,17 +24,25 @@ const styles = StyleSheet.create({
   fca: {
     color: colors.secColor,
     fontFamily: typos.jukebox,
-    fontSize: 38,
+    fontSize: 32,
     textAlign: "center"
   },
   navButton: {
     borderWidth: 0,
-    borderRadius: 0
+    borderRadius: 0,
+    paddingHorizontal: 15,
+    paddingVertical: 10
   },
   navButtonText: {
     fontFamily: typos.monofonto,
-    color: colors.secColor,
+    color: colors.terColor,
     fontSize: 16
+  },
+  navButtonActive: {
+    backgroundColor: colors.terColor
+  },
+  navButtonActiveText: {
+    color: colors.secColor
   }
 })
 export default styles

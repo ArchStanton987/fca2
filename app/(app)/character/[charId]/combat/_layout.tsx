@@ -6,6 +6,8 @@ export default function CombatLayout() {
   return (
     <Stack
       screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.primColor } }}
-    />
+    >
+      <Stack.Screen name="recap" />
+    </Stack>
   )
 }

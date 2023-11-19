@@ -9,6 +9,8 @@ export default function WelcomeLayout() {
         headerShown: false,
         contentStyle: { backgroundColor: colors.primColor, padding: 10 }
       }}
-    />
+    >
+      <Stack.Screen name="index" />
+    </Stack>
   )
 }
