@@ -1,4 +1,5 @@
 export type KnowledgeLevelId = "1" | "2" | "3" | "4" | "5" | "6"
+export type KnowledgeLevelValue = 1 | 2 | 3 | 4 | 5 | 6
 
 export type KnowledgeLevel = {
   id: KnowledgeLevelId

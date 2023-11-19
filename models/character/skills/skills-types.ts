@@ -1,6 +1,6 @@
 import { BodyPart } from "models/character/health/health-types"
 
-import { SpecialValues } from "../special/special-types"
+// import { SpecialValues } from "../special/special-types"
 
 export type SkillId =
   | "blunt"
@@ -25,7 +25,7 @@ export type Skill = {
   label: string
   short: string
   armorMalus: BodyPart[]
-  calc: (SPECIAL: SpecialValues) => number
+  // calc: (SPECIAL: SpecialValues) => number
 }
 
 export type SkillsValues = {

@@ -1,10 +1,10 @@
-import { EquipableObjectId } from "models/objects/object-types"
+// import { EquipableObjectId } from "models/objects/object-types"
 
-import { Effect } from "../effects/effect-types"
-import { Symptom } from "../effects/symptom"
-import { PerkId } from "../perks/perks-types"
-import { SpecialValues } from "../special/special-types"
-import { TraitId } from "../traits/traits-types"
+// import { Effect } from "../effects/effect-types"
+// import { Symptom } from "../effects/symptom"
+// import { PerkId } from "../perks/perks-types"
+// import { SpecialValues } from "../special/special-types"
+// import { TraitId } from "../traits/traits-types"
 
 export type SecAttrId =
   | "critChance"
@@ -16,28 +16,31 @@ export type SecAttrId =
   | "poisResist"
   | "radsResist"
   | "healHpPerHour"
-  | "place"
+  | "maxPlace"
+  | "normalCarryWeight"
+  | "tempCarryWeight"
+  | "maxCarryWeight"
 
 export type SecAttr = {
   id: SecAttrId
   label: string
   short: string
   unit?: string
-  getBase: (specialValues: SpecialValues, traits: TraitId[], perks: PerkId[]) => number
-  getMod: (effects: Effect[], equipableObjects: EquipableObjectId[]) => number
-  getCurrent: ({
-    specialValues,
-    traits,
-    perks,
-    effects,
-    equipableObjects
-  }: {
-    specialValues: SpecialValues
-    traits: TraitId[]
-    perks: PerkId[]
-    effects: Effect[]
-    equipableObjects: EquipableObjectId[]
-  }) => number
+  // getBase: (specialValues: SpecialValues, traits: TraitId[], perks: PerkId[]) => number
+  // getMod: (effects: Effect[], equipableObjects: EquipableObjectId[]) => number
+  // getCurrent: ({
+  //   specialValues,
+  //   traits,
+  //   perks,
+  //   effects,
+  //   equipableObjects
+  // }: {
+  //   specialValues: SpecialValues
+  //   traits: TraitId[]
+  //   perks: PerkId[]
+  //   effects: Effect[]
+  //   equipableObjects: EquipableObjectId[]
+  // }) => number
 }
 
 export type SecAttrsValues = {

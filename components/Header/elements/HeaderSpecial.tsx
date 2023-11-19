@@ -1,26 +1,18 @@
+import { useContext } from "react"
 import { ActivityIndicator } from "react-native"
 
-import { useLocalSearchParams } from "expo-router"
-
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import Txt from "components/Txt"
-import useDbSubscribe from "hooks/db/useDbSubscribe"
 import special from "models/character/special/special"
-import { SpecialId, SpecialValues } from "models/character/special/special-types"
-import { SearchParams } from "screens/ScreenParams"
+import { SpecialId } from "models/character/special/special-types"
+import { BaseContext } from "providers/BaseProvider"
 import colors from "styles/colors"
 
-import dbKeys from "../../../db/db-keys"
-
 export default function HeaderSpecial({ specialId }: { specialId: SpecialId }) {
-  const localParams = useLocalSearchParams() as SearchParams<DrawerParams>
-  const { charId } = localParams
-  const qk = dbKeys.char(charId).baseSpecial
-  const specialValues: SpecialValues | null = useDbSubscribe(qk)
+  const { baseSpecial } = useContext(BaseContext)
 
-  if (!specialValues) return <ActivityIndicator size="small" color={colors.secColor} />
+  if (!baseSpecial) return <ActivityIndicator size="small" color={colors.secColor} />
 
-  const txt = `${special[specialId].short}: ${specialValues[specialId]}`
+  const txt = `${special[specialId].short}: ${baseSpecial[specialId]}`
 
   return <Txt>{txt}</Txt>
 }

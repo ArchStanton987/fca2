@@ -1,4 +1,4 @@
-import { Symptom } from "../effects/effect-types"
+import { Symptom, SymptomContainer } from "../effects/symptom"
 
 export type TraitId =
   | "heavy"
@@ -23,9 +23,9 @@ export type TraitId =
   | "smallFrame"
   | "lunatic"
 
-export type Trait = {
+export type Trait = SymptomContainer & {
   id: TraitId
   label: string
-  modifiers: Symptom[]
+  symptoms: Symptom[]
   description: string
 }

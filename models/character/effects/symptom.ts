@@ -7,8 +7,12 @@ export type Symptom = {
   value: number
 }
 
-export type Modifier = {
-  id: ChangeableAttribute
-  operation: OperationType
-  value: number
+export type SymptomContainer = {
+  symptoms: Symptom[]
 }
+
+// export type Modifier = {
+//   id: ChangeableAttribute
+//   operation: OperationType
+//   value: number
+// }

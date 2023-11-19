@@ -1,4 +1,4 @@
-import { SpecialValues } from "models/abilities/special/special-types"
+import { SpecialValues } from "../special/special-types"
 
 export const getRange = (perception: SpecialValues["perception"]): number => {
   if (perception >= 10) return 70

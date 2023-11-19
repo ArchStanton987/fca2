@@ -1,6 +1,4 @@
-import { SymptomContainer } from "./symptom-container"
-
-export type Effect = SymptomContainer & {
+export type Effect = {
   id: EffectId
   label: string
   // symptoms: Symptom[]
