@@ -6,7 +6,6 @@ import { DbObj } from "db/db-types"
 
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-// import Bttn from "components/wrappers/Bttn/Bttn"
 import RevertColorsPressable from "components/wrappers/RevertColorsPressable/RevertColorsPressable"
 import WithItemSeparator from "components/wrappers/WithItemSeparator"
 import routes from "constants/routes"

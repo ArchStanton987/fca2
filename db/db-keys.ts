@@ -1,11 +1,16 @@
+import { Character } from "models/character/character-types"
 import { Squad } from "models/squad/squad-types"
 
 const dbKeys = {
   squads: "/squads",
-  squad: {
-    id: (squadId: Squad["id"]) => `/squads/${squadId}`,
-    members: (squadId: Squad["id"]) => `/squads/${squadId}/members`
-  }
+  squad: (squadId: Squad["id"]) => ({
+    index: `/squads/${squadId}`,
+    members: `/squads/${squadId}/members`
+  }),
+  char: (charId: Character["id"]) => ({
+    index: `/characters/${charId}`,
+    baseSpecial: `/characters/${charId}/abilities/baseSPECIAL`
+  })
 }
 
 export default dbKeys

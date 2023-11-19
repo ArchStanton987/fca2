@@ -1,5 +1,7 @@
+/* eslint-disable react/no-unstable-nested-components */
 import { Tabs } from "expo-router/tabs"
 
+import Header from "components/Header/Header"
 import TabBar from "components/TabBar/TabBar"
 import colors from "styles/colors"
 
@@ -8,12 +10,40 @@ export default function CharLayout() {
     <Tabs
       // eslint-disable-next-line react/no-unstable-nested-components
       tabBar={props => <TabBar tabBarId="main" {...props} />}
-      screenOptions={{ headerShown: false, tabBarHideOnKeyboard: true }}
+      screenOptions={{
+        tabBarHideOnKeyboard: true,
+        headerStyle: {
+          backgroundColor: colors.primColor,
+          height: 40,
+          borderBottomWidth: 0
+        }
+      }}
       sceneContainerStyle={{
         backgroundColor: colors.primColor
       }}
     >
-      <Tabs.Screen name="recap" options={{ title: "Résumé" }} />
+      <Tabs.Screen
+        name="recap"
+        options={{
+          title: "Résumé",
+          header: props => (
+            <Header
+              headerElementsIds={[
+                "date",
+                "time",
+                "strength",
+                "endurance",
+                "agility",
+                "perception",
+                "intelligence",
+                "charisma",
+                "luck"
+              ]}
+              {...props}
+            />
+          )
+        }}
+      />
       <Tabs.Screen name="effects" options={{ title: "Effets" }} />
       <Tabs.Screen name="special" options={{ title: "SPECIAL" }} />
       <Tabs.Screen name="sec-attr" options={{ title: "Attr. Sec." }} />
