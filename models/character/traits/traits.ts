@@ -1,6 +1,6 @@
 import { Trait, TraitId } from "./traits-types"
 
-const traits: Record<TraitId, Trait> = {
+const traitsMap: Record<TraitId, Trait> = {
   heavy: {
     id: "heavy",
     description: "",
@@ -154,4 +154,4 @@ const traits: Record<TraitId, Trait> = {
   }
 }
 
-export default traits
+export default traitsMap

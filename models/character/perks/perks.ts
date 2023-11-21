@@ -1,6 +1,6 @@
 import { Perk, PerkId } from "./perks-types"
 
-const perks: Record<PerkId, Perk> = {
+const perksMaps: Record<PerkId, Perk> = {
   concentration: {
     id: "concentration",
     label: "Concentration",
@@ -35,4 +35,4 @@ const perks: Record<PerkId, Perk> = {
   }
 }
 
-export default perks
+export default perksMaps

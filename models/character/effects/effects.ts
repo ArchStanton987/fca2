@@ -1,6 +1,6 @@
 import { Effect, EffectId } from "./effect-types"
 
-const effects: Record<EffectId, Effect> = {
+const effectsMap: Record<EffectId, Effect> = {
   cripledHead: {
     id: "cripledHead",
     label: "Infirme (tête)",
@@ -719,4 +719,4 @@ const effects: Record<EffectId, Effect> = {
   }
 }
 
-export default effects
+export default effectsMap

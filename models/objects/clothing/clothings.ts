@@ -1,6 +1,6 @@
 import { Clothing, ClothingId } from "./clothing-types"
 
-const clothings: Record<ClothingId, Clothing> = {
+const clothingsMap: Record<ClothingId, Clothing> = {
   // NON-MARTIAL CLOTHINGS
   prewarHat: {
     id: "prewarHat",
@@ -719,4 +719,4 @@ const clothings: Record<ClothingId, Clothing> = {
   }
 }
 
-export default clothings
+export default clothingsMap

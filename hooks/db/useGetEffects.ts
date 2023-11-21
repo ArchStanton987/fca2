@@ -16,17 +16,17 @@ export type CharEffect = {
   startTs: number
 }
 
+const handler = (snap?: DbEffects): CharEffect[] => {
+  if (!snap) return []
+  return Object.entries(snap).map(([key, effect]) => ({
+    dbKey: key,
+    id: effect.id,
+    startTs: effect.startTs
+  }))
+}
+
 export default function useGetEffects(charId: string) {
   const dbPath = dbKeys.char(charId).effects
-
-  const handler = (snap?: DbEffects): CharEffect[] => {
-    if (!snap) return []
-    return Object.entries(snap).map(([key, effect]) => ({
-      dbKey: key,
-      id: effect.id,
-      startTs: effect.startTs
-    }))
-  }
 
   return useDbSubscribe<DbEffects, CharEffect[]>(dbPath, handler)
 }

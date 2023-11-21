@@ -1,7 +1,9 @@
+import { Symptom } from "./symptom"
+
 export type Effect = {
   id: EffectId
   label: string
-  // symptoms: Symptom[]
+  symptoms: Symptom[]
   length: number | null
   description: string
   od: number | null

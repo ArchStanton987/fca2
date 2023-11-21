@@ -24,21 +24,22 @@ export type CharEquipedObjects = {
   weapons: CharWeapon[]
 }
 
+const handler = (snap: DbEquipedObjects): CharEquipedObjects => {
+  const dbClothings = snap?.clothings || {}
+  const clothings = Object.entries(dbClothings).map(([key, value]) => ({
+    dbKey: key,
+    id: value.id
+  }))
+  const dbWeapons = snap?.weapons || {}
+  const weapons = Object.entries(dbWeapons).map(([key, value]) => ({
+    dbKey: key,
+    id: value.id
+  }))
+  return { weapons, clothings }
+}
+
 export default function useGetEquipedObj(charId: string) {
   const dbPath = dbKeys.char(charId).effects
 
-  const handler = (snap: DbEquipedObjects): CharEquipedObjects => {
-    const dbClothings = snap?.clothings || {}
-    const clothings = Object.entries(dbClothings).map(([key, value]) => ({
-      dbKey: key,
-      id: value.id
-    }))
-    const dbWeapons = snap?.weapons || {}
-    const weapons = Object.entries(dbWeapons).map(([key, value]) => ({
-      dbKey: key,
-      id: value.id
-    }))
-    return { weapons, clothings }
-  }
   return useDbSubscribe<DbEquipedObjects, CharEquipedObjects>(dbPath, handler)
 }
