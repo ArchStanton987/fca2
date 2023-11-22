@@ -31,7 +31,7 @@ export default function ProgressionBar(props: ProgressionBarProps) {
   const span = max - min
   const ratio = width / span
   const unit = value - min
-  const innerWidth = Math.max(unit * ratio, max - borderWidth)
+  const innerWidth = Math.min(unit * ratio, max - borderWidth)
 
   return (
     <View

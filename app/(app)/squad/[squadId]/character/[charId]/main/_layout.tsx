@@ -2,8 +2,20 @@
 import { Tabs } from "expo-router/tabs"
 
 import Header from "components/Header/Header"
+import { HeaderElementId } from "components/Header/Header.utils"
 import TabBar from "components/TabBar/TabBar"
 import colors from "styles/colors"
+
+const special: HeaderElementId[] = [
+  "strength",
+  "perception",
+  "endurance",
+  "charisma",
+  "intelligence",
+  "agility",
+  "luck"
+]
+const datetime: HeaderElementId[] = ["date", "time"]
 
 export default function CharLayout() {
   return (
@@ -13,7 +25,7 @@ export default function CharLayout() {
       screenOptions={{
         tabBarHideOnKeyboard: true,
         header: props => (
-          <Header headerElementsIds={["datetime", "progression", "special", "caps"]} {...props} />
+          <Header headerElementsIds={[...datetime, "progression", ...special]} {...props} />
         ),
         headerStyle: {
           backgroundColor: colors.primColor,

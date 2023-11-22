@@ -1,8 +1,7 @@
 import React from "react"
-import { View } from "react-native"
 
+import List from "components/List"
 import Spacer from "components/Spacer"
-import WithItemSeparator from "components/wrappers/WithItemSeparator"
 
 import { HeaderElementId, headerElements } from "./Header.utils"
 
@@ -12,10 +11,14 @@ type HeaderProps = {
 
 export default function Header({ headerElementsIds }: HeaderProps) {
   return (
-    <View style={{ flexDirection: "row", flex: 1 }}>
-      <WithItemSeparator ItemSeparatorComponent={<Spacer x={2} />}>
-        {headerElementsIds.map(el => headerElements[el])}
-      </WithItemSeparator>
-    </View>
+    <List
+      data={headerElementsIds}
+      horizontal
+      style={{ flexDirection: "row", flex: 1 }}
+      itemContainerStyle={{ flex: 1 }}
+      keyExtractor={item => item}
+      separator={<Spacer x={2} />}
+      renderItem={({ item }) => headerElements[item]}
+    />
   )
 }

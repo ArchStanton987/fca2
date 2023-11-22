@@ -1,13 +1,13 @@
-import { TouchableHighlight, TouchableHighlightProps } from "react-native"
+import { View, ViewProps } from "react-native"
 
 import colors from "styles/colors"
 
-type HeaderElementProps = TouchableHighlightProps & {}
+type HeaderElementProps = ViewProps & {}
 
 export default function HeaderElement(props: HeaderElementProps) {
-  const { onPress, children, style, ...rest } = props
+  const { children, style, ...rest } = props
   return (
-    <TouchableHighlight
+    <View
       style={[
         {
           backgroundColor: colors.terColor,
@@ -18,10 +18,9 @@ export default function HeaderElement(props: HeaderElementProps) {
         },
         style
       ]}
-      disabled={!onPress}
       {...rest}
     >
       {children}
-    </TouchableHighlight>
+    </View>
   )
 }

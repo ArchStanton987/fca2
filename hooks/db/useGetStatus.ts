@@ -1,6 +1,6 @@
-import dbKeys from "db/db-keys"
-
 import useDbSubscribe from "hooks/db/useDbSubscribe"
+
+import dbKeys from "../../db/db-keys"
 
 type DbStatus = {
   background: string
