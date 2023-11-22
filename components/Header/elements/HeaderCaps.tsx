@@ -14,19 +14,20 @@ import colors from "styles/colors"
 export default function HeaderCaps() {
   const { charId } = useLocalSearchParams() as SearchParams<DrawerParams>
   const status = useGetStatus(charId)
-
-  if (!status) return <ActivityIndicator size="small" color={colors.secColor} />
-
-  const { caps } = status
+  const isLoading = typeof status?.caps !== "number"
 
   return (
-    <HeaderElement>
+    <HeaderElement style={{ flexGrow: 2, justifyContent: "flex-end" }}>
       <Image
         resizeMode="contain"
         style={{ height: 15, width: 15, marginRight: 3 }}
         source={capsIcon}
       />
-      <Txt>{caps}</Txt>
+      {isLoading ? (
+        <ActivityIndicator size="small" color={colors.secColor} />
+      ) : (
+        <Txt>{status.caps}</Txt>
+      )}
     </HeaderElement>
   )
 }

@@ -15,7 +15,6 @@ export default function Header({ headerElementsIds }: HeaderProps) {
       data={headerElementsIds}
       horizontal
       style={{ flexDirection: "row", flex: 1 }}
-      itemContainerStyle={{ flex: 1 }}
       keyExtractor={item => item}
       separator={<Spacer x={2} />}
       renderItem={({ item }) => headerElements[item]}

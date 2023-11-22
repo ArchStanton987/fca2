@@ -11,7 +11,12 @@ import colors from "styles/colors"
 export default function HeaderSpecialElement({ specialId }: { specialId: SpecialId }) {
   const { currSpecial } = useContext(CurrAttrContext)
 
-  if (!currSpecial) return <ActivityIndicator size="small" color={colors.secColor} />
+  if (!currSpecial?.agility)
+    return (
+      <HeaderElement>
+        <ActivityIndicator size="small" color={colors.secColor} />
+      </HeaderElement>
+    )
 
   const txt = `${special[specialId].short}: ${currSpecial[specialId]}`
 

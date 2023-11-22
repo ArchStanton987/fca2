@@ -25,7 +25,7 @@ export default function HeaderDate() {
   const datetime = getDDMMYYYY(new Date(squad.datetime * 1000), "-")
 
   return (
-    <HeaderElement>
+    <HeaderElement style={{ flexGrow: 2 }}>
       <Txt>{datetime}</Txt>
     </HeaderElement>
   )

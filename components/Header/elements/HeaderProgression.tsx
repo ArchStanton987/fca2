@@ -17,15 +17,19 @@ export default function HeaderProgression() {
   const { charId } = useLocalSearchParams() as SearchParams<DrawerParams>
   const status = useGetStatus(charId)
 
-  if (!status) return <ActivityIndicator size="small" color={colors.secColor} />
-
-  const exp = status?.exp
+  const exp = status?.exp || 0
   const { level, prev, next } = getLevelAndThresholds(exp)
   return (
     <HeaderElement>
-      <Txt>NIV:{level}</Txt>
-      <Spacer x={10} />
-      <ProgressionBar value={exp} min={prev} max={next} />
+      {typeof status?.exp !== "number" ? (
+        <ActivityIndicator size="small" color={colors.secColor} />
+      ) : (
+        <>
+          <Txt>NIV:{level || ""}</Txt>
+          <Spacer x={10} />
+          <ProgressionBar value={exp || 0} min={prev || 0} max={next || 1000} />
+        </>
+      )}
     </HeaderElement>
   )
 }

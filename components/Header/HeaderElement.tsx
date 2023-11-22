@@ -14,7 +14,7 @@ export default function HeaderElement(props: HeaderElementProps) {
           flexDirection: "row",
           alignItems: "center",
           padding: 5,
-          flex: 1
+          paddingRight: 10
         },
         style
       ]}

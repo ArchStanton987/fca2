@@ -1,5 +1,5 @@
-import { ComponentType, ReactElement } from "react"
-import { StyleProp, View, ViewProps, ViewStyle } from "react-native"
+import React, { ComponentType, ReactElement } from "react"
+import { View, ViewProps } from "react-native"
 
 type RenderItem<T> = {
   item: T
@@ -10,7 +10,6 @@ type ListProps<T> = ViewProps & {
   data: T[]
   renderItem: (renderItem: RenderItem<T>) => ReactElement
   keyExtractor: (item: T) => string
-  itemContainerStyle?: StyleProp<ViewStyle>
   horizontal?: boolean
   separator?: ReactElement
   ListHeaderComponent?: ComponentType
@@ -23,7 +22,6 @@ export default function List<T>(props: ListProps<T>) {
     data,
     renderItem,
     keyExtractor,
-    itemContainerStyle,
     horizontal = false,
     style,
     separator,
@@ -44,13 +42,10 @@ export default function List<T>(props: ListProps<T>) {
         const key = keyExtractor(item)
         const isLast = index === data.length - 1
         return (
-          <View
-            key={key}
-            style={[{ flexDirection: horizontal ? "row" : "column" }, itemContainerStyle]}
-          >
+          <React.Fragment key={key}>
             {element}
             {hasSeparator && !isLast && separator}
-          </View>
+          </React.Fragment>
         )
       })}
       {hasFooter && <ListFooterComponent />}
