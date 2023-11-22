@@ -2,21 +2,8 @@
 import { Tabs } from "expo-router/tabs"
 
 import Header from "components/Header/Header"
-import { HeaderElementId } from "components/Header/Header.utils"
 import TabBar from "components/TabBar/TabBar"
 import colors from "styles/colors"
-
-const headerElements = [
-  "date",
-  "time",
-  "strength",
-  "perception",
-  "endurance",
-  "charisma",
-  "intelligence",
-  "agility",
-  "luck"
-] as HeaderElementId[]
 
 export default function CharLayout() {
   return (
@@ -24,13 +11,15 @@ export default function CharLayout() {
       // eslint-disable-next-line react/no-unstable-nested-components
       tabBar={props => <TabBar tabBarId="main" {...props} />}
       screenOptions={{
-        header: props => <Header headerElementsIds={headerElements} {...props} />,
+        tabBarHideOnKeyboard: true,
+        header: props => (
+          <Header headerElementsIds={["datetime", "progression", "special", "caps"]} {...props} />
+        ),
         headerStyle: {
           backgroundColor: colors.primColor,
           height: 40,
           borderBottomWidth: 0
         }
-        tabBarHideOnKeyboard: true,
       }}
       sceneContainerStyle={{
         backgroundColor: colors.primColor

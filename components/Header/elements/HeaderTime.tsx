@@ -5,6 +5,7 @@ import { useLocalSearchParams } from "expo-router"
 import { Squad } from "db/Squad"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
+import HeaderElement from "components/Header/HeaderElement"
 import Txt from "components/Txt"
 import useDbSubscribe from "hooks/db/useDbSubscribe"
 import { SearchParams } from "screens/ScreenParams"
@@ -23,5 +24,9 @@ export default function HeaderTime() {
 
   const datetime = getHHMM(new Date(squad.datetime * 1000))
 
-  return <Txt>{datetime}</Txt>
+  return (
+    <HeaderElement>
+      <Txt>{datetime}</Txt>
+    </HeaderElement>
+  )
 }

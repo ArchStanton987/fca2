@@ -12,7 +12,8 @@ const dbKeys = {
     abilities: `/characters/${charId}/abilities`,
     baseSpecial: `/characters/${charId}/abilities/baseSPECIAL`,
     effects: `/characters/${charId}/effects`,
-    equipedObjects: `/characters/${charId}/equipedObj`
+    equipedObjects: `/characters/${charId}/equipedObj`,
+    status: `/characters/${charId}/status`
   })
 }
 
