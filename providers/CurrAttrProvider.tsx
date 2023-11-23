@@ -31,6 +31,12 @@ const skillsList = Object.values(skillsMap)
 
 export const CurrAttrContext = createContext<CurrAttrContextType>({} as CurrAttrContextType)
 
+export const useCurrAttr = () => {
+  const context = useContext(CurrAttrContext)
+  if (!context) throw new Error("useCurrAttr must be used within a CurrAttrProvider")
+  return context
+}
+
 export default function CurrAttrProvider({
   charId,
   children

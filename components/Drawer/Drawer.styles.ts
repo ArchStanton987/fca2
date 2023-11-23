@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native"
 
 import colors from "styles/colors"
+import layout from "styles/layout"
 import typos from "styles/typos"
 
 const styles = StyleSheet.create({
@@ -15,7 +16,7 @@ const styles = StyleSheet.create({
     // HACK it seems that a glitch create a border on the right, so we need to set it to 0
     borderRightWidth: 0,
     borderTopColor: colors.secColor,
-    width: 120
+    width: layout.drawerWidth
   },
   fcaContainer: {
     borderWidth: 0,

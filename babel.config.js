@@ -18,6 +18,7 @@ module.exports = function (api) {
             containers: "./containers",
             contexts: "./contexts",
             constants: "./constants",
+            db: "./db",
             lang: "./lang",
             hooks: "./hooks",
             models: "./models",

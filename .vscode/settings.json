@@ -2,6 +2,7 @@
   "conventionalCommits.scopes": [
     "ui",
     "engine",
-    "nav"
+    "nav",
+    "character"
   ]
 }

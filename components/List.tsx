@@ -36,6 +36,7 @@ export default function List<T>(props: ListProps<T>) {
   return (
     <View style={[{ flexDirection: horizontal ? "row" : "column" }, style]}>
       {hasHeader && <ListHeaderComponent />}
+      {hasHeader && hasSeparator && separator}
       {hasEmptyComponent && data.length === 0 ? <ListEmptyComponent /> : null}
       {data.map((item, index) => {
         const element = renderItem({ item, index })

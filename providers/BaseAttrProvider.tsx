@@ -1,4 +1,4 @@
-import { createContext, useMemo } from "react"
+import { createContext, useContext, useMemo } from "react"
 
 import useGetAbilities from "hooks/db/useGetAbilities"
 import perksMaps from "models/character/perks/perks"
@@ -28,6 +28,12 @@ const secAttrList = Object.values(secAttrMap)
 const skillsList = Object.values(skillsMap)
 
 export const BaseAttrContext = createContext<BaseAttrContextType>({} as BaseAttrContextType)
+
+export const useBaseAttr = () => {
+  const baseAttr = useContext(BaseAttrContext)
+  if (!baseAttr) throw new Error("useBaseAttr must be used within a BaseAttrProvider")
+  return baseAttr
+}
 
 export default function BaseAttrProvider({
   charId,
