@@ -3,31 +3,36 @@ import { createContext, useContext, useMemo } from "react"
 import useGetAbilities from "hooks/db/useGetAbilities"
 import perksMaps from "models/character/perks/perks"
 import secAttrMap from "models/character/sec-attr/sec-attr"
-import { SecAttrId } from "models/character/sec-attr/sec-attr-types"
+import { SecAttrsValues } from "models/character/sec-attr/sec-attr-types"
 import skillsMap from "models/character/skills/skills"
-import { SkillId } from "models/character/skills/skills-types"
+import { SkillsValues } from "models/character/skills/skills-types"
 import { specialArray } from "models/character/special/special"
 import { SpecialValues } from "models/character/special/special-types"
 import traitsMap from "models/character/traits/traits"
 import { getModAttribute } from "utils/char-calc"
 
-type BaseAttrContextType = {
-  baseSpecial: SpecialValues | null
-  baseSecAttr: BaseSecAttrType | null
-  baseSkills: BaseSkillsType | null
+type BaseAttrType = {
+  baseSpecial: SpecialValues
+  baseSecAttr: SecAttrsValues
+  baseSkills: SkillsValues
 }
 
-type BaseSecAttrType = {
-  [key in SecAttrId]: number
-}
-type BaseSkillsType = {
-  [key in SkillId]: number
-}
+export type ReadyType<T> = T & { isReady: true }
+export type NotReadyType<T> = { [key in keyof T]: null } & { isReady: false }
+
+type BaseAttrContextType = ReadyType<BaseAttrType> | NotReadyType<BaseAttrType>
 
 const secAttrList = Object.values(secAttrMap)
 const skillsList = Object.values(skillsMap)
 
-export const BaseAttrContext = createContext<BaseAttrContextType>({} as BaseAttrContextType)
+const init: BaseAttrContextType = {
+  baseSpecial: null,
+  baseSecAttr: null,
+  baseSkills: null,
+  isReady: false
+}
+
+export const BaseAttrContext = createContext<BaseAttrContextType>(init)
 
 export const useBaseAttr = () => {
   const baseAttr = useContext(BaseAttrContext)
@@ -50,7 +55,7 @@ export default function BaseAttrProvider({
   const perksSymptoms = perks.map(el => perksMaps[el].symptoms)
   const symptoms = [...traitsSymptoms, ...perksSymptoms].flat()
 
-  const baseSpecial = useMemo(() => {
+  const baseSpecial = useMemo((): SpecialValues | null => {
     if (!baseSPECIAL) return null
     const res = {} as SpecialValues
     specialArray.forEach(el => {
@@ -59,28 +64,35 @@ export default function BaseAttrProvider({
     return res
   }, [baseSPECIAL, symptoms])
 
-  const baseSecAttr = useMemo(() => {
+  const baseSecAttr = useMemo((): SecAttrsValues | null => {
     if (!baseSpecial) return null
-    const obj = {} as BaseSecAttrType
+    const obj = {} as SecAttrsValues
     secAttrList.forEach(attr => {
       obj[attr.id] = attr.calc(baseSpecial) + getModAttribute(symptoms, attr.id)
     })
     return obj
   }, [baseSpecial, symptoms])
 
-  const baseSkills = useMemo(() => {
+  const baseSkills = useMemo((): SkillsValues | null => {
     if (!baseSpecial) return null
-    const obj = {} as BaseSkillsType
+    const obj = {} as SkillsValues
     skillsList.forEach(skill => {
       obj[skill.id] = skill.calc(baseSpecial) + getModAttribute(symptoms, skill.id)
     })
     return obj
   }, [baseSpecial, symptoms])
 
-  const context = useMemo(
-    () => ({ baseSpecial, baseSecAttr, baseSkills }),
-    [baseSpecial, baseSecAttr, baseSkills]
-  )
+  const isReady = !!baseSpecial && !!baseSecAttr && !!baseSkills
+
+  const context = useMemo(() => {
+    if (!isReady) return init
+    return {
+      baseSpecial,
+      baseSecAttr,
+      baseSkills,
+      isReady
+    }
+  }, [baseSpecial, baseSecAttr, baseSkills, isReady])
 
   return <BaseAttrContext.Provider value={context}>{children}</BaseAttrContext.Provider>
 }

@@ -3,33 +3,41 @@ import { createContext, useContext, useMemo } from "react"
 import useGetEffectsSources from "hooks/db/useGetEffectsSources"
 import effectsMap from "models/character/effects/effects"
 import secAttrMap from "models/character/sec-attr/sec-attr"
-import { SecAttrId } from "models/character/sec-attr/sec-attr-types"
+import { SecAttrsValues } from "models/character/sec-attr/sec-attr-types"
 import skillsMap from "models/character/skills/skills"
-import { SkillId } from "models/character/skills/skills-types"
+import { SkillsValues } from "models/character/skills/skills-types"
 import { specialArray } from "models/character/special/special"
 import { SpecialValues } from "models/character/special/special-types"
 import clothingsMap from "models/objects/clothing/clothings"
 import { getModAttribute } from "utils/char-calc"
 
-import { BaseAttrContext } from "./BaseAttrProvider"
+import { BaseAttrContext, NotReadyType, ReadyType } from "./BaseAttrProvider"
 
-type CurrAttrContextType = {
-  currSpecial: SpecialValues | null
-  currSecAttr: CurrSecAttrType | null
-  currSkills: CurrSkillsType | null
+type LiveAttrType = {
+  modSpecial: SpecialValues
+  modSecAttr: SecAttrsValues
+  modSkills: SkillsValues
+  currSpecial: SpecialValues
+  currSecAttr: SecAttrsValues
+  currSkills: SkillsValues
 }
 
-type CurrSecAttrType = {
-  [key in SecAttrId]: number
-}
-type CurrSkillsType = {
-  [key in SkillId]: number
-}
+type LiveAttrContextType = ReadyType<LiveAttrType> | NotReadyType<LiveAttrType>
 
 const secAttrList = Object.values(secAttrMap)
 const skillsList = Object.values(skillsMap)
 
-export const CurrAttrContext = createContext<CurrAttrContextType>({} as CurrAttrContextType)
+const init: LiveAttrContextType = {
+  modSpecial: null,
+  modSecAttr: null,
+  modSkills: null,
+  currSpecial: null,
+  currSecAttr: null,
+  currSkills: null,
+  isReady: false
+}
+
+export const CurrAttrContext = createContext<LiveAttrContextType>(init)
 
 export const useCurrAttr = () => {
   const context = useContext(CurrAttrContext)
@@ -55,7 +63,7 @@ export default function CurrAttrProvider({
   const special = useMemo(() => {
     const modSpecial = {} as SpecialValues
     const currSpecial = {} as SpecialValues
-    if (!baseSpecial) return { modSpecial, currSpecial }
+    if (!baseSpecial) return { modSpecial: null, currSpecial: null }
     specialArray.forEach(el => {
       modSpecial[el.id] = getModAttribute(symptoms, el.id)
       currSpecial[el.id] = baseSpecial[el.id] + modSpecial[el.id]
@@ -66,9 +74,9 @@ export default function CurrAttrProvider({
   const { modSpecial, currSpecial } = special
 
   const secAttr = useMemo(() => {
-    const modSecAttr = {} as CurrSecAttrType
-    const currSecAttr = {} as CurrSecAttrType
-    if (!currSpecial) return { modSecAttr, currSecAttr }
+    const modSecAttr = {} as SecAttrsValues
+    const currSecAttr = {} as SecAttrsValues
+    if (!currSpecial) return { modSecAttr: null, currSecAttr: null }
     secAttrList.forEach(attr => {
       modSecAttr[attr.id] = getModAttribute(symptoms, attr.id)
       currSecAttr[attr.id] = attr.calc(currSpecial) + modSecAttr[attr.id]
@@ -79,9 +87,9 @@ export default function CurrAttrProvider({
   const { modSecAttr, currSecAttr } = secAttr
 
   const skills = useMemo(() => {
-    const modSkills = {} as CurrSkillsType
-    const currSkills = {} as CurrSkillsType
-    if (!currSpecial) return { modSkills, currSkills }
+    const modSkills = {} as SkillsValues
+    const currSkills = {} as SkillsValues
+    if (!currSpecial) return { modSkills: null, currSkills: null }
     skillsList.forEach(skill => {
       modSkills[skill.id] = getModAttribute(symptoms, skill.id)
       currSkills[skill.id] = skill.calc(currSpecial) + modSkills[skill.id]
@@ -91,10 +99,21 @@ export default function CurrAttrProvider({
 
   const { modSkills, currSkills } = skills
 
-  const context = useMemo(
-    () => ({ modSpecial, currSpecial, modSecAttr, currSecAttr, modSkills, currSkills }),
-    [modSpecial, currSpecial, modSecAttr, currSecAttr, modSkills, currSkills]
-  )
+  const isReady =
+    !!modSpecial && !!currSpecial && !!modSecAttr && !!currSecAttr && !!modSkills && !!currSkills
+
+  const context = useMemo(() => {
+    if (!isReady) return init
+    return {
+      modSpecial,
+      modSecAttr,
+      modSkills,
+      currSpecial,
+      currSecAttr,
+      currSkills,
+      isReady
+    }
+  }, [modSpecial, modSecAttr, modSkills, currSpecial, currSecAttr, currSkills, isReady])
 
   return <CurrAttrContext.Provider value={context}>{children}</CurrAttrContext.Provider>
 }

@@ -4,13 +4,29 @@ import colors from "styles/colors"
 import layout from "styles/layout"
 
 const styles = StyleSheet.create({
-  container: {
+  drawerPage: {
     marginLeft: layout.drawerWidth + layout.globalPadding,
-    marginTop: layout.globalPadding,
-    padding: 10,
+    marginTop: layout.globalPadding
+  },
+  container: {
+    paddingTop: 10,
     paddingBottom: 0,
     borderTopWidth: 1,
     borderTopColor: colors.secColor
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    margin: 0,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderWidth: 0
+  },
+  listHeader: {
+    paddingVertical: 0
+  },
+  rowSelected: {
+    backgroundColor: colors.terColor
   },
   attributeRow: {
     width: 80,
