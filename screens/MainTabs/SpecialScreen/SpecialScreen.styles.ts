@@ -4,6 +4,7 @@ import colors from "styles/colors"
 
 const styles = StyleSheet.create({
   row: {
+    backgroundColor: colors.primColor,
     flexDirection: "row",
     alignItems: "center",
     margin: 0,
@@ -18,7 +19,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.terColor
   },
   attributeRow: {
-    width: 80,
+    width: 50,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end"

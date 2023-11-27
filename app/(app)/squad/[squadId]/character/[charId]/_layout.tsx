@@ -18,7 +18,8 @@ export default function CharLayout() {
           screenOptions={{
             headerShown: false,
             drawerType: "permanent",
-            drawerStyle: styles.drawerContainer
+            drawerStyle: styles.drawerContainer,
+            drawerPosition: "right"
           }}
           // eslint-disable-next-line react/no-unstable-nested-components
           drawerContent={props => <CustomDrawer charId={charId} squadId={squadId} {...props} />}

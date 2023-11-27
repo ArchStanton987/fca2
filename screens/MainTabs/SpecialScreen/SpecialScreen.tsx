@@ -1,8 +1,7 @@
 import React, { useState } from "react"
-import { Pressable, ScrollView, View } from "react-native"
+import { FlatList, Pressable, ScrollView, View } from "react-native"
 
 import DrawerPage from "components/DrawerPage"
-import List from "components/List"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
@@ -37,11 +36,20 @@ function Row(props: RowProps) {
       <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
         <Txt>{label}</Txt>
       </View>
-      {Object.entries(values).map(([key, value]) => (
-        <View key={`${label}-${key}`} style={styles.attributeRow}>
-          <Txt>{value}</Txt>
-        </View>
-      ))}
+      {Object.entries(values).map(([key, value]) => {
+        let preprend = ""
+        if (key === "modValue") {
+          preprend = value > 0 ? "+" : ""
+        }
+        return (
+          <View key={`${label}-${key}`} style={styles.attributeRow}>
+            <Txt>
+              {preprend}
+              {value}
+            </Txt>
+          </View>
+        )
+      })}
     </Pressable>
   )
 }
@@ -67,30 +75,29 @@ export default function SpecialScreen() {
   return (
     <DrawerPage style={{ flexDirection: "row" }}>
       <Section style={{ flex: 1 }}>
-        <ScrollView>
-          <List
-            data={specialArray}
-            keyExtractor={item => item.id}
-            ListHeaderComponent={Header}
-            renderItem={({ item }) => {
-              const { label } = specialMap[item.id]
-              const baseValue = baseContext.baseSpecial[item.id]
-              const modValue = currContext.modSpecial[item.id]
-              const currValue = currContext.currSpecial[item.id]
-              return (
-                <Row
-                  label={label}
-                  values={{ baseValue, modValue, currValue }}
-                  isSelected={selectedId === item.id}
-                  onPress={() => setSelectedId(item.id)}
-                />
-              )
-            }}
-          />
-        </ScrollView>
+        <FlatList
+          data={specialArray}
+          keyExtractor={item => item.id}
+          ListHeaderComponent={Header}
+          stickyHeaderIndices={[0]}
+          renderItem={({ item }) => {
+            const { label } = specialMap[item.id]
+            const baseValue = baseContext.baseSpecial[item.id]
+            const modValue = currContext.modSpecial[item.id]
+            const currValue = currContext.currSpecial[item.id]
+            return (
+              <Row
+                label={label}
+                values={{ baseValue, modValue, currValue }}
+                isSelected={selectedId === item.id}
+                onPress={() => setSelectedId(item.id)}
+              />
+            )
+          }}
+        />
       </Section>
       <Spacer x={10} />
-      <Section style={{ width: 250 }}>
+      <Section style={{ width: 200 }}>
         <ScrollView>
           <Txt>DESCRIPTION</Txt>
           <Spacer y={10} />

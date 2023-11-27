@@ -76,7 +76,7 @@ const secAttrMap: Record<SecAttrId, SecAttr> = {
     label: "Régénération des PV",
     short: "HP/h",
     unit: "HP/h",
-    calc: SPECIAL => SPECIAL.endurance / 2
+    calc: SPECIAL => Math.ceil(SPECIAL.endurance / 3)
     // getMod: () => {},
     // getCurrent: () => {}
   },

@@ -1,7 +1,6 @@
-import { Pressable, ScrollView, View } from "react-native"
+import { FlatList, Pressable, View } from "react-native"
 
 import DrawerPage from "components/DrawerPage"
-import List from "components/List"
 import Section from "components/Section"
 import Txt from "components/Txt"
 import secAttrMap from "models/character/sec-attr/sec-attr"
@@ -36,11 +35,20 @@ function Row(props: RowProps) {
       <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
         <Txt>{label}</Txt>
       </View>
-      {Object.entries(values).map(([key, value]) => (
-        <View key={`${label}-${key}`} style={styles.attributeRow}>
-          <Txt>{value}</Txt>
-        </View>
-      ))}
+      {Object.entries(values).map(([key, value]) => {
+        let prepend = ""
+        if (key === "modValue") {
+          prepend = value > 0 ? "+" : ""
+        }
+        return (
+          <View key={`${label}-${key}`} style={styles.attributeRow}>
+            <Txt>
+              {prepend}
+              {value}
+            </Txt>
+          </View>
+        )
+      })}
     </Pressable>
   )
 }
@@ -61,22 +69,21 @@ export default function SecAttrScreen() {
 
   if (!baseContext.isReady || !currContext.isReady) return <LoadingScreen />
   return (
-    <DrawerPage>
+    <DrawerPage style={{ flexDirection: "row" }}>
       <Section style={{ flex: 1 }}>
-        <ScrollView>
-          <List
-            data={secAttrArray}
-            keyExtractor={item => item.id}
-            ListHeaderComponent={Header}
-            renderItem={({ item }) => {
-              const { label } = secAttrMap[item.id]
-              const baseValue = baseContext.baseSecAttr[item.id]
-              const modValue = currContext.modSecAttr[item.id]
-              const currValue = currContext.currSecAttr[item.id]
-              return <Row label={label} values={{ baseValue, modValue, currValue }} />
-            }}
-          />
-        </ScrollView>
+        <FlatList
+          data={secAttrArray}
+          keyExtractor={item => item.id}
+          ListHeaderComponent={Header}
+          stickyHeaderIndices={[0]}
+          renderItem={({ item }) => {
+            const { label } = secAttrMap[item.id]
+            const baseValue = baseContext.baseSecAttr[item.id]
+            const modValue = currContext.modSecAttr[item.id]
+            const currValue = currContext.currSecAttr[item.id]
+            return <Row label={label} values={{ baseValue, modValue, currValue }} />
+          }}
+        />
       </Section>
     </DrawerPage>
   )

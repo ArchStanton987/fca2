@@ -5,7 +5,7 @@ import layout from "styles/layout"
 const styles = StyleSheet.create({
   drawerPage: {
     marginLeft: layout.drawerWidth + layout.globalPadding,
-    marginTop: layout.globalPadding
+    marginTop: 40
   }
 })
 

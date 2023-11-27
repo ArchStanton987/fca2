@@ -28,11 +28,10 @@ export default function CustomDrawer(props: CustomDrawerProps) {
     <DrawerContentScrollView scrollEnabled={false} {...props}>
       <SmallLine top left />
 
-      <Spacer y={16} />
       <TouchableOpacity onPress={toHome} style={styles.fcaContainer}>
         <Txt style={styles.fca}>{"<FCA>"}</Txt>
       </TouchableOpacity>
-      <Spacer y={30} />
+      <Spacer y={20} />
 
       <WithItemSeparator ItemSeparatorComponent={<Spacer y={16} />}>
         {routes.map((route, index) => {
