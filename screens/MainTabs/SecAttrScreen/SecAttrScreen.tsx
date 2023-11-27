@@ -61,7 +61,7 @@ export default function SecAttrScreen() {
 
   if (!baseContext.isReady || !currContext.isReady) return <LoadingScreen />
   return (
-    <DrawerPage style={{ flexDirection: "row" }}>
+    <DrawerPage>
       <Section style={{ flex: 1 }}>
         <ScrollView>
           <List
