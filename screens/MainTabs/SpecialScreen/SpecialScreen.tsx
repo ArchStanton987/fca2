@@ -1,10 +1,11 @@
 import React, { useState } from "react"
 import { Pressable, ScrollView, View } from "react-native"
 
+import DrawerPage from "components/DrawerPage"
 import List from "components/List"
+import Section from "components/Section"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import SmallLine from "components/draws/Line/Line"
 import specialMap, { specialArray } from "models/character/special/special"
 import { SpecialId } from "models/character/special/special-types"
 import { useBaseAttr } from "providers/BaseAttrProvider"
@@ -47,14 +48,11 @@ function Row(props: RowProps) {
 
 function Header() {
   return (
-    <>
-      <Row
-        isHeader
-        label="ATTRIBUT"
-        values={{ baseValue: "BASE", modValue: "MOD", currValue: "TOT" }}
-      />
-      {/* <Spacer y={10} /> */}
-    </>
+    <Row
+      isHeader
+      label="ATTRIBUT"
+      values={{ baseValue: "BASE", modValue: "MOD", currValue: "TOT" }}
+    />
   )
 }
 
@@ -67,14 +65,12 @@ export default function SpecialScreen() {
   if (!baseContext.isReady || !currContext.isReady) return <LoadingScreen />
 
   return (
-    <View style={[styles.drawerPage, { flexDirection: "row" }]}>
-      <View style={[styles.container, { flex: 1 }]}>
-        <SmallLine top right />
+    <DrawerPage style={{ flexDirection: "row" }}>
+      <Section style={{ flex: 1 }}>
         <ScrollView>
           <List
             data={specialArray}
             keyExtractor={item => item.id}
-            // separator={<Spacer y={10} />}
             ListHeaderComponent={Header}
             renderItem={({ item }) => {
               const { label } = specialMap[item.id]
@@ -92,16 +88,15 @@ export default function SpecialScreen() {
             }}
           />
         </ScrollView>
-      </View>
+      </Section>
       <Spacer x={10} />
-      <View style={[styles.container, { width: 250 }]}>
-        <SmallLine top right />
+      <Section style={{ width: 250 }}>
         <ScrollView>
           <Txt>DESCRIPTION</Txt>
           <Spacer y={10} />
           {selectedId && <Txt>{specialMap[selectedId].description}</Txt>}
         </ScrollView>
-      </View>
-    </View>
+      </Section>
+    </DrawerPage>
   )
 }
