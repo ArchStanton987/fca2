@@ -4,6 +4,7 @@ import layout from "styles/layout"
 
 const styles = StyleSheet.create({
   drawerPage: {
+    flexDirection: "row",
     marginLeft: layout.drawerWidth + layout.globalPadding,
     marginTop: 40
   }

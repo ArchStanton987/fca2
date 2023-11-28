@@ -111,7 +111,7 @@ export default function CurrAttrProvider({
       currSpecial,
       currSecAttr,
       currSkills,
-      isReady
+      isReady: isReady as true
     }
   }, [modSpecial, modSecAttr, modSkills, currSpecial, currSecAttr, currSkills, isReady])
 
