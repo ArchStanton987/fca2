@@ -9,7 +9,7 @@ type HeaderProps = {
   headerElementsIds: HeaderElementId[]
 }
 
-export default function Header({ headerElementsIds }: HeaderProps) {
+function Header({ headerElementsIds }: HeaderProps) {
   return (
     <List
       data={headerElementsIds}
@@ -21,3 +21,5 @@ export default function Header({ headerElementsIds }: HeaderProps) {
     />
   )
 }
+
+export default React.memo(Header)
