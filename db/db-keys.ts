@@ -10,6 +10,7 @@ const dbKeys = {
   char: (charId: Character["id"]) => ({
     index: `/characters/${charId}`,
     abilities: `/characters/${charId}/abilities`,
+    knowledges: `/characters/${charId}/abilities/knowledges`,
     baseSpecial: `/characters/${charId}/abilities/baseSPECIAL`,
     effects: `/characters/${charId}/effects`,
     equipedObjects: `/characters/${charId}/equipedObj`,
