@@ -2,10 +2,11 @@ export type KnowledgeLevelId = "1" | "2" | "3" | "4" | "5" | "6"
 export type KnowledgeLevelValue = 1 | 2 | 3 | 4 | 5 | 6
 
 export type KnowledgeLevel = {
-  id: KnowledgeLevelId
+  id: KnowledgeLevelValue
   label: string
   bonus: number
   bonusLabel: string
+  cost: number
 }
 
 export type Knowledge = {
