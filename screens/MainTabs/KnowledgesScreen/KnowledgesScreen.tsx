@@ -10,7 +10,10 @@ import Section from "components/Section"
 import useGetKnowledges from "hooks/db/useGetKnowledges"
 import { KnowledgeId } from "models/character/knowledges/knowledge-types"
 import LoadingScreen from "screens/LoadingScreen"
-import KnowledgeRow, { ListHeader } from "screens/MainTabs/KnowledgesScreen/KnowledgeRow"
+import KnowledgeRow, {
+  ListFooter,
+  ListHeader
+} from "screens/MainTabs/KnowledgesScreen/KnowledgeRow"
 import { SearchParams } from "screens/ScreenParams"
 
 export default function KnowledgesScreen() {
@@ -19,10 +22,12 @@ export default function KnowledgesScreen() {
 
   if (!knowledges) return <LoadingScreen />
 
-  const knowledgesArray = Object.entries(knowledges).map(([id, value]) => ({
-    id: id as KnowledgeId,
-    value
-  }))
+  const knowledgesArray = Object.entries(knowledges)
+    .map(([id, value]) => ({
+      id: id as KnowledgeId,
+      value
+    }))
+    .sort((a, b) => b.value - a.value)
 
   return (
     <DrawerPage>
@@ -30,6 +35,7 @@ export default function KnowledgesScreen() {
         <FlatList
           ListHeaderComponent={ListHeader}
           stickyHeaderIndices={[0]}
+          ListFooterComponent={ListFooter}
           data={knowledgesArray}
           keyExtractor={item => item.id}
           renderItem={({ item }) => <KnowledgeRow knowledge={item} />}

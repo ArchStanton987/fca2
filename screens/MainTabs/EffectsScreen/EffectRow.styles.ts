@@ -8,24 +8,33 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   container: {
-    backgroundColor: colors.primColor
+    backgroundColor: colors.primColor,
+    paddingVertical: 5,
+    paddingHorizontal: 10
   },
   selected: {
     backgroundColor: colors.terColor
   },
   labelContainer: {
+    alignSelf: "flex-start",
     flex: 1
   },
   symptomsContainer: {
     width: 80
   },
   durationContainer: {
+    alignSelf: "flex-start",
     width: 80,
-    justifyContent: "flex-end"
+    alignItems: "flex-end"
   },
   deleteContainer: {
-    width: 60,
-    justifyContent: "flex-end"
+    justifyContent: "center",
+    alignItems: "flex-end",
+    width: 50
+  },
+  header: {
+    paddingTop: 0,
+    paddingBottom: 10
   }
 })
 

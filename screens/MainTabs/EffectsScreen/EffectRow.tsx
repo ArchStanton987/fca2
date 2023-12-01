@@ -3,6 +3,8 @@ import { Pressable, PressableProps, View } from "react-native"
 
 import { useLocalSearchParams } from "expo-router"
 
+import { AntDesign } from "@expo/vector-icons"
+
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import Txt from "components/Txt"
 import { CharEffect } from "hooks/db/useGetEffects"
@@ -10,12 +12,30 @@ import useGetSquad from "hooks/db/useGetSquad"
 import { changeableAttributesMap } from "models/character/effects/changeable-attr"
 import effectsMap from "models/character/effects/effects"
 import { SearchParams } from "screens/ScreenParams"
+import colors from "styles/colors"
 
 import styles from "./EffectRow.styles"
 
 type EffectRowProps = PressableProps & {
   effect: CharEffect
   isSelected: boolean
+}
+
+export function EffectHeader() {
+  return (
+    <View style={[styles.container, styles.row, styles.header]}>
+      <View style={[styles.labelContainer, styles.row]}>
+        <Txt>EFFET</Txt>
+      </View>
+      <View style={styles.symptomsContainer}>
+        <Txt>SYMPTOMES</Txt>
+      </View>
+      <View style={styles.durationContainer}>
+        <Txt>DUREE</Txt>
+      </View>
+      <View style={styles.deleteContainer} />
+    </View>
+  )
 }
 
 export default function EffectRow({ effect, isSelected, ...rest }: EffectRowProps) {
@@ -44,7 +64,7 @@ export default function EffectRow({ effect, isSelected, ...rest }: EffectRowProp
         <Txt>{lengthLabel}</Txt>
       </View>
       <View style={styles.deleteContainer}>
-        <Txt>X</Txt>
+        {isSelected && <AntDesign name="delete" size={20} color={colors.secColor} />}
       </View>
     </Pressable>
   )

@@ -13,7 +13,8 @@ const styles = StyleSheet.create({
     borderWidth: 0
   },
   listHeader: {
-    paddingVertical: 0
+    paddingVertical: 0,
+    paddingBottom: 10
   },
   rowSelected: {
     backgroundColor: colors.terColor

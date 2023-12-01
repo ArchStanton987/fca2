@@ -23,7 +23,6 @@ export default function AttributeRow(props: RowProps) {
     <Pressable
       style={[styles.row, isSelected && styles.rowSelected, isHeader && styles.listHeader]}
       onPress={onPress}
-      // initAnimColor={colors.terColor}
     >
       <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
         <Txt>{label}</Txt>

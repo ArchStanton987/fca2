@@ -6,10 +6,14 @@ import List from "components/List"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { KnowledgeId, KnowledgeLevelValue } from "models/character/knowledges/knowledge-types"
-import knowledges from "models/character/knowledges/knowledges"
+import knowledgesMap from "models/character/knowledges/knowledges"
 import knowledgeLevels from "models/character/knowledges/knowledges-levels"
 
 import styles from "./KnowledgeRow.styles"
+
+export function ListFooter() {
+  return <Spacer y={10} />
+}
 
 export function ListHeader() {
   return (
@@ -23,7 +27,7 @@ export function ListHeader() {
         <List
           horizontal
           data={knowledgeLevels}
-          keyExtractor={item => item.toString()}
+          keyExtractor={item => `header-${item.id.toString()}`}
           renderItem={({ item }) => (
             <View style={styles.levelContainer}>
               <Txt>{item.bonusLabel}</Txt>
@@ -39,7 +43,7 @@ export function ListHeader() {
         <List
           horizontal
           data={knowledgeLevels}
-          keyExtractor={item => item.toString()}
+          keyExtractor={item => `header-${item.id.toString()}`}
           renderItem={({ item }) => (
             <View style={styles.levelContainer}>
               <Txt>{item.cost}</Txt>
@@ -47,6 +51,7 @@ export function ListHeader() {
           )}
         />
       </View>
+      <Spacer y={5} />
     </View>
   )
 }
@@ -62,12 +67,12 @@ export default function KnowledgeRow({ knowledge }: KnowledgeRowProps) {
   return (
     <View style={styles.container}>
       <View style={styles.labelContainer}>
-        <Txt>{knowledges[knowledge.id].label}</Txt>
+        <Txt>{knowledgesMap[knowledge.id].label}</Txt>
       </View>
       <List
         horizontal
         data={knowledgeLevels}
-        keyExtractor={item => item.toString()}
+        keyExtractor={item => `${knowledge.id}-${item.id}`}
         renderItem={({ item }) => (
           <View style={styles.levelContainer}>
             <CheckBox isChecked={item.id < knowledge.value} />
