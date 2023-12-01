@@ -1,6 +1,6 @@
 import { Knowledge, KnowledgeId } from "./knowledge-types"
 
-const knowledges: Record<KnowledgeId, Knowledge> = {
+const knowledgesMap: Record<KnowledgeId, Knowledge> = {
   kBladedWeapons: { id: "kBladedWeapons", label: "Armes tranchantes" },
   kBluntWeapons: { id: "kBluntWeapons", label: "Armes contond." },
   kUnarmed: { id: "kUnarmed", label: "Corps à corps" },
@@ -33,4 +33,4 @@ const knowledges: Record<KnowledgeId, Knowledge> = {
   kTracking: { id: "kTracking", label: "Pistage" }
 }
 
-export default knowledges
+export default knowledgesMap

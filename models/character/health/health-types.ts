@@ -15,3 +15,9 @@ export type HealthStatusId =
 export type HealthStatus = {
   [key in HealthStatusId]: number
 }
+
+export type HealthType = {
+  id: HealthStatusId
+  label: string
+  short: string
+}

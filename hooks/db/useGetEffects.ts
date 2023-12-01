@@ -6,6 +6,7 @@ import useDbSubscribe from "./useDbSubscribe"
 export type DbEffect = {
   id: EffectId
   startTs: number
+  endTs?: number
 }
 
 export type DbEffects = Record<string, DbEffect>
@@ -14,6 +15,7 @@ export type CharEffect = {
   id: EffectId
   dbKey: string
   startTs: number
+  endTs?: number
 }
 
 const handler = (snap?: DbEffects): CharEffect[] => {
@@ -21,7 +23,8 @@ const handler = (snap?: DbEffects): CharEffect[] => {
   return Object.entries(snap).map(([key, effect]) => ({
     dbKey: key,
     id: effect.id,
-    startTs: effect.startTs
+    startTs: effect.startTs,
+    endTs: effect.endTs
   }))
 }
 

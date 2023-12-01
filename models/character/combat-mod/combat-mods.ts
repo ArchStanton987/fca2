@@ -1,6 +1,6 @@
 import { CombatMod, CombatModId } from "./combat-mod-types"
 
-const combatMods: Record<CombatModId, CombatMod> = {
+const combatModsMap: Record<CombatModId, CombatMod> = {
   damageResist: {
     id: "damageResist",
     label: "Résistance aux dégâts",
@@ -63,4 +63,4 @@ const combatMods: Record<CombatModId, CombatMod> = {
   }
 }
 
-export default combatMods
+export default combatModsMap
