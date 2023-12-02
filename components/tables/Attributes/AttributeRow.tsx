@@ -8,6 +8,7 @@ type RowProps = {
   label: string
   values: {
     baseValue: number | string
+    upValue?: number | string
     modValue: number | string
     currValue: number | string
   }
@@ -52,7 +53,26 @@ export function AttributeHeader() {
     <AttributeRow
       isHeader
       label="ATTRIBUT"
-      values={{ baseValue: "BASE", modValue: "MOD", currValue: "TOT" }}
+      values={{
+        baseValue: "BASE",
+        modValue: "MOD",
+        currValue: "TOT"
+      }}
+    />
+  )
+}
+
+export function SkillsHeader() {
+  return (
+    <AttributeRow
+      isHeader
+      label="ATTRIBUT"
+      values={{
+        baseValue: "BASE",
+        upValue: "UP",
+        modValue: "MOD",
+        currValue: "TOT"
+      }}
     />
   )
 }

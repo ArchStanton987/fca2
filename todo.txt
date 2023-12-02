@@ -1,2 +1,3 @@
-default value for contexts (add hasInitProp ??) instead of casting type
+- effects: gestion startTs / endTs (allow 2 versions to coexist)
+- calculate remaining effect length 
 

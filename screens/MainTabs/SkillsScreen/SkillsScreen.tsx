@@ -3,7 +3,7 @@ import { FlatList } from "react-native"
 
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
-import AttributeRow, { AttributeHeader } from "components/tables/Attributes/AttributeRow"
+import AttributeRow, { SkillsHeader } from "components/tables/Attributes/AttributeRow"
 import skillsMap from "models/character/skills/skills"
 import { useBaseAttr } from "providers/BaseAttrProvider"
 import { useCurrAttr } from "providers/CurrAttrProvider"
@@ -22,14 +22,16 @@ export default function SkillsScreen() {
         <FlatList
           data={skillsArray}
           keyExtractor={item => item.id}
-          ListHeaderComponent={AttributeHeader}
+          ListHeaderComponent={SkillsHeader}
           stickyHeaderIndices={[0]}
           renderItem={({ item }) => {
             const { label } = skillsMap[item.id]
             const baseValue = baseContext.baseSkills[item.id]
+            const upValue = baseContext.upSkills[item.id]
             const modValue = currContext.modSkills[item.id]
             const currValue = currContext.currSkills[item.id]
-            return <AttributeRow label={label} values={{ baseValue, modValue, currValue }} />
+            const values = { baseValue, upValue, modValue, currValue }
+            return <AttributeRow label={label} values={values} />
           }}
         />
       </Section>

@@ -15,6 +15,7 @@ type BaseAttrType = {
   baseSpecial: SpecialValues
   baseSecAttr: SecAttrsValues
   baseSkills: SkillsValues
+  upSkills: SkillsValues
 }
 
 export type ReadyType<T> = T & { isReady: true }
@@ -29,6 +30,7 @@ const init: BaseAttrContextType = {
   baseSpecial: null,
   baseSecAttr: null,
   baseSkills: null,
+  upSkills: null,
   isReady: false
 }
 
@@ -51,6 +53,7 @@ export default function BaseAttrProvider({
   const traits = abilities?.traits || []
   const perks = abilities?.perks || []
   const baseSPECIAL = abilities?.baseSPECIAL || null
+  const upSkills = abilities?.upSkills || null
   const traitsSymptoms = traits.map(el => traitsMap[el].symptoms)
   const perksSymptoms = perks.map(el => perksMaps[el].symptoms)
   const symptoms = [...traitsSymptoms, ...perksSymptoms].flat()
@@ -82,7 +85,7 @@ export default function BaseAttrProvider({
     return obj
   }, [baseSpecial, symptoms])
 
-  const isReady = !!baseSpecial && !!baseSecAttr && !!baseSkills
+  const isReady = !!baseSpecial && !!baseSecAttr && !!baseSkills && !!upSkills
 
   const context = useMemo(() => {
     if (!isReady) return init
@@ -90,9 +93,10 @@ export default function BaseAttrProvider({
       baseSpecial,
       baseSecAttr,
       baseSkills,
+      upSkills,
       isReady
     }
-  }, [baseSpecial, baseSecAttr, baseSkills, isReady])
+  }, [baseSpecial, baseSecAttr, baseSkills, upSkills, isReady])
 
   return <BaseAttrContext.Provider value={context}>{children}</BaseAttrContext.Provider>
 }

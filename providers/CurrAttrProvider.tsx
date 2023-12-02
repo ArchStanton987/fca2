@@ -52,7 +52,7 @@ export default function CurrAttrProvider({
   charId: string
   children: React.ReactNode
 }) {
-  const { baseSpecial } = useContext(BaseAttrContext)
+  const { baseSpecial, upSkills } = useContext(BaseAttrContext)
   const { effects, equipedObj } = useGetEffectsSources(charId)
   const clothings = equipedObj?.clothings || []
 
@@ -89,13 +89,13 @@ export default function CurrAttrProvider({
   const skills = useMemo(() => {
     const modSkills = {} as SkillsValues
     const currSkills = {} as SkillsValues
-    if (!currSpecial) return { modSkills: null, currSkills: null }
+    if (!currSpecial || !upSkills) return { modSkills: null, currSkills: null }
     skillsList.forEach(skill => {
       modSkills[skill.id] = getModAttribute(symptoms, skill.id)
-      currSkills[skill.id] = skill.calc(currSpecial) + modSkills[skill.id]
+      currSkills[skill.id] = skill.calc(currSpecial) + modSkills[skill.id] + upSkills[skill.id]
     })
     return { modSkills, currSkills }
-  }, [currSpecial, symptoms])
+  }, [currSpecial, upSkills, symptoms])
 
   const { modSkills, currSkills } = skills
 
