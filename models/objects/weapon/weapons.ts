@@ -1,6 +1,6 @@
 import { Weapon, WeaponId } from "./weapon-types"
 
-const weapons: Record<WeaponId, Weapon> = {
+const weaponsMap: Record<WeaponId, Weapon> = {
   "10mm": {
     id: "10mm",
     label: "Pistolet 10mm",
@@ -3131,4 +3131,4 @@ const weapons: Record<WeaponId, Weapon> = {
   }
 }
 
-export default weapons
+export default weaponsMap
