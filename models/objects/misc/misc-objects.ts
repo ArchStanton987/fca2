@@ -1,6 +1,6 @@
 import { MiscObject, MiscObjectId } from "./misc-object-types"
 
-const miscObjects: Record<MiscObjectId, MiscObject> = {
+const miscObjectsMap: Record<MiscObjectId, MiscObject> = {
   brahmin: {
     id: "brahmin",
     label: "brahmine",
@@ -17,7 +17,7 @@ const miscObjects: Record<MiscObjectId, MiscObject> = {
     description: "Une ceinture très bien conçue qui vous permet de ranger d'avantage de choses.",
     value: 120,
     place: 0,
-    symptoms: [{ id: "place", operation: "add", value: 2 }],
+    symptoms: [{ id: "maxPlace", operation: "add", value: 2 }],
     weight: 0.4
   },
   holster: {
@@ -27,8 +27,7 @@ const miscObjects: Record<MiscObjectId, MiscObject> = {
       "Holster en peau de brahmine, le tout fait au crochet de 12. Un travail minutieux !",
     value: 50,
     place: 0,
-    symptoms: [{ id: "place", operation: "add", value: 1 }],
-    additionalPlace: 1,
+    symptoms: [{ id: "maxPlace", operation: "add", value: 1 }],
     weight: 0.1
   },
   purse: {
@@ -38,8 +37,7 @@ const miscObjects: Record<MiscObjectId, MiscObject> = {
       "Faite de peau de brahamine, elle est résistante et permet de stocker des affaires",
     value: 100,
     place: 0,
-    symptoms: [{ id: "place", operation: "add", value: 4 }],
-    additionalPlace: 4,
+    symptoms: [{ id: "maxPlace", operation: "add", value: 4 }],
     weight: 0.5
   },
   backpack: {
@@ -49,8 +47,7 @@ const miscObjects: Record<MiscObjectId, MiscObject> = {
       "Un bon sac à dos, bien conçu qui vous permet de transporter d'avantage de choses.",
     value: 70,
     place: 0,
-    additionalPlace: 8,
-    symptoms: [{ id: "place", operation: "add", value: 8 }],
+    symptoms: [{ id: "maxPlace", operation: "add", value: 8 }],
     weight: 0.8
   },
   militaryBackpack: {
@@ -59,8 +56,7 @@ const miscObjects: Record<MiscObjectId, MiscObject> = {
     description: "Le top du sac à dos.",
     value: 140,
     place: 0,
-    symptoms: [{ id: "place", operation: "add", value: 12 }],
-    additionalPlace: 12,
+    symptoms: [{ id: "maxPlace", operation: "add", value: 12 }],
     weight: 1
   },
 
@@ -211,4 +207,4 @@ const miscObjects: Record<MiscObjectId, MiscObject> = {
   }
 }
 
-export default miscObjects
+export default miscObjectsMap

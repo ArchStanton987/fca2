@@ -1,6 +1,6 @@
 import { Consumable, ConsumableId } from "./consumables-types"
 
-const consumables: Record<ConsumableId, Consumable> = {
+const consumablesMap: Record<ConsumableId, Consumable> = {
   ration: {
     id: "ration",
     label: "Ration",
@@ -432,4 +432,4 @@ const consumables: Record<ConsumableId, Consumable> = {
   }
 }
 
-export default consumables
+export default consumablesMap

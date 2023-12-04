@@ -1,7 +1,7 @@
-import { Symptom } from "models/character/effects/effect-types"
+import { Symptom } from "models/character/effects/symptom"
 import { BodyPart } from "models/character/health/health-types"
 
-export type ClothingType = "light" | "medium" | "heavy"
+export type ClothingType = "light" | "medium" | "heavy" | "carry"
 
 export type Clothing = {
   id: ClothingId
@@ -22,6 +22,11 @@ export type Clothing = {
 }
 
 export type ClothingId =
+  | "militaryBelt"
+  | "holster"
+  | "purse"
+  | "backpack"
+  | "militaryBackpack"
   | "prewarHat"
   | "prewarSuit"
   | "cowboyHat"

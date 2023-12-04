@@ -27,4 +27,6 @@ export type AmmoType =
 export type Ammo = {
   id: AmmoType
   label: string
+  place: number
+  weight: number
 }

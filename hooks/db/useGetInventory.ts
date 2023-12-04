@@ -1,10 +1,18 @@
 import dbKeys from "db/db-keys"
 
+import ammoMap from "models/objects/ammo/ammo"
+import { AmmoType } from "models/objects/ammo/ammo-types"
+import clothingsMap from "models/objects/clothing/clothings"
+import consumablesMap from "models/objects/consumable/consumables"
 import { ConsumableId } from "models/objects/consumable/consumables-types"
 import { MiscObjectId } from "models/objects/misc/misc-object-types"
+import miscObjectsMap from "models/objects/misc/misc-objects"
+import weaponsMap from "models/objects/weapon/weapons"
 
 import useDbSubscribe from "./useDbSubscribe"
 import { CharClothing, CharWeapon, DbClothing, DbWeapon } from "./useGetEquipedObj"
+
+export type DbAmmo = Record<AmmoType, number>
 
 export type DbConsumable = {
   id: ConsumableId
@@ -26,7 +34,13 @@ export type CharObject = {
   id: MiscObjectId
 }
 
+export type CharAmmo = {
+  id: AmmoType
+  amount: number
+}[]
+
 export type CharInventory = {
+  ammo: CharAmmo
   clothings: CharClothing[]
   weapons: CharWeapon[]
   consumables: CharConsumable[]
@@ -34,6 +48,7 @@ export type CharInventory = {
 }
 
 export type DbInventory = {
+  ammo: DbAmmo
   clothings?: Record<string, DbClothing>
   weapons?: Record<string, DbWeapon>
   consumables?: Record<string, DbConsumable>
@@ -41,6 +56,12 @@ export type DbInventory = {
 }
 
 const handler = (snap: DbInventory): CharInventory => {
+  const dbAmmo = snap?.ammo || {}
+  const ammo = Object.entries(dbAmmo).map(([id, amount]) => ({
+    id: id as AmmoType,
+    amount
+  }))
+
   const dbClothings = snap?.clothings || {}
   const clothings = Object.entries(dbClothings).map(([key, value]) => ({
     dbKey: key,
@@ -62,7 +83,20 @@ const handler = (snap: DbInventory): CharInventory => {
     dbKey: key,
     id: value.id
   }))
-  return { weapons, clothings, consumables, objects }
+  return { ammo, weapons, clothings, consumables, objects }
+}
+
+export const getTotalWeight = (inventory: CharInventory) => {
+  const { ammo, clothings, weapons, consumables, objects } = inventory
+  const ammoWeight = ammo.reduce((acc, { amount, id }) => acc + ammoMap[id].weight * amount, 0)
+  const clothingsWeight = clothings.reduce((acc, curr) => acc + clothingsMap[curr.id].weight, 0)
+  const weaponsWeight = weapons.reduce((acc, curr) => acc + weaponsMap[curr.id].weight, 0)
+  const consumablesWeight = consumables.reduce(
+    (acc, curr) => acc + consumablesMap[curr.id].weight,
+    0
+  )
+  const objectsWeight = objects.reduce((acc, curr) => acc + miscObjectsMap[curr.id].weight, 0)
+  return ammoWeight + clothingsWeight + weaponsWeight + consumablesWeight + objectsWeight
 }
 
 export const useGetInventory = (charId: string) => {

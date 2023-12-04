@@ -1,6 +1,93 @@
 import { Clothing, ClothingId } from "./clothing-types"
 
 const clothingsMap: Record<ClothingId, Clothing> = {
+  // CARRY CLOTHINGS
+  militaryBelt: {
+    id: "militaryBelt",
+    label: "Ceinture militaire",
+    type: "carry",
+    armorClass: 0,
+    threshold: 0,
+    physicalDamageResist: 0,
+    laserDamageResist: 0,
+    fireDamageResist: 0,
+    plasmaDamageResist: 0,
+    protects: [],
+    malus: 0,
+    place: 0,
+    weight: 0.4,
+    value: 120,
+    symptoms: [{ id: "maxPlace", operation: "add", value: 2 }]
+  },
+  holster: {
+    id: "holster",
+    label: "Holster",
+    type: "carry",
+    armorClass: 0,
+    threshold: 0,
+    physicalDamageResist: 0,
+    laserDamageResist: 0,
+    fireDamageResist: 0,
+    plasmaDamageResist: 0,
+    protects: [],
+    malus: 0,
+    place: 0,
+    weight: 0.1,
+    value: 50,
+    symptoms: [{ id: "maxPlace", operation: "add", value: 1 }]
+  },
+  purse: {
+    id: "purse",
+    label: "Sacoche",
+    type: "carry",
+    armorClass: 0,
+    threshold: 0,
+    physicalDamageResist: 0,
+    laserDamageResist: 0,
+    fireDamageResist: 0,
+    plasmaDamageResist: 0,
+    protects: [],
+    malus: 0,
+    place: 0,
+    weight: 0.5,
+    value: 100,
+    symptoms: [{ id: "maxPlace", operation: "add", value: 4 }]
+  },
+  backpack: {
+    id: "backpack",
+    label: "Sac à dos",
+    type: "carry",
+    armorClass: 0,
+    threshold: 0,
+    physicalDamageResist: 0,
+    laserDamageResist: 0,
+    fireDamageResist: 0,
+    plasmaDamageResist: 0,
+    protects: [],
+    malus: 0,
+    place: 0,
+    weight: 0.8,
+    value: 70,
+    symptoms: [{ id: "maxPlace", operation: "add", value: 8 }]
+  },
+  militaryBackpack: {
+    id: "militaryBackpack",
+    label: "Sac à dos militaire",
+    type: "carry",
+    armorClass: 0,
+    threshold: 0,
+    physicalDamageResist: 0,
+    laserDamageResist: 0,
+    fireDamageResist: 0,
+    plasmaDamageResist: 0,
+    protects: [],
+    malus: 0,
+    place: 0,
+    weight: 1,
+    value: 140,
+    symptoms: [{ id: "maxPlace", operation: "add", value: 12 }]
+  },
+
   // NON-MARTIAL CLOTHINGS
   prewarHat: {
     id: "prewarHat",

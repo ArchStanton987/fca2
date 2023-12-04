@@ -11,6 +11,7 @@ import Section from "components/Section"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import useGetEquipedObj from "hooks/db/useGetEquipedObj"
+import { CharInventory, getTotalWeight, useGetInventory } from "hooks/db/useGetInventory"
 import skillsMap from "models/character/skills/skills"
 import clothingsMap from "models/objects/clothing/clothings"
 import weaponsMap from "models/objects/weapon/weapons"
@@ -41,7 +42,8 @@ function EmptyComponent() {
 
 export default function RecapScreen() {
   const { charId } = useLocalSearchParams() as SearchParams<DrawerParams>
-  const { currSkills } = useCurrAttr()
+  const { currSkills, currSecAttr } = useCurrAttr()
+  const inventory = useGetInventory(charId) || ({} as CharInventory)
   const equipedObj = useGetEquipedObj(charId)
   const weapons = equipedObj?.weapons || []
   const clothings = equipedObj?.clothings || []
@@ -76,7 +78,10 @@ export default function RecapScreen() {
         <Section>
           <Txt>POIDS</Txt>
           <Spacer y={10} />
+          <Txt>{getTotalWeight(inventory)}</Txt>
           <Txt>PLACE</Txt>
+          <Spacer y={10} />
+          <Txt>{currSecAttr ? currSecAttr.maxPlace : "-"}</Txt>
         </Section>
       </View>
       <Spacer x={10} />
