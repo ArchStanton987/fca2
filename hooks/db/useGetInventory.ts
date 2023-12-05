@@ -10,7 +10,13 @@ import miscObjectsMap from "models/objects/misc/misc-objects"
 import weaponsMap from "models/objects/weapon/weapons"
 
 import useDbSubscribe from "./useDbSubscribe"
-import { CharClothing, CharWeapon, DbClothing, DbWeapon } from "./useGetEquipedObj"
+import {
+  CharClothing,
+  CharEquipedObjects,
+  CharWeapon,
+  DbClothing,
+  DbWeapon
+} from "./useGetEquipedObj"
 
 export type DbAmmo = Record<AmmoType, number>
 
@@ -86,17 +92,47 @@ const handler = (snap: DbInventory): CharInventory => {
   return { ammo, weapons, clothings, consumables, objects }
 }
 
-export const getTotalWeight = (inventory: CharInventory) => {
+export const getCurrCarry = (inventory: CharInventory, equObj: CharEquipedObjects) => {
   const { ammo, clothings, weapons, consumables, objects } = inventory
-  const ammoWeight = ammo.reduce((acc, { amount, id }) => acc + ammoMap[id].weight * amount, 0)
-  const clothingsWeight = clothings.reduce((acc, curr) => acc + clothingsMap[curr.id].weight, 0)
-  const weaponsWeight = weapons.reduce((acc, curr) => acc + weaponsMap[curr.id].weight, 0)
-  const consumablesWeight = consumables.reduce(
-    (acc, curr) => acc + consumablesMap[curr.id].weight,
-    0
-  )
-  const objectsWeight = objects.reduce((acc, curr) => acc + miscObjectsMap[curr.id].weight, 0)
-  return ammoWeight + clothingsWeight + weaponsWeight + consumablesWeight + objectsWeight
+  const init = { weight: 0, place: 0 }
+  const ammoWeight = ammo.reduce((acc, { amount, id }) => {
+    const weight = ammoMap[id].weight * amount
+    const place = ammoMap[id].place * amount
+    return { weight: acc.weight + weight, place: acc.place + place }
+  }, init)
+  const clothingsWeight = clothings.reduce((acc, curr) => {
+    const { weight, place } = clothingsMap[curr.id]
+    const isEquiped = equObj.clothings.some(({ id }) => id === curr.id)
+    const placeToAdd = isEquiped ? 0 : place
+    return { weight: acc.weight + weight, place: acc.place + placeToAdd }
+  }, init)
+  const weaponsWeight = weapons.reduce((acc, curr) => {
+    const { weight, place } = weaponsMap[curr.id]
+    const isEquiped = equObj.weapons.some(({ id }) => id === curr.id)
+    const placeToAdd = isEquiped ? 0 : place
+    return { weight: acc.weight + weight, place: acc.place + placeToAdd }
+  }, init)
+  const consumablesWeight = consumables.reduce((acc, curr) => {
+    const { weight, place } = consumablesMap[curr.id]
+    return { weight: acc.weight + weight, place: acc.place + place }
+  }, init)
+  const objectsWeight = objects.reduce((acc, curr) => {
+    const { weight, place } = miscObjectsMap[curr.id]
+    return { weight: acc.weight + weight, place: acc.place + place }
+  }, init)
+  const w =
+    ammoWeight.weight +
+    clothingsWeight.weight +
+    weaponsWeight.weight +
+    consumablesWeight.weight +
+    objectsWeight.weight
+  const p =
+    ammoWeight.place +
+    clothingsWeight.place +
+    weaponsWeight.place +
+    consumablesWeight.place +
+    objectsWeight.place
+  return { currWeight: w, currPlace: p }
 }
 
 export const useGetInventory = (charId: string) => {

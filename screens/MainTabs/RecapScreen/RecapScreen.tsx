@@ -11,7 +11,8 @@ import Section from "components/Section"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import useGetEquipedObj from "hooks/db/useGetEquipedObj"
-import { CharInventory, getTotalWeight, useGetInventory } from "hooks/db/useGetInventory"
+import { CharInventory, getCurrCarry, useGetInventory } from "hooks/db/useGetInventory"
+import useGetSquad from "hooks/db/useGetSquad"
 import skillsMap from "models/character/skills/skills"
 import clothingsMap from "models/objects/clothing/clothings"
 import weaponsMap from "models/objects/weapon/weapons"
@@ -41,20 +42,25 @@ function EmptyComponent() {
 }
 
 export default function RecapScreen() {
-  const { charId } = useLocalSearchParams() as SearchParams<DrawerParams>
+  const { charId, squadId } = useLocalSearchParams() as SearchParams<DrawerParams>
   const { currSkills, currSecAttr } = useCurrAttr()
   const inventory = useGetInventory(charId) || ({} as CharInventory)
   const equipedObj = useGetEquipedObj(charId)
   const weapons = equipedObj?.weapons || []
   const clothings = equipedObj?.clothings || []
+  const { currPlace, currWeight } = getCurrCarry(inventory, { weapons, clothings })
+  const squad = useGetSquad(squadId)
+  const firstname = squad?.members[charId].firstname || ""
+  const lastname = squad?.members[charId].lastname || ""
+  const name = lastname.length > 0 ? `${firstname} ${lastname.toUpperCase()}` : firstname
 
   return (
     <DrawerPage>
-      <Section style={{ flex: 1 }}>
-        <Txt>RECAP</Txt>
+      <Section style={{ width: 160 }}>
+        <Txt>{name}</Txt>
       </Section>
       <Spacer x={10} />
-      <View style={{ width: 200, flex: 1 }}>
+      <View style={{ flex: 1 }}>
         <Section style={{ flex: 1 }}>
           <Txt>ARMES EQUIPEES</Txt>
           <Spacer y={10} />
@@ -76,12 +82,17 @@ export default function RecapScreen() {
           ))}
         </Section>
         <Section>
-          <Txt>POIDS</Txt>
+          <Txt>{`POIDS (${currSecAttr?.normalCarryWeight}/${currSecAttr?.tempCarryWeight}/${currSecAttr?.maxCarryWeight})`}</Txt>
           <Spacer y={10} />
-          <Txt>{getTotalWeight(inventory)}</Txt>
+          <Txt>{currWeight}</Txt>
+          <Spacer y={10} />
           <Txt>PLACE</Txt>
           <Spacer y={10} />
-          <Txt>{currSecAttr ? currSecAttr.maxPlace : "-"}</Txt>
+          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+            <Txt>
+              {currPlace} / {currSecAttr?.maxPlace || "-"}
+            </Txt>
+          </View>
         </Section>
       </View>
       <Spacer x={10} />
