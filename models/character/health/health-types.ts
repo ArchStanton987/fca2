@@ -3,7 +3,8 @@ export type BodyPart = "head" | "torso" | "arms" | "groin" | "legs"
 export type HealthStatusId =
   | "hp"
   | "headHp"
-  | "torsoHp"
+  | "leftTorsoHp"
+  | "rightTorsoHp"
   | "leftArmHp"
   | "rightArmHp"
   | "leftLegHp"
@@ -20,4 +21,6 @@ export type HealthType = {
   id: HealthStatusId
   label: string
   short: string
+  minValue: number
+  maxValue: number
 }

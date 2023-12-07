@@ -4,52 +4,79 @@ const healthMap: Record<HealthStatusId, HealthType> = {
   hp: {
     id: "hp",
     label: "Points de vie",
-    short: "PV"
+    short: "PV",
+    minValue: -1000,
+    maxValue: 10000
   },
   headHp: {
     id: "headHp",
     label: "PV tête",
-    short: "PVtê"
+    short: "PVtê",
+    minValue: 0,
+    maxValue: 15
   },
-  torsoHp: {
-    id: "torsoHp",
+  leftTorsoHp: {
+    id: "leftTorsoHp",
     label: "PV torse",
-    short: "PVto"
+    short: "PVto",
+    minValue: 0,
+    maxValue: 25
+  },
+  rightTorsoHp: {
+    id: "rightTorsoHp",
+    label: "PV torse",
+    short: "PVto",
+    minValue: 0,
+    maxValue: 30
   },
   leftArmHp: {
     id: "leftArmHp",
     label: "PV bras gauche",
-    short: "PVBrG"
+    short: "PVBrG",
+    minValue: 0,
+    maxValue: 20
   },
   rightArmHp: {
     id: "rightArmHp",
     label: "PV bras droit",
-    short: "PVBrD"
+    short: "PVBrD",
+    minValue: 0,
+    maxValue: 20
   },
   leftLegHp: {
     id: "leftLegHp",
     label: "PV jambe gauche",
-    short: "PVJaG"
+    short: "PVJaG",
+    minValue: 0,
+    maxValue: 20
   },
   rightLegHp: {
     id: "rightLegHp",
     label: "PV jambe droite",
-    short: "PVJaD"
+    short: "PVJaD",
+    minValue: 0,
+    maxValue: 20
   },
   groinHp: {
     id: "groinHp",
     label: "PV entrejambe",
-    short: "PVEnJ"
+    short: "PVEnJ",
+    minValue: 0,
+    maxValue: 15
   },
   poison: {
     id: "poison",
     label: "Poison",
-    short: "Pois"
+    short: "Pois",
+    minValue: 0,
+    maxValue: 15
   },
   rads: {
     id: "rads",
     label: "Rads",
-    short: "Rad"
+    short: "Rad",
+    minValue: 0,
+    maxValue: 1000
   }
 }
 
