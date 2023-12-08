@@ -1,5 +1,5 @@
 import React from "react"
-import { ActivityIndicator } from "react-native"
+import { ActivityIndicator, ScrollView } from "react-native"
 
 import { useLocalSearchParams } from "expo-router"
 
@@ -23,24 +23,29 @@ export default function HealthSection() {
   const name = lastname.length > 0 ? `${firstname} ${lastname.toUpperCase()}` : firstname
   const effects = useGetEffects(charId)
   return (
-    <Section style={{ width: 160 }}>
-      <Txt>{name}</Txt>
+    <ScrollView>
+      <Section style={{ width: 160 }}>
+        <Txt>{name}</Txt>
+        <Spacer y={5} />
+        <HealthFigure />
+      </Section>
       <Spacer y={5} />
-      <HealthFigure />
-      <Spacer y={5} />
-      <Txt>EFFETS</Txt>
-      <Spacer y={5} />
-      {effects ? (
-        <List
-          data={effects}
-          keyExtractor={item => item.id}
-          style={{ flexWrap: "wrap" }}
-          separator={<Txt> / </Txt>}
-          renderItem={({ item }) => <Txt>{effectsMap[item.id].label}</Txt>}
-        />
-      ) : (
-        <ActivityIndicator color={colors.secColor} />
-      )}
-    </Section>
+      <Section style={{ width: 160 }}>
+        <Txt>EFFETS</Txt>
+        <Spacer y={5} />
+        {effects ? (
+          <List
+            data={effects}
+            horizontal
+            keyExtractor={item => item.id}
+            style={{ flexWrap: "wrap" }}
+            separator={<Txt> / </Txt>}
+            renderItem={({ item }) => <Txt>{effectsMap[item.id].label}</Txt>}
+          />
+        ) : (
+          <ActivityIndicator color={colors.secColor} />
+        )}
+      </Section>
+    </ScrollView>
   )
 }

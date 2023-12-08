@@ -15,13 +15,13 @@ export type CharClothing = {
   dbKey: string
   id: ClothingId
 }
-export type CharWeapon = {
+export type EqCharWeapon = {
   dbKey: string
   id: WeaponId
 }
 export type CharEquipedObjects = {
   clothings: CharClothing[]
-  weapons: CharWeapon[]
+  weapons: EqCharWeapon[]
 }
 
 const handler = (snap: DbEquipedObjects): CharEquipedObjects => {

@@ -1,5 +1,7 @@
 import dbKeys from "db/db-keys"
 
+import useGetKnowledges, { DbKnowledges } from "hooks/db/useGetKnowledges"
+import { SkillsValues } from "models/character/skills/skills-types"
 import ammoMap from "models/objects/ammo/ammo"
 import { AmmoType } from "models/objects/ammo/ammo-types"
 import clothingsMap from "models/objects/clothing/clothings"
@@ -7,16 +9,12 @@ import consumablesMap from "models/objects/consumable/consumables"
 import { ConsumableId } from "models/objects/consumable/consumables-types"
 import { MiscObjectId } from "models/objects/misc/misc-object-types"
 import miscObjectsMap from "models/objects/misc/misc-objects"
+import { WeaponId } from "models/objects/weapon/weapon-types"
 import weaponsMap from "models/objects/weapon/weapons"
+import { useCurrAttr } from "providers/CurrAttrProvider"
 
 import useDbSubscribe from "./useDbSubscribe"
-import {
-  CharClothing,
-  CharEquipedObjects,
-  CharWeapon,
-  DbClothing,
-  DbWeapon
-} from "./useGetEquipedObj"
+import { CharClothing, CharEquipedObjects, DbClothing, DbWeapon } from "./useGetEquipedObj"
 
 export type DbAmmo = Record<AmmoType, number>
 
@@ -27,6 +25,12 @@ export type DbConsumable = {
 
 export type DbObject = {
   id: MiscObjectId
+}
+
+export type CharWeapon = {
+  dbKey: string
+  id: WeaponId
+  skill: number
 }
 
 export type CharConsumable = {
@@ -59,37 +63,6 @@ export type DbInventory = {
   weapons?: Record<string, DbWeapon>
   consumables?: Record<string, DbConsumable>
   objects?: Record<string, DbObject>
-}
-
-const handler = (snap: DbInventory): CharInventory => {
-  const dbAmmo = snap?.ammo || {}
-  const ammo = Object.entries(dbAmmo).map(([id, amount]) => ({
-    id: id as AmmoType,
-    amount
-  }))
-
-  const dbClothings = snap?.clothings || {}
-  const clothings = Object.entries(dbClothings).map(([key, value]) => ({
-    dbKey: key,
-    id: value.id
-  }))
-  const dbWeapons = snap?.weapons || {}
-  const weapons = Object.entries(dbWeapons).map(([key, value]) => ({
-    dbKey: key,
-    id: value.id
-  }))
-  const dbConsumables = snap?.consumables || {}
-  const consumables = Object.entries(dbConsumables).map(([key, value]) => ({
-    dbKey: key,
-    id: value.id,
-    remainingUse: value.remainingUse
-  }))
-  const dbObjects = snap?.objects || {}
-  const objects = Object.entries(dbObjects).map(([key, value]) => ({
-    dbKey: key,
-    id: value.id
-  }))
-  return { ammo, weapons, clothings, consumables, objects }
 }
 
 export const getCurrCarry = (inventory: CharInventory, equObj: CharEquipedObjects) => {
@@ -135,8 +108,56 @@ export const getCurrCarry = (inventory: CharInventory, equObj: CharEquipedObject
   return { currWeight: w, currPlace: p }
 }
 
-export const useGetInventory = (charId: string) => {
-  const dbPath = dbKeys.char(charId).inventory
+const handler = (
+  snap: DbInventory,
+  currSkills: SkillsValues,
+  knowledges: DbKnowledges
+): CharInventory => {
+  const dbAmmo = snap?.ammo || {}
+  const ammo = Object.entries(dbAmmo).map(([id, amount]) => ({
+    id: id as AmmoType,
+    amount
+  }))
 
-  return useDbSubscribe<DbInventory, CharInventory>(dbPath, handler)
+  const dbClothings = snap?.clothings || {}
+  const clothings = Object.entries(dbClothings).map(([key, value]) => ({
+    dbKey: key,
+    id: value.id
+  }))
+  const dbWeapons = snap?.weapons || {}
+  const weapons = Object.entries(dbWeapons).map(([key, value]) => {
+    const weaponSkill = weaponsMap[value.id].skill
+    const weaponKnowledges = weaponsMap[value.id].knowledges
+    const knowledgesBonus = weaponKnowledges.reduce((acc, curr) => acc + knowledges[curr], 0)
+    const skillScore = currSkills[weaponSkill] + knowledgesBonus
+    return { dbKey: key, id: value.id, skill: skillScore }
+  })
+  const dbConsumables = snap?.consumables || {}
+  const consumables = Object.entries(dbConsumables).map(([key, value]) => ({
+    dbKey: key,
+    id: value.id,
+    remainingUse: value.remainingUse
+  }))
+  const dbObjects = snap?.objects || {}
+  const objects = Object.entries(dbObjects).map(([key, value]) => ({
+    dbKey: key,
+    id: value.id
+  }))
+  return { ammo, weapons, clothings, consumables, objects }
+}
+
+export const useGetInventory = (charId: string): CharInventory => {
+  const currAttr = useCurrAttr()
+  const { currSkills } = currAttr
+  const knowledges = useGetKnowledges(charId)
+
+  const dbPath = dbKeys.char(charId).inventory
+  const inv = useDbSubscribe<DbInventory, DbInventory>(dbPath)
+
+  if (!inv || !currSkills || !knowledges)
+    return { weapons: [], clothings: [], consumables: [], objects: [], ammo: [] }
+
+  const { weapons, clothings, consumables, objects, ammo } = handler(inv, currSkills, knowledges)
+
+  return { weapons, clothings, consumables, objects, ammo }
 }
