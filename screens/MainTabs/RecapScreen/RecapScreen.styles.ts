@@ -1,5 +1,7 @@
 import { StyleSheet } from "react-native"
 
+import colors from "styles/colors"
+
 const styles = StyleSheet.create({
   skillRow: {
     flexDirection: "row",
@@ -8,6 +10,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10
   },
   skillHeader: {
+    backgroundColor: colors.primColor,
     flexDirection: "row",
     justifyContent: "space-between",
     paddingBottom: 10,

@@ -25,7 +25,7 @@ export default function EquipedObjSection() {
   const { currPlace, currWeight } = getCurrCarry(inventory, { weapons, clothings })
   return (
     <View style={{ flex: 1 }}>
-      <Section style={{ flex: 1 }}>
+      <Section style={{ paddingHorizontal: 10, flex: 1 }}>
         <Txt>ARMES EQUIPEES</Txt>
         <Spacer y={10} />
         {weapons.map(weapon => (
@@ -35,7 +35,8 @@ export default function EquipedObjSection() {
           </View>
         ))}
       </Section>
-      <Section style={{ flex: 1 }}>
+      <Spacer y={10} />
+      <Section style={{ paddingHorizontal: 10, flex: 1 }}>
         <Txt>ARMURES EQUIPEES</Txt>
         <Spacer y={10} />
         {clothings.map(cloth => (
@@ -45,18 +46,18 @@ export default function EquipedObjSection() {
           </View>
         ))}
       </Section>
-      <Section>
-        <Txt>{`POIDS (${currSecAttr?.normalCarryWeight}/${currSecAttr?.tempCarryWeight}/${currSecAttr?.maxCarryWeight})`}</Txt>
-        <Spacer y={10} />
-        <Txt>{currWeight}</Txt>
-        <Spacer y={10} />
-        <Txt>PLACE</Txt>
-        <Spacer y={10} />
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Txt>
-            {currPlace} / {currSecAttr?.maxPlace || "-"}
-          </Txt>
-        </View>
+      <Spacer y={10} />
+      <Section style={{ paddingHorizontal: 10 }}>
+        <Txt>
+          POIDS: {currWeight}{" "}
+          {`(${currSecAttr?.normalCarryWeight}/${currSecAttr?.tempCarryWeight}/${currSecAttr?.maxCarryWeight})`}
+        </Txt>
+      </Section>
+      <Spacer y={10} />
+      <Section style={{ paddingHorizontal: 10 }}>
+        <Txt>
+          PLACE: {currPlace}/{currSecAttr?.maxPlace || "-"}
+        </Txt>
       </Section>
     </View>
   )

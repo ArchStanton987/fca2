@@ -23,14 +23,15 @@ export default function HealthSection() {
   const name = lastname.length > 0 ? `${firstname} ${lastname.toUpperCase()}` : firstname
   const effects = useGetEffects(charId)
   return (
-    <ScrollView>
-      <Section style={{ width: 160 }}>
-        <Txt>{name}</Txt>
-        <Spacer y={5} />
+    <ScrollView style={{ flexGrow: 0, width: 160 }}>
+      <Section style={{ alignItems: "center", paddingHorizontal: 10 }}>
+        <Txt>{name.toUpperCase()}</Txt>
+        <Spacer y={15} />
         <HealthFigure />
+        <Spacer y={15} />
       </Section>
       <Spacer y={5} />
-      <Section style={{ width: 160 }}>
+      <Section>
         <Txt>EFFETS</Txt>
         <Spacer y={5} />
         {effects ? (

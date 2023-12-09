@@ -94,17 +94,23 @@ export const getCurrCarry = (inventory: CharInventory, equObj: CharEquipedObject
     return { weight: acc.weight + weight, place: acc.place + place }
   }, init)
   const w =
-    ammoWeight.weight +
-    clothingsWeight.weight +
-    weaponsWeight.weight +
-    consumablesWeight.weight +
-    objectsWeight.weight
+    Math.round(
+      (ammoWeight.weight +
+        clothingsWeight.weight +
+        weaponsWeight.weight +
+        consumablesWeight.weight +
+        objectsWeight.weight) *
+        10
+    ) / 10
   const p =
-    ammoWeight.place +
-    clothingsWeight.place +
-    weaponsWeight.place +
-    consumablesWeight.place +
-    objectsWeight.place
+    Math.round(
+      (ammoWeight.place +
+        clothingsWeight.place +
+        weaponsWeight.place +
+        consumablesWeight.place +
+        objectsWeight.place) *
+        10
+    ) / 10
   return { currWeight: w, currPlace: p }
 }
 

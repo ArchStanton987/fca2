@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   },
   torsoContainer: {
     position: "absolute",
-    top: 50,
+    top: 52,
     width: "80%",
     flexDirection: "row",
     justifyContent: "space-between"

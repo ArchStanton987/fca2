@@ -33,12 +33,13 @@ function EmptyComponent() {
 export default function SkillsSection() {
   const { currSkills } = useCurrAttr()
   return (
-    <Section style={{ width: 200 }}>
+    <Section style={{ width: 160 }}>
       <FlatList
         data={skillsArray}
         keyExtractor={item => item.id}
         ListEmptyComponent={EmptyComponent}
         ListHeaderComponent={ListHeader}
+        stickyHeaderIndices={[0]}
         renderItem={({ item }) => (
           <View style={styles.skillRow}>
             <Txt>{skillsMap[item.id].label}</Txt>
