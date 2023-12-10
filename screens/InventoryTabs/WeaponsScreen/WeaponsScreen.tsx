@@ -10,7 +10,7 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import useGetEquipedObj from "hooks/db/useGetEquipedObj"
 import { useGetInventory } from "hooks/db/useGetInventory"
-import WeaponRow from "screens/InventoryTabs/WeaponsScreen/WeaponRow"
+import WeaponRow, { ListHeader } from "screens/InventoryTabs/WeaponsScreen/WeaponRow"
 import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
 
@@ -30,6 +30,8 @@ export default function WeaponsScreen() {
         <FlatList
           data={inventory.weapons}
           keyExtractor={item => item.dbKey}
+          ListHeaderComponent={ListHeader}
+          stickyHeaderIndices={[0]}
           renderItem={({ item }) => (
             <WeaponRow
               weaponId={item.id}
@@ -42,7 +44,7 @@ export default function WeaponsScreen() {
         />
       </Section>
       <Spacer x={10} />
-      <Section style={{ width: 200 }}>
+      <Section style={{ width: 120 }}>
         <Txt>DESCRIPTION</Txt>
         <Spacer y={10} />
         {/* <Txt>{selectedKey && effectsMap[selectedKey].description}</Txt> */}

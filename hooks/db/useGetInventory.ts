@@ -134,7 +134,7 @@ const handler = (
   const weapons = Object.entries(dbWeapons).map(([key, value]) => {
     const weaponSkill = weaponsMap[value.id].skill
     const weaponKnowledges = weaponsMap[value.id].knowledges
-    const knowledgesBonus = weaponKnowledges.reduce((acc, curr) => acc + knowledges[curr], 0)
+    const knowledgesBonus = weaponKnowledges.reduce((acc, curr) => acc + knowledges[curr] || 0, 0)
     const skillScore = currSkills[weaponSkill] + knowledgesBonus
     return { dbKey: key, id: value.id, skill: skillScore }
   })

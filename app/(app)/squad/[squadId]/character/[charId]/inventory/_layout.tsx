@@ -1,28 +1,36 @@
+/* eslint-disable react/no-unstable-nested-components */
 import { Tabs } from "expo-router/tabs"
 
+import Header from "components/Header/Header"
+import { HeaderElementId } from "components/Header/Header.utils"
 import TabBar from "components/TabBar/TabBar"
-// import styles from "components/TabBar/TabBar.styles"
 import colors from "styles/colors"
 
+const special: HeaderElementId[] = [
+  "strength",
+  "perception",
+  "endurance",
+  "charisma",
+  "intelligence",
+  "agility",
+  "luck"
+]
+const datetime: HeaderElementId[] = ["date", "time"]
 export default function InventoryLayout() {
   return (
     <Tabs
       // eslint-disable-next-line react/no-unstable-nested-components
       tabBar={props => <TabBar tabBarId="inventory" {...props} />}
       screenOptions={{
-        headerShown: false,
-        // tabBarLabelPosition: "beside-icon",
-        // tabBarLabelStyle: styles.label,
-        // tabBarIcon: () => null,
-        // tabBarBadge: 1,
-        // tabBarBadgeStyle: styles.badge
-        // tabBarActiveTintColor: colors.secColor,
-        // tabBarInactiveTintColor: colors.terColor,
-        // tabBarActiveBackgroundColor: colors.terColor,
-        // tabBarInactiveBackgroundColor: colors.primColor,
-        tabBarHideOnKeyboard: true
-        // tabBarItemStyle: styles.tabBarItem,
-        // tabBarStyle: styles.tabBar
+        tabBarHideOnKeyboard: true,
+        header: props => (
+          <Header headerElementsIds={[...datetime, "progression", ...special, "caps"]} {...props} />
+        ),
+        headerStyle: {
+          backgroundColor: colors.primColor,
+          height: 40,
+          borderBottomWidth: 0
+        }
       }}
       sceneContainerStyle={{
         backgroundColor: colors.primColor

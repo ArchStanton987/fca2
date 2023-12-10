@@ -15,22 +15,22 @@ export function ListHeader() {
   return (
     <View style={[styles.row, styles.container, styles.header]}>
       <View style={styles.equipedContainer}>
-        <Txt>EQUIPE</Txt>
+        <Txt>EQU</Txt>
       </View>
       <View style={styles.labelContainer}>
         <Txt>NOM</Txt>
       </View>
       <View style={styles.damageContainer}>
-        <Txt>DEGATS</Txt>
+        <Txt>DEG</Txt>
       </View>
       <View style={styles.skillContainer}>
-        <Txt>COMPETENCE</Txt>
+        <Txt>COMP</Txt>
       </View>
       <View style={styles.ammoContainer}>
-        <Txt>MUN.</Txt>
+        <Txt>MUN</Txt>
       </View>
       <View style={styles.deleteContainer}>
-        <Txt>SUPPR</Txt>
+        <Txt> </Txt>
       </View>
     </View>
   )
@@ -49,11 +49,12 @@ export default function WeaponRow({
   isSelected,
   isEquiped,
   skillScore,
-  ammo
+  ammo,
+  ...rest
 }: WeaponRowProps) {
   const { label, damageBasic, damageBurst } = weaponsMap[weaponId]
   return (
-    <Pressable style={[styles.row, styles.container, isSelected && styles.selected]}>
+    <Pressable style={[styles.row, styles.container, isSelected && styles.selected]} {...rest}>
       <View style={styles.equipedContainer}>
         <CheckBox isChecked={isEquiped} />
       </View>
@@ -61,8 +62,8 @@ export default function WeaponRow({
         <Txt>{label}</Txt>
       </View>
       <View style={styles.damageContainer}>
-        <Txt>{damageBasic}</Txt>
-        <Txt>{damageBurst}</Txt>
+        <Txt>{damageBasic ?? "-"}</Txt>
+        <Txt>{damageBurst ?? "-"}</Txt>
       </View>
       <View style={styles.skillContainer}>
         <Txt>{skillScore}</Txt>

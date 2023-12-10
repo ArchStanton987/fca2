@@ -16,28 +16,29 @@ const styles = StyleSheet.create({
     backgroundColor: colors.terColor
   },
   equipedContainer: {
-    width: 80
+    width: 40
   },
   labelContainer: {
     alignSelf: "flex-start",
+    justifyContent: "center",
     flex: 1
   },
   damageContainer: {
-    width: 80
+    width: 60
   },
   skillContainer: {
     alignSelf: "flex-start",
-    width: 80,
+    width: 40,
     alignItems: "flex-end"
   },
   ammoContainer: {
-    justifyContent: "center",
     alignItems: "flex-end",
     width: 50
   },
   deleteContainer: {
-    paddingTop: 0,
-    paddingBottom: 10
+    width: 40,
+    justifyContent: "center",
+    alignItems: "flex-end"
   },
   header: {
     paddingTop: 0,
