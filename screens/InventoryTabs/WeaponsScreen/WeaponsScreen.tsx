@@ -7,10 +7,10 @@ import { DrawerParams } from "components/Drawer/Drawer.params"
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
-import Txt from "components/Txt"
 import useGetEquipedObj from "hooks/db/useGetEquipedObj"
 import { useGetInventory } from "hooks/db/useGetInventory"
 import WeaponRow, { ListHeader } from "screens/InventoryTabs/WeaponsScreen/WeaponRow"
+import WeaponsDetails from "screens/InventoryTabs/WeaponsScreen/WeaponsDetails"
 import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
 
@@ -20,6 +20,10 @@ export default function WeaponsScreen() {
   const { charId } = useLocalSearchParams() as SearchParams<DrawerParams>
   const inventory = useGetInventory(charId)
   const equipedObj = useGetEquipedObj(charId)
+
+  const charWeapon = selectedKey
+    ? inventory.weapons.find(el => el.dbKey === selectedKey)
+    : undefined
 
   if (inventory === null || equipedObj === null)
     return <ActivityIndicator color={colors.secColor} />
@@ -45,9 +49,8 @@ export default function WeaponsScreen() {
       </Section>
       <Spacer x={10} />
       <Section style={{ width: 120 }}>
-        <Txt>DESCRIPTION</Txt>
         <Spacer y={10} />
-        {/* <Txt>{selectedKey && effectsMap[selectedKey].description}</Txt> */}
+        <WeaponsDetails charWeapon={charWeapon} />
       </Section>
     </DrawerPage>
   )

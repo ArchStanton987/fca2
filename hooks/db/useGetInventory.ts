@@ -1,6 +1,6 @@
 import dbKeys from "db/db-keys"
 
-import useGetKnowledges, { DbKnowledges } from "hooks/db/useGetKnowledges"
+import useGetAbilities, { DbAbilities } from "hooks/db/useGetAbilities"
 import { SkillsValues } from "models/character/skills/skills-types"
 import ammoMap from "models/objects/ammo/ammo"
 import { AmmoType } from "models/objects/ammo/ammo-types"
@@ -31,6 +31,7 @@ export type CharWeapon = {
   dbKey: string
   id: WeaponId
   skill: number
+  basicApCost: number | null
 }
 
 export type CharConsumable = {
@@ -117,7 +118,7 @@ export const getCurrCarry = (inventory: CharInventory, equObj: CharEquipedObject
 const handler = (
   snap: DbInventory,
   currSkills: SkillsValues,
-  knowledges: DbKnowledges
+  abilities: DbAbilities
 ): CharInventory => {
   const dbAmmo = snap?.ammo || {}
   const ammo = Object.entries(dbAmmo).map(([id, amount]) => ({
@@ -134,9 +135,16 @@ const handler = (
   const weapons = Object.entries(dbWeapons).map(([key, value]) => {
     const weaponSkill = weaponsMap[value.id].skill
     const weaponKnowledges = weaponsMap[value.id].knowledges
-    const knowledgesBonus = weaponKnowledges.reduce((acc, curr) => acc + knowledges[curr] || 0, 0)
+    const { knowledges } = abilities
+    const knowledgesBonus = weaponKnowledges.reduce((acc, curr) => acc + (knowledges[curr] ?? 0), 0)
     const skillScore = currSkills[weaponSkill] + knowledgesBonus
-    return { dbKey: key, id: value.id, skill: skillScore }
+
+    const hasMrFast = abilities.traits?.includes("mrFast")
+    let apCost = weaponsMap[value.id].basicApCost
+    if (apCost !== null) {
+      apCost = hasMrFast ? apCost - 1 : apCost
+    }
+    return { dbKey: key, id: value.id, skill: skillScore, basicApCost: apCost }
   })
   const dbConsumables = snap?.consumables || {}
   const consumables = Object.entries(dbConsumables).map(([key, value]) => ({
@@ -155,15 +163,15 @@ const handler = (
 export const useGetInventory = (charId: string): CharInventory => {
   const currAttr = useCurrAttr()
   const { currSkills } = currAttr
-  const knowledges = useGetKnowledges(charId)
+  const abilities = useGetAbilities(charId)
 
   const dbPath = dbKeys.char(charId).inventory
   const inv = useDbSubscribe<DbInventory, DbInventory>(dbPath)
 
-  if (!inv || !currSkills || !knowledges)
+  if (!inv || !currSkills || !abilities)
     return { weapons: [], clothings: [], consumables: [], objects: [], ammo: [] }
 
-  const { weapons, clothings, consumables, objects, ammo } = handler(inv, currSkills, knowledges)
+  const { weapons, clothings, consumables, objects, ammo } = handler(inv, currSkills, abilities)
 
   return { weapons, clothings, consumables, objects, ammo }
 }

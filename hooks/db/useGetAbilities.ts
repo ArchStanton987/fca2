@@ -9,7 +9,7 @@ import useDbSubscribe from "./useDbSubscribe"
 
 export type DbAbilities = {
   baseSPECIAL: SpecialValues
-  knownledges: Record<KnowledgeId, KnowledgeLevelValue>
+  knowledges: Partial<Record<KnowledgeId, KnowledgeLevelValue>>
   perks?: PerkId[]
   traits?: TraitId[]
   upSkills: {
