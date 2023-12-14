@@ -34,10 +34,9 @@ export default function ClothingDetails({ charClothing }: { charClothing?: CharC
           return (
             <View>
               {item.value.map(el => (
-                <>
-                  <Txt>{changeableAttributesMap[el.id].short}</Txt>
-                  <Txt>{el.value}</Txt>
-                </>
+                <Txt>
+                  {changeableAttributesMap[el.id].short}: {el.value}
+                </Txt>
               ))}
             </View>
           )
