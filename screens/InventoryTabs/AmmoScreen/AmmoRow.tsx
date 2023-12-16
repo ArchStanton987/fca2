@@ -41,7 +41,7 @@ export default function AmmoRow({ ammoId, amount, isSelected, ...rest }: AmmoRow
         <Txt>{amount}</Txt>
       </View>
       <View style={styles.deleteContainer}>
-        {isSelected && <AntDesign name="delete" size={20} color={colors.secColor} />}
+        {isSelected && <AntDesign name="delete" size={17} color={colors.secColor} />}
       </View>
     </Pressable>
   )

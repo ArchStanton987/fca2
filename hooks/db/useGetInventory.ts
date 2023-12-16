@@ -121,10 +121,12 @@ const handler = (
   abilities: DbAbilities
 ): CharInventory => {
   const dbAmmo = snap?.ammo || {}
-  const ammo = Object.entries(dbAmmo).map(([id, amount]) => ({
-    id: id as AmmoType,
-    amount
-  }))
+  const ammo = Object.entries(dbAmmo)
+    .map(([id, amount]) => ({
+      id: id as AmmoType,
+      amount
+    }))
+    .filter(el => el.amount > 0)
 
   const dbClothings = snap?.clothings || {}
   const clothings = Object.entries(dbClothings).map(([key, value]) => ({

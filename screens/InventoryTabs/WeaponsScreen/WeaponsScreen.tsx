@@ -48,8 +48,7 @@ export default function WeaponsScreen() {
         />
       </Section>
       <Spacer x={10} />
-      <Section style={{ width: 120 }}>
-        <Spacer y={10} />
+      <Section style={{ width: 130 }}>
         <WeaponsDetails charWeapon={charWeapon} />
       </Section>
     </DrawerPage>

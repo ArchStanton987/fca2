@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.terColor
   },
   equipedContainer: {
-    width: 40
+    width: 30
   },
   labelContainer: {
     alignSelf: "flex-start",
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   damageContainer: {
-    width: 50,
+    width: 32,
     alignItems: "flex-end"
   },
   deleteContainer: {

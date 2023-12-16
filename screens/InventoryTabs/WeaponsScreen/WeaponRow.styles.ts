@@ -19,19 +19,20 @@ const styles = StyleSheet.create({
     width: 40
   },
   labelContainer: {
-    alignSelf: "flex-start",
     justifyContent: "center",
     flex: 1
   },
   damageContainer: {
-    width: 60
+    width: 60,
+    justifyContent: "center"
   },
   skillContainer: {
-    alignSelf: "flex-start",
+    justifyContent: "center",
     width: 40,
     alignItems: "flex-end"
   },
   ammoContainer: {
+    justifyContent: "center",
     alignItems: "flex-end",
     width: 50
   },

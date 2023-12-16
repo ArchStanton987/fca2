@@ -53,12 +53,14 @@ export default function ConsumableRow({
         {symptoms
           ? symptoms.map(({ id, value }) => {
               const prepend = value > 0 ? "+" : ""
-              return <Txt>{`${changeableAttributesMap[id].short}: ${prepend}${value}`}</Txt>
+              return (
+                <Txt key={id}>{`${changeableAttributesMap[id].short}: ${prepend}${value}`}</Txt>
+              )
             })
           : "-"}
       </View>
       <View style={styles.deleteContainer}>
-        {isSelected && <AntDesign name="delete" size={20} color={colors.secColor} />}
+        {isSelected && <AntDesign name="delete" size={17} color={colors.secColor} />}
       </View>
     </Pressable>
   )

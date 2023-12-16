@@ -1,4 +1,4 @@
-import { Symptom } from "models/character/effects/effect-types"
+import { Symptom } from "models/character/effects/symptom"
 
 export type MiscObjectId =
   | "brahmin"

@@ -1,15 +1,14 @@
+import { DamageTypeId } from "models/character/combat-mod/combat-mods"
 import { KnowledgeId } from "models/character/knowledges/knowledge-types"
 import { SkillId } from "models/character/skills/skills-types"
 
 import { AmmoType } from "../ammo/ammo-types"
 
-export type DamageType = "physical" | "fire" | "laser" | "plasma" | "electric" | "other"
-
 export type Weapon = {
   id: WeaponId
   label: string
   img: string
-  damageType: DamageType
+  damageType: DamageTypeId
   damageBasic: string | null
   damageBurst: string | null
   ammoType: AmmoType | null

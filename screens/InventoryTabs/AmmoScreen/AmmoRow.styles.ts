@@ -18,14 +18,14 @@ const styles = StyleSheet.create({
   labelContainer: {
     alignSelf: "flex-start",
     justifyContent: "center",
-    flex: 1
+    width: 200
   },
   quantityContainer: {
     width: 80,
     alignItems: "flex-end"
   },
   deleteContainer: {
-    width: 40,
+    width: 120,
     justifyContent: "center",
     alignItems: "flex-end"
   },

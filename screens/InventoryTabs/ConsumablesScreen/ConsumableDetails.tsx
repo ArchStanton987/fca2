@@ -19,6 +19,7 @@ export default function ConsumableDetails({ charConsumable }: { charConsumable?:
       <Txt>DESCRIPTION</Txt>
       <Spacer y={10} />
       <Txt>{description}</Txt>
+      <Spacer y={20} />
       {maxUsage && charConsumable.remainingUse ? (
         <Txt>
           Utilisations : {charConsumable?.remainingUse}/{maxUsage}

@@ -4,15 +4,22 @@ import { FlatList } from "react-native"
 import { useLocalSearchParams } from "expo-router"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
+import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import useGetAbilities from "hooks/db/useGetAbilities"
 import { CharWeapon } from "hooks/db/useGetInventory"
+import { damageTypeMap } from "models/character/combat-mod/combat-mods"
 import ammoMap from "models/objects/ammo/ammo"
 import weaponsMap from "models/objects/weapon/weapons"
 import { SearchParams } from "screens/ScreenParams"
 
 function Header() {
-  return <Txt>DETAILS</Txt>
+  return (
+    <>
+      <Txt>DETAILS</Txt>
+      <Spacer y={10} />
+    </>
+  )
 }
 
 const getWeaponDetails = ({ id, basicApCost }: CharWeapon, hasMrFast: boolean) => {
@@ -24,12 +31,12 @@ const getWeaponDetails = ({ id, basicApCost }: CharWeapon, hasMrFast: boolean) =
         ? `${basicApCost || "-"}`
         : `${basicApCost || "-"} / ${weapon.specialApCost || "-"}`
     },
-    { label: "TYPE DEG.", value: `${weapon.damageType || "-"}` },
+    { label: "TYPE DEG.", value: `${damageTypeMap[weapon.damageType].short || "-"}` },
     {
       label: "TYPE MUN.",
       value: `${weapon.ammoType ? ammoMap[weapon.ammoType].label : "-"}`
     },
-    { label: "CT. CHARGEUR", value: `${weapon.magazine || "-"}` },
+    { label: "CT. CHARG", value: `${weapon.magazine || "-"}` },
     { label: "MUN. / COUP", value: `${weapon.ammoPerShot || "-"}` },
     { label: "MUN. / RA.", value: `${weapon.ammoPerBurst || "-"}` },
     { label: "FO MIN.", value: `${weapon.minStrength || "-"}` },

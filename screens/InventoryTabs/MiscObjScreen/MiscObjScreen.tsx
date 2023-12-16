@@ -49,8 +49,7 @@ export default function MiscObjScreen() {
         />
       </Section>
       <Spacer x={10} />
-      <Section style={{ width: 120 }}>
-        <Spacer y={10} />
+      <Section style={{ width: 180 }}>
         <MiscObjDetails miscObj={selectedObj} />
       </Section>
     </DrawerPage>

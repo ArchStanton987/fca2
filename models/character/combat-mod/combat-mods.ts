@@ -1,5 +1,39 @@
 import { CombatMod, CombatModId } from "./combat-mod-types"
 
+export type DamageTypeId = "physical" | "laser" | "plasma" | "fire" | "other"
+type DamageType = {
+  id: DamageTypeId
+  label: string
+  short: string
+}
+export const damageTypeMap: Record<DamageTypeId, DamageType> = {
+  physical: {
+    id: "physical",
+    label: "Physique",
+    short: "Phy"
+  },
+  laser: {
+    id: "laser",
+    label: "Laser",
+    short: "Las"
+  },
+  plasma: {
+    id: "plasma",
+    label: "Plasma",
+    short: "Pla"
+  },
+  fire: {
+    id: "fire",
+    label: "Feu",
+    short: "Feu"
+  },
+  other: {
+    id: "other",
+    label: "Autre",
+    short: "Autr"
+  }
+}
+
 const combatModsMap: Record<CombatModId, CombatMod> = {
   damageResist: {
     id: "damageResist",

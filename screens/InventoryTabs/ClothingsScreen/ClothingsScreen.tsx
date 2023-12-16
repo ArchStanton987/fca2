@@ -48,7 +48,6 @@ export default function ClothingsScreen() {
       </Section>
       <Spacer x={10} />
       <Section style={{ width: 120 }}>
-        <Spacer y={10} />
         <ClothingsDetails charClothing={charClothing} />
       </Section>
     </DrawerPage>

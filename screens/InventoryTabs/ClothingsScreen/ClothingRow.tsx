@@ -35,7 +35,7 @@ export function ListHeader() {
       <View style={styles.damageContainer}>
         <Txt>MAL</Txt>
       </View>
-      <View />
+      <View style={styles.deleteContainer} />
     </View>
   )
 }
@@ -64,7 +64,10 @@ export default function ClothingRow({
   return (
     <Pressable style={[styles.row, styles.container, isSelected && styles.selected]} {...rest}>
       <View style={styles.equipedContainer}>
-        <CheckBox isChecked={isEquiped} />
+        <CheckBox
+          isChecked={isEquiped}
+          containerStyle={{ backgroundColor: isSelected ? colors.terColor : colors.secColor }}
+        />
       </View>
       <View style={styles.labelContainer}>
         <Txt>{label}</Txt>
@@ -97,7 +100,7 @@ export default function ClothingRow({
         <Txt>{malus}</Txt>
       </View>
       <View style={styles.deleteContainer}>
-        {isSelected && <AntDesign name="delete" size={20} color={colors.secColor} />}
+        {isSelected && <AntDesign name="delete" size={17} color={colors.secColor} />}
       </View>
     </Pressable>
   )
