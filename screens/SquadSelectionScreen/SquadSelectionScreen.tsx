@@ -19,7 +19,9 @@ import styles from "./SquadSelectionScreen.styles"
 export default function SquadSelectionScreen() {
   const router = useRouter()
   const squadsObj: DbObj<Squad> = useDbSubscribe(dbKeys.squads)
-  const squadsArray = Object.values(squadsObj || {})
+  const squadsArray = squadsObj
+    ? Object.entries(squadsObj).map(([id, squad]) => ({ ...squad, id }))
+    : []
 
   const toSquad = (squadId: string) =>
     router.push({ pathname: routes.charSelection, params: { squadId } })

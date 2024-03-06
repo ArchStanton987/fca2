@@ -20,7 +20,9 @@ export default function CharacterSelectionScreen() {
   const router = useRouter()
   const { squadId } = useLocalSearchParams() as SearchParams<CharacterSelectionScreenParams>
   const squadMembers: DbObj<SquadMember> = useDbSubscribe(dbKeys.squad(squadId).members)
-  const members = Object.values(squadMembers || {})
+  const members = squadMembers
+    ? Object.entries(squadMembers).map(([id, member]) => ({ ...member, id }))
+    : []
 
   const toChar = (charId: string) => {
     router.push({ pathname: routes.main.index, params: { charId, squadId } })
