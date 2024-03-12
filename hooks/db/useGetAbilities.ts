@@ -1,14 +1,17 @@
-import { KnowledgeId, KnowledgeLevelValue } from "models/character/knowledges/knowledge-types"
-import { PerkId } from "models/character/perks/perks-types"
-import { SkillId } from "models/character/skills/skills-types"
-import { SpecialValues } from "models/character/special/special-types"
-import { TraitId } from "models/character/traits/traits-types"
+import {
+  KnowledgeId,
+  KnowledgeLevelValue
+} from "lib/character/abilities/knowledges/knowledge-types"
+import { PerkId } from "lib/character/abilities/perks/perks.types"
+import { SkillId } from "lib/character/abilities/skills/skills.types"
+import { Special } from "lib/character/abilities/special/special.types"
+import { TraitId } from "lib/character/abilities/traits/traits.types"
 
 import dbKeys from "../../db/db-keys"
 import useDbSubscribe from "./useDbSubscribe"
 
 export type DbAbilities = {
-  baseSPECIAL: SpecialValues
+  baseSPECIAL: Special
   knowledges: Partial<Record<KnowledgeId, KnowledgeLevelValue>>
   perks?: PerkId[]
   traits?: TraitId[]

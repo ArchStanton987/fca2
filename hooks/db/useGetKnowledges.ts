@@ -1,7 +1,10 @@
 import dbKeys from "db/db-keys"
+import {
+  KnowledgeId,
+  KnowledgeLevelValue
+} from "lib/character/abilities/knowledges/knowledge-types"
 
 import useDbSubscribe from "hooks/db/useDbSubscribe"
-import { KnowledgeId, KnowledgeLevelValue } from "models/character/knowledges/knowledge-types"
 
 export type DbKnowledges = Partial<Record<KnowledgeId, KnowledgeLevelValue>>
 

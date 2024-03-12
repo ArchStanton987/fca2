@@ -2,7 +2,7 @@ import useDbSubscribe from "hooks/db/useDbSubscribe"
 
 import dbKeys from "../../db/db-keys"
 
-type DbStatus = {
+export type DbStatus = {
   background: string
   caps: number
   exp: number

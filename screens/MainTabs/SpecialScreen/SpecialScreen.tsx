@@ -1,13 +1,14 @@
 import React, { useState } from "react"
 import { FlatList, ScrollView } from "react-native"
 
+import specialMap, { specialArray } from "lib/character/abilities/special/special"
+import { SpecialId } from "lib/character/abilities/special/special.types"
+
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import AttributeRow, { AttributeHeader } from "components/tables/Attributes/AttributeRow"
-import specialMap, { specialArray } from "models/character/special/special"
-import { SpecialId } from "models/character/special/special-types"
 import { useBaseAttr } from "providers/BaseAttrProvider"
 import { useCurrAttr } from "providers/CurrAttrProvider"
 import LoadingScreen from "screens/LoadingScreen"

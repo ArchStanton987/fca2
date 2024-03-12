@@ -3,6 +3,7 @@ import { ScrollView } from "react-native"
 import { useRouter } from "expo-router"
 
 import { DbObj } from "db/db-types"
+import { Squad } from "lib/squad/squad-types"
 
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
@@ -10,7 +11,6 @@ import RevertColorsPressable from "components/wrappers/RevertColorsPressable/Rev
 import WithItemSeparator from "components/wrappers/WithItemSeparator"
 import routes from "constants/routes"
 import useDbSubscribe from "hooks/db/useDbSubscribe"
-import { Squad } from "models/squad/squad-types"
 import { getDDMMYYYY } from "utils/date"
 
 import dbKeys from "../../db/db-keys"

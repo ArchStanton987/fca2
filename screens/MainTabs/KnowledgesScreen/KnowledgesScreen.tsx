@@ -2,13 +2,13 @@ import React from "react"
 
 import { useLocalSearchParams } from "expo-router"
 
+import { KnowledgeId } from "lib/character/abilities/knowledges/knowledge-types"
 import { FlatList } from "react-native-gesture-handler"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import useGetKnowledges from "hooks/db/useGetKnowledges"
-import { KnowledgeId } from "models/character/knowledges/knowledge-types"
 import LoadingScreen from "screens/LoadingScreen"
 import KnowledgeRow, {
   ListFooter,

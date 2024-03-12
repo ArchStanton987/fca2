@@ -2,12 +2,12 @@ import React from "react"
 import { Pressable, PressableProps, View } from "react-native"
 
 import { AntDesign } from "@expo/vector-icons"
+import { changeableAttributesMap } from "lib/character/effects/changeable-attr"
+import effectsMap from "lib/character/effects/effects"
+import consumablesMap from "lib/objects/consumables/consumables"
 
 import Txt from "components/Txt"
 import { CharConsumable } from "hooks/db/useGetInventory"
-import { changeableAttributesMap } from "models/character/effects/changeable-attr"
-import effectsMap from "models/character/effects/effects"
-import consumablesMap from "models/objects/consumable/consumables"
 import colors from "styles/colors"
 
 import styles from "./ConsumableRow.styles"

@@ -2,13 +2,14 @@ import { View } from "react-native"
 
 import { useLocalSearchParams, useRouter } from "expo-router"
 
+import { SquadMember } from "lib/squad/squad-types"
+
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import RevertColorsPressable from "components/wrappers/RevertColorsPressable/RevertColorsPressable"
 import WithItemSeparator from "components/wrappers/WithItemSeparator"
 import routes from "constants/routes"
 import useDbSubscribe from "hooks/db/useDbSubscribe"
-import { SquadMember } from "models/squad/squad-types"
 import { CharacterSelectionScreenParams } from "screens/CharacterSelectionScreen/CharacterSelectionScreen.params"
 import { SearchParams } from "screens/ScreenParams"
 

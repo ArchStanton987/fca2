@@ -3,13 +3,14 @@ import { FlatList } from "react-native"
 
 import { useLocalSearchParams } from "expo-router"
 
+import miscObjectsMap from "lib/objects/misc-objects/misc-objects"
+import { MiscObjectId } from "lib/objects/misc-objects/misc-objects-types"
+
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
 import { useGetInventory } from "hooks/db/useGetInventory"
-import { MiscObjectId } from "models/objects/misc/misc-object-types"
-import miscObjectsMap from "models/objects/misc/misc-objects"
 import MiscObjDetails from "screens/InventoryTabs/MiscObjScreen/MiscObjDetails"
 import MiscObjRow, { ListHeader } from "screens/InventoryTabs/MiscObjScreen/MiscObjRow"
 import { SearchParams } from "screens/ScreenParams"

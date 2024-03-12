@@ -2,11 +2,11 @@ import React from "react"
 import { Pressable, PressableProps, View } from "react-native"
 
 import { AntDesign } from "@expo/vector-icons"
+import weaponsMap from "lib/objects/weapons/weapons"
+import { WeaponId } from "lib/objects/weapons/weapons.types"
 
 import CheckBox from "components/CheckBox/CheckBox"
 import Txt from "components/Txt"
-import { WeaponId } from "models/objects/weapon/weapon-types"
-import weaponsMap from "models/objects/weapon/weapons"
 import colors from "styles/colors"
 
 import styles from "./WeaponRow.styles"

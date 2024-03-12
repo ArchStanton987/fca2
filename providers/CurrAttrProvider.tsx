@@ -1,23 +1,24 @@
 import { createContext, useContext, useMemo } from "react"
 
+import secAttrMap from "lib/character/abilities/sec-attr/sec-attr"
+import { SecAttrsValues } from "lib/character/abilities/sec-attr/sec-attr-types"
+import skillsMap from "lib/character/abilities/skills/skills"
+import { SkillsValues } from "lib/character/abilities/skills/skills.types"
+import { specialArray } from "lib/character/abilities/special/special"
+import { Special } from "lib/character/abilities/special/special.types"
+import effectsMap from "lib/character/effects/effects"
+import { getModAttribute } from "lib/common/utils/char-calc"
+import clothingsMap from "lib/objects/clothings/clothings"
+
 import useGetEffectsSources from "hooks/db/useGetEffectsSources"
-import effectsMap from "models/character/effects/effects"
-import secAttrMap from "models/character/sec-attr/sec-attr"
-import { SecAttrsValues } from "models/character/sec-attr/sec-attr-types"
-import skillsMap from "models/character/skills/skills"
-import { SkillsValues } from "models/character/skills/skills-types"
-import { specialArray } from "models/character/special/special"
-import { SpecialValues } from "models/character/special/special-types"
-import clothingsMap from "models/objects/clothing/clothings"
-import { getModAttribute } from "utils/char-calc"
 
 import { BaseAttrContext, NotReadyType, ReadyType } from "./BaseAttrProvider"
 
 type LiveAttrType = {
-  modSpecial: SpecialValues
+  modSpecial: Special
   modSecAttr: SecAttrsValues
   modSkills: SkillsValues
-  currSpecial: SpecialValues
+  currSpecial: Special
   currSecAttr: SecAttrsValues
   currSkills: SkillsValues
 }
@@ -61,8 +62,8 @@ export default function CurrAttrProvider({
   const symptoms = [...effectsSymptoms, ...clothingsSymptoms].flat()
 
   const special = useMemo(() => {
-    const modSpecial = {} as SpecialValues
-    const currSpecial = {} as SpecialValues
+    const modSpecial = {} as Special
+    const currSpecial = {} as Special
     if (!baseSpecial) return { modSpecial: null, currSpecial: null }
     specialArray.forEach(el => {
       modSpecial[el.id] = getModAttribute(symptoms, el.id)

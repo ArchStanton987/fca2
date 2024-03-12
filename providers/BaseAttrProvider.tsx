@@ -1,18 +1,19 @@
 import { createContext, useContext, useMemo } from "react"
 
+import perksMap from "lib/character/abilities/perks/perks"
+import secAttrMap from "lib/character/abilities/sec-attr/sec-attr"
+import { SecAttrsValues } from "lib/character/abilities/sec-attr/sec-attr-types"
+import skillsMap from "lib/character/abilities/skills/skills"
+import { SkillsValues } from "lib/character/abilities/skills/skills.types"
+import { specialArray } from "lib/character/abilities/special/special"
+import { Special } from "lib/character/abilities/special/special.types"
+import traitsMap from "lib/character/abilities/traits/traits"
+import { getModAttribute } from "lib/common/utils/char-calc"
+
 import useGetAbilities from "hooks/db/useGetAbilities"
-import perksMaps from "models/character/perks/perks"
-import secAttrMap from "models/character/sec-attr/sec-attr"
-import { SecAttrsValues } from "models/character/sec-attr/sec-attr-types"
-import skillsMap from "models/character/skills/skills"
-import { SkillsValues } from "models/character/skills/skills-types"
-import { specialArray } from "models/character/special/special"
-import { SpecialValues } from "models/character/special/special-types"
-import traitsMap from "models/character/traits/traits"
-import { getModAttribute } from "utils/char-calc"
 
 type BaseAttrType = {
-  baseSpecial: SpecialValues
+  baseSpecial: Special
   baseSecAttr: SecAttrsValues
   baseSkills: SkillsValues
   upSkills: SkillsValues
@@ -55,12 +56,12 @@ export default function BaseAttrProvider({
   const baseSPECIAL = abilities?.baseSPECIAL || null
   const upSkills = abilities?.upSkills || null
   const traitsSymptoms = traits.map(el => traitsMap[el].symptoms)
-  const perksSymptoms = perks.map(el => perksMaps[el].symptoms)
+  const perksSymptoms = perks.map(el => perksMap[el].symptoms)
   const symptoms = [...traitsSymptoms, ...perksSymptoms].flat()
 
-  const baseSpecial = useMemo((): SpecialValues | null => {
+  const baseSpecial = useMemo((): Special | null => {
     if (!baseSPECIAL) return null
-    const res = {} as SpecialValues
+    const res = {} as Special
     specialArray.forEach(el => {
       res[el.id] = baseSPECIAL[el.id] + getModAttribute(symptoms, el.id)
     })

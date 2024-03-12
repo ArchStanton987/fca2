@@ -1,4 +1,4 @@
-import { EffectId } from "models/character/effects/effect-types"
+import { EffectId } from "lib/character/effects/effects.types"
 
 import dbKeys from "../../db/db-keys"
 import useDbSubscribe from "./useDbSubscribe"

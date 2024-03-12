@@ -1,9 +1,10 @@
 import { ReactElement } from "react"
 
+import { SpecialId } from "lib/character/abilities/special/special.types"
+
 import HeaderCaps from "components/Header/elements/HeaderCaps"
 import HeaderProgression from "components/Header/elements/HeaderProgression"
 import HeaderSpecialElement from "components/Header/elements/HeaderSpecialElement"
-import { SpecialId } from "models/character/special/special-types"
 
 import HeaderDate from "./elements/HeaderDate"
 import HeaderTime from "./elements/HeaderTime"

@@ -3,12 +3,13 @@ import { FlatList } from "react-native"
 
 import { useLocalSearchParams } from "expo-router"
 
+import { ConsumableId } from "lib/objects/consumables/consumables.types"
+
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
 import { useGetInventory } from "hooks/db/useGetInventory"
-import { ConsumableId } from "models/objects/consumable/consumables-types"
 import ConsumableDetails from "screens/InventoryTabs/ConsumablesScreen/ConsumableDetails"
 import ConsumableRow, { ListHeader } from "screens/InventoryTabs/ConsumablesScreen/ConsumableRow"
 import { SearchParams } from "screens/ScreenParams"

@@ -3,6 +3,9 @@ import { View } from "react-native"
 
 import { useLocalSearchParams } from "expo-router"
 
+import clothingsMap from "lib/objects/clothings/clothings"
+import weaponsMap from "lib/objects/weapons/weapons"
+
 import CheckBox from "components/CheckBox/CheckBox"
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import Section from "components/Section"
@@ -10,8 +13,6 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import useGetEquipedObj from "hooks/db/useGetEquipedObj"
 import { CharInventory, getCurrCarry, useGetInventory } from "hooks/db/useGetInventory"
-import clothingsMap from "models/objects/clothing/clothings"
-import weaponsMap from "models/objects/weapon/weapons"
 import { useCurrAttr } from "providers/CurrAttrProvider"
 import { SearchParams } from "screens/ScreenParams"
 

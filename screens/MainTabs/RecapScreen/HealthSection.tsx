@@ -3,6 +3,8 @@ import { ActivityIndicator, ScrollView } from "react-native"
 
 import { useLocalSearchParams } from "expo-router"
 
+import effectsMap from "lib/character/effects/effects"
+
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import List from "components/List"
 import Section from "components/Section"
@@ -11,7 +13,6 @@ import Txt from "components/Txt"
 import HealthFigure from "components/draws/HealthFigure/HealthFigure"
 import useGetEffects from "hooks/db/useGetEffects"
 import useGetSquad from "hooks/db/useGetSquad"
-import effectsMap from "models/character/effects/effects"
 import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
 

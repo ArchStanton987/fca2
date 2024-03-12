@@ -1,12 +1,13 @@
 import { FlatList, View } from "react-native"
 
+import secAttrMap from "lib/character/abilities/sec-attr/sec-attr"
+import { changeableAttributesMap } from "lib/character/effects/changeable-attr"
+import clothingsMap from "lib/objects/clothings/clothings"
+import { ClothingId } from "lib/objects/clothings/clothings.types"
+
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { CharClothing } from "hooks/db/useGetEquipedObj"
-import { changeableAttributesMap } from "models/character/effects/changeable-attr"
-import secAttrMap from "models/character/sec-attr/sec-attr"
-import { ClothingId } from "models/objects/clothing/clothing-types"
-import clothingsMap from "models/objects/clothing/clothings"
 
 function Header() {
   return (

@@ -1,5 +1,4 @@
-import { Character } from "models/character/character-types"
-import { Squad } from "models/squad/squad-types"
+import { Squad } from "lib/squad/squad-types"
 
 const dbKeys = {
   squads: "/squads",
@@ -7,7 +6,7 @@ const dbKeys = {
     index: `/squads/${squadId}`,
     members: `/squads/${squadId}/members`
   }),
-  char: (charId: Character["id"]) => ({
+  char: (charId: string) => ({
     index: `/characters/${charId}`,
     abilities: `/characters/${charId}/abilities`,
     inventory: `/characters/${charId}/inventory`,

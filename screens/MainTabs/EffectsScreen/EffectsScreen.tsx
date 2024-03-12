@@ -3,14 +3,15 @@ import { FlatList } from "react-native"
 
 import { useLocalSearchParams } from "expo-router"
 
+import effectsMap from "lib/character/effects/effects"
+import { EffectId } from "lib/character/effects/effects.types"
+
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import useGetEffects from "hooks/db/useGetEffects"
-import { EffectId } from "models/character/effects/effect-types"
-import effectsMap from "models/character/effects/effects"
 import LoadingScreen from "screens/LoadingScreen"
 import EffectRow, { EffectHeader } from "screens/MainTabs/EffectsScreen/EffectRow"
 import { SearchParams } from "screens/ScreenParams"

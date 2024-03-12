@@ -1,5 +1,5 @@
-import { ClothingId } from "models/objects/clothing/clothing-types"
-import { WeaponId } from "models/objects/weapon/weapon-types"
+import { ClothingId } from "lib/objects/clothings/clothings.types"
+import { WeaponId } from "lib/objects/weapons/weapons.types"
 
 import dbKeys from "../../db/db-keys"
 import useDbSubscribe from "./useDbSubscribe"

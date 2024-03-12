@@ -3,11 +3,12 @@ import { FlatList } from "react-native"
 
 import { useLocalSearchParams } from "expo-router"
 
+import { AmmoType } from "lib/objects/ammo/ammo.types"
+
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import { useGetInventory } from "hooks/db/useGetInventory"
-import { AmmoType } from "models/objects/ammo/ammo-types"
 import AmmoRow, { ListHeader } from "screens/InventoryTabs/AmmoScreen/AmmoRow"
 import { SearchParams } from "screens/ScreenParams"
 

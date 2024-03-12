@@ -2,10 +2,10 @@ import React from "react"
 import { Pressable, PressableProps, View } from "react-native"
 
 import { AntDesign } from "@expo/vector-icons"
+import ammoMap from "lib/objects/ammo/ammo"
+import { AmmoType } from "lib/objects/ammo/ammo.types"
 
 import Txt from "components/Txt"
-import ammoMap from "models/objects/ammo/ammo"
-import { AmmoType } from "models/objects/ammo/ammo-types"
 import colors from "styles/colors"
 
 import styles from "./AmmoRow.styles"

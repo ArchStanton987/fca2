@@ -3,13 +3,14 @@ import { ActivityIndicator } from "react-native"
 
 import { useLocalSearchParams } from "expo-router/src/hooks"
 
+import { getLevelAndThresholds } from "lib/character/status/status-calc"
+
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import HeaderElement from "components/Header/HeaderElement"
 import ProgressionBar from "components/ProgressionBar/ProgressionBar"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import useGetStatus from "hooks/db/useGetStatus"
-import { getLevelAndThresholds } from "models/character/character-utils"
 import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
 

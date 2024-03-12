@@ -1,11 +1,14 @@
 import React from "react"
 import { FlatList } from "react-native"
 
+import skillsMap from "lib/character/abilities/skills/skills"
+
+// import { observer } from "mobx-react-lite"
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import AttributeRow, { SkillsHeader } from "components/tables/Attributes/AttributeRow"
-import skillsMap from "models/character/skills/skills"
 import { useBaseAttr } from "providers/BaseAttrProvider"
+// import { useCharacter } from "providers/CharDataProvider"
 import { useCurrAttr } from "providers/CurrAttrProvider"
 import LoadingScreen from "screens/LoadingScreen"
 
@@ -38,3 +41,5 @@ export default function SkillsScreen() {
     </DrawerPage>
   )
 }
+
+// export default observer(SkillsScreen)

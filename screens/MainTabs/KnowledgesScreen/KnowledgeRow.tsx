@@ -1,13 +1,17 @@
 import React from "react"
 import { View } from "react-native"
 
+import {
+  KnowledgeId,
+  KnowledgeLevelValue
+} from "lib/character/abilities/knowledges/knowledge-types"
+import knowledgesMap from "lib/character/abilities/knowledges/knowledges"
+import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-levels"
+
 import CheckBox from "components/CheckBox/CheckBox"
 import List from "components/List"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { KnowledgeId, KnowledgeLevelValue } from "models/character/knowledges/knowledge-types"
-import knowledgesMap from "models/character/knowledges/knowledges"
-import knowledgeLevels from "models/character/knowledges/knowledges-levels"
 
 import styles from "./KnowledgeRow.styles"
 

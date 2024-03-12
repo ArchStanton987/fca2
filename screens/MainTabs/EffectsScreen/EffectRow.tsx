@@ -4,13 +4,13 @@ import { Pressable, PressableProps, View } from "react-native"
 import { useLocalSearchParams } from "expo-router"
 
 import { AntDesign } from "@expo/vector-icons"
+import { changeableAttributesMap } from "lib/character/effects/changeable-attr"
+import effectsMap from "lib/character/effects/effects"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import Txt from "components/Txt"
 import { CharEffect } from "hooks/db/useGetEffects"
 import useGetSquad from "hooks/db/useGetSquad"
-import { changeableAttributesMap } from "models/character/effects/changeable-attr"
-import effectsMap from "models/character/effects/effects"
 import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
 

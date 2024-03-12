@@ -1,11 +1,11 @@
 import React from "react"
 import { ActivityIndicator, View } from "react-native"
 
+import skillsMap from "lib/character/abilities/skills/skills"
 import { FlatList } from "react-native-gesture-handler"
 
 import Section from "components/Section"
 import Txt from "components/Txt"
-import skillsMap from "models/character/skills/skills"
 import { useCurrAttr } from "providers/CurrAttrProvider"
 import colors from "styles/colors"
 

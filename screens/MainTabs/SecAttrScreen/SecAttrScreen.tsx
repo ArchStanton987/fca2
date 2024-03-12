@@ -1,9 +1,10 @@
 import { FlatList } from "react-native"
 
+import secAttrMap from "lib/character/abilities/sec-attr/sec-attr"
+
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import AttributeRow, { AttributeHeader } from "components/tables/Attributes/AttributeRow"
-import secAttrMap from "models/character/sec-attr/sec-attr"
 import { useBaseAttr } from "providers/BaseAttrProvider"
 import { useCurrAttr } from "providers/CurrAttrProvider"
 import LoadingScreen from "screens/LoadingScreen"

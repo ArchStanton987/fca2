@@ -3,12 +3,13 @@ import { ActivityIndicator, Image, View } from "react-native"
 
 import { useLocalSearchParams } from "expo-router"
 
+import { limbsMap } from "lib/character/health/health"
+
 import pipboy from "assets/images/pipboy.png"
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import ProgressionBar from "components/ProgressionBar/ProgressionBar"
 import Spacer from "components/Spacer"
 import useGetStatus from "hooks/db/useGetStatus"
-import healthMap from "models/character/health/health"
 import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
 
@@ -28,8 +29,8 @@ export default function HealthFigure() {
   return (
     <View style={{ alignItems: "center" }}>
       <ProgressionBar
-        max={healthMap.headHp.maxValue}
-        min={healthMap.headHp.minValue}
+        max={limbsMap.headHp.maxValue}
+        min={0}
         value={status.headHp}
         {...smallBarProps}
       />
@@ -37,14 +38,14 @@ export default function HealthFigure() {
       <View style={styles.armsContainer}>
         <ProgressionBar
           {...smallBarProps}
-          max={healthMap.leftArmHp.maxValue}
-          min={healthMap.leftArmHp.minValue}
+          max={limbsMap.leftArmHp.maxValue}
+          min={0}
           value={status.leftArmHp}
         />
         <ProgressionBar
           {...smallBarProps}
-          max={healthMap.rightArmHp.maxValue}
-          min={healthMap.rightArmHp.minValue}
+          max={limbsMap.rightArmHp.maxValue}
+          min={0}
           value={status.rightArmHp}
         />
       </View>
@@ -52,14 +53,14 @@ export default function HealthFigure() {
       <View style={styles.torsoContainer}>
         <ProgressionBar
           {...smallBarProps}
-          max={healthMap.leftTorsoHp.maxValue}
-          min={healthMap.leftTorsoHp.minValue}
+          max={limbsMap.leftTorsoHp.maxValue}
+          min={0}
           value={status.leftTorsoHp}
         />
         <ProgressionBar
           {...smallBarProps}
-          max={healthMap.rightTorsoHp.maxValue}
-          min={healthMap.rightTorsoHp.minValue}
+          max={limbsMap.rightTorsoHp.maxValue}
+          min={0}
           value={status.rightTorsoHp}
         />
       </View>
@@ -67,22 +68,22 @@ export default function HealthFigure() {
       <View style={styles.legsContainer}>
         <ProgressionBar
           {...smallBarProps}
-          max={healthMap.leftLegHp.maxValue}
-          min={healthMap.leftLegHp.minValue}
+          max={limbsMap.leftLegHp.maxValue}
+          min={0}
           value={status.leftLegHp}
         />
         <ProgressionBar
           {...smallBarProps}
-          max={healthMap.rightLegHp.maxValue}
-          min={healthMap.rightLegHp.minValue}
+          max={limbsMap.rightLegHp.maxValue}
+          min={0}
           value={status.rightLegHp}
         />
       </View>
       <Spacer y={5} />
       <ProgressionBar
         {...smallBarProps}
-        max={healthMap.groinHp.maxValue}
-        min={healthMap.groinHp.minValue}
+        max={limbsMap.groinHp.maxValue}
+        min={0}
         value={status.groinHp}
       />
     </View>

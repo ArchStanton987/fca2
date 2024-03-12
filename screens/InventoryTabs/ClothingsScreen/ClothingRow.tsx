@@ -1,12 +1,12 @@
 import { Pressable, PressableProps, View } from "react-native"
 
 import { AntDesign } from "@expo/vector-icons"
+import combatModsMap from "lib/character/combat/combat-mods"
+import clothingsMap from "lib/objects/clothings/clothings"
+import { ClothingId } from "lib/objects/clothings/clothings.types"
 
 import CheckBox from "components/CheckBox/CheckBox"
 import Txt from "components/Txt"
-import combatModsMap from "models/character/combat-mod/combat-mods"
-import { ClothingId } from "models/objects/clothing/clothing-types"
-import clothingsMap from "models/objects/clothing/clothings"
 import colors from "styles/colors"
 
 import styles from "./ClothingRow.styles"

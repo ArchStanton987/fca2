@@ -3,14 +3,15 @@ import { FlatList } from "react-native"
 
 import { useLocalSearchParams } from "expo-router"
 
+import ammoMap from "lib/objects/ammo/ammo"
+import weaponsMap from "lib/objects/weapons/weapons"
+import { damageTypeMap } from "lib/objects/weapons/weapons.types"
+
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import useGetAbilities from "hooks/db/useGetAbilities"
 import { CharWeapon } from "hooks/db/useGetInventory"
-import { damageTypeMap } from "models/character/combat-mod/combat-mods"
-import ammoMap from "models/objects/ammo/ammo"
-import weaponsMap from "models/objects/weapon/weapons"
 import { SearchParams } from "screens/ScreenParams"
 
 function Header() {

@@ -1,11 +1,11 @@
 import React from "react"
 
+import consumablesMap from "lib/objects/consumables/consumables"
 import { ScrollView } from "react-native-gesture-handler"
 
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { CharConsumable } from "hooks/db/useGetInventory"
-import consumablesMap from "models/objects/consumable/consumables"
 
 export default function ConsumableDetails({ charConsumable }: { charConsumable?: CharConsumable }) {
   const consumable = charConsumable ? consumablesMap[charConsumable.id] : null
