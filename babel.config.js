@@ -20,6 +20,7 @@ module.exports = function (api) {
             constants: "./constants",
             db: "./db",
             lang: "./lang",
+            lib: "./lib",
             hooks: "./hooks",
             models: "./models",
             navigation: "./navigation",
