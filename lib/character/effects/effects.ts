@@ -1,6 +1,6 @@
-import { Effect, EffectId } from "./effects.types"
+import { EffectData, EffectId } from "./effects.types"
 
-const effectsMap: Record<EffectId, Effect> = {
+const effectsMap: Record<EffectId, EffectData> = {
   cripledHead: {
     id: "cripledHead",
     label: "Infirme (tête)",

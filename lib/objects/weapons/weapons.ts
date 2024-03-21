@@ -1,6 +1,6 @@
-import { Weapon, WeaponId } from "./weapons.types"
+import { WeaponData, WeaponId } from "./weapons.types"
 
-const weaponsMap: Record<WeaponId, Weapon> = {
+const weaponsMap: Record<WeaponId, WeaponData> = {
   "10mm": {
     id: "10mm",
     label: "Pistolet 10mm",

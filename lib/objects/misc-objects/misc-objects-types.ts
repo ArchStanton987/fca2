@@ -23,7 +23,9 @@ export type MiscObjectId =
   | "bottomSculpture"
   | "tape"
 
-export type MiscObject = {
+export type DbMiscObject = { id: MiscObjectId }
+
+export type MiscObjectData = {
   id: MiscObjectId
   label: string
   description: string
@@ -31,4 +33,10 @@ export type MiscObject = {
   place: number
   weight: number
   symptoms: Symptom[]
+}
+
+export type MiscObject = {
+  id: MiscObjectId
+  dbKey: string
+  data: MiscObjectData
 }

@@ -35,6 +35,8 @@ export type LimbsHp = {
   groinHp: number
 }
 
+export type DbLimbsHp = LimbsHp
+
 export type Health = {
   maxHp: number
   missingHp: number

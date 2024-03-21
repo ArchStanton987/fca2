@@ -7,10 +7,10 @@ import { ScrollView } from "react-native-gesture-handler"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 
-export default function MiscObjDetails({ miscObj }: { miscObj?: MiscObject }) {
+export default function MiscObjDetails({ miscObj }: { miscObj: MiscObject | null }) {
   if (!miscObj) return null
 
-  const { description, symptoms } = miscObj
+  const { description, symptoms } = miscObj.data
 
   return (
     <ScrollView>

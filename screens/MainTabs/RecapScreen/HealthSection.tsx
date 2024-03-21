@@ -4,6 +4,7 @@ import { ActivityIndicator, ScrollView } from "react-native"
 import { useLocalSearchParams } from "expo-router"
 
 import effectsMap from "lib/character/effects/effects"
+import { observer } from "mobx-react-lite"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import List from "components/List"
@@ -11,18 +12,20 @@ import Section from "components/Section"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import HealthFigure from "components/draws/HealthFigure/HealthFigure"
-import useGetEffects from "hooks/db/useGetEffects"
+import { useCharacter } from "contexts/CharacterContext"
 import useGetSquad from "hooks/db/useGetSquad"
 import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
 
-export default function HealthSection() {
+function HealthSection() {
   const { charId, squadId } = useLocalSearchParams() as SearchParams<DrawerParams>
   const squad = useGetSquad(squadId)
   const firstname = squad?.members[charId].firstname || ""
   const lastname = squad?.members[charId].lastname || ""
   const name = lastname.length > 0 ? `${firstname} ${lastname.toUpperCase()}` : firstname
-  const effects = useGetEffects(charId)
+
+  const { effects } = useCharacter()
+
   return (
     <ScrollView style={{ flexGrow: 0, width: 160 }}>
       <Section style={{ alignItems: "center", paddingHorizontal: 10 }}>
@@ -39,7 +42,7 @@ export default function HealthSection() {
           <List
             data={effects}
             horizontal
-            keyExtractor={item => item.id}
+            keyExtractor={item => item.dbKey || item.id}
             style={{ flexWrap: "wrap" }}
             separator={<Txt> / </Txt>}
             renderItem={({ item }) => <Txt>{effectsMap[item.id].label}</Txt>}
@@ -51,3 +54,5 @@ export default function HealthSection() {
     </ScrollView>
   )
 }
+
+export default observer(HealthSection)

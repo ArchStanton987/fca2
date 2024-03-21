@@ -1,6 +1,6 @@
-import { MiscObject, MiscObjectId } from "./misc-objects-types"
+import { MiscObjectData, MiscObjectId } from "./misc-objects-types"
 
-const miscObjectsMap: Record<MiscObjectId, MiscObject> = {
+const miscObjectsMap: Record<MiscObjectId, MiscObjectData> = {
   brahmin: {
     id: "brahmin",
     label: "brahmine",

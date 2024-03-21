@@ -1,6 +1,6 @@
-import { Ammo, AmmoType } from "./ammo.types"
+import { AmmoData, AmmoType } from "./ammo.types"
 
-const ammoMap: Record<AmmoType, Ammo> = {
+const ammoMap: Record<AmmoType, AmmoData> = {
   "44": {
     id: "44",
     label: ".44",

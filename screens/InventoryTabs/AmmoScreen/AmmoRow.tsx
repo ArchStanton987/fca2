@@ -2,8 +2,7 @@ import React from "react"
 import { Pressable, PressableProps, View } from "react-native"
 
 import { AntDesign } from "@expo/vector-icons"
-import ammoMap from "lib/objects/ammo/ammo"
-import { AmmoType } from "lib/objects/ammo/ammo.types"
+import { Ammo } from "lib/objects/ammo/ammo.types"
 
 import Txt from "components/Txt"
 import colors from "styles/colors"
@@ -25,20 +24,18 @@ export function ListHeader() {
 }
 
 type AmmoRowProps = PressableProps & {
-  ammoId: AmmoType
-  amount: number
+  ammo: Ammo
   isSelected: boolean
 }
 
-export default function AmmoRow({ ammoId, amount, isSelected, ...rest }: AmmoRowProps) {
-  const { label } = ammoMap[ammoId]
+export default function AmmoRow({ ammo, isSelected, ...rest }: AmmoRowProps) {
   return (
     <Pressable style={[styles.row, styles.container, isSelected && styles.selected]} {...rest}>
       <View style={styles.labelContainer}>
-        <Txt>{label}</Txt>
+        <Txt>{ammo.data.label}</Txt>
       </View>
       <View style={styles.quantityContainer}>
-        <Txt>{amount}</Txt>
+        <Txt>{ammo.amount}</Txt>
       </View>
       <View style={styles.deleteContainer}>
         {isSelected && <AntDesign name="delete" size={17} color={colors.secColor} />}

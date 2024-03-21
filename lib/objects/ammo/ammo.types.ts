@@ -24,9 +24,15 @@ export type AmmoType =
   | "shell60mm"
   | "special"
 
-export type Ammo = {
+export type AmmoData = {
   id: AmmoType
   label: string
   place: number
   weight: number
+}
+
+export type Ammo = {
+  id: AmmoType
+  amount: number
+  data: AmmoData
 }

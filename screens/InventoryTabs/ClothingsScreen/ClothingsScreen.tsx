@@ -1,54 +1,41 @@
 import React, { useState } from "react"
-import { ActivityIndicator, FlatList } from "react-native"
+import { FlatList } from "react-native"
 
-import { useLocalSearchParams } from "expo-router/src/hooks"
+import { Clothing, ClothingId } from "lib/objects/clothings/clothings.types"
 
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
-import useGetEquipedObj from "hooks/db/useGetEquipedObj"
-import { useGetInventory } from "hooks/db/useGetInventory"
+import { useInventory } from "contexts/InventoryContext"
 import ClothingRow, { ListHeader } from "screens/InventoryTabs/ClothingsScreen/ClothingRow"
 import ClothingsDetails from "screens/InventoryTabs/ClothingsScreen/ClothingsDetails"
-import { SearchParams } from "screens/ScreenParams"
-import colors from "styles/colors"
 
 export default function ClothingsScreen() {
-  const [selectedKey, setSelectedKey] = useState<string | null>(null)
+  const [selectedCloth, setSelectedCloth] = useState<Clothing | null>(null)
 
-  const { charId } = useLocalSearchParams() as SearchParams<DrawerParams>
-  const inventory = useGetInventory(charId)
-  const equipedObj = useGetEquipedObj(charId)
-
-  const charClothing = selectedKey
-    ? inventory.clothings.find(el => el.dbKey === selectedKey)
-    : undefined
-
-  if (inventory === null || equipedObj === null)
-    return <ActivityIndicator color={colors.secColor} />
+  const { clothings } = useInventory()
 
   return (
     <DrawerPage>
       <Section style={{ flex: 1 }}>
         <FlatList
-          data={inventory.clothings}
+          data={clothings}
           keyExtractor={item => item.dbKey}
           ListHeaderComponent={ListHeader}
           stickyHeaderIndices={[0]}
           renderItem={({ item }) => (
             <ClothingRow
-              clothingId={item.id}
-              isSelected={item.dbKey === selectedKey}
-              isEquiped={equipedObj.clothings.some(cloth => cloth.dbKey === item.dbKey)}
-              onPress={() => setSelectedKey(item.dbKey)}
+              clothingId={item.id as ClothingId}
+              isSelected={item.dbKey === selectedCloth?.dbKey}
+              isEquiped={item.isEquiped}
+              onPress={() => setSelectedCloth(item)}
             />
           )}
         />
       </Section>
       <Spacer x={10} />
       <Section style={{ width: 120 }}>
-        <ClothingsDetails charClothing={charClothing} />
+        <ClothingsDetails charClothing={selectedCloth} />
       </Section>
     </DrawerPage>
   )

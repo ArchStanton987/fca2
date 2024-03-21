@@ -6,7 +6,7 @@ import { FlatList } from "react-native-gesture-handler"
 
 import Section from "components/Section"
 import Txt from "components/Txt"
-import { useCurrAttr } from "providers/CurrAttrProvider"
+import { useCharacter } from "contexts/CharacterContext"
 import colors from "styles/colors"
 
 import styles from "./RecapScreen.styles"
@@ -31,7 +31,8 @@ function EmptyComponent() {
 }
 
 export default function SkillsSection() {
-  const { currSkills } = useCurrAttr()
+  const { currSkills } = useCharacter()
+  // TODO: check wheter clothings affect skills (helmet, etc.)
   return (
     <Section style={{ width: 160 }}>
       <FlatList

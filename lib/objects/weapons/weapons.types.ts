@@ -37,7 +37,9 @@ export const damageTypeMap: Record<DamageTypeId, DamageType> = {
   }
 }
 
-export type Weapon = {
+export type DbWeapon = { id: WeaponId }
+
+export type WeaponData = {
   id: WeaponId
   label: string
   img: string
@@ -59,6 +61,14 @@ export type Weapon = {
   skill: SkillId
   knowledges: KnowledgeId[]
   tags: string[]
+}
+
+export type Weapon = {
+  id: WeaponId
+  dbKey: string
+  skill: number
+  isEquiped: boolean
+  data: WeaponData
 }
 
 export type WeaponId =

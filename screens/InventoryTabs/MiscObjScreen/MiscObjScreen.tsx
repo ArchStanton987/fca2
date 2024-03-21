@@ -1,31 +1,25 @@
 import React, { useState } from "react"
 import { FlatList } from "react-native"
 
-import { useLocalSearchParams } from "expo-router"
+import { MiscObject } from "lib/objects/misc-objects/misc-objects-types"
 
-import miscObjectsMap from "lib/objects/misc-objects/misc-objects"
-import { MiscObjectId } from "lib/objects/misc-objects/misc-objects-types"
-
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
-import { useGetInventory } from "hooks/db/useGetInventory"
+import { useInventory } from "contexts/InventoryContext"
 import MiscObjDetails from "screens/InventoryTabs/MiscObjScreen/MiscObjDetails"
 import MiscObjRow, { ListHeader } from "screens/InventoryTabs/MiscObjScreen/MiscObjRow"
-import { SearchParams } from "screens/ScreenParams"
 import { filterUnique } from "utils/array-utils"
 
 export default function MiscObjScreen() {
-  const [selectedId, setSelectedId] = useState<MiscObjectId | null>(null)
-  const { charId } = useLocalSearchParams() as SearchParams<DrawerParams>
-  const { objects } = useGetInventory(charId)
+  const [selectedItem, setSelectedItem] = useState<MiscObject | null>(null)
 
-  const selectedObj = selectedId ? miscObjectsMap[selectedId] : undefined
+  const { miscObjects } = useInventory()
 
+  // TODO: group in inventory class
   const groupedObjects = filterUnique(
     "id",
-    objects.map((consumable, _, currArr) => {
+    miscObjects.map((consumable, _, currArr) => {
       const count = currArr.filter(el => el.id === consumable.id).length
       return { ...consumable, count }
     })
@@ -43,15 +37,15 @@ export default function MiscObjScreen() {
             <MiscObjRow
               objId={item.id}
               count={item.count}
-              isSelected={selectedId === item.id}
-              onPress={() => setSelectedId(prev => (prev === item.id ? null : item.id))}
+              isSelected={item.id === selectedItem?.id}
+              onPress={() => setSelectedItem(prev => (prev?.id === item.id ? null : item))}
             />
           )}
         />
       </Section>
       <Spacer x={10} />
       <Section style={{ width: 180 }}>
-        <MiscObjDetails miscObj={selectedObj} />
+        <MiscObjDetails miscObj={selectedItem} />
       </Section>
     </DrawerPage>
   )

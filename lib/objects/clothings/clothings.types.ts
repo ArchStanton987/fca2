@@ -3,7 +3,9 @@ import { BodyPart } from "../../character/health/health-types"
 
 export type ClothingType = "light" | "medium" | "heavy" | "carry"
 
-export type Clothing = {
+export type DbClothing = { id: ClothingId }
+
+export type ClothingData = {
   id: ClothingId
   label: string
   type: ClothingType
@@ -19,6 +21,13 @@ export type Clothing = {
   weight: number
   value: number
   symptoms: Symptom[]
+}
+
+export type Clothing = {
+  id: string
+  dbKey: string
+  isEquiped: boolean
+  data: ClothingData
 }
 
 export type ClothingId =

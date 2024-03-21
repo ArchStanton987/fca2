@@ -1,5 +1,7 @@
 import { Symptom } from "./symptoms.type"
 
+export type DbEffect = { id: EffectId; startTs?: number; endTs?: number }
+
 export type EffectId =
   | "dirty"
   | "dirtyPlus"
@@ -49,7 +51,7 @@ export type EffectId =
   | "radLvl5"
   | "radLvl6"
 
-export type Effect = {
+export type EffectData = {
   id: EffectId
   label: string
   symptoms: Symptom[]
@@ -58,4 +60,12 @@ export type Effect = {
   od: number | null
   nextEffectId: EffectId | null
   isWithdrawal: boolean
+}
+
+export type Effect = {
+  id: EffectId
+  data: EffectData
+  dbKey?: string
+  startTs?: number
+  endTs?: number
 }

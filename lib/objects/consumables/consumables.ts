@@ -1,6 +1,6 @@
-import { Consumable, ConsumableId } from "./consumables.types"
+import { ConsumableData, ConsumableId } from "./consumables.types"
 
-const consumablesMap: Record<ConsumableId, Consumable> = {
+const consumablesMap: Record<ConsumableId, ConsumableData> = {
   ration: {
     id: "ration",
     label: "Ration",

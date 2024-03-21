@@ -3,7 +3,9 @@ import { SkillId } from "lib/character/abilities/skills/skills.types"
 import { EffectId } from "lib/character/effects/effects.types"
 import { Modifier } from "lib/character/effects/symptoms.type"
 
-export type Consumable = {
+export type DbConsumable = { id: ConsumableId; remainingUse?: number }
+
+export type ConsumableData = {
   id: ConsumableId
   label: string
   effectId: EffectId | null
@@ -19,6 +21,13 @@ export type Consumable = {
   knowledges?: KnowledgeId[]
   skillId?: SkillId
   modifiers?: Modifier[]
+}
+
+export type Consumable = {
+  id: string
+  dbKey: string
+  remainingUse?: number
+  data: ConsumableData
 }
 
 export type ConsumableId =

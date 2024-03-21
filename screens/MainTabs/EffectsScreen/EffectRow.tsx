@@ -6,10 +6,10 @@ import { useLocalSearchParams } from "expo-router"
 import { AntDesign } from "@expo/vector-icons"
 import { changeableAttributesMap } from "lib/character/effects/changeable-attr"
 import effectsMap from "lib/character/effects/effects"
+import { Effect } from "lib/character/effects/effects.types"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import Txt from "components/Txt"
-import { CharEffect } from "hooks/db/useGetEffects"
 import useGetSquad from "hooks/db/useGetSquad"
 import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
@@ -17,7 +17,7 @@ import colors from "styles/colors"
 import styles from "./EffectRow.styles"
 
 type EffectRowProps = PressableProps & {
-  effect: CharEffect
+  effect: Effect
   isSelected: boolean
 }
 
@@ -39,6 +39,7 @@ export function EffectHeader() {
 }
 
 export default function EffectRow({ effect, isSelected, ...rest }: EffectRowProps) {
+  // TODO: FIX, using useSquad & calc effect length remaining
   const { squadId } = useLocalSearchParams() as SearchParams<DrawerParams>
   const squad = useGetSquad(squadId)
   const date = squad?.datetime ? new Date(squad.datetime * 1000) : null

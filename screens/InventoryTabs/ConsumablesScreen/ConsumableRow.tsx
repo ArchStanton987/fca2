@@ -4,10 +4,9 @@ import { Pressable, PressableProps, View } from "react-native"
 import { AntDesign } from "@expo/vector-icons"
 import { changeableAttributesMap } from "lib/character/effects/changeable-attr"
 import effectsMap from "lib/character/effects/effects"
-import consumablesMap from "lib/objects/consumables/consumables"
+import { Consumable } from "lib/objects/consumables/consumables.types"
 
 import Txt from "components/Txt"
-import { CharConsumable } from "hooks/db/useGetInventory"
 import colors from "styles/colors"
 
 import styles from "./ConsumableRow.styles"
@@ -27,7 +26,7 @@ export function ListHeader() {
 }
 
 type ConsumableRowProps = PressableProps & {
-  charConsumable: CharConsumable
+  charConsumable: Consumable
   count: number
   isSelected: boolean
 }
@@ -38,7 +37,7 @@ export default function ConsumableRow({
   isSelected,
   ...rest
 }: ConsumableRowProps) {
-  const { label, effectId } = consumablesMap[charConsumable.id]
+  const { label, effectId, challengeLabel } = charConsumable.data
   const symptoms = effectId ? effectsMap[effectId].symptoms : []
   const countAppend = count > 1 ? ` (${count})` : ""
   return (
@@ -58,6 +57,7 @@ export default function ConsumableRow({
               )
             })
           : "-"}
+        {challengeLabel && <Txt>{challengeLabel}</Txt>}
       </View>
       <View style={styles.deleteContainer}>
         {isSelected && <AntDesign name="delete" size={17} color={colors.secColor} />}

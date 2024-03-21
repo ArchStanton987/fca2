@@ -1,6 +1,6 @@
-import { Clothing, ClothingId } from "./clothings.types"
+import { ClothingData, ClothingId } from "./clothings.types"
 
-const clothingsMap: Record<ClothingId, Clothing> = {
+const clothingsMap: Record<ClothingId, ClothingData> = {
   // CARRY CLOTHINGS
   militaryBelt: {
     id: "militaryBelt",

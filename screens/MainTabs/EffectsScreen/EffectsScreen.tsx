@@ -1,35 +1,27 @@
 import React, { useState } from "react"
 import { FlatList } from "react-native"
 
-import { useLocalSearchParams } from "expo-router"
-
 import effectsMap from "lib/character/effects/effects"
 import { EffectId } from "lib/character/effects/effects.types"
 
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import useGetEffects from "hooks/db/useGetEffects"
-import LoadingScreen from "screens/LoadingScreen"
+import { useCharacter } from "contexts/CharacterContext"
 import EffectRow, { EffectHeader } from "screens/MainTabs/EffectsScreen/EffectRow"
-import { SearchParams } from "screens/ScreenParams"
 
 export default function EffectsScreen() {
   const [selectedId, setSelectedId] = useState<EffectId | null>(null)
 
-  const { charId } = useLocalSearchParams() as SearchParams<DrawerParams>
-  const effects = useGetEffects(charId)
-
-  if (effects === null) return <LoadingScreen />
+  const { effects } = useCharacter()
 
   return (
     <DrawerPage>
       <Section style={{ flex: 1 }}>
         <FlatList
           data={effects}
-          keyExtractor={item => item.dbKey}
+          keyExtractor={item => item.dbKey || item.id}
           ListHeaderComponent={EffectHeader}
           renderItem={({ item }) => {
             const isSelected = item.id === selectedId

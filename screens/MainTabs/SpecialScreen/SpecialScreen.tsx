@@ -9,17 +9,13 @@ import Section from "components/Section"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import AttributeRow, { AttributeHeader } from "components/tables/Attributes/AttributeRow"
-import { useBaseAttr } from "providers/BaseAttrProvider"
-import { useCurrAttr } from "providers/CurrAttrProvider"
-import LoadingScreen from "screens/LoadingScreen"
+import { useCharacter } from "contexts/CharacterContext"
 
 export default function SpecialScreen() {
   const [selectedId, setSelectedId] = useState<SpecialId | null>(null)
 
-  const baseContext = useBaseAttr()
-  const currContext = useCurrAttr()
-
-  if (!baseContext.isReady || !currContext.isReady) return <LoadingScreen />
+  const { special } = useCharacter()
+  const { base, mod, curr } = special
 
   return (
     <DrawerPage>
@@ -30,13 +26,12 @@ export default function SpecialScreen() {
           ListHeaderComponent={AttributeHeader}
           stickyHeaderIndices={[0]}
           renderItem={({ item }) => {
-            const { label } = specialMap[item.id]
-            const baseValue = baseContext.baseSpecial[item.id]
-            const modValue = currContext.modSpecial[item.id]
-            const currValue = currContext.currSpecial[item.id]
+            const baseValue = base[item.id]
+            const modValue = mod[item.id]
+            const currValue = curr[item.id]
             return (
               <AttributeRow
-                label={label}
+                label={item.label}
                 values={{ baseValue, modValue, currValue }}
                 isSelected={selectedId === item.id}
                 onPress={() => setSelectedId(item.id)}

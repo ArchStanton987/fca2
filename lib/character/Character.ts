@@ -1,78 +1,30 @@
+import { DbEquipedObjects, DbInventory } from "lib/objects/objects.types"
+import weaponsMap from "lib/objects/weapons/weapons"
 import { computed, makeObservable, observable } from "mobx"
 
 import { getModAttribute } from "../common/utils/char-calc"
-import { AmmoType } from "../objects/ammo/ammo.types"
 import clothingsMap from "../objects/clothings/clothings"
-import { ClothingId } from "../objects/clothings/clothings.types"
-import { ConsumableId } from "../objects/consumables/consumables.types"
-import { MiscObjectId } from "../objects/misc-objects/misc-objects-types"
-import weaponsMap from "../objects/weapons/weapons"
-import { WeaponId } from "../objects/weapons/weapons.types"
-import { KnowledgeId, KnowledgeLevelValue } from "./abilities/knowledges/knowledge-types"
+import { DbAbilities } from "./abilities/abilities.types"
+import { KnowledgeId } from "./abilities/knowledges/knowledge-types"
 import perksMap from "./abilities/perks/perks"
-import { PerkId } from "./abilities/perks/perks.types"
 import secAttrMap from "./abilities/sec-attr/sec-attr"
 import { SecAttrsValues } from "./abilities/sec-attr/sec-attr-types"
 import skillsMap from "./abilities/skills/skills"
 import { SkillsValues } from "./abilities/skills/skills.types"
 import { Special } from "./abilities/special/special.types"
 import traitsMap from "./abilities/traits/traits"
-import { TraitId } from "./abilities/traits/traits.types"
 import effectsMap from "./effects/effects"
-import { EffectId } from "./effects/effects.types"
+import { DbEffect, Effect } from "./effects/effects.types"
 import { Symptom } from "./effects/symptoms.type"
 import { LimbHpId, healthStates, limbsMap, radStates } from "./health/health"
 import { getMaxHP, getMissingHp } from "./health/health-calc"
 import { Health } from "./health/health-types"
-
-type DbAbilities = {
-  baseSPECIAL: Special
-  traits?: TraitId[]
-  perks?: PerkId[]
-  knowledges: Record<KnowledgeId, KnowledgeLevelValue>
-  upSkills: SkillsValues
-}
-type DbConsumable = { id: ConsumableId; remainingUse?: number }
-type DbEffect = { id: EffectId; startTs: number; endTs?: number }
-type DbClothing = { id: ClothingId }
-type DbWeapon = { id: WeaponId }
-type DbEquipedObjects = {
-  clothings?: Record<string, DbClothing>
-  weapons?: Record<string, DbWeapon>
-}
-type DbMiscObject = { id: MiscObjectId }
-type DbInventory = {
-  ammo?: Record<AmmoType, number>
-  clothings?: Record<string, DbClothing>
-  consumables?: Record<string, DbConsumable>
-  weapons?: Record<string, DbWeapon>
-  objects?: Record<string, DbMiscObject>
-}
-export type DbLimbsHp = {
-  headHp: number
-  leftArmHp: number
-  leftTorsoHp: number
-  rightTorsoHp: number
-  rightArmHp: number
-  leftLegHp: number
-  groinHp: number
-  rightLegHp: number
-}
-
-type DbStatus = {
-  background: string
-  caps: number
-  currAp: number
-  exp: number
-  level: number
-  poison: number
-  rads: number
-} & DbLimbsHp
+import { DbStatus } from "./status/status.types"
 
 export type DbChar = {
   abilities: DbAbilities
   effects?: Record<string, DbEffect>
-  equipedObjects?: DbEquipedObjects
+  equipedObj?: DbEquipedObjects
   inventory?: DbInventory
   status: DbStatus
 }
@@ -80,22 +32,22 @@ export type DbChar = {
 export default class Character {
   dbAbilities: DbAbilities
   dbEffects: Record<string, DbEffect>
-  equipedObjects: DbEquipedObjects
-  inventory: DbInventory
+  dbEquipedObjects: DbEquipedObjects
+  dbInventory: DbInventory
   status: DbStatus
 
   constructor(obj: DbChar) {
     this.dbAbilities = obj.abilities
     this.dbEffects = obj.effects || {}
-    this.equipedObjects = obj.equipedObjects || {}
-    this.inventory = obj.inventory || {}
+    this.dbEquipedObjects = obj.equipedObj || {}
+    this.dbInventory = obj.inventory || {}
     this.status = obj.status
 
     makeObservable(this, {
       dbAbilities: observable,
       dbEffects: observable,
-      equipedObjects: observable,
-      inventory: observable,
+      dbEquipedObjects: observable,
+      dbInventory: observable,
       status: observable,
       //
       innateSymptoms: computed,
@@ -121,11 +73,7 @@ export default class Character {
       skills: computed,
       knowledges: computed,
       //
-      weapons: computed,
-      clothings: computed,
-      consumables: computed,
-      ammo: computed,
-      miscObjects: computed
+      equipedObjects: computed
     })
   }
 
@@ -188,31 +136,41 @@ export default class Character {
     }
   }
 
-  get effects(): Array<EffectId> {
+  get effects(): Effect[] {
     // get all calculated effects
     // hp effects
     const { hp, maxHp } = this.health
     const currHpPercent = (hp / maxHp) * 100
     const healthState = healthStates.find(el => currHpPercent < el.min)
-    const hpEffectsIds = healthState ? [healthState.id] : []
+    const hpEffects = healthState ? [{ id: healthState.id, data: effectsMap[healthState.id] }] : []
     // cripled effects
     const { limbsHp } = this.health
     const noHpLimbs = Object.keys(limbsHp).filter(el => limbsHp[el as LimbHpId] === 0)
-    const cripledEffectsIds = noHpLimbs.map(el => limbsMap[el as LimbHpId].cripledEffect)
+    const cripledEffects = noHpLimbs.map(el => ({
+      id: limbsMap[el as LimbHpId].cripledEffect,
+      data: effectsMap[limbsMap[el as LimbHpId].cripledEffect]
+    }))
     // rads effects
     const { rads } = this.health
     const radsState = radStates.find(el => rads > el.threshold)
-    const radsEffectsIds = radsState ? [radsState.id] : []
+    const radsEffects = radsState ? [{ id: radsState.id, data: effectsMap[radsState.id] }] : []
+    // get all calculated effects objects
+    const calculatedEffects = [...hpEffects, ...cripledEffects, ...radsEffects]
+
     // get all db stored effects
-    const effectsIds = Object.values(this.dbEffects).map(el => el.id)
+    const effectsIds = Object.entries(this.dbEffects).map(([dbKey, value]) => ({
+      dbKey,
+      data: effectsMap[value.id],
+      ...value
+    }))
     // merge all effects
-    return [...effectsIds, ...hpEffectsIds, ...cripledEffectsIds, ...radsEffectsIds]
+    return [...calculatedEffects, ...effectsIds]
   }
 
   get symptoms(): Symptom[] {
-    const clothingsIds = Object.values(this.inventory.clothings || []).map(el => el.id)
+    const clothingsIds = Object.values(this.dbEquipedObjects.clothings || []).map(el => el.id)
     const clothingsSymptoms = clothingsIds.map(el => clothingsMap[el].symptoms)
-    const effectsSymptoms = this.effects.map(el => effectsMap[el].symptoms)
+    const effectsSymptoms = this.effects.map(el => effectsMap[el.id].symptoms)
     return [...effectsSymptoms, ...clothingsSymptoms].flat()
   }
 
@@ -220,7 +178,7 @@ export default class Character {
     const result = {} as Special
     const specialKeys = Object.keys(this.baseSpecial) as (keyof Special)[]
     specialKeys.forEach(key => {
-      result[key] = this.baseSpecial[key] + getModAttribute(this.symptoms, key)
+      result[key] = getModAttribute(this.symptoms, key)
     })
     return result
   }
@@ -229,7 +187,7 @@ export default class Character {
     const result = {} as SecAttrsValues
     const secAttrKeys = Object.keys(this.baseSecAttr) as (keyof SecAttrsValues)[]
     secAttrKeys.forEach(key => {
-      result[key] = this.baseSecAttr[key] + getModAttribute(this.symptoms, key)
+      result[key] = getModAttribute(this.symptoms, key)
     })
     return result
   }
@@ -238,7 +196,7 @@ export default class Character {
     const result = {} as SkillsValues
     const skillsKeys = Object.keys(this.baseSkills) as (keyof SkillsValues)[]
     skillsKeys.forEach(key => {
-      result[key] = this.baseSkills[key] + getModAttribute(this.symptoms, key)
+      result[key] = getModAttribute(this.symptoms, key)
     })
     return result
   }
@@ -247,7 +205,7 @@ export default class Character {
     const result = {} as Special
     const specialKeys = Object.keys(this.modSpecial) as (keyof Special)[]
     specialKeys.forEach(key => {
-      result[key] = this.modSpecial[key]
+      result[key] = this.baseSpecial[key] + this.modSpecial[key]
     })
     return result
   }
@@ -256,7 +214,7 @@ export default class Character {
     const result = {} as SecAttrsValues
     const secAttrKeys = Object.keys(this.modSecAttr) as (keyof SecAttrsValues)[]
     secAttrKeys.forEach(key => {
-      result[key] = this.modSecAttr[key]
+      result[key] = this.baseSecAttr[key] + this.modSecAttr[key]
     })
     return result
   }
@@ -265,7 +223,7 @@ export default class Character {
     const result = {} as SkillsValues
     const skillsKeys = Object.keys(this.modSkills) as (keyof SkillsValues)[]
     skillsKeys.forEach(key => {
-      result[key] = this.modSkills[key]
+      result[key] = Math.max(this.baseSkills[key] + this.modSkills[key], 1)
     })
     return result
   }
@@ -293,56 +251,19 @@ export default class Character {
       .sort((a, b) => b.value - a.value)
   }
 
-  get weapons() {
-    return Object.entries(this.inventory.weapons || []).map(([key, value]) => {
-      const weaponSkill = weaponsMap[value.id].skill
-      const weaponKnowledges = weaponsMap[value.id].knowledges
-      const { knowledges } = this.dbAbilities
-      const knowledgesBonus = weaponKnowledges.reduce(
-        (acc, curr: KnowledgeId) =>
-          acc + (knowledges[curr] ?? 0) + getModAttribute(this.innateSymptoms, curr),
-        0
-      )
-      const skillScore = this.currSkills[weaponSkill] + knowledgesBonus
-      const hasMrFast = this.dbAbilities.traits?.includes("mrFast")
-      let apCost = weaponsMap[value.id].basicApCost
-      if (apCost !== null) {
-        apCost = hasMrFast ? apCost - 1 : apCost
-      }
-      const isEquiped = this.equipedObjects?.weapons?.[key] !== undefined
-      return { dbKey: key, id: value.id, skill: skillScore, basicApCost: apCost, isEquiped }
-    })
-  }
-
-  get clothings() {
-    return Object.entries(this.inventory.clothings || []).map(([key, value]) => {
-      const isEquiped = this.equipedObjects?.clothings?.[key] !== undefined
-      return { dbKey: key, id: value.id, isEquiped }
-    })
-  }
-
-  get consumables() {
-    return Object.entries(this.inventory.consumables || []).map(([key, value]) => ({
-      dbKey: key,
-      id: value.id,
-      remainingUse: value.remainingUse
+  get equipedObjects() {
+    const weapons = Object.entries(this.dbEquipedObjects.weapons || {}).map(([dbKey, value]) => ({
+      dbKey,
+      data: weaponsMap[value.id],
+      ...value
     }))
-  }
-
-  get miscObjects() {
-    return Object.entries(this.inventory.objects || {}).map(([key, value]) => ({
-      dbKey: key,
-      id: value.id
-    }))
-  }
-
-  get ammo() {
-    return (
-      Object.entries(this.inventory.ammo || {})
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        .filter(([_, amount]) => amount > 0)
-        .map(([id, amount]) => ({ id: id as AmmoType, amount }))
-        .sort((a, b) => b.amount - a.amount)
+    const clothings = Object.entries(this.dbEquipedObjects.clothings || {}).map(
+      ([dbKey, value]) => ({
+        dbKey,
+        data: clothingsMap[value.id],
+        ...value
+      })
     )
+    return { weapons, clothings }
   }
 }

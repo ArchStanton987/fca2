@@ -1,22 +1,17 @@
 import React, { useState } from "react"
 import { FlatList } from "react-native"
 
-import { useLocalSearchParams } from "expo-router"
+import { Ammo } from "lib/objects/ammo/ammo.types"
 
-import { AmmoType } from "lib/objects/ammo/ammo.types"
-
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
-import { useGetInventory } from "hooks/db/useGetInventory"
+import { useInventory } from "contexts/InventoryContext"
 import AmmoRow, { ListHeader } from "screens/InventoryTabs/AmmoScreen/AmmoRow"
-import { SearchParams } from "screens/ScreenParams"
 
 export default function AmmoScreen() {
-  const [selectedId, setSelectedId] = useState<AmmoType | null>(null)
-  const { charId } = useLocalSearchParams() as SearchParams<DrawerParams>
-  const { ammo } = useGetInventory(charId)
+  const [selectedAmmo, setSelectedAmmo] = useState<Ammo | null>(null)
 
+  const { ammo } = useInventory()
   return (
     <DrawerPage>
       <Section style={{ flex: 1 }}>
@@ -27,10 +22,9 @@ export default function AmmoScreen() {
           stickyHeaderIndices={[0]}
           renderItem={({ item }) => (
             <AmmoRow
-              ammoId={item.id}
-              amount={item.amount}
-              isSelected={selectedId === item.id}
-              onPress={() => setSelectedId(prev => (prev === item.id ? null : item.id))}
+              ammo={item}
+              isSelected={selectedAmmo?.id === item.id}
+              onPress={() => setSelectedAmmo(prev => (prev?.id === item.id ? null : item))}
             />
           )}
         />
