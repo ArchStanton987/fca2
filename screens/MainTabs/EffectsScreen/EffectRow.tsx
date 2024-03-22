@@ -1,17 +1,13 @@
 import React from "react"
 import { Pressable, PressableProps, View } from "react-native"
 
-import { useLocalSearchParams } from "expo-router"
-
 import { AntDesign } from "@expo/vector-icons"
 import { changeableAttributesMap } from "lib/character/effects/changeable-attr"
-import effectsMap from "lib/character/effects/effects"
 import { Effect } from "lib/character/effects/effects.types"
+import { getRemainingTime } from "lib/common/utils/time-calc"
 
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import Txt from "components/Txt"
-import useGetSquad from "hooks/db/useGetSquad"
-import { SearchParams } from "screens/ScreenParams"
+import { useSquad } from "contexts/SquadContext"
 import colors from "styles/colors"
 
 import styles from "./EffectRow.styles"
@@ -39,15 +35,19 @@ export function EffectHeader() {
 }
 
 export default function EffectRow({ effect, isSelected, ...rest }: EffectRowProps) {
-  // TODO: FIX, using useSquad & calc effect length remaining
-  const { squadId } = useLocalSearchParams() as SearchParams<DrawerParams>
-  const squad = useGetSquad(squadId)
-  const date = squad?.datetime ? new Date(squad.datetime * 1000) : null
-  const effectStart = effect.startTs ? new Date(effect.startTs * 1000) : null
-  const shouldDisplayLength = date !== null && effectStart !== null
-  const lengthLabel = shouldDisplayLength ? date.getTime() - effectStart.getTime() : "-"
-
-  const { label, symptoms } = effectsMap[effect.id]
+  const { date } = useSquad()
+  const ts = date.getTime()
+  const { data, startTs, endTs } = effect
+  const { symptoms, label, length } = data
+  let remaining = "-"
+  if (endTs) {
+    remaining = getRemainingTime(ts, endTs) || "-"
+  }
+  // TODO: TO BE DELETED WITH FUTURE UPDATE SYSTEM
+  if (startTs && length) {
+    const lengthInMs = length * 3600000
+    remaining = `${startTs + lengthInMs}h`
+  }
 
   return (
     <Pressable style={[styles.container, styles.row, isSelected && styles.selected]} {...rest}>
@@ -62,7 +62,7 @@ export default function EffectRow({ effect, isSelected, ...rest }: EffectRowProp
         })}
       </View>
       <View style={styles.durationContainer}>
-        <Txt>{lengthLabel}</Txt>
+        <Txt>{remaining}</Txt>
       </View>
       <View style={styles.deleteContainer}>
         {isSelected && <AntDesign name="delete" size={17} color={colors.secColor} />}
