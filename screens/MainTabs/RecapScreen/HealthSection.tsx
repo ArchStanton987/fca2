@@ -13,15 +13,14 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import HealthFigure from "components/draws/HealthFigure/HealthFigure"
 import { useCharacter } from "contexts/CharacterContext"
-import useGetSquad from "hooks/db/useGetSquad"
+import { useSquad } from "contexts/SquadContext"
 import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
 
 function HealthSection() {
-  const { charId, squadId } = useLocalSearchParams() as SearchParams<DrawerParams>
-  const squad = useGetSquad(squadId)
-  const firstname = squad?.members[charId].firstname || ""
-  const lastname = squad?.members[charId].lastname || ""
+  const { charId } = useLocalSearchParams() as SearchParams<DrawerParams>
+  const { membersRecord } = useSquad()
+  const { firstname = "", lastname = "" } = membersRecord[charId]
   const name = lastname.length > 0 ? `${firstname} ${lastname.toUpperCase()}` : firstname
 
   const { effects } = useCharacter()

@@ -1,4 +1,4 @@
-import { DbSquad } from "lib/squad/squad-types"
+import { DbSquad, SquadMember } from "lib/squad/squad-types"
 import { computed, makeObservable, observable } from "mobx"
 
 export default class Squad {
@@ -10,18 +10,34 @@ export default class Squad {
     makeObservable(this, {
       dbSquad: observable,
       //
-      squad: computed,
+      members: computed,
+      membersRecord: computed,
       //
-      date: computed
+      date: computed,
+      //
+      data: computed
     })
   }
 
-  get squad() {
-    const members = Object.entries(this.dbSquad.members).map(([id, member]) => ({ id, ...member }))
-    return { ...this.dbSquad, members }
+  get members() {
+    return Object.entries(this.dbSquad.members).map(([id, member]) => ({ id, ...member }))
+  }
+
+  get membersRecord(): Record<string, SquadMember> {
+    const res: Record<string, SquadMember> = {}
+    this.members.forEach(member => {
+      res[member.id] = member
+    })
+    return res
   }
 
   get date() {
     return new Date(this.dbSquad.datetime * 1000)
+  }
+
+  get data() {
+    const { date } = this
+    const { members } = this
+    return { ...this.dbSquad, date, members }
   }
 }
