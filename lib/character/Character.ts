@@ -1,3 +1,4 @@
+import { getRemainingTime } from "lib/common/utils/time-calc"
 import { DbEquipedObjects, DbInventory } from "lib/objects/objects.types"
 import weaponsMap from "lib/objects/weapons/weapons"
 import { computed, makeObservable, observable } from "mobx"
@@ -35,13 +36,15 @@ export default class Character {
   dbEquipedObjects: DbEquipedObjects
   dbInventory: DbInventory
   status: DbStatus
+  date: Date
 
-  constructor(obj: DbChar) {
+  constructor(obj: DbChar, date: Date) {
     this.dbAbilities = obj.abilities
     this.dbEffects = obj.effects || {}
     this.dbEquipedObjects = obj.equipedObj || {}
     this.dbInventory = obj.inventory || {}
     this.status = obj.status
+    this.date = date
 
     makeObservable(this, {
       dbAbilities: observable,
@@ -49,6 +52,7 @@ export default class Character {
       dbEquipedObjects: observable,
       dbInventory: observable,
       status: observable,
+      date: observable,
       //
       innateSymptoms: computed,
       baseSpecial: computed,
@@ -158,11 +162,19 @@ export default class Character {
     const calculatedEffects = [...hpEffects, ...cripledEffects, ...radsEffects]
 
     // get all db stored effects
-    const effectsIds = Object.entries(this.dbEffects).map(([dbKey, value]) => ({
-      dbKey,
-      data: effectsMap[value.id],
-      ...value
-    }))
+    const effectsIds = Object.entries(this.dbEffects).map(([dbKey, value]) => {
+      let timeRemaining = null
+      const { length } = effectsMap[value.id]
+      if (value.endTs) {
+        timeRemaining = getRemainingTime(this.date.getTime(), value.endTs)
+      }
+      if (value.startTs && length) {
+        const lengthInMs = length * 3600000
+        const end = value.startTs * 1000 + lengthInMs
+        timeRemaining = getRemainingTime(this.date.getTime(), end)
+      }
+      return { timeRemaining, dbKey, data: effectsMap[value.id], ...value }
+    })
     // merge all effects
     return [...calculatedEffects, ...effectsIds]
   }

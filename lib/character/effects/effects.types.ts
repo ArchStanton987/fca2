@@ -68,4 +68,5 @@ export type Effect = {
   dbKey?: string
   startTs?: number
   endTs?: number
+  timeRemaining?: string | null
 }

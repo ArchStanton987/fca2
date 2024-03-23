@@ -4,6 +4,6 @@ export const getRemainingTime = (currTs: number, endTs: number) => {
   if (diff <= 0) return null
   const hours = Math.floor(diff / 3600000)
   const minutes = Math.floor((diff % 3600000) / 60000)
-  if (hours === 0) return `${minutes}min`
-  return `${hours}h ${minutes}min`
+  if (hours === 0) return `${minutes}m`
+  return `${hours}h${minutes}m`
 }
