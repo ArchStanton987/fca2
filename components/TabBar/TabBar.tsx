@@ -18,9 +18,12 @@ type TabBarProps = BottomTabBarProps & {
   tabBarId: TabBarId
 }
 
+const noTabRoutes = ["(modal)"]
+
 export default function TabBar(props: TabBarProps) {
   const { state, descriptors, tabBarId } = props
   const { routes } = state
+  const validRoutes = routes.filter(r => !noTabRoutes.includes(r.name))
   const router = useRouter()
   const localParams = useLocalSearchParams() as SearchParams<DrawerParams>
   const { charId, squadId } = localParams
@@ -29,7 +32,7 @@ export default function TabBar(props: TabBarProps) {
       <SmallLine top left style={{ top: 4 }} />
       <SmallLine top right style={{ top: 4 }} />
       <View style={styles.horizLine} />
-      {routes.map((route, index) => {
+      {validRoutes.map((route, index) => {
         const { options } = descriptors[route.key]
         const isFocused = state.index === index
         const pathname = `${charRoute}/${tabBarId}/${route.name}`
