@@ -1,6 +1,6 @@
 import { TouchableOpacity } from "react-native"
 
-import { useRouter } from "expo-router/src/hooks"
+import { router } from "expo-router"
 
 import { DrawerContentComponentProps, DrawerContentScrollView } from "@react-navigation/drawer"
 
@@ -20,7 +20,6 @@ type CustomDrawerProps = DrawerContentComponentProps & {
 export default function CustomDrawer(props: CustomDrawerProps) {
   const { state, descriptors, charId, squadId } = props
   const { routes } = state
-  const router = useRouter()
 
   const toHome = () => router.push("/")
 

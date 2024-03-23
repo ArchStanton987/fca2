@@ -3,6 +3,7 @@
     "ui",
     "engine",
     "nav",
-    "character"
+    "character",
+    "build"
   ]
 }
