@@ -15,7 +15,7 @@ import { SkillsValues } from "./abilities/skills/skills.types"
 import { Special } from "./abilities/special/special.types"
 import traitsMap from "./abilities/traits/traits"
 import effectsMap from "./effects/effects"
-import { DbEffect, Effect } from "./effects/effects.types"
+import { DbEffect, Effect, EffectData, EffectId } from "./effects/effects.types"
 import { Symptom } from "./effects/symptoms.type"
 import { LimbHpId, healthStates, limbsMap, radStates } from "./health/health"
 import { getMaxHP, getMissingHp } from "./health/health-calc"
@@ -278,4 +278,41 @@ export default class Character {
     )
     return { weapons, clothings }
   }
+
+  getEffectLength = (effect: EffectData) => {
+    const isJunkie = this.dbAbilities.traits?.includes("chemReliant")
+    if (effect.length && effect.isWithdrawal && isJunkie) return effect.length * 0.5
+    return effect.length
+  }
+
+  getFollowingEffects = (newDate: Date) => {
+    const withFollowingEffects = this.effects.filter(effect => {
+      if (!effect.data.nextEffectId) return false
+      if (effect.endTs && effect.endTs * 1000 > newDate.getTime()) return true
+      if (!effect.startTs || !effect.data.length) return false
+      const lengthInMs = effect.data.length * 3600 * 1000
+      return newDate.getTime() < effect.startTs * 1000 + lengthInMs
+    })
+    return withFollowingEffects.map(effect => {
+      const newEffectId = effect.data.nextEffectId
+      let newEffectStartTs
+      if (effect.endTs) {
+        newEffectStartTs = effect.endTs
+      } else if (effect.startTs && effect.data.length) {
+        newEffectStartTs = effect.startTs + effect.data.length
+      }
+      const length = this.getEffectLength(effectsMap[newEffectId as EffectId]) as number
+      const endTs = (newEffectStartTs as number) + length
+      return { id: newEffectId, endTs }
+    })
+  }
+
+  getExpiringEffects = (newDate: Date) =>
+    this.effects.filter(effect => {
+      if (!effect.data.length) return false
+      if (effect.endTs && effect.endTs * 1000 > newDate.getTime()) return true
+      if (!effect.startTs || !effect.data.length) return false
+      const lengthInMs = effect.data.length * 3600 * 1000
+      return newDate.getTime() < effect.startTs * 1000 + lengthInMs
+    })
 }
