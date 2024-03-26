@@ -43,7 +43,6 @@ export default function CharLayout() {
       <Tabs.Screen name="sec-attr" options={{ title: "Attr. Sec." }} />
       <Tabs.Screen name="skills" options={{ title: "Compétences" }} />
       <Tabs.Screen name="knowledges" options={{ title: "Connaissances" }} />
-      <Tabs.Screen name="(modal)" options={{ href: null }} />
     </Tabs>
   )
 }

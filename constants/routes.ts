@@ -1,8 +1,9 @@
 const charSelection = "/squad/[squadId]"
 export const charRoute = `${charSelection}/character/[charId]`
-const main = `${charRoute}/main`
-const inventory = `${charRoute}/inventory`
-const combat = `${charRoute}/combat`
+const main = `${charRoute}/(nav)/main`
+const inventory = `${charRoute}/(nav)/inventory`
+const combat = `${charRoute}/(nav)/combat`
+const modal = `${charRoute}/(modal)`
 
 const routes = {
   home: "/",
@@ -22,7 +23,11 @@ const routes = {
     miscObj: `${inventory}/misc-objects`,
     ammo: `${inventory}/ammo`
   },
-  combat
+  combat,
+  modal: {
+    updateEffects: `${modal}/update-effects`,
+    confirmation: `${modal}/confirmation`
+  }
 }
 
 export default routes

@@ -1,7 +1,6 @@
 import { useMemo } from "react"
 
-import { useLocalSearchParams } from "expo-router"
-import { Drawer } from "expo-router/drawer"
+import { Stack, useLocalSearchParams } from "expo-router"
 
 import dbKeys from "db/db-keys"
 import Character, { DbChar } from "lib/character/Character"
@@ -9,15 +8,19 @@ import Inventory from "lib/character/Inventory"
 import Squad from "lib/character/Squad"
 import { DbSquad } from "lib/squad/squad-types"
 
-import CustomDrawer from "components/Drawer/Drawer"
 import { DrawerParams } from "components/Drawer/Drawer.params"
-import styles from "components/Drawer/Drawer.styles"
 import { CharacterContext } from "contexts/CharacterContext"
 import { InventoryContext } from "contexts/InventoryContext"
 import { SquadContext } from "contexts/SquadContext"
 import useDbSubscribe from "hooks/db/useDbSubscribe"
 import LoadingScreen from "screens/LoadingScreen"
 import { SearchParams } from "screens/ScreenParams"
+import colors from "styles/colors"
+
+const modalOptions: NativeStackNavigationOptions = {
+  presentation: "modal",
+  animation: "slide_from_bottom"
+}
 
 export default function CharLayout() {
   const { charId, squadId } = useLocalSearchParams() as SearchParams<DrawerParams>
@@ -47,21 +50,16 @@ export default function CharLayout() {
     <SquadContext.Provider value={squad}>
       <CharacterContext.Provider value={character}>
         <InventoryContext.Provider value={inventory}>
-          <Drawer
-            defaultStatus="open"
+          <Stack
             screenOptions={{
               headerShown: false,
-              drawerType: "permanent",
-              drawerStyle: styles.drawerContainer,
-              drawerPosition: "right"
+              contentStyle: { backgroundColor: colors.primColor, padding: 10 }
             }}
-            // eslint-disable-next-line react/no-unstable-nested-components
-            drawerContent={props => <CustomDrawer charId={charId} squadId={squadId} {...props} />}
           >
-            <Drawer.Screen name="main" options={{ title: "Perso" }} />
-            <Drawer.Screen name="inventory" options={{ title: "Inventaire" }} />
-            <Drawer.Screen name="combat" options={{ title: "Combat" }} />
-          </Drawer>
+            <Stack.Screen name="(nav)" />
+            <Stack.Screen name="(modal)/update-effects" options={modalOptions} />
+            <Stack.Screen name="(modal)/confirmation" options={modalOptions} />
+          </Stack>
         </InventoryContext.Provider>
       </CharacterContext.Provider>
     </SquadContext.Provider>
