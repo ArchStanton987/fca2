@@ -34,8 +34,8 @@ export default function CharLayout() {
   const dbChar: DbChar | null = useDbSubscribe(dbKeys.char(charId).index)
   const character = useMemo(() => {
     if (!dbChar || !dbSquad) return null
-    return new Character(dbChar, new Date(dbSquad.datetime * 1000))
-  }, [dbChar, dbSquad])
+    return new Character(dbChar, new Date(dbSquad.datetime * 1000), charId)
+  }, [dbChar, dbSquad, charId])
 
   const inventory = useMemo(() => {
     if (!character) return null

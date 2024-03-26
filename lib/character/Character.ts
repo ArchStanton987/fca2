@@ -1,8 +1,16 @@
+import database from "config/firebase"
+import dbKeys from "db/db-keys"
+import { ref, update } from "firebase/database"
 import { getRandomArbitrary } from "lib/common/utils/dice-calc"
 import { getRemainingTime } from "lib/common/utils/time-calc"
+import { Clothing, ClothingId } from "lib/objects/clothings/clothings.types"
+import { Consumable } from "lib/objects/consumables/consumables.types"
 import { DbEquipedObjects, DbInventory } from "lib/objects/objects.types"
 import weaponsMap from "lib/objects/weapons/weapons"
+import { Weapon } from "lib/objects/weapons/weapons.types"
 import { computed, makeObservable, observable } from "mobx"
+
+import { addCollectible, removeCollectible } from "api/api-rtdb"
 
 import { getModAttribute } from "../common/utils/char-calc"
 import clothingsMap from "../objects/clothings/clothings"
@@ -32,6 +40,7 @@ export type DbChar = {
 }
 
 export default class Character {
+  charId: string
   dbAbilities: DbAbilities
   dbEffects: Record<string, DbEffect>
   dbEquipedObjects: DbEquipedObjects
@@ -39,7 +48,8 @@ export default class Character {
   status: DbStatus
   date: Date
 
-  constructor(obj: DbChar, date: Date) {
+  constructor(obj: DbChar, date: Date, charId: string) {
+    this.charId = charId
     this.dbAbilities = obj.abilities
     this.dbEffects = obj.effects || {}
     this.dbEquipedObjects = obj.equipedObj || {}
@@ -339,9 +349,42 @@ export default class Character {
   // const newLimbsHp = this.getNewLimbsHp(newDate)
   // }
 
-  // TODO: consume item
-  // TODO: equip item
-  // TODO: unequip item
-  // TODO: toggle equip
-  // TODO: remove item from inv
+  consume = async ({ data, dbKey, remainingUse }: Consumable) => {
+    // TODO: apply modifiers
+    // const modifiers = data.modifiers || []
+    // const changedAttr = getChangedAttributes(modifiers)
+
+    const effectsPath = dbKeys.char(this.charId).effects
+    const newEffectId = data.effectId
+    const endTs = newEffectId && this.getEffectLength(effectsMap[newEffectId])
+    const startTs = this.date.getTime() / 1000
+    const newEffect = { id: newEffectId, startTs, endTs }
+    addCollectible(effectsPath, newEffect)
+
+    const consumablePath = dbKeys.char(this.charId).inventory.consumables
+    const objectPath = consumablePath.concat(`/${dbKey}`)
+    if (typeof remainingUse === "number" && remainingUse === 1) {
+      await removeCollectible(objectPath)
+    }
+    if (typeof remainingUse === "number" && remainingUse > 1) {
+      const remainingUsePath = objectPath.concat("/remainingUse")
+      const updates = { remainingUse: remainingUse - 1 }
+      await update(ref(database, remainingUsePath), updates)
+    }
+  }
+
+  toggleEquip = async (obj: Weapon | Clothing) => {
+    const isCloth = clothingsMap[obj.id as ClothingId] !== undefined
+    const objectCategory = isCloth ? ("clothings" as const) : ("weapons" as const)
+    const isEquiped = !!this.dbEquipedObjects[objectCategory]?.[obj.dbKey]
+    const equipedObjectsPath = dbKeys.char(this.charId).equipedObjects[objectCategory]
+    if (!isEquiped) {
+      const newEquipedObject = { id: obj.id }
+      addCollectible(equipedObjectsPath, newEquipedObject)
+    }
+    const objectPath = equipedObjectsPath.concat(`/${obj.dbKey}`)
+    removeCollectible(objectPath)
+  }
+
+  // TODO: add / remove item from inv
 }
