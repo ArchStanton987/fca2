@@ -1,3 +1,4 @@
+import { getRandomArbitrary } from "lib/common/utils/dice-calc"
 import { getRemainingTime } from "lib/common/utils/time-calc"
 import { DbEquipedObjects, DbInventory } from "lib/objects/objects.types"
 import weaponsMap from "lib/objects/weapons/weapons"
@@ -285,34 +286,62 @@ export default class Character {
     return effect.length
   }
 
-  getFollowingEffects = (newDate: Date) => {
-    const withFollowingEffects = this.effects.filter(effect => {
-      if (!effect.data.nextEffectId) return false
-      if (effect.endTs && effect.endTs * 1000 > newDate.getTime()) return true
-      if (!effect.startTs || !effect.data.length) return false
-      const lengthInMs = effect.data.length * 3600 * 1000
-      return newDate.getTime() < effect.startTs * 1000 + lengthInMs
-    })
-    return withFollowingEffects.map(effect => {
-      const newEffectId = effect.data.nextEffectId
-      let newEffectStartTs
-      if (effect.endTs) {
-        newEffectStartTs = effect.endTs
-      } else if (effect.startTs && effect.data.length) {
-        newEffectStartTs = effect.startTs + effect.data.length
-      }
-      const length = this.getEffectLength(effectsMap[newEffectId as EffectId]) as number
-      const endTs = (newEffectStartTs as number) + length
-      return { id: newEffectId, endTs }
-    })
-  }
-
   getExpiringEffects = (newDate: Date) =>
     this.effects.filter(effect => {
       if (!effect.data.length) return false
       if (effect.endTs && effect.endTs * 1000 > newDate.getTime()) return true
       if (!effect.startTs || !effect.data.length) return false
-      const lengthInMs = effect.data.length * 3600 * 1000
-      return newDate.getTime() < effect.startTs * 1000 + lengthInMs
+      const effectLength = this.getEffectLength(effect.data)
+      const lengthInH = effectLength || effect.data.length
+      return newDate.getTime() < effect.startTs * 1000 + lengthInH * 3600 * 1000
     })
+
+  getFollowingEffects = (newDate: Date): DbEffect[] =>
+    this.getExpiringEffects(newDate)
+      .filter(effect => !!effect.data.nextEffectId)
+      .map(effect => {
+        const newEffectId = effect.data.nextEffectId as EffectId
+        let newEffectStartTs
+        if (effect.endTs) {
+          newEffectStartTs = effect.endTs * 1000
+        } else if (effect.startTs && effect.data.length) {
+          const effectLength = this.getEffectLength(effect.data)
+          const lengthInH = effectLength || effect.data.length
+          newEffectStartTs = effect.startTs * 1000 + lengthInH * 3600 * 1000
+        }
+        const lengthInH = this.getEffectLength(effectsMap[newEffectId]) as number
+        const endTs = (newEffectStartTs as number) + lengthInH * 3600
+        return { id: newEffectId, endTs }
+      })
+
+  getNewLimbsHp = (newDate: Date) => {
+    const { healHpPerHour } = this.secAttr.curr
+    const hoursPassed = (newDate.getTime() - this.date.getTime()) / 3600000
+    const missingHp = getMissingHp(this.status)
+    const maxHealedHp = Math.round(healHpPerHour * hoursPassed)
+    const healedHp = Math.min(missingHp, maxHealedHp)
+    const newLimbsHp = { ...this.health.limbsHp }
+    const limbsHpArray = Object.entries(this.health.limbsHp).map(([id, value]) => ({ id, value }))
+    for (let i = 0; i < healedHp; i += 1) {
+      const healableLimbs = limbsHpArray.filter(
+        ({ value, id }) => value < limbsMap[id as LimbHpId].maxValue
+      )
+      const randomIndex = getRandomArbitrary(0, healableLimbs.length)
+      const limbIdToHeal = healableLimbs[randomIndex].id
+      newLimbsHp[limbIdToHeal as LimbHpId] += 1
+    }
+    return newLimbsHp
+  }
+
+  // onChangeDate = (newDate: Date) => {
+  // const expiringEffects = this.getExpiringEffects(newDate)
+  // const followingEffects = this.getFollowingEffects(newDate)
+  // const newLimbsHp = this.getNewLimbsHp(newDate)
+  // }
+
+  // TODO: consume item
+  // TODO: equip item
+  // TODO: unequip item
+  // TODO: toggle equip
+  // TODO: remove item from inv
 }
