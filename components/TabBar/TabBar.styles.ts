@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
   },
   horizLine: {
     position: "absolute",
+    left: 0,
     top: 19.5,
     height: 1,
     backgroundColor: colors.secColor,

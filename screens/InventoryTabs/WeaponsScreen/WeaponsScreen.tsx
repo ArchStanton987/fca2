@@ -25,10 +25,8 @@ export default function WeaponsScreen() {
           stickyHeaderIndices={[0]}
           renderItem={({ item }) => (
             <WeaponRow
-              weaponId={item.id}
+              weapon={item}
               isSelected={item.dbKey === selectedWeapon?.dbKey}
-              isEquiped={item.isEquiped}
-              skillScore={item.skill}
               onPress={() => setSelectedWeapon(item)}
             />
           )}

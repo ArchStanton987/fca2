@@ -69,6 +69,7 @@ export type Weapon = {
   skill: number
   isEquiped: boolean
   data: WeaponData
+  ammo: number
 }
 
 export type WeaponId =

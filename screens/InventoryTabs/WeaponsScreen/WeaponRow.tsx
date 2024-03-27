@@ -2,11 +2,11 @@ import React from "react"
 import { Pressable, PressableProps, View } from "react-native"
 
 import { AntDesign } from "@expo/vector-icons"
-import weaponsMap from "lib/objects/weapons/weapons"
-import { WeaponId } from "lib/objects/weapons/weapons.types"
+import { Weapon } from "lib/objects/weapons/weapons.types"
 
 import CheckBox from "components/CheckBox/CheckBox"
 import Txt from "components/Txt"
+import { useCharacter } from "contexts/CharacterContext"
 import colors from "styles/colors"
 
 import styles from "./WeaponRow.styles"
@@ -37,26 +37,18 @@ export function ListHeader() {
 }
 
 type WeaponRowProps = PressableProps & {
-  weaponId: WeaponId
+  weapon: Weapon
   isSelected: boolean
-  isEquiped: boolean
-  skillScore: number
-  ammo?: number
 }
 
-export default function WeaponRow({
-  weaponId,
-  isSelected,
-  isEquiped,
-  skillScore,
-  ammo,
-  ...rest
-}: WeaponRowProps) {
-  const { label, damageBasic, damageBurst } = weaponsMap[weaponId]
+export default function WeaponRow({ weapon, isSelected, ...rest }: WeaponRowProps) {
+  const character = useCharacter()
+  const { isEquiped, skill, ammo, data } = weapon
+  const { label, damageBasic, damageBurst } = data
   return (
     <Pressable style={[styles.row, styles.container, isSelected && styles.selected]} {...rest}>
       <View style={styles.equipedContainer}>
-        <CheckBox isChecked={isEquiped} />
+        <CheckBox isChecked={isEquiped} onPress={() => character.toggleEquip(weapon)} />
       </View>
       <View style={styles.labelContainer}>
         <Txt>{label}</Txt>
@@ -66,7 +58,7 @@ export default function WeaponRow({
         <Txt>{damageBurst ?? "-"}</Txt>
       </View>
       <View style={styles.skillContainer}>
-        <Txt>{skillScore}</Txt>
+        <Txt>{skill}</Txt>
       </View>
       <View style={styles.ammoContainer}>
         <Txt>{ammo || "-"}</Txt>
