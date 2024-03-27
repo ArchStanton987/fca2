@@ -57,6 +57,8 @@ export default class Inventory {
     return Object.entries(this.dbInventory.weapons || []).map(([dbKey, { id }]) => {
       const weaponSkill = weaponsMap[id].skill
       const weaponKnowledges = weaponsMap[id].knowledges
+      const { ammoType } = weaponsMap[id]
+      const ammo = ammoType ? this.dbInventory.ammo?.[ammoType] || 0 : 0
       const { innateSymptoms, currSkills, dbAbilities, dbEquipedObjects } = this.charData
       const { knowledges, traits } = dbAbilities
       const knowledgesBonus = weaponKnowledges.reduce(
@@ -70,7 +72,7 @@ export default class Inventory {
       basicApCost = basicApCost !== null && hasMrFast ? basicApCost - 1 : basicApCost
       const isEquiped = dbEquipedObjects?.weapons?.[dbKey] !== undefined
       const data = { ...weaponsMap[id], basicApCost }
-      return { data, dbKey, id, skill, basicApCost, isEquiped }
+      return { data, dbKey, id, skill, basicApCost, isEquiped, ammo }
     })
   }
 
