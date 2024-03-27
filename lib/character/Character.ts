@@ -3,11 +3,21 @@ import dbKeys from "db/db-keys"
 import { ref, update } from "firebase/database"
 import { getRandomArbitrary } from "lib/common/utils/dice-calc"
 import { getRemainingTime } from "lib/common/utils/time-calc"
-import { Clothing, ClothingId } from "lib/objects/clothings/clothings.types"
-import { Consumable } from "lib/objects/consumables/consumables.types"
+import {
+  Clothing,
+  ClothingData,
+  ClothingId,
+  DbClothing
+} from "lib/objects/clothings/clothings.types"
+import { Consumable, ConsumableData, DbConsumable } from "lib/objects/consumables/consumables.types"
+import {
+  DbMiscObject,
+  MiscObject,
+  MiscObjectData
+} from "lib/objects/misc-objects/misc-objects-types"
 import { DbEquipedObjects, DbInventory } from "lib/objects/objects.types"
 import weaponsMap from "lib/objects/weapons/weapons"
-import { Weapon } from "lib/objects/weapons/weapons.types"
+import { DbWeapon, Weapon, WeaponData } from "lib/objects/weapons/weapons.types"
 import { computed, makeObservable, observable } from "mobx"
 
 import { addCollectible, removeCollectible } from "api/api-rtdb"
@@ -30,6 +40,11 @@ import { LimbHpId, healthStates, limbsMap, radStates } from "./health/health"
 import { getMaxHP, getMissingHp } from "./health/health-calc"
 import { Health } from "./health/health-types"
 import { DbStatus } from "./status/status.types"
+
+type DbObj = {
+  data: DbWeapon | DbClothing | DbConsumable | DbMiscObject
+  url: string
+}
 
 export type DbChar = {
   abilities: DbAbilities
@@ -351,8 +366,6 @@ export default class Character {
 
   consume = async ({ data, dbKey, remainingUse }: Consumable) => {
     // TODO: apply modifiers
-    // const modifiers = data.modifiers || []
-    // const changedAttr = getChangedAttributes(modifiers)
 
     const effectsPath = dbKeys.char(this.charId).effects
     const newEffectId = data.effectId
@@ -386,5 +399,25 @@ export default class Character {
     removeCollectible(objectPath)
   }
 
-  // TODO: add / remove item from inv
+  getDbObj = (obj: WeaponData | ClothingData | ConsumableData | MiscObjectData): DbObj => {
+    const url = dbKeys.char(this.charId).inventory
+    const isWeapon = "damageType" in obj
+    const isCloth = "armorClass" in obj
+    const isConsumable = "effectId" in obj
+    if (isWeapon) return { data: { id: obj.id }, url: url.weapons }
+    if (isCloth) return { data: { id: obj.id }, url: url.clothings }
+    if (isConsumable) return { data: { id: obj.id }, url: url.consumables }
+    return { data: { id: obj.id }, url: url.objects }
+  }
+
+  addToInv = async (obj: WeaponData | ClothingData | ConsumableData | MiscObjectData) => {
+    const { data, url } = this.getDbObj(obj)
+    addCollectible(url, data)
+  }
+
+  removeFromInv = async (obj: Weapon | Clothing | Consumable | MiscObject) => {
+    const { url } = this.getDbObj(obj.data)
+    const objectPath = url.concat(`/${obj.dbKey}`)
+    removeCollectible(objectPath)
+  }
 }

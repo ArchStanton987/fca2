@@ -9,6 +9,9 @@ const dbKeys = {
   char: (charId: string) => ({
     index: `/characters/${charId}`,
     abilities: `/characters/${charId}/abilities`,
+    knowledges: `/characters/${charId}/abilities/knowledges`,
+    baseSpecial: `/characters/${charId}/abilities/baseSPECIAL`,
+    effects: `/characters/${charId}/effects`,
     inventory: {
       index: `/characters/${charId}/inventory`,
       weapons: `/characters/${charId}/inventory/weapons`,
@@ -16,9 +19,6 @@ const dbKeys = {
       consumables: `/characters/${charId}/inventory/consumables`,
       objects: `/characters/${charId}/inventory/objects`
     },
-    knowledges: `/characters/${charId}/abilities/knowledges`,
-    baseSpecial: `/characters/${charId}/abilities/baseSPECIAL`,
-    effects: `/characters/${charId}/effects`,
     equipedObjects: {
       index: `/characters/${charId}/equipedObj`,
       weapons: `/characters/${charId}/equipedObj/weapons`,

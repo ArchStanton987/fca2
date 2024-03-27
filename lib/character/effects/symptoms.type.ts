@@ -22,7 +22,7 @@ export type Symptom = {
   value: number
 }
 export type Modifier = {
-  id: ChangeableAttribute
+  id: HealthStatusId
   operation: Operation
   value: number
 }
