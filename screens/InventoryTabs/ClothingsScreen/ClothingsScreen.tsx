@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FlatList } from "react-native"
 
-import { Clothing, ClothingId } from "lib/objects/clothings/clothings.types"
+import { Clothing } from "lib/objects/clothings/clothings.types"
 
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
@@ -25,9 +25,8 @@ export default function ClothingsScreen() {
           stickyHeaderIndices={[0]}
           renderItem={({ item }) => (
             <ClothingRow
-              clothingId={item.id as ClothingId}
+              clothing={item}
               isSelected={item.dbKey === selectedCloth?.dbKey}
-              isEquiped={item.isEquiped}
               onPress={() => setSelectedCloth(item)}
             />
           )}

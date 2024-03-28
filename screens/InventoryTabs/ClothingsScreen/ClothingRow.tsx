@@ -2,11 +2,11 @@ import { Pressable, PressableProps, View } from "react-native"
 
 import { AntDesign } from "@expo/vector-icons"
 import combatModsMap from "lib/character/combat/combat-mods"
-import clothingsMap from "lib/objects/clothings/clothings"
-import { ClothingId } from "lib/objects/clothings/clothings.types"
+import { Clothing } from "lib/objects/clothings/clothings.types"
 
 import CheckBox from "components/CheckBox/CheckBox"
 import Txt from "components/Txt"
+import { useCharacter } from "contexts/CharacterContext"
 import colors from "styles/colors"
 
 import styles from "./ClothingRow.styles"
@@ -41,17 +41,13 @@ export function ListHeader() {
 }
 
 type ClothingRowProps = PressableProps & {
-  clothingId: ClothingId
+  clothing: Clothing
   isSelected: boolean
-  isEquiped: boolean
 }
 
-export default function ClothingRow({
-  clothingId,
-  isSelected,
-  isEquiped,
-  ...rest
-}: ClothingRowProps) {
+export default function ClothingRow({ clothing, isSelected, ...rest }: ClothingRowProps) {
+  const character = useCharacter()
+  const { isEquiped, data } = clothing
   const {
     label,
     physicalDamageResist,
@@ -59,14 +55,15 @@ export default function ClothingRow({
     fireDamageResist,
     plasmaDamageResist,
     malus
-  } = clothingsMap[clothingId]
+  } = data
 
   return (
     <Pressable style={[styles.row, styles.container, isSelected && styles.selected]} {...rest}>
       <View style={styles.equipedContainer}>
         <CheckBox
           isChecked={isEquiped}
-          containerStyle={{ backgroundColor: isSelected ? colors.terColor : colors.secColor }}
+          containerStyle={{ backgroundColor: isSelected ? colors.terColor : colors.primColor }}
+          onPress={() => character.toggleEquip(clothing)}
         />
       </View>
       <View style={styles.labelContainer}>

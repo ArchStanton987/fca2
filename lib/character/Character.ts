@@ -408,6 +408,9 @@ export default class Character {
   }
 
   toggleEquip = async (obj: Weapon | Clothing) => {
+    // TODO: prevent equiping if requirements are not met
+    // weapons : no more than 2 light weapons or 1 heavy weapon
+    // clothings : no more than 1 armor per body part
     const isCloth = clothingsMap[obj.id as ClothingId] !== undefined
     const objectCategory = isCloth ? ("clothings" as const) : ("weapons" as const)
     const isEquiped = !!this.dbEquipedObjects[objectCategory]?.[obj.dbKey]

@@ -48,7 +48,11 @@ export default function WeaponRow({ weapon, isSelected, ...rest }: WeaponRowProp
   return (
     <Pressable style={[styles.row, styles.container, isSelected && styles.selected]} {...rest}>
       <View style={styles.equipedContainer}>
-        <CheckBox isChecked={isEquiped} onPress={() => character.toggleEquip(weapon)} />
+        <CheckBox
+          isChecked={isEquiped}
+          containerStyle={{ backgroundColor: isSelected ? colors.terColor : colors.primColor }}
+          onPress={() => character.toggleEquip(weapon)}
+        />
       </View>
       <View style={styles.labelContainer}>
         <Txt>{label}</Txt>
