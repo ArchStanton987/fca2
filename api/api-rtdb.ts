@@ -27,13 +27,13 @@ export const groupRemoveCollectible = (urls: string[]) => {
   return update(ref(database), updates)
 }
 
-export const replaceValue = (url: string, data: any) => {
+export const updateValue = (url: string, data: any) => {
   const updates: Record<string, any> = {}
   updates[url] = data
   return update(ref(database), updates)
 }
 
-export const groupReplaceValue = (array: { url: string; data: any }[]) => {
+export const groupUpdateValue = (array: { url: string; data: any }[]) => {
   const updates: Record<string, any> = {}
   array.forEach(({ url, data }) => {
     updates[url] = data

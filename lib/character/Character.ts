@@ -24,8 +24,9 @@ import {
   addCollectible,
   groupAddCollectible,
   groupRemoveCollectible,
-  groupReplaceValue,
-  removeCollectible
+  groupUpdateValue,
+  removeCollectible,
+  updateValue
 } from "api/api-rtdb"
 
 import { getModAttribute } from "../common/utils/char-calc"
@@ -381,7 +382,7 @@ export default class Character {
       url: statusUrl.concat(`/${id}`),
       data: value
     }))
-    groupReplaceValue(limbsArr)
+    groupUpdateValue(limbsArr)
   }
 
   consume = async ({ data, dbKey, remainingUse }: Consumable) => {
@@ -410,13 +411,13 @@ export default class Character {
     const isCloth = clothingsMap[obj.id as ClothingId] !== undefined
     const objectCategory = isCloth ? ("clothings" as const) : ("weapons" as const)
     const isEquiped = !!this.dbEquipedObjects[objectCategory]?.[obj.dbKey]
-    const equipedObjectsPath = dbKeys.char(this.charId).equipedObjects[objectCategory]
+    const path = dbKeys.char(this.charId).equipedObjects[objectCategory].concat(`/${obj.dbKey}`)
     if (!isEquiped) {
       const newEquipedObject = { id: obj.id }
-      addCollectible(equipedObjectsPath, newEquipedObject)
+      updateValue(path, newEquipedObject)
+      return
     }
-    const objectPath = equipedObjectsPath.concat(`/${obj.dbKey}`)
-    removeCollectible(objectPath)
+    removeCollectible(path)
   }
 
   getDbObj = (obj: WeaponData | ClothingData | ConsumableData | MiscObjectData): DbObj => {
