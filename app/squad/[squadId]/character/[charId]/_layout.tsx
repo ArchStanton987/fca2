@@ -3,7 +3,7 @@ import { useMemo } from "react"
 import { Stack, useLocalSearchParams } from "expo-router"
 
 import dbKeys from "db/db-keys"
-import Character from "lib/character/Character"
+import Character, { DbChar } from "lib/character/Character"
 import Inventory from "lib/character/Inventory"
 import Squad from "lib/character/Squad"
 import { DbAbilities } from "lib/character/abilities/abilities.types"
@@ -26,10 +26,13 @@ const modalOptions: NativeStackNavigationOptions = {
   animation: "slide_from_bottom"
 }
 
+type DbCollection<T> = T | undefined | null
+type DbRecord<T> = T | undefined
+
 export default function CharLayout() {
   const { charId, squadId } = useLocalSearchParams() as SearchParams<DrawerParams>
 
-  const dbSquad: DbSquad | null = useDbSubscribe(dbKeys.squad(squadId).index)
+  const dbSquad: DbRecord<DbSquad> = useDbSubscribe(dbKeys.squad(squadId).index)
   const squad = useMemo(() => {
     if (!dbSquad) return null
     return new Squad(dbSquad)
@@ -37,16 +40,17 @@ export default function CharLayout() {
 
   const dbCharUrl = dbKeys.char(charId)
   // use separate subscriptions to avoid unnecessary bandwidth usage
-  const abilities: DbAbilities | null = useDbSubscribe(dbCharUrl.abilities)
-  const effects: DbEffects | null = useDbSubscribe(dbCharUrl.effects)
-  const equipedObj: DbEquipedObjects | null = useDbSubscribe(dbCharUrl.equipedObjects.index)
-  const inventory: DbInventory | null = useDbSubscribe(dbCharUrl.inventory.index)
-  const status: DbStatus | null = useDbSubscribe(dbCharUrl.status)
+  const abilities: DbRecord<DbAbilities> = useDbSubscribe(dbCharUrl.abilities)
+  const effects: DbCollection<DbEffects> = useDbSubscribe(dbCharUrl.effects)
+  const equipedObj: DbCollection<DbEquipedObjects> = useDbSubscribe(dbCharUrl.equipedObjects.index)
+  const inventory: DbCollection<DbInventory> = useDbSubscribe(dbCharUrl.inventory.index)
+  const status: DbRecord<DbStatus> = useDbSubscribe(dbCharUrl.status)
 
   const character = useMemo(() => {
-    if (!abilities || !effects || !equipedObj || !inventory || !status || !dbSquad) return null
-    const dbChar = { abilities, effects, equipedObj, inventory, status }
-    return new Character(dbChar, new Date(dbSquad.datetime * 1000), charId)
+    const dbCharData = { abilities, effects, equipedObj, inventory, status }
+    if (Object.values(dbCharData).some(data => data === undefined)) return null
+    if (!dbSquad) return null
+    return new Character(dbCharData as DbChar, new Date(dbSquad.datetime * 1000), charId)
   }, [dbSquad, charId, abilities, effects, equipedObj, inventory, status])
 
   const charInventory = useMemo(() => {
