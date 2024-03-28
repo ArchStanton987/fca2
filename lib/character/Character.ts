@@ -20,7 +20,13 @@ import weaponsMap from "lib/objects/weapons/weapons"
 import { DbWeapon, Weapon, WeaponData } from "lib/objects/weapons/weapons.types"
 import { computed, makeObservable, observable } from "mobx"
 
-import { addCollectible, removeCollectible } from "api/api-rtdb"
+import {
+  addCollectible,
+  groupAddCollectible,
+  groupRemoveCollectible,
+  groupReplaceValue,
+  removeCollectible
+} from "api/api-rtdb"
 
 import { getModAttribute } from "../common/utils/char-calc"
 import clothingsMap from "../objects/clothings/clothings"
@@ -34,7 +40,7 @@ import { SkillsValues } from "./abilities/skills/skills.types"
 import { Special } from "./abilities/special/special.types"
 import traitsMap from "./abilities/traits/traits"
 import effectsMap from "./effects/effects"
-import { DbEffect, Effect, EffectData, EffectId } from "./effects/effects.types"
+import { DbEffect, DbEffects, Effect, EffectData, EffectId } from "./effects/effects.types"
 import { Symptom } from "./effects/symptoms.type"
 import { LimbHpId, healthStates, limbsMap, radStates } from "./health/health"
 import { getMaxHP, getMissingHp } from "./health/health-calc"
@@ -48,7 +54,7 @@ type DbObj = {
 
 export type DbChar = {
   abilities: DbAbilities
-  effects?: Record<string, DbEffect>
+  effects?: DbEffects
   equipedObj?: DbEquipedObjects
   inventory?: DbInventory
   status: DbStatus
@@ -57,7 +63,7 @@ export type DbChar = {
 export default class Character {
   charId: string
   dbAbilities: DbAbilities
-  dbEffects: Record<string, DbEffect>
+  dbEffects: DbEffects
   dbEquipedObjects: DbEquipedObjects
   dbInventory: DbInventory
   status: DbStatus
@@ -358,11 +364,25 @@ export default class Character {
     return newLimbsHp
   }
 
-  // onChangeDate = (newDate: Date) => {
-  // const expiringEffects = this.getExpiringEffects(newDate)
-  // const followingEffects = this.getFollowingEffects(newDate)
-  // const newLimbsHp = this.getNewLimbsHp(newDate)
-  // }
+  onChangeDate = (newDate: Date) => {
+    const effectUrl = dbKeys.char(this.charId).effects
+    const expiringEffectsPaths = this.getExpiringEffects(newDate).map(el =>
+      effectUrl.concat(el.dbKey as string)
+    )
+    groupRemoveCollectible(expiringEffectsPaths)
+    const followingEffects = this.getFollowingEffects(newDate).map(el => ({
+      data: el,
+      containerUrl: effectUrl
+    }))
+    groupAddCollectible(followingEffects)
+    const newLimbsHp = this.getNewLimbsHp(newDate)
+    const statusUrl = dbKeys.char(this.charId).status
+    const limbsArr = Object.entries(newLimbsHp).map(([id, value]) => ({
+      url: statusUrl.concat(`/${id}`),
+      data: value
+    }))
+    groupReplaceValue(limbsArr)
+  }
 
   consume = async ({ data, dbKey, remainingUse }: Consumable) => {
     // TODO: apply modifiers

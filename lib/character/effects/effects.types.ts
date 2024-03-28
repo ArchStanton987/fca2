@@ -2,6 +2,8 @@ import { Symptom } from "./symptoms.type"
 
 export type DbEffect = { id: EffectId; startTs?: number; endTs?: number }
 
+export type DbEffects = Record<string, DbEffect>
+
 export type EffectId =
   | "dirty"
   | "dirtyPlus"
