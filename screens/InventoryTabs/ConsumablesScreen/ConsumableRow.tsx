@@ -4,7 +4,7 @@ import { Pressable, PressableProps, View } from "react-native"
 import { AntDesign } from "@expo/vector-icons"
 import { changeableAttributesMap } from "lib/character/effects/changeable-attr"
 import effectsMap from "lib/character/effects/effects"
-import { Consumable } from "lib/objects/consumables/consumables.types"
+import { Consumable } from "lib/objects/data/consumables/consumables.types"
 
 import Txt from "components/Txt"
 import colors from "styles/colors"

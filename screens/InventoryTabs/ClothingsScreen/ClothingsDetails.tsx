@@ -2,7 +2,7 @@ import { FlatList, View } from "react-native"
 
 import secAttrMap from "lib/character/abilities/sec-attr/sec-attr"
 import { changeableAttributesMap } from "lib/character/effects/changeable-attr"
-import { Clothing } from "lib/objects/clothings/clothings.types"
+import { Clothing } from "lib/objects/data/clothings/clothings.types"
 
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"

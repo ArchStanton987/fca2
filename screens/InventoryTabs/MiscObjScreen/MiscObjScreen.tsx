@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FlatList } from "react-native"
 
-import { MiscObject } from "lib/objects/misc-objects/misc-objects-types"
+import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
 
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"

@@ -1,7 +1,7 @@
 import React from "react"
 
 import { changeableAttributesMap } from "lib/character/effects/changeable-attr"
-import { MiscObject } from "lib/objects/misc-objects/misc-objects-types"
+import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
 import { ScrollView } from "react-native-gesture-handler"
 
 import Spacer from "components/Spacer"

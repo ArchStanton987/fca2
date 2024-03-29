@@ -2,7 +2,7 @@ import { Pressable, PressableProps, View } from "react-native"
 
 import { AntDesign } from "@expo/vector-icons"
 import combatModsMap from "lib/character/combat/combat-mods"
-import { Clothing } from "lib/objects/clothings/clothings.types"
+import { Clothing } from "lib/objects/data/clothings/clothings.types"
 
 import CheckBox from "components/CheckBox/CheckBox"
 import Txt from "components/Txt"

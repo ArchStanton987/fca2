@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FlatList } from "react-native"
 
-import { Consumable } from "lib/objects/consumables/consumables.types"
+import { Consumable } from "lib/objects/data/consumables/consumables.types"
 
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"

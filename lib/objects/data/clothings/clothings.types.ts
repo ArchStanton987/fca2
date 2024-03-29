@@ -1,5 +1,5 @@
-import { Symptom } from "../../character/effects/symptoms.type"
-import { BodyPart } from "../../character/health/health-types"
+import { Symptom } from "../../../character/effects/symptoms.type"
+import { BodyPart } from "../../../character/health/health-types"
 
 export type ClothingType = "light" | "medium" | "heavy" | "carry"
 

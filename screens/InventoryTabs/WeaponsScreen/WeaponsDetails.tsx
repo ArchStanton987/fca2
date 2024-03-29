@@ -1,8 +1,8 @@
 import React from "react"
 import { FlatList } from "react-native"
 
-import ammoMap from "lib/objects/ammo/ammo"
-import { Weapon, damageTypeMap } from "lib/objects/weapons/weapons.types"
+import ammoMap from "lib/objects/data/ammo/ammo"
+import { Weapon, damageTypeMap } from "lib/objects/data/weapons/weapons.types"
 
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"

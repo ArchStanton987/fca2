@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FlatList } from "react-native"
 
-import { Weapon } from "lib/objects/weapons/weapons.types"
+import { Weapon } from "lib/objects/data/weapons/weapons.types"
 
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"

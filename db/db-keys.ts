@@ -14,6 +14,7 @@ const dbKeys = {
     effects: `/characters/${charId}/effects`,
     inventory: {
       index: `/characters/${charId}/inventory`,
+      ammo: `/characters/${charId}/inventory/ammo`,
       weapons: `/characters/${charId}/inventory/weapons`,
       clothings: `/characters/${charId}/inventory/clothings`,
       consumables: `/characters/${charId}/inventory/consumables`,

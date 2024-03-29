@@ -8,16 +8,20 @@ import {
   ClothingData,
   ClothingId,
   DbClothing
-} from "lib/objects/clothings/clothings.types"
-import { Consumable, ConsumableData, DbConsumable } from "lib/objects/consumables/consumables.types"
+} from "lib/objects/data/clothings/clothings.types"
+import {
+  Consumable,
+  ConsumableData,
+  DbConsumable
+} from "lib/objects/data/consumables/consumables.types"
 import {
   DbMiscObject,
   MiscObject,
   MiscObjectData
-} from "lib/objects/misc-objects/misc-objects-types"
-import { DbEquipedObjects, DbInventory } from "lib/objects/objects.types"
-import weaponsMap from "lib/objects/weapons/weapons"
-import { DbWeapon, Weapon, WeaponData } from "lib/objects/weapons/weapons.types"
+} from "lib/objects/data/misc-objects/misc-objects-types"
+import { DbEquipedObjects, DbInventory } from "lib/objects/data/objects.types"
+import weaponsMap from "lib/objects/data/weapons/weapons"
+import { DbWeapon, Weapon, WeaponData } from "lib/objects/data/weapons/weapons.types"
 import { computed, makeObservable, observable } from "mobx"
 
 import {
@@ -30,7 +34,7 @@ import {
 } from "api/api-rtdb"
 
 import { getModAttribute } from "../common/utils/char-calc"
-import clothingsMap from "../objects/clothings/clothings"
+import clothingsMap from "../objects/data/clothings/clothings"
 import { DbAbilities } from "./abilities/abilities.types"
 import { KnowledgeId } from "./abilities/knowledges/knowledge-types"
 import perksMap from "./abilities/perks/perks"

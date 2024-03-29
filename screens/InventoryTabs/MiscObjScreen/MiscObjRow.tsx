@@ -2,8 +2,8 @@ import React from "react"
 import { Pressable, PressableProps, View } from "react-native"
 
 import { AntDesign } from "@expo/vector-icons"
-import miscObjectsMap from "lib/objects/misc-objects/misc-objects"
-import { MiscObjectId } from "lib/objects/misc-objects/misc-objects-types"
+import miscObjectsMap from "lib/objects/data/misc-objects/misc-objects"
+import { MiscObjectId } from "lib/objects/data/misc-objects/misc-objects-types"
 
 import Txt from "components/Txt"
 import colors from "styles/colors"

@@ -1,6 +1,6 @@
 import React from "react"
 
-import { Consumable } from "lib/objects/consumables/consumables.types"
+import { Consumable } from "lib/objects/data/consumables/consumables.types"
 import { ScrollView } from "react-native-gesture-handler"
 
 import Spacer from "components/Spacer"

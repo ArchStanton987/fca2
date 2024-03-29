@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FlatList } from "react-native"
 
-import { Clothing } from "lib/objects/clothings/clothings.types"
+import { Clothing } from "lib/objects/data/clothings/clothings.types"
 
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"

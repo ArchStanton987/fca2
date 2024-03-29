@@ -2,7 +2,7 @@ import React from "react"
 import { Pressable, PressableProps, View } from "react-native"
 
 import { AntDesign } from "@expo/vector-icons"
-import { Ammo } from "lib/objects/ammo/ammo.types"
+import { Ammo } from "lib/objects/data/ammo/ammo.types"
 
 import Txt from "components/Txt"
 import colors from "styles/colors"

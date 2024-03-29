@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react"
 
-import Inventory from "lib/character/Inventory"
+import Inventory from "lib/objects/Inventory"
 
 export const InventoryContext = createContext<Inventory | null>(null)
 export const useInventory = () => {
