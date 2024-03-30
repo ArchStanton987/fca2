@@ -2,6 +2,7 @@ import { useMemo } from "react"
 
 import { Stack, useLocalSearchParams } from "expo-router"
 
+import { NativeStackNavigationOptions } from "@react-navigation/native-stack"
 import dbKeys from "db/db-keys"
 import Character, { DbChar } from "lib/character/Character"
 import Squad from "lib/character/Squad"
@@ -23,7 +24,11 @@ import colors from "styles/colors"
 
 const modalOptions: NativeStackNavigationOptions = {
   presentation: "modal",
-  animation: "slide_from_bottom"
+  animation: "slide_from_bottom",
+  contentStyle: {
+    backgroundColor: colors.primColor,
+    paddingBottom: 5
+  }
 }
 
 type DbCollection<T> = T | undefined | null
