@@ -1,3 +1,4 @@
+import { ReactNode } from "react"
 import { ScrollView, StyleProp, StyleSheet, View, ViewStyle } from "react-native"
 
 import colors from "styles/colors"
@@ -9,7 +10,7 @@ import SmallLine from "./draws/Line/Line"
 type ScrollableSectionProps = {
   title: string
   style?: StyleProp<ViewStyle>
-  children: JSX.Element
+  children: ReactNode
 }
 
 const styles = StyleSheet.create({

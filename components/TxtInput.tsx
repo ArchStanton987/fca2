@@ -1,9 +1,9 @@
 import React from "react"
-import { TextInput } from "react-native"
+import { TextInput, TextInputProps } from "react-native"
 
 import colors from "styles/colors"
 
-export default function TxtInput({ ...rest }) {
+export default function TxtInput({ ...rest }: TextInputProps) {
   return (
     <TextInput
       style={{

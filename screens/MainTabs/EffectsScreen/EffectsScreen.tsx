@@ -18,7 +18,7 @@ import EffectRow, { EffectHeader } from "screens/MainTabs/EffectsScreen/EffectRo
 import { SearchParams } from "screens/ScreenParams"
 
 export default function EffectsScreen() {
-  const { charId, squadId } = useLocalSearchParams<SearchParams<DrawerParams>>()
+  const { squadId, charId } = useLocalSearchParams<SearchParams<DrawerParams>>()
   const [selectedId, setSelectedId] = useState<EffectId | null>(null)
 
   const { effects } = useCharacter()

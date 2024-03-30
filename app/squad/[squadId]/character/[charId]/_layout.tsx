@@ -79,6 +79,7 @@ export default function CharLayout() {
           >
             <Stack.Screen name="(nav)" />
             <Stack.Screen name="(modal)/update-effects" options={modalOptions} />
+            <Stack.Screen name="(modal)/update-objects" options={modalOptions} />
             <Stack.Screen name="(modal)/confirmation" options={modalOptions} />
           </Stack>
         </InventoryContext.Provider>
