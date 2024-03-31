@@ -85,7 +85,7 @@ export default function UpdateEffectsModal() {
           <ViewSection title="RECHERCHE" style={styles.searchSection}>
             <TxtInput value={searchValue} onChangeText={e => setSearchValue(e)} />
           </ViewSection>
-          <ViewSection title="AJOUTER" style={styles.searchSection}>
+          <ViewSection title="AJOUTER" style={styles.addSection}>
             <View style={styles.iconsContainer}>
               <MinusIcon onPress={onPressMinus} />
               <PlusIcon onPress={onPressPlus} />
