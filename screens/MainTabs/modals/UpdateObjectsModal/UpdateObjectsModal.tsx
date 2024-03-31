@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { StyleSheet, TouchableOpacity, View } from "react-native"
+import { TouchableOpacity, View } from "react-native"
 
 import { ObjectExchangeState } from "lib/objects/objects-reducer"
 
@@ -13,46 +13,9 @@ import TxtInput from "components/TxtInput"
 import ViewSection from "components/ViewSection"
 import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
-import colors from "styles/colors"
+import ModalBody from "components/wrappers/ModalBody"
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-    paddingBottom: 10
-  },
-  row: {
-    flexDirection: "row",
-    flex: 1
-  },
-  categoriesSection: {
-    width: 160
-  },
-  listSection: {
-    flex: 1
-  },
-  searchSection: {
-    width: 280,
-    height: 90
-  },
-  addSection: {
-    width: 280,
-    flex: 1
-  },
-  iconsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    alignItems: "center"
-  },
-  listItemContainer: {
-    paddingLeft: 5,
-    paddingVertical: 7
-  },
-  listItemContainerSelected: {
-    backgroundColor: colors.terColor
-  },
-  listItem: {}
-})
+import styles from "./UpdateObjectsModal.styles"
 
 type CategoryId = keyof ObjectExchangeState
 type Category = { id: CategoryId; label: string; selectors: number[]; hasSearch?: boolean }
@@ -77,7 +40,7 @@ export default function UpdateObjectsModal() {
   const selectors = selectedCat !== null ? categoriesMap[selectedCat].selectors : [1, 5, 20]
 
   return (
-    <View style={styles.container}>
+    <ModalBody>
       <View style={styles.row}>
         <ScrollableSection title="CATEGORIES" style={styles.categoriesSection}>
           {categories.map(({ id, label }) => (
@@ -130,6 +93,6 @@ export default function UpdateObjectsModal() {
         </View>
       </View>
       <ModalCta onPressConfirm={() => {}} />
-    </View>
+    </ModalBody>
   )
 }

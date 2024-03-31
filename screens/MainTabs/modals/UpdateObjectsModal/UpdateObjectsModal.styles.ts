@@ -7,19 +7,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flex: 1
   },
+  categoriesSection: {
+    width: 160
+  },
   listSection: {
     flex: 1
-  },
-  listItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: colors.primColor,
-    paddingVertical: 8,
-    padding: 5
-  },
-  listItemSelected: {
-    backgroundColor: colors.terColor
   },
   searchSection: {
     width: 280,
@@ -29,15 +21,19 @@ const styles = StyleSheet.create({
     width: 280,
     flex: 1
   },
-  infoSection: {
-    width: 280,
-    flex: 1
-  },
   iconsContainer: {
     flexDirection: "row",
-    flex: 1,
     justifyContent: "space-evenly",
     alignItems: "center"
-  }
+  },
+  listItemContainer: {
+    paddingLeft: 5,
+    paddingVertical: 7
+  },
+  listItemContainerSelected: {
+    backgroundColor: colors.terColor
+  },
+  listItem: {}
 })
+
 export default styles

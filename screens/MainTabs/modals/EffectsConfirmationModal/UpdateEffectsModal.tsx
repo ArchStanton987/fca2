@@ -16,6 +16,7 @@ import TxtInput from "components/TxtInput"
 import ViewSection from "components/ViewSection"
 import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
+import ModalBody from "components/wrappers/ModalBody"
 import routes from "constants/routes"
 import ScreenParams, { SearchParams } from "screens/ScreenParams"
 
@@ -58,7 +59,7 @@ export default function UpdateEffectsModal() {
       : []
 
   return (
-    <View style={styles.container}>
+    <ModalBody>
       <View style={styles.row}>
         <ScrollableSection title="LISTE" style={styles.listSection}>
           <List
@@ -93,6 +94,6 @@ export default function UpdateEffectsModal() {
         </View>
       </View>
       <ModalCta onPressConfirm={onPressConfirm} />
-    </View>
+    </ModalBody>
   )
 }

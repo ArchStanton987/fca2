@@ -9,6 +9,7 @@ import { DrawerParams } from "components/Drawer/Drawer.params"
 import ModalCta from "components/ModalCta/ModalCta"
 import ScrollableSection from "components/ScrollableSection"
 import Txt from "components/Txt"
+import ModalBody from "components/wrappers/ModalBody"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 
@@ -30,7 +31,7 @@ export default function EffectsConfirmationModal() {
   }
 
   return (
-    <View style={{ padding: 10, flex: 1 }}>
+    <ModalBody>
       <Txt>ConfirmationModal</Txt>
       <ScrollableSection title="EFFETS" style={{ width: 400, alignSelf: "center" }}>
         {effects.map(effect => (
@@ -41,6 +42,6 @@ export default function EffectsConfirmationModal() {
         ))}
       </ScrollableSection>
       <ModalCta onPressConfirm={onPressConfirm} />
-    </View>
+    </ModalBody>
   )
 }
