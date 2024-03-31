@@ -47,11 +47,13 @@ export default function UpdateEffectsModal() {
     setEffectsToAdd(prev => prev.filter(effectId => effectId !== selectedEffectId))
   }
 
-  const onPressConfirm = () =>
+  const onPressConfirm = () => {
+    if (effectsToAdd.length === 0) return
     router.push({
       pathname: `${routes.modal.updateEffectsConfirmation}`,
       params: { charId, squadId, effectsToAdd }
     })
+  }
 
   const visibleEffects =
     searchValue.length > 2

@@ -8,6 +8,7 @@ import { EffectId } from "lib/character/effects/effects.types"
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import ModalCta from "components/ModalCta/ModalCta"
 import ScrollableSection from "components/ScrollableSection"
+import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import ModalBody from "components/wrappers/ModalBody"
 import routes from "constants/routes"
@@ -32,8 +33,12 @@ export default function EffectsConfirmationModal() {
 
   return (
     <ModalBody>
-      <Txt>ConfirmationModal</Txt>
-      <ScrollableSection title="EFFETS" style={{ width: 400, alignSelf: "center" }}>
+      <Spacer y={30} />
+      <Txt style={{ textAlign: "center" }}>
+        Vous êtes sur le point d&apos;effectuer les modifications suivantes :
+      </Txt>
+      <Spacer y={30} />
+      <ScrollableSection title="EFFETS" style={{ flex: 1, width: 300, alignSelf: "center" }}>
         {effects.map(effect => (
           <View key={effect} style={{ flexDirection: "row", justifyContent: "space-between" }}>
             <Txt>{effectsMap[effect as EffectId].label}</Txt>
@@ -41,6 +46,7 @@ export default function EffectsConfirmationModal() {
           </View>
         ))}
       </ScrollableSection>
+      <Spacer y={15} />
       <ModalCta onPressConfirm={onPressConfirm} />
     </ModalBody>
   )
