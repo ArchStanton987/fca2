@@ -4,7 +4,7 @@ import { FlatList, View } from "react-native"
 import { router, useLocalSearchParams } from "expo-router"
 
 import effectsMap from "lib/character/effects/effects"
-import { EffectId } from "lib/character/effects/effects.types"
+import { Effect, EffectId } from "lib/character/effects/effects.types"
 
 import AddElement from "components/AddElement"
 import { DrawerParams } from "components/Drawer/Drawer.params"
@@ -21,10 +21,16 @@ export default function EffectsScreen() {
   const { squadId, charId } = useLocalSearchParams<SearchParams<DrawerParams>>()
   const [selectedId, setSelectedId] = useState<EffectId | null>(null)
 
-  const { effects } = useCharacter()
+  const { effects, removeEffect } = useCharacter()
 
   const onPressAdd = () =>
     router.push({ pathname: routes.modal.updateEffects, params: { squadId, charId } })
+
+  const onPressDelete = (dbKey?: Effect["dbKey"]) => {
+    if (!dbKey) return
+    setSelectedId(null)
+    removeEffect(dbKey)
+  }
 
   return (
     <DrawerPage style={{ flex: 1 }}>
@@ -40,6 +46,7 @@ export default function EffectsScreen() {
                 isSelected={isSelected}
                 effect={item}
                 onPress={() => setSelectedId(item.id)}
+                onPressDelete={() => onPressDelete(item.dbKey)}
               />
             )
           }}

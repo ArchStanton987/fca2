@@ -26,8 +26,8 @@ const routes = {
   combat,
   modal: {
     updateEffects: `${modal}/update-effects`,
-    updateObjects: `${modal}/update-objects`,
-    confirmation: `${modal}/confirmation`
+    updateEffectsConfirmation: `${modal}/update-effects-confirmation`,
+    updateObjects: `${modal}/update-objects`
   }
 }
 

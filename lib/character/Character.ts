@@ -389,15 +389,36 @@ export default class Character {
     groupUpdateValue(limbsArr)
   }
 
+  addEffect = async (effectId: EffectId) => {
+    const effectsPath = dbKeys.char(this.charId).effects
+    const endTs = effectId && this.getEffectLength(effectsMap[effectId])
+    const startTs = this.date.getTime() / 1000
+    const newEffect = { id: effectId, startTs, endTs }
+    addCollectible(effectsPath, newEffect)
+  }
+
+  groupAddEffects = async (effectsToAdd: EffectId[]) => {
+    const effectsPath = dbKeys.char(this.charId).effects
+    const effects = effectsToAdd.map(el => {
+      const endTs = this.getEffectLength(effectsMap[el])
+      const data = { id: el, startTs: this.date.getTime() / 1000, endTs }
+      return { data, containerUrl: effectsPath }
+    })
+    return groupAddCollectible(effects)
+  }
+
+  removeEffect = async (dbKey: string) => {
+    const effectPath = dbKeys.char(this.charId).effects.concat(`/${dbKey}`)
+    removeCollectible(effectPath)
+  }
+
   consume = async ({ data, dbKey, remainingUse }: Consumable) => {
     // TODO: apply modifiers
 
-    const effectsPath = dbKeys.char(this.charId).effects
     const newEffectId = data.effectId
-    const endTs = newEffectId && this.getEffectLength(effectsMap[newEffectId])
-    const startTs = this.date.getTime() / 1000
-    const newEffect = { id: newEffectId, startTs, endTs }
-    addCollectible(effectsPath, newEffect)
+    if (newEffectId) {
+      this.addEffect(newEffectId)
+    }
 
     const consumablePath = dbKeys.char(this.charId).inventory.consumables
     const objectPath = consumablePath.concat(`/${dbKey}`)

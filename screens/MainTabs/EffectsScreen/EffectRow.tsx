@@ -1,10 +1,11 @@
 import React from "react"
-import { Pressable, PressableProps, View } from "react-native"
+import { Pressable, PressableProps, TouchableOpacity, View } from "react-native"
 
 import { AntDesign } from "@expo/vector-icons"
 import { changeableAttributesMap } from "lib/character/effects/changeable-attr"
 import { Effect } from "lib/character/effects/effects.types"
 
+import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import colors from "styles/colors"
 
@@ -13,6 +14,7 @@ import styles from "./EffectRow.styles"
 type EffectRowProps = PressableProps & {
   effect: Effect
   isSelected: boolean
+  onPressDelete: () => void
 }
 
 export function EffectHeader() {
@@ -32,7 +34,7 @@ export function EffectHeader() {
   )
 }
 
-export default function EffectRow({ effect, isSelected, ...rest }: EffectRowProps) {
+export default function EffectRow({ effect, isSelected, onPressDelete, ...rest }: EffectRowProps) {
   const { data, timeRemaining } = effect
   const { symptoms, label } = data
 
@@ -51,9 +53,13 @@ export default function EffectRow({ effect, isSelected, ...rest }: EffectRowProp
       <View style={styles.durationContainer}>
         <Txt>{timeRemaining || "-"}</Txt>
       </View>
-      <View style={styles.deleteContainer}>
-        {isSelected && <AntDesign name="delete" size={17} color={colors.secColor} />}
-      </View>
+      {isSelected && effect.dbKey ? (
+        <TouchableOpacity style={styles.deleteContainer} onPress={onPressDelete}>
+          <AntDesign name="delete" size={17} color={colors.secColor} />
+        </TouchableOpacity>
+      ) : (
+        <Spacer x={styles.deleteContainer.width} />
+      )}
     </Pressable>
   )
 }
