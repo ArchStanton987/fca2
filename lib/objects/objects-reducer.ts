@@ -30,14 +30,14 @@ type ModObjectPayload<C extends Category> = {
   inInventory: number
 }
 
-type Action =
+export type UpdateObjectAction =
   | { type: "modObject"; payload: ModObjectPayload<Category> }
   | { type: "modCaps"; payload: { count: number; inInventory: number } }
   | { type: "reset"; payload?: undefined }
 
 const objectsReducer = (
   state: ObjectExchangeState,
-  { type, payload }: Action
+  { type, payload }: UpdateObjectAction
 ): ObjectExchangeState => {
   switch (type) {
     case "modObject": {

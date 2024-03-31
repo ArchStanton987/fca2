@@ -16,6 +16,8 @@ import { SquadContext } from "contexts/SquadContext"
 import useDbSubscribe from "hooks/db/useDbSubscribe"
 import LoadingScreen from "screens/LoadingScreen"
 
+import UpdateObjectsProvider from "./UpdateObjectsProvider"
+
 type DbCollection<T> = T | undefined | null
 type DbRecord<T> = T | undefined
 
@@ -61,7 +63,9 @@ export default function DataProvider({
   return (
     <SquadContext.Provider value={squad}>
       <CharacterContext.Provider value={character}>
-        <InventoryContext.Provider value={charInventory}>{children}</InventoryContext.Provider>
+        <InventoryContext.Provider value={charInventory}>
+          <UpdateObjectsProvider>{children}</UpdateObjectsProvider>
+        </InventoryContext.Provider>
       </CharacterContext.Provider>
     </SquadContext.Provider>
   )
