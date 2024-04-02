@@ -31,6 +31,9 @@ export default function CharStack() {
         <Stack.Screen name="(modal)/update-effects" options={modalOptions} />
         <Stack.Screen name="(modal)/update-effects-confirmation" options={modalOptions} />
         <Stack.Screen name="(modal)/update-objects" options={modalOptions} />
+        <Stack.Screen name="(modal)/update-objects-confirmation" options={modalOptions} />
+        <Stack.Screen name="(modal)/update-status" options={modalOptions} />
+        <Stack.Screen name="(modal)/update-status-confirmation" options={modalOptions} />
       </Stack>
     </DataProvider>
   )

@@ -26,7 +26,6 @@ export default function CustomDrawer(props: CustomDrawerProps) {
   return (
     <DrawerContentScrollView scrollEnabled={false} {...props}>
       <SmallLine top left />
-
       <TouchableOpacity onPress={toHome} style={styles.fcaContainer}>
         <Txt style={styles.fca}>{"<FCA>"}</Txt>
       </TouchableOpacity>

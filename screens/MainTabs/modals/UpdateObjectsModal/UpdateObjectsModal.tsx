@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react"
 import { TouchableOpacity, View } from "react-native"
 
+import { router } from "expo-router"
+
 import ammoMap from "lib/objects/data/ammo/ammo"
 import { AmmoType } from "lib/objects/data/ammo/ammo.types"
 import clothingsMap from "lib/objects/data/clothings/clothings"
@@ -24,6 +26,7 @@ import ViewSection from "components/ViewSection"
 import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import ModalBody from "components/wrappers/ModalBody"
+import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useUpdateObjects } from "contexts/UpdateObjectsContext"
@@ -39,7 +42,7 @@ type Category = {
   data: Record<string, { id: string; label: string }>
 }
 
-const categoriesMap: Record<CategoryId, Category> = {
+export const categoriesMap: Record<CategoryId, Category> = {
   weapons: { id: "weapons", label: "Armes", selectors: [1, 5], hasSearch: true, data: weaponsMap },
   clothings: { id: "clothings", label: "Armures", selectors: [1, 5], data: clothingsMap },
   consumables: {
@@ -102,6 +105,8 @@ export default function UpdateObjectsModal() {
 
   const onPressItem = (id: SelectedItem) => setSelectedItem(prev => (prev === id ? null : id))
 
+  const onPressNext = () => router.push({ pathname: routes.modal.updateObjectsConfirmation })
+
   const hasSearch = selectedCat !== null && categoriesMap[selectedCat].hasSearch
   const selectors = selectedCat !== null ? categoriesMap[selectedCat].selectors : [1, 5, 20]
 
@@ -110,10 +115,10 @@ export default function UpdateObjectsModal() {
     const { data } = categoriesMap[selectedCat]
     const list = Object.values(data).map(({ id, label }) => ({ id, label }))
     if (!categoriesMap[selectedCat]?.hasSearch) return list
-    return searchInput.length > 2 ? list.filter(el => el.id.includes(searchInput)) : []
+    return searchInput.length > 2
+      ? list.filter(el => el.label.toLowerCase().includes(searchInput.toLowerCase()))
+      : []
   }, [selectedCat, searchInput])
-
-  console.log(state)
 
   return (
     <ModalBody>
@@ -193,7 +198,7 @@ export default function UpdateObjectsModal() {
           </ViewSection>
         </View>
       </View>
-      <ModalCta onPressConfirm={() => {}} />
+      <ModalCta onPressConfirm={onPressNext} />
     </ModalBody>
   )
 }

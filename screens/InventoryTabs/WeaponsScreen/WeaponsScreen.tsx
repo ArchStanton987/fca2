@@ -17,7 +17,7 @@ import WeaponsDetails from "screens/InventoryTabs/WeaponsScreen/WeaponsDetails"
 import { SearchParams } from "screens/ScreenParams"
 
 export default function WeaponsScreen() {
-  const { squadId, charId } = useLocalSearchParams<SearchParams<DrawerParams>>()
+  const localParams = useLocalSearchParams<SearchParams<DrawerParams>>()
   const [selectedWeapon, setSelectedWeapon] = useState<Weapon | null>(null)
 
   const { weapons } = useInventory()
@@ -26,7 +26,10 @@ export default function WeaponsScreen() {
     setSelectedWeapon(prev => (prev?.dbKey === weapon.dbKey ? null : weapon))
 
   const onPressAdd = () =>
-    router.push({ pathname: routes.modal.updateObjects, params: { squadId, charId } })
+    router.push({
+      pathname: routes.modal.updateObjects,
+      params: { squadId: localParams.squadId, charId: localParams.charId }
+    })
 
   return (
     <DrawerPage>
