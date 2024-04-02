@@ -412,6 +412,15 @@ export default class Character {
     removeCollectible(effectPath)
   }
 
+  updateStatus = async (updates: Partial<DbStatus>) => {
+    const statusPath = dbKeys.char(this.charId).status
+    const updatesArr = Object.entries(updates).map(([id, value]) => ({
+      url: statusPath.concat(`/${id}`),
+      data: value
+    }))
+    return groupUpdateValue(updatesArr)
+  }
+
   consume = async ({ data, dbKey, remainingUse }: Consumable) => {
     // TODO: apply modifiers
 

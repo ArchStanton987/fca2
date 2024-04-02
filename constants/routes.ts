@@ -27,7 +27,10 @@ const routes = {
   modal: {
     updateEffects: `${modal}/update-effects`,
     updateEffectsConfirmation: `${modal}/update-effects-confirmation`,
-    updateObjects: `${modal}/update-objects`
+    updateStatus: `${modal}/update-status`,
+    updateStatusConfirmation: `${modal}/update-status-confirmation`,
+    updateObjects: `${modal}/update-objects`,
+    updateObjectsConfirmation: `${modal}/update-objects-confirmation`
   }
 }
 
