@@ -1,3 +1,7 @@
+PERF:
+- try removing screen params (charId, squadId) and replace by context API
+- replace Drawer with a Stack, drawer will be a view in a layout
+
 - effects: gestion startTs / endTs (allow 2 versions to coexist)
 - calculate remaining effect length 
 

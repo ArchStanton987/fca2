@@ -2,10 +2,15 @@ import { useMemo, useState } from "react"
 import { TouchableOpacity, View } from "react-native"
 
 import ammoMap from "lib/objects/data/ammo/ammo"
+import { AmmoType } from "lib/objects/data/ammo/ammo.types"
 import clothingsMap from "lib/objects/data/clothings/clothings"
+import { ClothingId } from "lib/objects/data/clothings/clothings.types"
 import consumablesMap from "lib/objects/data/consumables/consumables"
+import { ConsumableId } from "lib/objects/data/consumables/consumables.types"
 import miscObjectsMap from "lib/objects/data/misc-objects/misc-objects"
+import { MiscObjectId } from "lib/objects/data/misc-objects/misc-objects-types"
 import weaponsMap from "lib/objects/data/weapons/weapons"
+import { WeaponId } from "lib/objects/data/weapons/weapons.types"
 import { ObjectExchangeState } from "lib/objects/objects-reducer"
 
 import AmountSelector from "components/AmountSelector"
@@ -19,6 +24,8 @@ import ViewSection from "components/ViewSection"
 import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import ModalBody from "components/wrappers/ModalBody"
+import { useCharacter } from "contexts/CharacterContext"
+import { useInventory } from "contexts/InventoryContext"
 import { useUpdateObjects } from "contexts/UpdateObjectsContext"
 
 import styles from "./UpdateObjectsModal.styles"
@@ -57,18 +64,43 @@ const categoriesMap: Record<CategoryId, Category> = {
   }
 }
 
+type SelectedItem = WeaponId | ClothingId | ConsumableId | MiscObjectId | AmmoType | "caps" | null
+
 const categories = Object.values(categoriesMap)
 
 export default function UpdateObjectsModal() {
   // TODO: add default selected cat & add as param
-  const [selectedCat, setSelectedCat] = useState<CategoryId | null>(null)
-  const [selectedItem, setSelectedItem] = useState<string | null>(null)
-  const [selectedAmount, setSelectedAmount] = useState<number | null>(null)
+  const [selectedCat, setSelectedCat] = useState<CategoryId>("weapons")
+  const [selectedItem, setSelectedItem] = useState<SelectedItem>(null)
+  const [selectedAmount, setSelectedAmount] = useState<number>(1)
   const [searchInput, setSearchInput] = useState("")
+
+  const character = useCharacter()
+  const inventory = useInventory()
+  const { caps } = character.status
 
   const { state, dispatch } = useUpdateObjects()
 
-  const onPressItem = (id: string) => setSelectedItem(prev => (prev === id ? null : id))
+  const onPressMod = (modType: "minus" | "plus") => {
+    if (selectedItem === null) return
+    const count = modType === "minus" ? -selectedAmount : selectedAmount
+    if (selectedCat === "caps") {
+      dispatch({ type: "modCaps", payload: { count, inInventory: caps } })
+      return
+    }
+    dispatch({
+      type: "modObject",
+      payload: {
+        category: selectedCat,
+        // TODO: fix ts warning
+        id: selectedItem,
+        count,
+        inInventory: inventory[selectedCat].filter(el => selectedItem === el.id).length || 0
+      }
+    })
+  }
+
+  const onPressItem = (id: SelectedItem) => setSelectedItem(prev => (prev === id ? null : id))
 
   const hasSearch = selectedCat !== null && categoriesMap[selectedCat].hasSearch
   const selectors = selectedCat !== null ? categoriesMap[selectedCat].selectors : [1, 5, 20]
@@ -78,8 +110,10 @@ export default function UpdateObjectsModal() {
     const { data } = categoriesMap[selectedCat]
     const list = Object.values(data).map(({ id, label }) => ({ id, label }))
     if (!categoriesMap[selectedCat]?.hasSearch) return list
-    return searchInput.length > 2 ? list.filter(el => el.id.includes(searchInput)) : list
+    return searchInput.length > 2 ? list.filter(el => el.id.includes(searchInput)) : []
   }, [selectedCat, searchInput])
+
+  console.log(state)
 
   return (
     <ModalBody>
@@ -104,17 +138,27 @@ export default function UpdateObjectsModal() {
           <List
             data={objectsList}
             keyExtractor={item => item.id}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={[
-                  styles.listItemContainer,
-                  selectedItem === item.id && styles.listItemContainerSelected
-                ]}
-                onPress={() => onPressItem(item.id)}
-              >
-                <Txt style={styles.listItem}>{item.label}</Txt>
-              </TouchableOpacity>
-            )}
+            renderItem={({ item }) => {
+              let count = 0
+              if (selectedCat === "caps") {
+                count = state.caps
+              }
+              if (selectedCat !== null) {
+                count = (state[selectedCat] as Record<string, number>)?.[item.id] || 0
+              }
+              return (
+                <TouchableOpacity
+                  style={[
+                    styles.listItemContainer,
+                    selectedItem === item.id && styles.listItemContainerSelected
+                  ]}
+                  onPress={() => onPressItem(item.id as SelectedItem)}
+                >
+                  <Txt style={styles.listItem}>{item.label}</Txt>
+                  {count > 0 && <Txt style={styles.listItem}>{count}</Txt>}
+                </TouchableOpacity>
+              )
+            }}
           />
         </ScrollableSection>
         <Spacer x={15} />
@@ -142,8 +186,8 @@ export default function UpdateObjectsModal() {
                 }}
               />
               <View style={styles.iconsContainer}>
-                <MinusIcon size={62} onPress={() => {}} />
-                <PlusIcon size={62} onPress={() => {}} />
+                <MinusIcon size={62} onPress={() => onPressMod("minus")} />
+                <PlusIcon size={62} onPress={() => onPressMod("plus")} />
               </View>
             </View>
           </ViewSection>

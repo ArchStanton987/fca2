@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { FlatList, View } from "react-native"
+import { Button, FlatList, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
@@ -47,6 +47,7 @@ export default function WeaponsScreen() {
       </Section>
       <Spacer x={10} />
       <View style={{ width: 130 }}>
+        <Button title="add" onPress={onPressAdd} />
         <Section style={{ flex: 1 }}>
           <WeaponsDetails charWeapon={selectedWeapon} />
         </Section>

@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   listItemContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingLeft: 5,
+    paddingHorizontal: 5,
     paddingVertical: 7
   },
   listItemContainerSelected: {
