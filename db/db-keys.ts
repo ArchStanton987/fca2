@@ -4,7 +4,8 @@ const dbKeys = {
   squads: "/squads",
   squad: (squadId: Squad["id"]) => ({
     index: `/squads/${squadId}`,
-    members: `/squads/${squadId}/members`
+    members: `/squads/${squadId}/members`,
+    datetime: `/squads/${squadId}/datetime`
   }),
   char: (charId: string) => ({
     index: `/characters/${charId}`,
