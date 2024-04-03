@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
 })
 
 type AmountSelectorProps = TouchableOpacityProps & {
-  value: number
+  value: number | string
   isSelected: boolean
 }
 

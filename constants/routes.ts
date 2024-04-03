@@ -8,6 +8,9 @@ const modal = `${charRoute}/(modal)`
 const routes = {
   home: "/",
   charSelection,
+  admin: {
+    index: `${charSelection}/admin`
+  },
   main: {
     index: `${main}/recap`,
     effects: `${main}/effects`,

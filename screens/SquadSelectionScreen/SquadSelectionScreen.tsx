@@ -18,6 +18,7 @@ import styles from "./SquadSelectionScreen.styles"
 
 export default function SquadSelectionScreen() {
   const router = useRouter()
+  // TODO: fix TS
   const squadsObj: DbObj<Squad> = useDbSubscribe(dbKeys.squads)
   const squadsArray = squadsObj
     ? Object.entries(squadsObj).map(([id, squad]) => ({ ...squad, id }))
@@ -25,6 +26,9 @@ export default function SquadSelectionScreen() {
 
   const toSquad = (squadId: string) =>
     router.push({ pathname: routes.charSelection, params: { squadId } })
+
+  const onLongPress = (squadId: string) =>
+    router.push({ pathname: routes.admin.index, params: { squadId } })
 
   return (
     <ScrollView style={styles.container}>
@@ -41,6 +45,8 @@ export default function SquadSelectionScreen() {
           <RevertColorsPressable
             key={squad.id}
             onPress={() => toSquad(squad.id)}
+            onLongPress={() => onLongPress(squad.id)}
+            delayLongPress={5000}
             style={styles.squadContainer}
           >
             <Txt style={styles.squadLabel}>{squad.label}</Txt>
