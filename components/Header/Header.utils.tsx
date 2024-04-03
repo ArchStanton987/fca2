@@ -7,9 +7,18 @@ import HeaderProgression from "components/Header/elements/HeaderProgression"
 import HeaderSpecialElement from "components/Header/elements/HeaderSpecialElement"
 
 import HeaderDate from "./elements/HeaderDate"
+import HeaderHome from "./elements/HeaderHome"
+import HeaderSquadName from "./elements/HeaderSquadName"
 import HeaderTime from "./elements/HeaderTime"
 
-export type HeaderElementId = "date" | "time" | "progression" | SpecialId | "caps"
+export type HeaderElementId =
+  | "date"
+  | "time"
+  | "progression"
+  | SpecialId
+  | "caps"
+  | "squadName"
+  | "home"
 
 export const headerElements: Record<HeaderElementId, ReactElement> = {
   date: <HeaderDate key="date" />,
@@ -22,5 +31,7 @@ export const headerElements: Record<HeaderElementId, ReactElement> = {
   intelligence: <HeaderSpecialElement key="intelligence" specialId="intelligence" />,
   agility: <HeaderSpecialElement key="agility" specialId="agility" />,
   luck: <HeaderSpecialElement key="luck" specialId="luck" />,
-  caps: <HeaderCaps key="caps" />
+  caps: <HeaderCaps key="caps" />,
+  squadName: <HeaderSquadName key="squadName" />,
+  home: <HeaderHome key="home" />
 }
