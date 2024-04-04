@@ -369,24 +369,26 @@ export default class Character {
     return newLimbsHp
   }
 
-  onChangeDate = (newDate: Date) => {
+  onChangeDate = async (newDate: Date) => {
     const effectUrl = dbKeys.char(this.charId).effects
     const expiringEffectsPaths = this.getExpiringEffects(newDate).map(el =>
       effectUrl.concat(el.dbKey as string)
     )
-    groupRemoveCollectible(expiringEffectsPaths)
     const followingEffects = this.getFollowingEffects(newDate).map(el => ({
       data: el,
       containerUrl: effectUrl
     }))
-    groupAddCollectible(followingEffects)
     const newLimbsHp = this.getNewLimbsHp(newDate)
     const statusUrl = dbKeys.char(this.charId).status
     const limbsArr = Object.entries(newLimbsHp).map(([id, value]) => ({
       url: statusUrl.concat(`/${id}`),
       data: value
     }))
-    groupUpdateValue(limbsArr)
+    return Promise.all([
+      groupRemoveCollectible(expiringEffectsPaths),
+      groupAddCollectible(followingEffects),
+      groupUpdateValue(limbsArr)
+    ])
   }
 
   addEffect = async (effectId: EffectId) => {

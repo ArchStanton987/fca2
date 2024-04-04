@@ -9,6 +9,7 @@ import ViewSection from "components/ViewSection"
 import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import RevertColorsPressable from "components/wrappers/RevertColorsPressable/RevertColorsPressable"
+import { useAdmin } from "contexts/AdminContext"
 import { useSquad } from "contexts/SquadContext"
 import colors from "styles/colors"
 import { getDDMMYYYY, getHHMM } from "utils/date"
@@ -21,6 +22,7 @@ const selectors = [1, 5, 20, 60]
 
 export default function DatetimeSelectionScreen() {
   const squad = useSquad()
+  const { characters } = useAdmin()
 
   const [newDate, setNewDate] = useState<Date>(squad.date)
   const [selectedTimespan, setSelectedTimespan] = useState<Timespan>("MIN")
@@ -50,7 +52,7 @@ export default function DatetimeSelectionScreen() {
 
   const onPressSave = async () => {
     if (!newDate) return
-    await squad.setDatetime(newDate.getTime() / 1000)
+    await squad.setDatetime(newDate, characters)
   }
 
   return (

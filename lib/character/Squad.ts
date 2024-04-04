@@ -1,4 +1,5 @@
 import dbKeys from "db/db-keys"
+import Character from "lib/character/Character"
 import { DbSquad, SquadMember } from "lib/squad/squad-types"
 import { computed, makeObservable, observable } from "mobx"
 
@@ -51,10 +52,13 @@ export default class Squad {
     return { ...this.dbSquad, date, members }
   }
 
-  async setDatetime(datetime: number) {
-    // TODO: add all squad characters new computed updates
-    this.dbSquad.datetime = datetime
-    const dbKey = dbKeys.squad(this.squadId).datetime
-    await updateValue(dbKey, datetime)
+  async setDatetime(datetime: Date, characters: Record<string, Character>) {
+    const promises = []
+    Object.values(characters).forEach(character => {
+      promises.push(character.onChangeDate(datetime))
+    })
+    const datetimeDbKey = dbKeys.squad(this.squadId).datetime
+    promises.push(updateValue(datetimeDbKey, datetime))
+    return Promise.all(promises)
   }
 }
