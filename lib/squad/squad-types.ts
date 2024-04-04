@@ -5,7 +5,7 @@ export type DbSquadMember = {
 }
 
 export type DbSquad = {
-  datetime: number
+  datetime: string
   isInFight: boolean
   label: string
   members: Record<string, DbSquadMember>
@@ -16,11 +16,4 @@ export type SquadMember = {
   exp: number
   firstname: string
   lastname: string
-}
-
-export type Squad = {
-  id: string
-  label: string
-  members: Record<string, SquadMember>
-  datetime: number
 }

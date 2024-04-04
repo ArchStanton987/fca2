@@ -202,15 +202,20 @@ export default class Character {
     const effectsIds = Object.entries(this.dbEffects).map(([dbKey, value]) => {
       let timeRemaining = null
       const { length } = effectsMap[value.id]
+      let startTs
+      let endTs
       if (value.endTs) {
         timeRemaining = getRemainingTime(this.date.getTime(), value.endTs)
+        endTs = new Date(value.endTs)
       }
       if (value.startTs && length) {
         const lengthInMs = length * 3600000
-        const end = value.startTs * 1000 + lengthInMs
+        const end = new Date(value.startTs).getTime() + lengthInMs
+        startTs = new Date(value.startTs)
         timeRemaining = getRemainingTime(this.date.getTime(), end)
       }
-      return { timeRemaining, dbKey, data: effectsMap[value.id], ...value }
+
+      return { ...value, timeRemaining, dbKey, data: effectsMap[value.id], startTs, endTs }
     })
     // merge all effects
     return [...calculatedEffects, ...effectsIds]
@@ -316,7 +321,7 @@ export default class Character {
     return { weapons, clothings }
   }
 
-  getEffectLength = (effect: EffectData) => {
+  getEffectLengthInH = (effect: EffectData) => {
     const isJunkie = this.dbAbilities.traits?.includes("chemReliant")
     if (effect.length && effect.isWithdrawal && isJunkie) return effect.length * 0.5
     return effect.length
@@ -325,28 +330,22 @@ export default class Character {
   getExpiringEffects = (newDate: Date) =>
     this.effects.filter(effect => {
       if (!effect.data.length) return false
-      if (effect.endTs && effect.endTs * 1000 > newDate.getTime()) return true
+      if (effect.endTs && effect?.endTs.getTime() < newDate.getTime()) return true
       if (!effect.startTs || !effect.data.length) return false
-      const effectLength = this.getEffectLength(effect.data)
+      const effectLength = this.getEffectLengthInH(effect.data)
       const lengthInH = effectLength || effect.data.length
-      return newDate.getTime() < effect.startTs * 1000 + lengthInH * 3600 * 1000
+      return effect.startTs.getTime() + lengthInH * 3600 * 1000 < newDate.getTime()
     })
 
   getFollowingEffects = (newDate: Date): DbEffect[] =>
     this.getExpiringEffects(newDate)
-      .filter(effect => !!effect.data.nextEffectId)
+      .filter(effect => !!effect.data.nextEffectId && !!effect.endTs)
       .map(effect => {
         const newEffectId = effect.data.nextEffectId as EffectId
-        let newEffectStartTs
-        if (effect.endTs) {
-          newEffectStartTs = effect.endTs * 1000
-        } else if (effect.startTs && effect.data.length) {
-          const effectLength = this.getEffectLength(effect.data)
-          const lengthInH = effectLength || effect.data.length
-          newEffectStartTs = effect.startTs * 1000 + lengthInH * 3600 * 1000
-        }
-        const lengthInH = this.getEffectLength(effectsMap[newEffectId]) as number
-        const endTs = (newEffectStartTs as number) + lengthInH * 3600
+        const newEffectStartTs = new Date(effect.endTs as Date)
+        const lengthInH = this.getEffectLengthInH(effectsMap[newEffectId]) as number
+        const endInMs = newEffectStartTs.getTime() + lengthInH * 3600
+        const endTs = new Date(endInMs).toJSON()
         return { id: newEffectId, endTs }
       })
 
@@ -370,13 +369,13 @@ export default class Character {
   }
 
   onChangeDate = async (newDate: Date) => {
-    const effectUrl = dbKeys.char(this.charId).effects
+    const effectsUrl = dbKeys.char(this.charId).effects
     const expiringEffectsPaths = this.getExpiringEffects(newDate).map(el =>
-      effectUrl.concat(el.dbKey as string)
+      effectsUrl.concat(`/${el.dbKey as string}`)
     )
     const followingEffects = this.getFollowingEffects(newDate).map(el => ({
       data: el,
-      containerUrl: effectUrl
+      containerUrl: effectsUrl
     }))
     const newLimbsHp = this.getNewLimbsHp(newDate)
     const statusUrl = dbKeys.char(this.charId).status
@@ -393,8 +392,9 @@ export default class Character {
 
   addEffect = async (effectId: EffectId) => {
     const effectsPath = dbKeys.char(this.charId).effects
-    const endTs = effectId && this.getEffectLength(effectsMap[effectId])
-    const startTs = this.date.getTime() / 1000
+    const length = effectId && this.getEffectLengthInH(effectsMap[effectId])
+    const startTs = this.date
+    const endTs = length ? new Date(startTs.getTime() + length * 3600 * 1000) : null
     const newEffect = { id: effectId, startTs, endTs }
     addCollectible(effectsPath, newEffect)
   }
@@ -402,8 +402,9 @@ export default class Character {
   groupAddEffects = async (effectsToAdd: EffectId[]) => {
     const effectsPath = dbKeys.char(this.charId).effects
     const effects = effectsToAdd.map(el => {
-      const endTs = this.getEffectLength(effectsMap[el])
-      const data = { id: el, startTs: this.date.getTime() / 1000, endTs }
+      const length = this.getEffectLengthInH(effectsMap[el])
+      const endTs = length ? new Date(this.date.getTime() + length * 3600 * 1000) : null
+      const data = { id: el, startTs: this.date, endTs }
       return { data, containerUrl: effectsPath }
     })
     return groupAddCollectible(effects)

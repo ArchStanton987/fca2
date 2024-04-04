@@ -20,7 +20,6 @@ export default class Squad {
       membersRecord: computed,
       //
       date: computed,
-      ts: computed,
       //
       data: computed
     })
@@ -38,12 +37,8 @@ export default class Squad {
     return res
   }
 
-  get date() {
-    return new Date(this.dbSquad.datetime * 1000)
-  }
-
-  get ts() {
-    return this.dbSquad.datetime
+  get date(): Date {
+    return new Date(this.dbSquad.datetime)
   }
 
   get data() {
@@ -52,13 +47,13 @@ export default class Squad {
     return { ...this.dbSquad, date, members }
   }
 
-  async setDatetime(datetime: Date, characters: Record<string, Character>) {
+  async setDatetime(newDate: Date, characters: Record<string, Character>) {
     const promises = []
     Object.values(characters).forEach(character => {
-      promises.push(character.onChangeDate(datetime))
+      promises.push(character.onChangeDate(newDate))
     })
     const datetimeDbKey = dbKeys.squad(this.squadId).datetime
-    promises.push(updateValue(datetimeDbKey, datetime))
+    promises.push(updateValue(datetimeDbKey, newDate))
     return Promise.all(promises)
   }
 }

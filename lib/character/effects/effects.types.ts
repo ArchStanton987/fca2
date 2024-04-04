@@ -1,6 +1,6 @@
 import { Symptom } from "./symptoms.type"
 
-export type DbEffect = { id: EffectId; startTs?: number; endTs?: number }
+export type DbEffect = { id: EffectId; startTs?: string; endTs?: string }
 
 export type DbEffects = Record<string, DbEffect>
 
@@ -68,7 +68,7 @@ export type Effect = {
   id: EffectId
   data: EffectData
   dbKey?: string
-  startTs?: number
-  endTs?: number
+  startTs?: Date
+  endTs?: Date
   timeRemaining?: string | null
 }

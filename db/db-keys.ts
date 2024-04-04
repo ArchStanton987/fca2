@@ -1,8 +1,6 @@
-import { Squad } from "lib/squad/squad-types"
-
 const dbKeys = {
   squads: "/squads",
-  squad: (squadId: Squad["id"]) => ({
+  squad: (squadId: string) => ({
     index: `/squads/${squadId}`,
     members: `/squads/${squadId}/members`,
     datetime: `/squads/${squadId}/datetime`

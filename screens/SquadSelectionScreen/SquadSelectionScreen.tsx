@@ -2,8 +2,7 @@ import { ScrollView } from "react-native"
 
 import { useRouter } from "expo-router"
 
-import { DbObj } from "db/db-types"
-import { Squad } from "lib/squad/squad-types"
+import { DbSquad } from "lib/squad/squad-types"
 
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
@@ -18,8 +17,7 @@ import styles from "./SquadSelectionScreen.styles"
 
 export default function SquadSelectionScreen() {
   const router = useRouter()
-  // TODO: fix TS
-  const squadsObj: DbObj<Squad> = useDbSubscribe(dbKeys.squads)
+  const squadsObj: Record<string, DbSquad> | undefined = useDbSubscribe(dbKeys.squads)
   const squadsArray = squadsObj
     ? Object.entries(squadsObj).map(([id, squad]) => ({ ...squad, id }))
     : []
@@ -46,11 +44,11 @@ export default function SquadSelectionScreen() {
             key={squad.id}
             onPress={() => toSquad(squad.id)}
             onLongPress={() => onLongPress(squad.id)}
-            delayLongPress={5000}
+            delayLongPress={3000}
             style={styles.squadContainer}
           >
             <Txt style={styles.squadLabel}>{squad.label}</Txt>
-            <Txt style={styles.squadLabel}>{getDDMMYYYY(new Date(squad.datetime * 1000))}</Txt>
+            <Txt style={styles.squadLabel}>{getDDMMYYYY(new Date(squad.datetime))}</Txt>
           </RevertColorsPressable>
         ))}
       </WithItemSeparator>
