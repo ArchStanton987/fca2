@@ -13,6 +13,7 @@ export type ObjectExchangeState = {
   caps: number
 }
 
+// TODO: refactor to use a Map
 export const defaultObjectExchange: ObjectExchangeState = {
   weapons: {} as Record<WeaponId, number>,
   clothings: {} as Record<ClothingId, number>,

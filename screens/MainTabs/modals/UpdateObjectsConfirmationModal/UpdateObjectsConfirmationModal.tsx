@@ -23,6 +23,7 @@ export default function UpdateObjectsConfirmationModal() {
       objects: Object.entries(objects).map(([id, amount]) => ({ id, amount }))
     }))
 
+  // TODO: merge all update confirmations modals
   const onPressConfirm = () => {}
 
   return (
