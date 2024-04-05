@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import { TouchableOpacity, View } from "react-native"
 
-import { router } from "expo-router"
+import { router, useLocalSearchParams } from "expo-router"
 
 import ammoMap from "lib/objects/data/ammo/ammo"
 import { AmmoType } from "lib/objects/data/ammo/ammo.types"
@@ -30,6 +30,8 @@ import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useUpdateObjects } from "contexts/UpdateObjectsContext"
+import { UpdateObjectsModalParams } from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.params"
+import ScreenParams, { SearchParams } from "screens/ScreenParams"
 
 import styles from "./UpdateObjectsModal.styles"
 
@@ -73,7 +75,9 @@ const categories = Object.values(categoriesMap)
 
 export default function UpdateObjectsModal() {
   // TODO: add default selected cat & add as param
-  const [selectedCat, setSelectedCat] = useState<CategoryId>("weapons")
+  const localParams = useLocalSearchParams() as SearchParams<UpdateObjectsModalParams>
+  const { initCategory = "weapons" } = ScreenParams.fromLocalParams(localParams)
+  const [selectedCat, setSelectedCat] = useState<keyof ObjectExchangeState>(initCategory)
   const [selectedItem, setSelectedItem] = useState<SelectedItem>(null)
   const [selectedAmount, setSelectedAmount] = useState<number>(1)
   const [searchInput, setSearchInput] = useState("")
@@ -95,8 +99,7 @@ export default function UpdateObjectsModal() {
       type: "modObject",
       payload: {
         category: selectedCat,
-        // TODO: fix ts warning
-        id: selectedItem,
+        id: selectedItem as keyof ObjectExchangeState[typeof selectedCat],
         count,
         inInventory: inventory[selectedCat].filter(el => selectedItem === el.id).length || 0
       }

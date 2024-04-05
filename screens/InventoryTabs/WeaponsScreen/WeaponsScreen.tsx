@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Button, FlatList, View } from "react-native"
+import { FlatList, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
@@ -28,7 +28,7 @@ export default function WeaponsScreen() {
   const onPressAdd = () =>
     router.push({
       pathname: routes.modal.updateObjects,
-      params: { squadId: localParams.squadId, charId: localParams.charId }
+      params: { squadId: localParams.squadId, charId: localParams.charId, initCategory: "weapons" }
     })
 
   return (
@@ -50,11 +50,10 @@ export default function WeaponsScreen() {
       </Section>
       <Spacer x={10} />
       <View style={{ width: 130 }}>
-        <Button title="add" onPress={onPressAdd} />
-        <Section style={{ flex: 1 }}>
+        <Section style={{ width: 130, flexGrow: 1 }}>
           <WeaponsDetails charWeapon={selectedWeapon} />
         </Section>
-        <Section>
+        <Section style={{ width: 130 }}>
           <AddElement title="AJOUTER" onPressAdd={onPressAdd} />
         </Section>
       </View>

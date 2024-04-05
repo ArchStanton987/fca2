@@ -1,17 +1,24 @@
 import React, { useState } from "react"
-import { FlatList } from "react-native"
+import { FlatList, View } from "react-native"
+
+import { router, useLocalSearchParams } from "expo-router"
 
 import { Consumable } from "lib/objects/data/consumables/consumables.types"
 
+import AddElement from "components/AddElement"
+import { DrawerParams } from "components/Drawer/Drawer.params"
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
+import routes from "constants/routes"
 import { useInventory } from "contexts/InventoryContext"
 import ConsumableDetails from "screens/InventoryTabs/ConsumablesScreen/ConsumableDetails"
 import ConsumableRow, { ListHeader } from "screens/InventoryTabs/ConsumablesScreen/ConsumableRow"
+import { SearchParams } from "screens/ScreenParams"
 import { filterUnique } from "utils/array-utils"
 
 export default function ConsumablesScreen() {
+  const localParams = useLocalSearchParams<SearchParams<DrawerParams>>()
   const [selectedItem, setSelectedItem] = useState<Consumable | null>(null)
 
   const { consumables } = useInventory()
@@ -24,6 +31,16 @@ export default function ConsumablesScreen() {
       return { ...consumable, count }
     })
   )
+
+  const onPressAdd = () =>
+    router.push({
+      pathname: routes.modal.updateObjects,
+      params: {
+        squadId: localParams.squadId,
+        charId: localParams.charId,
+        initCategory: "consumables"
+      }
+    })
 
   return (
     <DrawerPage>
@@ -44,9 +61,14 @@ export default function ConsumablesScreen() {
         />
       </Section>
       <Spacer x={10} />
-      <Section style={{ width: 180 }}>
-        <ConsumableDetails charConsumable={selectedItem} />
-      </Section>
+      <View style={{ width: 180 }}>
+        <Section style={{ width: 180, flexGrow: 1 }}>
+          <ConsumableDetails charConsumable={selectedItem} />
+        </Section>
+        <Section style={{ width: 180 }}>
+          <AddElement title="AJOUTER" onPressAdd={onPressAdd} />
+        </Section>
+      </View>
     </DrawerPage>
   )
 }

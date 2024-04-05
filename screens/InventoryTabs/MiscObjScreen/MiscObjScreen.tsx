@@ -1,17 +1,24 @@
 import React, { useState } from "react"
-import { FlatList } from "react-native"
+import { FlatList, View } from "react-native"
+
+import { router, useLocalSearchParams } from "expo-router"
 
 import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
 
+import AddElement from "components/AddElement"
+import { DrawerParams } from "components/Drawer/Drawer.params"
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
+import routes from "constants/routes"
 import { useInventory } from "contexts/InventoryContext"
 import MiscObjDetails from "screens/InventoryTabs/MiscObjScreen/MiscObjDetails"
 import MiscObjRow, { ListHeader } from "screens/InventoryTabs/MiscObjScreen/MiscObjRow"
+import { SearchParams } from "screens/ScreenParams"
 import { filterUnique } from "utils/array-utils"
 
 export default function MiscObjScreen() {
+  const localParams = useLocalSearchParams<SearchParams<DrawerParams>>()
   const [selectedItem, setSelectedItem] = useState<MiscObject | null>(null)
 
   const { miscObjects } = useInventory()
@@ -24,6 +31,16 @@ export default function MiscObjScreen() {
       return { ...consumable, count }
     })
   )
+
+  const onPressAdd = () =>
+    router.push({
+      pathname: routes.modal.updateObjects,
+      params: {
+        squadId: localParams.squadId,
+        charId: localParams.charId,
+        initCategory: "miscObjects"
+      }
+    })
 
   return (
     <DrawerPage>
@@ -44,9 +61,14 @@ export default function MiscObjScreen() {
         />
       </Section>
       <Spacer x={10} />
-      <Section style={{ width: 180 }}>
-        <MiscObjDetails miscObj={selectedItem} />
-      </Section>
+      <View style={{ width: 180 }}>
+        <Section style={{ width: 180, flexGrow: 1 }}>
+          <MiscObjDetails miscObj={selectedItem} />
+        </Section>
+        <Section style={{ width: 180 }}>
+          <AddElement title="AJOUTER" onPressAdd={onPressAdd} />
+        </Section>
+      </View>
     </DrawerPage>
   )
 }
