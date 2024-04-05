@@ -472,8 +472,23 @@ export default class Character {
   }
 
   addToInv = async (obj: WeaponData | ClothingData | ConsumableData | MiscObjectData) => {
+    // TODO: check if consumable added has remainingUse in DB
     const { data, url } = this.getDbObj(obj)
     addCollectible(url, data)
+  }
+
+  // type CategoryList = {
+  //   category: string
+  //   objects: { id: string; label: string; amount: number }[]
+  // }[]
+  groupAddToInv = async (objects: (Weapon | Clothing | Consumable | MiscObject)[]) => {
+    // TODO
+    // const url = dbKeys.char(this.charId).inventory
+    // const objectsArr = objects.map(el => {
+    //   const { data } = this.getDbObj(el.data)
+    //   return { data, containerUrl: url }
+    // })
+    // return groupAddCollectible(objectsArr)
   }
 
   removeFromInv = async (obj: Weapon | Clothing | Consumable | MiscObject) => {

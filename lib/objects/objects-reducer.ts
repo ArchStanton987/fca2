@@ -4,21 +4,22 @@ import { ConsumableId } from "lib/objects/data/consumables/consumables.types"
 import { MiscObjectId } from "lib/objects/data/misc-objects/misc-objects-types"
 import { WeaponId } from "lib/objects/data/weapons/weapons.types"
 
+export type ObjectContentPayload = { amount: number; label: string }
 export type ObjectExchangeState = {
-  weapons: Record<WeaponId, number>
-  clothings: Record<ClothingId, number>
-  consumables: Record<ConsumableId, number>
-  miscObjects: Record<MiscObjectId, number>
-  ammo: Record<AmmoType, number>
+  weapons: Record<WeaponId, ObjectContentPayload>
+  clothings: Record<ClothingId, ObjectContentPayload>
+  consumables: Record<ConsumableId, ObjectContentPayload>
+  miscObjects: Record<MiscObjectId, ObjectContentPayload>
+  ammo: Record<AmmoType, ObjectContentPayload>
   caps: number
 }
 
 export const defaultObjectExchange: ObjectExchangeState = {
-  weapons: {} as Record<WeaponId, number>,
-  clothings: {} as Record<ClothingId, number>,
-  consumables: {} as Record<ConsumableId, number>,
-  miscObjects: {} as Record<MiscObjectId, number>,
-  ammo: {} as Record<AmmoType, number>,
+  weapons: {} as Record<WeaponId, ObjectContentPayload>,
+  clothings: {} as Record<ClothingId, ObjectContentPayload>,
+  consumables: {} as Record<ConsumableId, ObjectContentPayload>,
+  miscObjects: {} as Record<MiscObjectId, ObjectContentPayload>,
+  ammo: {} as Record<AmmoType, ObjectContentPayload>,
   caps: 0
 }
 
@@ -27,6 +28,7 @@ type ModObjectPayload<C extends Category> = {
   category: C
   id: keyof ObjectExchangeState[C]
   count: number
+  label: string
   inInventory: number
 }
 
@@ -41,13 +43,13 @@ const objectsReducer = (
 ): ObjectExchangeState => {
   switch (type) {
     case "modObject": {
-      const { category, id, count, inInventory } = payload
+      const { category, id, count, label, inInventory } = payload
       const prevValue = state[category][id] ?? 0
       let newValue = prevValue + count
       if (inInventory + newValue < 0) {
         newValue = -inInventory
       }
-      return { ...state, [category]: { ...state[category], [id]: newValue } }
+      return { ...state, [category]: { ...state[category], [id]: { amount: newValue, label } } }
     }
 
     case "modCaps": {

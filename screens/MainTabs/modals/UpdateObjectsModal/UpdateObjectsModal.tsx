@@ -13,7 +13,7 @@ import miscObjectsMap from "lib/objects/data/misc-objects/misc-objects"
 import { MiscObjectId } from "lib/objects/data/misc-objects/misc-objects-types"
 import weaponsMap from "lib/objects/data/weapons/weapons"
 import { WeaponId } from "lib/objects/data/weapons/weapons.types"
-import { ObjectExchangeState } from "lib/objects/objects-reducer"
+import { ObjectContentPayload, ObjectExchangeState } from "lib/objects/objects-reducer"
 
 import AmountSelector from "components/AmountSelector"
 import List from "components/List"
@@ -74,7 +74,6 @@ type SelectedItem = WeaponId | ClothingId | ConsumableId | MiscObjectId | AmmoTy
 const categories = Object.values(categoriesMap)
 
 export default function UpdateObjectsModal() {
-  // TODO: add default selected cat & add as param
   const localParams = useLocalSearchParams() as SearchParams<UpdateObjectsModalParams>
   const { initCategory = "weapons" } = ScreenParams.fromLocalParams(localParams)
   const [selectedCat, setSelectedCat] = useState<keyof ObjectExchangeState>(initCategory)
@@ -101,6 +100,7 @@ export default function UpdateObjectsModal() {
         category: selectedCat,
         id: selectedItem as keyof ObjectExchangeState[typeof selectedCat],
         count,
+        label: categoriesMap[selectedCat].data[selectedItem].label,
         inInventory: inventory[selectedCat].filter(el => selectedItem === el.id).length || 0
       }
     })
@@ -152,7 +152,8 @@ export default function UpdateObjectsModal() {
                 count = state.caps
               }
               if (selectedCat !== null) {
-                count = (state[selectedCat] as Record<string, number>)?.[item.id] || 0
+                count =
+                  (state[selectedCat] as Record<string, ObjectContentPayload>)[item.id]?.amount || 0
               }
               return (
                 <TouchableOpacity
