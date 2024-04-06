@@ -391,23 +391,26 @@ export default class Character {
   }
 
   addEffect = async (effectId: EffectId) => {
+    const hasEffect = this.effects.some(el => el.id === effectId)
+    if (hasEffect) return null
     const effectsPath = dbKeys.char(this.charId).effects
     const length = effectId && this.getEffectLengthInH(effectsMap[effectId])
     const startTs = this.date
     const endTs = length ? new Date(startTs.getTime() + length * 3600 * 1000) : null
     const newEffect = { id: effectId, startTs, endTs }
-    addCollectible(effectsPath, newEffect)
+    return addCollectible(effectsPath, newEffect)
   }
 
-  groupAddEffects = async (effectsToAdd: EffectId[]) => {
+  groupAddEffects = async (effects: EffectId[]) => {
+    const effectsToAdd = effects.filter(el => !this.effects.some(effect => effect.id === el))
     const effectsPath = dbKeys.char(this.charId).effects
-    const effects = effectsToAdd.map(el => {
+    const dbEffects = effectsToAdd.map(el => {
       const length = this.getEffectLengthInH(effectsMap[el])
       const endTs = length ? new Date(this.date.getTime() + length * 3600 * 1000) : null
       const data = { id: el, startTs: this.date, endTs }
       return { data, containerUrl: effectsPath }
     })
-    return groupAddCollectible(effects)
+    return groupAddCollectible(dbEffects)
   }
 
   removeEffect = async (dbKey: string) => {
@@ -424,24 +427,27 @@ export default class Character {
     return groupUpdateValue(updatesArr)
   }
 
-  consume = async ({ data, dbKey, remainingUse }: Consumable) => {
+  consume = async (consumable: Consumable) => {
     // TODO: apply modifiers
+
+    const { data, dbKey, remainingUse } = consumable
+    const promises = []
 
     const newEffectId = data.effectId
     if (newEffectId) {
-      this.addEffect(newEffectId)
+      promises.push(this.addEffect(newEffectId))
     }
 
-    const consumablePath = dbKeys.char(this.charId).inventory.consumables
-    const objectPath = consumablePath.concat(`/${dbKey}`)
-    if (typeof remainingUse === "number" && remainingUse === 1) {
-      await removeCollectible(objectPath)
+    const shouldRemoveObject = remainingUse === undefined || remainingUse <= 1
+    if (shouldRemoveObject) {
+      promises.push(this.removeFromInv(consumable))
+    } else {
+      const consumablePath = dbKeys.char(this.charId).inventory.consumables
+      const remainingUsePath = consumablePath.concat(`/${dbKey}`).concat("/remainingUse")
+      const updates = remainingUse - 1
+      promises.push(updateValue(remainingUsePath, updates))
     }
-    if (typeof remainingUse === "number" && remainingUse > 1) {
-      const remainingUsePath = objectPath.concat("/remainingUse")
-      const updates = { remainingUse: remainingUse - 1 }
-      await update(ref(database, remainingUsePath), updates)
-    }
+    return Promise.all(promises)
   }
 
   toggleEquip = async (obj: Weapon | Clothing) => {
@@ -494,6 +500,6 @@ export default class Character {
   removeFromInv = async (obj: Weapon | Clothing | Consumable | MiscObject) => {
     const { url } = this.getDbObj(obj.data)
     const objectPath = url.concat(`/${obj.dbKey}`)
-    removeCollectible(objectPath)
+    return removeCollectible(objectPath)
   }
 }
