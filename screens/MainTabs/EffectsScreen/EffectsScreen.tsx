@@ -3,8 +3,7 @@ import { FlatList, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import effectsMap from "lib/character/effects/effects"
-import { Effect, EffectId } from "lib/character/effects/effects.types"
+import { Effect } from "lib/character/effects/effects.types"
 
 import AddElement from "components/AddElement"
 import { DrawerParams } from "components/Drawer/Drawer.params"
@@ -19,7 +18,7 @@ import { SearchParams } from "screens/ScreenParams"
 
 export default function EffectsScreen() {
   const { squadId, charId } = useLocalSearchParams<SearchParams<DrawerParams>>()
-  const [selectedId, setSelectedId] = useState<EffectId | null>(null)
+  const [selectedId, setSelectedId] = useState<Effect["dbKey"] | null>(null)
 
   const { effects, removeEffect } = useCharacter()
 
@@ -31,6 +30,8 @@ export default function EffectsScreen() {
     setSelectedId(null)
     removeEffect(dbKey)
   }
+
+  const selectedEffect = effects.find(effect => effect.dbKey === selectedId)
 
   return (
     <DrawerPage style={{ flex: 1 }}>
@@ -45,7 +46,7 @@ export default function EffectsScreen() {
               <EffectRow
                 isSelected={isSelected}
                 effect={item}
-                onPress={() => setSelectedId(item.id)}
+                onPress={() => setSelectedId(item.dbKey)}
                 onPressDelete={() => onPressDelete(item.dbKey)}
               />
             )
@@ -57,7 +58,7 @@ export default function EffectsScreen() {
         <Section style={{ width: 200, flexGrow: 1 }}>
           <Txt>DESCRIPTION</Txt>
           <Spacer y={10} />
-          <Txt>{selectedId && effectsMap[selectedId].description}</Txt>
+          <Txt>{!!selectedEffect && selectedEffect.data.description}</Txt>
         </Section>
         <Section style={{ width: 200 }}>
           <AddElement title="AJOUTER UN EFFET" onPressAdd={onPressAdd} />

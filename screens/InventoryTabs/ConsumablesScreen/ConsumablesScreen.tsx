@@ -19,7 +19,7 @@ import { filterUnique } from "utils/array-utils"
 
 export default function ConsumablesScreen() {
   const localParams = useLocalSearchParams<SearchParams<DrawerParams>>()
-  const [selectedItem, setSelectedItem] = useState<Consumable | null>(null)
+  const [selectedItem, setSelectedItem] = useState<Consumable["dbKey"] | null>(null)
 
   const { consumables } = useInventory()
 
@@ -53,9 +53,9 @@ export default function ConsumablesScreen() {
           renderItem={({ item }) => (
             <ConsumableRow
               charConsumable={item}
-              isSelected={item.id === selectedItem?.id}
+              isSelected={item.dbKey === selectedItem}
               count={item.count}
-              onPress={() => setSelectedItem(item)}
+              onPress={() => setSelectedItem(item.dbKey)}
             />
           )}
         />
@@ -63,7 +63,7 @@ export default function ConsumablesScreen() {
       <Spacer x={10} />
       <View style={{ width: 180 }}>
         <Section style={{ width: 180, flexGrow: 1 }}>
-          <ConsumableDetails charConsumable={selectedItem} />
+          <ConsumableDetails dbKey={selectedItem} />
         </Section>
         <Section style={{ width: 180 }}>
           <AddElement title="AJOUTER" onPressAdd={onPressAdd} />

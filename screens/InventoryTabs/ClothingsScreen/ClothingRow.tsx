@@ -1,4 +1,4 @@
-import { Pressable, PressableProps, View } from "react-native"
+import { Pressable, PressableProps, TouchableOpacity, View } from "react-native"
 
 import { AntDesign } from "@expo/vector-icons"
 import combatModsMap from "lib/character/combat/combat-mods"
@@ -96,9 +96,12 @@ export default function ClothingRow({ clothing, isSelected, ...rest }: ClothingR
       <View style={styles.damageContainer}>
         <Txt>{malus}</Txt>
       </View>
-      <View style={styles.deleteContainer}>
+      <TouchableOpacity
+        style={styles.deleteContainer}
+        onPress={() => character.removeFromInv(clothing)}
+      >
         {isSelected && <AntDesign name="delete" size={17} color={colors.secColor} />}
-      </View>
+      </TouchableOpacity>
     </Pressable>
   )
 }

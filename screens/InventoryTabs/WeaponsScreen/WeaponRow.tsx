@@ -1,5 +1,5 @@
 import React from "react"
-import { Pressable, PressableProps, View } from "react-native"
+import { Pressable, PressableProps, TouchableOpacity, View } from "react-native"
 
 import { AntDesign } from "@expo/vector-icons"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
@@ -67,9 +67,12 @@ export default function WeaponRow({ weapon, isSelected, ...rest }: WeaponRowProp
       <View style={styles.ammoContainer}>
         <Txt>{ammo || "-"}</Txt>
       </View>
-      <View style={styles.deleteContainer}>
+      <TouchableOpacity
+        style={styles.deleteContainer}
+        onPress={() => character.removeFromInv(weapon)}
+      >
         {isSelected && <AntDesign name="delete" size={17} color={colors.secColor} />}
-      </View>
+      </TouchableOpacity>
     </Pressable>
   )
 }

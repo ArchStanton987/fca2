@@ -1,5 +1,5 @@
 import React from "react"
-import { Pressable, PressableProps, View } from "react-native"
+import { Pressable, PressableProps, TouchableOpacity, View } from "react-native"
 
 import { AntDesign } from "@expo/vector-icons"
 import { changeableAttributesMap } from "lib/character/effects/changeable-attr"
@@ -7,6 +7,7 @@ import effectsMap from "lib/character/effects/effects"
 import { Consumable } from "lib/objects/data/consumables/consumables.types"
 
 import Txt from "components/Txt"
+import { useCharacter } from "contexts/CharacterContext"
 import colors from "styles/colors"
 
 import styles from "./ConsumableRow.styles"
@@ -37,6 +38,7 @@ export default function ConsumableRow({
   isSelected,
   ...rest
 }: ConsumableRowProps) {
+  const character = useCharacter()
   const { label, effectId, challengeLabel } = charConsumable.data
   const symptoms = effectId ? effectsMap[effectId].symptoms : []
   const countAppend = count > 1 ? ` (${count})` : ""
@@ -59,9 +61,12 @@ export default function ConsumableRow({
           : "-"}
         {challengeLabel && <Txt>{challengeLabel}</Txt>}
       </View>
-      <View style={styles.deleteContainer}>
+      <TouchableOpacity
+        style={styles.deleteContainer}
+        onPress={() => character.removeFromInv(charConsumable)}
+      >
         {isSelected && <AntDesign name="delete" size={17} color={colors.secColor} />}
-      </View>
+      </TouchableOpacity>
     </Pressable>
   )
 }
