@@ -1,48 +1,76 @@
-import { View } from "react-native"
+import { StyleSheet, View } from "react-native"
 
-import { ObjectExchangeState } from "lib/objects/objects-reducer"
+import { router } from "expo-router"
 
 import ModalCta from "components/ModalCta/ModalCta"
 import ScrollableSection from "components/ScrollableSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import ModalBody from "components/wrappers/ModalBody"
+import routes from "constants/routes"
+import { useCharacter } from "contexts/CharacterContext"
 import { useUpdateObjects } from "contexts/UpdateObjectsContext"
+import colors from "styles/colors"
 
 import { categoriesMap } from "../UpdateObjectsModal/UpdateObjectsModal"
 
-type CategoryList = {
-  category: string
-  objects: { id: string; label: string; amount: number }[]
-}[]
+const styles = StyleSheet.create({
+  section: {
+    flex: 1,
+    width: 300,
+    alignSelf: "center"
+  },
+  category: {
+    textAlign: "center",
+    backgroundColor: colors.terColor,
+    padding: 4
+  },
+  listItemContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 2
+  }
+})
 
 export default function UpdateObjectsConfirmationModal() {
   const { state } = useUpdateObjects()
-  const categoryList: CategoryList = Object.entries(state)
+  const character = useCharacter()
+  const categoryList = Object.entries(state)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    .filter(([_, objects]) => Object.values(objects).some(el => el > 0))
+    .filter(([_, objects]) => Object.values(objects).some(el => el.count !== 0))
     .map(([category, objects]) => ({
       category,
-      objects: Object.entries(objects).map(([id, content]) => ({ ...content, id }))
+      objects: Object.entries(objects)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        .filter(([_, content]) => content.count > 0)
+        .map(([id, content]) => ({ ...content, id }))
     }))
 
-  // TODO: merge all update confirmations modals
-  const onPressConfirm = () => {}
+  const onPressConfirm = () => {
+    // TODO: add apropriate redirection
+    character.groupAddToInv(state)
+    router.replace({
+      pathname: routes.inventory.weapons
+      // params: { charId, squadId }
+    })
+  }
 
   return (
     <ModalBody>
-      <Spacer y={30} />
+      <Spacer y={10} />
       <Txt style={{ textAlign: "center" }}>
         Vous êtes sur le point d&apos;effectuer les modifications suivantes :
       </Txt>
-      <ScrollableSection title="OBJETS" style={{ flex: 1, width: 300, alignSelf: "center" }}>
+      <ScrollableSection title="MODIFICATIONS" style={styles.section}>
         {categoryList.map(cat => (
           <View key={cat.category}>
-            <Txt>{categoriesMap[cat.category as keyof ObjectExchangeState].label}</Txt>
+            <Txt style={styles.category}>
+              {categoriesMap[cat.category as keyof typeof categoriesMap].label.toUpperCase()}
+            </Txt>
             {cat.objects.map(obj => (
-              <View key={obj.id} style={{ flexDirection: "row", justifyContent: "space-between" }}>
+              <View key={obj.id} style={styles.listItemContainer}>
                 <Txt>{obj.label}</Txt>
-                <Txt>x{obj.amount}</Txt>
+                <Txt>x{obj.count}</Txt>
               </View>
             ))}
           </View>

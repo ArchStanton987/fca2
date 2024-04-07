@@ -1,65 +1,42 @@
-import { AmmoType } from "lib/objects/data/ammo/ammo.types"
-import { ClothingId } from "lib/objects/data/clothings/clothings.types"
-import { ConsumableId } from "lib/objects/data/consumables/consumables.types"
-import { MiscObjectId } from "lib/objects/data/misc-objects/misc-objects-types"
-import { WeaponId } from "lib/objects/data/weapons/weapons.types"
-
-export type ObjectContentPayload = { amount: number; label: string }
-export type ObjectExchangeState = {
-  weapons: Record<WeaponId, ObjectContentPayload>
-  clothings: Record<ClothingId, ObjectContentPayload>
-  consumables: Record<ConsumableId, ObjectContentPayload>
-  miscObjects: Record<MiscObjectId, ObjectContentPayload>
-  ammo: Record<AmmoType, ObjectContentPayload>
-  caps: number
+export const defaultObjectExchange = {
+  weapons: {} as Record<string, { count: number; label: string; inInventory: number }>,
+  clothings: {} as Record<string, { count: number; label: string; inInventory: number }>,
+  consumables: {} as Record<string, { count: number; label: string; inInventory: number }>,
+  miscObjects: {} as Record<string, { count: number; label: string; inInventory: number }>,
+  ammo: {} as Record<string, { count: number; label: string; inInventory: number }>,
+  caps: {} as Record<string, { count: number; label: string; inInventory: number }>
 }
 
-export const defaultObjectExchange: ObjectExchangeState = {
-  weapons: {} as Record<WeaponId, ObjectContentPayload>,
-  clothings: {} as Record<ClothingId, ObjectContentPayload>,
-  consumables: {} as Record<ConsumableId, ObjectContentPayload>,
-  miscObjects: {} as Record<MiscObjectId, ObjectContentPayload>,
-  ammo: {} as Record<AmmoType, ObjectContentPayload>,
-  caps: 0
-}
-
-type Category = Exclude<keyof ObjectExchangeState, "caps">
-type ModObjectPayload<C extends Category> = {
-  category: C
-  id: keyof ObjectExchangeState[C]
+export type AddObjectPayload = {
+  category: keyof typeof defaultObjectExchange
+  id: string
   count: number
   label: string
   inInventory: number
 }
 
+export type ExchangeState = typeof defaultObjectExchange
+
 export type UpdateObjectAction =
-  | { type: "modObject"; payload: ModObjectPayload<Category> }
-  | { type: "modCaps"; payload: { count: number; inInventory: number } }
+  | { type: "modObject"; payload: AddObjectPayload }
   | { type: "reset"; payload?: undefined }
 
 const objectsReducer = (
-  state: ObjectExchangeState,
+  state: ExchangeState,
   { type, payload }: UpdateObjectAction
-): ObjectExchangeState => {
+): ExchangeState => {
   switch (type) {
     case "modObject": {
       const { category, id, count, label, inInventory } = payload
-      const prevValue = state[category][id] ?? 0
+      const prevValue = state[category][id]?.count ?? 0
       let newValue = prevValue + count
       if (inInventory + newValue < 0) {
         newValue = -inInventory
       }
-      return { ...state, [category]: { ...state[category], [id]: { amount: newValue, label } } }
-    }
-
-    case "modCaps": {
-      const { count, inInventory } = payload
-      const prevValue = state.caps
-      let newValue = prevValue + count
-      if (inInventory + newValue < 0) {
-        newValue = -inInventory
+      return {
+        ...state,
+        [category]: { ...state[category], [id]: { count: newValue, label, inInventory } }
       }
-      return { ...state, caps: newValue }
     }
 
     case "reset": {

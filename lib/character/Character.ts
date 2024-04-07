@@ -1,6 +1,4 @@
-import database from "config/firebase"
 import dbKeys from "db/db-keys"
-import { ref, update } from "firebase/database"
 import { getRandomArbitrary } from "lib/common/utils/dice-calc"
 import { getRemainingTime } from "lib/common/utils/time-calc"
 import {
@@ -9,9 +7,11 @@ import {
   ClothingId,
   DbClothing
 } from "lib/objects/data/clothings/clothings.types"
+import consumablesMap from "lib/objects/data/consumables/consumables"
 import {
   Consumable,
   ConsumableData,
+  ConsumableId,
   DbConsumable
 } from "lib/objects/data/consumables/consumables.types"
 import {
@@ -22,6 +22,7 @@ import {
 import { DbEquipedObjects, DbInventory } from "lib/objects/data/objects.types"
 import weaponsMap from "lib/objects/data/weapons/weapons"
 import { DbWeapon, Weapon, WeaponData } from "lib/objects/data/weapons/weapons.types"
+import { ExchangeState } from "lib/objects/objects-reducer"
 import { computed, makeObservable, observable } from "mobx"
 
 import {
@@ -79,7 +80,7 @@ export default class Character {
     this.dbAbilities = obj.abilities
     this.dbEffects = obj.effects || {}
     this.dbEquipedObjects = obj.equipedObj || {}
-    this.dbInventory = obj.inventory || {}
+    this.dbInventory = obj.inventory || { caps: 0 }
     this.status = obj.status
     this.date = date
 
@@ -378,7 +379,7 @@ export default class Character {
       containerUrl: effectsUrl
     }))
     const newLimbsHp = this.getNewLimbsHp(newDate)
-    const statusUrl = dbKeys.char(this.charId).status
+    const statusUrl = dbKeys.char(this.charId).status.index
     const limbsArr = Object.entries(newLimbsHp).map(([id, value]) => ({
       url: statusUrl.concat(`/${id}`),
       data: value
@@ -419,7 +420,7 @@ export default class Character {
   }
 
   updateStatus = async (updates: Partial<DbStatus>) => {
-    const statusPath = dbKeys.char(this.charId).status
+    const statusPath = dbKeys.char(this.charId).status.index
     const updatesArr = Object.entries(updates).map(([id, value]) => ({
       url: statusPath.concat(`/${id}`),
       data: value
@@ -473,28 +474,65 @@ export default class Character {
     const isConsumable = "effectId" in obj
     if (isWeapon) return { data: { id: obj.id }, url: url.weapons }
     if (isCloth) return { data: { id: obj.id }, url: url.clothings }
-    if (isConsumable) return { data: { id: obj.id }, url: url.consumables }
-    return { data: { id: obj.id }, url: url.objects }
+    if (isConsumable)
+      return {
+        data: { id: obj.id, remainingUse: consumablesMap[obj.id].maxUsage },
+        url: url.consumables
+      }
+    return { data: { id: obj.id }, url: url.miscObjects }
   }
 
-  addToInv = async (obj: WeaponData | ClothingData | ConsumableData | MiscObjectData) => {
-    // TODO: check if consumable added has remainingUse in DB
-    const { data, url } = this.getDbObj(obj)
-    addCollectible(url, data)
-  }
-
-  // type CategoryList = {
-  //   category: string
-  //   objects: { id: string; label: string; amount: number }[]
-  // }[]
-  groupAddToInv = async (objects: (Weapon | Clothing | Consumable | MiscObject)[]) => {
-    // TODO
-    // const url = dbKeys.char(this.charId).inventory
-    // const objectsArr = objects.map(el => {
-    //   const { data } = this.getDbObj(el.data)
-    //   return { data, containerUrl: url }
-    // })
-    // return groupAddCollectible(objectsArr)
+  groupAddToInv = async (state: ExchangeState) => {
+    // TODO: allow to remove at the same time
+    const promises = []
+    const { caps, ammo, weapons, clothings, consumables, miscObjects } = state
+    const capsUpdates = Object.values(caps).map(content => {
+      const url = dbKeys.char(this.charId).inventory.caps
+      return { url, data: content.inInventory + content.count }
+    })
+    promises.push(groupUpdateValue(capsUpdates))
+    const ammoUpdates = Object.entries(ammo).map(([id, content]) => {
+      const url = dbKeys.char(this.charId).inventory.ammo.concat(`/${id}`)
+      const data = content.inInventory + content.count
+      return { url, data }
+    })
+    promises.push(groupUpdateValue(ammoUpdates))
+    const weaponsUpdates: { containerUrl: string; data: any }[] = []
+    Object.entries(weapons).forEach(([id, content]) => {
+      const containerUrl = dbKeys.char(this.charId).inventory.weapons
+      for (let i = 0; i < content.count; i += 1) {
+        weaponsUpdates.push({ containerUrl, data: { id } })
+      }
+    })
+    promises.push(groupAddCollectible(weaponsUpdates))
+    const clothingsUpdates: { containerUrl: string; data: any }[] = []
+    Object.entries(clothings).forEach(([id, content]) => {
+      const containerUrl = dbKeys.char(this.charId).inventory.clothings
+      for (let i = 0; i < content.count; i += 1) {
+        clothingsUpdates.push({ containerUrl, data: { id } })
+      }
+    })
+    promises.push(groupAddCollectible(clothingsUpdates))
+    const consumablesUpdates: { containerUrl: string; data: any }[] = []
+    Object.entries(consumables).forEach(([id, content]) => {
+      const containerUrl = dbKeys.char(this.charId).inventory.consumables
+      for (let i = 0; i < content.count; i += 1) {
+        consumablesUpdates.push({
+          containerUrl,
+          data: { id, remainingUse: consumablesMap[id as ConsumableId].maxUsage }
+        })
+      }
+    })
+    promises.push(groupAddCollectible(consumablesUpdates))
+    const miscObjectsUpdates: { containerUrl: string; data: any }[] = []
+    Object.entries(miscObjects).forEach(([id, content]) => {
+      const containerUrl = dbKeys.char(this.charId).inventory.miscObjects
+      for (let i = 0; i < content.count; i += 1) {
+        miscObjectsUpdates.push({ containerUrl, data: { id } })
+      }
+    })
+    promises.push(groupAddCollectible(miscObjectsUpdates))
+    return Promise.all(promises)
   }
 
   removeFromInv = async (obj: Weapon | Clothing | Consumable | MiscObject) => {

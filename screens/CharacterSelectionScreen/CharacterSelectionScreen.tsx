@@ -2,8 +2,6 @@ import { View } from "react-native"
 
 import { useLocalSearchParams, useRouter } from "expo-router"
 
-import { SquadMember } from "lib/squad/squad-types"
-
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import RevertColorsPressable from "components/wrappers/RevertColorsPressable/RevertColorsPressable"
@@ -14,13 +12,12 @@ import { CharacterSelectionScreenParams } from "screens/CharacterSelectionScreen
 import { SearchParams } from "screens/ScreenParams"
 
 import dbKeys from "../../db/db-keys"
-import { DbObj } from "../../db/db-types"
 import styles from "./CharacterSelectionScreen.styles"
 
 export default function CharacterSelectionScreen() {
   const router = useRouter()
   const { squadId } = useLocalSearchParams() as SearchParams<CharacterSelectionScreenParams>
-  const squadMembers: DbObj<SquadMember> = useDbSubscribe(dbKeys.squad(squadId).members)
+  const squadMembers = useDbSubscribe(dbKeys.squad(squadId).members)
   const members = squadMembers
     ? Object.entries(squadMembers).map(([id, member]) => ({ ...member, id }))
     : []

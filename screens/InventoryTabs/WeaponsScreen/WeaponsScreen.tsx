@@ -25,6 +25,7 @@ export default function WeaponsScreen() {
   const toggleSelect = (weapon: Weapon) =>
     setSelectedWeapon(prev => (prev?.dbKey === weapon.dbKey ? null : weapon))
 
+  // TODO: use context to get params (not url, which doesn't seem to be reliable)
   const onPressAdd = () =>
     router.push({
       pathname: routes.modal.updateObjects,

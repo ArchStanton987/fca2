@@ -14,5 +14,6 @@ export type DbInventory = {
   clothings?: Record<string, DbClothing>
   consumables?: Record<string, DbConsumable>
   weapons?: Record<string, DbWeapon>
-  objects?: Record<string, DbMiscObject>
+  miscObjects?: Record<string, DbMiscObject>
+  caps: number
 }

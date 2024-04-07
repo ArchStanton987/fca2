@@ -46,6 +46,13 @@ export default class Inventory {
       consumables: computed,
       miscObjects: computed,
       ammo: computed,
+      caps: computed,
+      //
+      weaponsRecord: computed,
+      clothingsRecord: computed,
+      consumablesRecord: computed,
+      miscObjectsRecord: computed,
+      ammoRecord: computed,
       //
       inventory: computed,
 
@@ -93,7 +100,7 @@ export default class Inventory {
   }
 
   get miscObjects(): MiscObject[] {
-    return Object.entries(this.dbInventory.objects || {}).map(([dbKey, { id }]) => ({
+    return Object.entries(this.dbInventory.miscObjects || {}).map(([dbKey, { id }]) => ({
       data: miscObjectsMap[id],
       dbKey,
       id
@@ -108,6 +115,10 @@ export default class Inventory {
         .map(([id, amount]) => ({ data: ammoMap[id as AmmoType], id: id as AmmoType, amount }))
         .sort((a, b) => b.amount - a.amount)
     )
+  }
+
+  get caps(): number {
+    return this.dbInventory.caps || 0
   }
 
   get weaponsRecord() {
@@ -155,7 +166,7 @@ export default class Inventory {
       weapons: this.weaponsRecord,
       clothings: this.clothingsRecord,
       consumables: this.consumablesRecord,
-      objects: this.miscObjectsRecord,
+      miscObjects: this.miscObjectsRecord,
       ammo: this.ammoRecord
     }
   }

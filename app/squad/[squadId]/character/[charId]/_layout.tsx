@@ -44,7 +44,7 @@ export default function CharStack() {
   const effects: DbCollection<DbEffects> = useDbSubscribe(dbCharUrl.effects)
   const equipedObj: DbCollection<DbEquipedObjects> = useDbSubscribe(dbCharUrl.equipedObjects.index)
   const inventory: DbCollection<DbInventory> = useDbSubscribe(dbCharUrl.inventory.index)
-  const status: DbRecord<DbStatus> = useDbSubscribe(dbCharUrl.status)
+  const status: DbRecord<DbStatus> = useDbSubscribe(dbCharUrl.status.index)
 
   const character = useMemo(() => {
     const dbCharData = { abilities, effects, equipedObj, inventory, status }

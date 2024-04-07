@@ -27,9 +27,7 @@
           "kSwimming": 1,
           "kTracking": 1
         },
-        "traits": [
-          "strongHand"
-        ],
+        "traits": ["strongHand"],
         "upSkills": {
           "aid": 10,
           "barter": 0,
@@ -289,9 +287,7 @@
           "kSwimming": 1,
           "kTracking": 2
         },
-        "traits": [
-          "bruiser"
-        ],
+        "traits": ["bruiser"],
         "upSkills": {
           "aid": 0,
           "barter": 0,
@@ -481,14 +477,8 @@
           "kThrowingWeapons": 1,
           "kUnarmed": 2
         },
-        "perks": [
-          "concentration",
-          "falconEye"
-        ],
-        "traits": [
-          "lunatic",
-          "smallFrame"
-        ],
+        "perks": ["concentration", "falconEye"],
+        "traits": ["lunatic", "smallFrame"],
         "upSkills": {
           "aid": 12,
           "barter": 0,
@@ -580,13 +570,8 @@
           "kStunt": 1,
           "kUnarmed": 1
         },
-        "perks": [
-          "concentration",
-          "moreCrits"
-        ],
-        "traits": [
-          "finesse"
-        ],
+        "perks": ["concentration", "moreCrits"],
+        "traits": ["finesse"],
         "upSkills": {
           "aid": 0,
           "barter": 0,
@@ -680,13 +665,8 @@
           "kTwoHandedWeapons": 1,
           "kUnarmed": 4
         },
-        "perks": [
-          "physEducation"
-        ],
-        "traits": [
-          "fastMetabolism",
-          "skilled"
-        ],
+        "perks": ["physEducation"],
+        "traits": ["fastMetabolism", "skilled"],
         "upSkills": {
           "aid": 0,
           "barter": 0,
@@ -778,10 +758,7 @@
           "kThrowingWeapons": 2,
           "kTracking": 2
         },
-        "traits": [
-          "smallFrame",
-          "mrFast"
-        ],
+        "traits": ["smallFrame", "mrFast"],
         "upSkills": {
           "aid": 0,
           "barter": 0,

@@ -1,9 +1,9 @@
 import { createContext, useContext } from "react"
 
-import { ObjectExchangeState, UpdateObjectAction } from "lib/objects/objects-reducer"
+import { ExchangeState, UpdateObjectAction } from "lib/objects/objects-reducer"
 
 type UpdateObjectsContextType = {
-  state: ObjectExchangeState
+  state: ExchangeState
   dispatch: React.Dispatch<UpdateObjectAction>
 }
 

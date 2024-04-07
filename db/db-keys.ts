@@ -1,30 +1,33 @@
 const dbKeys = {
-  squads: "/squads",
+  squads: "/v2/squads",
   squad: (squadId: string) => ({
-    index: `/squads/${squadId}`,
-    members: `/squads/${squadId}/members`,
-    datetime: `/squads/${squadId}/datetime`
+    index: `/v2/squads/${squadId}`,
+    members: `/v2/squads/${squadId}/members`,
+    datetime: `/v2/squads/${squadId}/datetime`
   }),
   char: (charId: string) => ({
-    index: `/characters/${charId}`,
-    abilities: `/characters/${charId}/abilities`,
-    knowledges: `/characters/${charId}/abilities/knowledges`,
-    baseSpecial: `/characters/${charId}/abilities/baseSPECIAL`,
-    effects: `/characters/${charId}/effects`,
+    index: `/v2/characters/${charId}`,
+    abilities: `/v2/characters/${charId}/abilities`,
+    knowledges: `/v2/characters/${charId}/abilities/knowledges`,
+    baseSpecial: `/v2/characters/${charId}/abilities/baseSPECIAL`,
+    effects: `/v2/characters/${charId}/effects`,
     inventory: {
-      index: `/characters/${charId}/inventory`,
-      ammo: `/characters/${charId}/inventory/ammo`,
-      weapons: `/characters/${charId}/inventory/weapons`,
-      clothings: `/characters/${charId}/inventory/clothings`,
-      consumables: `/characters/${charId}/inventory/consumables`,
-      objects: `/characters/${charId}/inventory/objects`
+      index: `/v2/characters/${charId}/inventory`,
+      ammo: `/v2/characters/${charId}/inventory/ammo`,
+      caps: `/v2/characters/${charId}/status/caps`,
+      weapons: `/v2/characters/${charId}/inventory/weapons`,
+      clothings: `/v2/characters/${charId}/inventory/clothings`,
+      consumables: `/v2/characters/${charId}/inventory/consumables`,
+      miscObjects: `/v2/characters/${charId}/inventory/objects`
     },
     equipedObjects: {
-      index: `/characters/${charId}/equipedObj`,
-      weapons: `/characters/${charId}/equipedObj/weapons`,
-      clothings: `/characters/${charId}/equipedObj/clothings`
+      index: `/v2/characters/${charId}/equipedObj`,
+      weapons: `/v2/characters/${charId}/equipedObj/weapons`,
+      clothings: `/v2/characters/${charId}/equipedObj/clothings`
     },
-    status: `/characters/${charId}/status`
+    status: {
+      index: `/v2/characters/${charId}/status`
+    }
   })
 }
 

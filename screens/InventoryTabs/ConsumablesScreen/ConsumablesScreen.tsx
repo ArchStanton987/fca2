@@ -11,6 +11,7 @@ import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
 import routes from "constants/routes"
+import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import ConsumableDetails from "screens/InventoryTabs/ConsumablesScreen/ConsumableDetails"
 import ConsumableRow, { ListHeader } from "screens/InventoryTabs/ConsumablesScreen/ConsumableRow"
@@ -22,6 +23,7 @@ export default function ConsumablesScreen() {
   const [selectedItem, setSelectedItem] = useState<Consumable["dbKey"] | null>(null)
 
   const { consumables } = useInventory()
+  const character = useCharacter()
 
   // TODO: GROUP in Inventory class
   const groupedConsumables = filterUnique(
@@ -42,6 +44,11 @@ export default function ConsumablesScreen() {
       }
     })
 
+  const onDelete = (item: Consumable) => {
+    character.removeFromInv(item)
+    setSelectedItem(null)
+  }
+
   return (
     <DrawerPage>
       <Section style={{ flex: 1 }}>
@@ -56,6 +63,7 @@ export default function ConsumablesScreen() {
               isSelected={item.dbKey === selectedItem}
               count={item.count}
               onPress={() => setSelectedItem(item.dbKey)}
+              onDelete={() => onDelete(item)}
             />
           )}
         />

@@ -7,7 +7,6 @@ import effectsMap from "lib/character/effects/effects"
 import { Consumable } from "lib/objects/data/consumables/consumables.types"
 
 import Txt from "components/Txt"
-import { useCharacter } from "contexts/CharacterContext"
 import colors from "styles/colors"
 
 import styles from "./ConsumableRow.styles"
@@ -30,15 +29,16 @@ type ConsumableRowProps = PressableProps & {
   charConsumable: Consumable
   count: number
   isSelected: boolean
+  onDelete: (item: Consumable) => void
 }
 
 export default function ConsumableRow({
   charConsumable,
   count,
   isSelected,
+  onDelete,
   ...rest
 }: ConsumableRowProps) {
-  const character = useCharacter()
   const { label, effectId, challengeLabel } = charConsumable.data
   const symptoms = effectId ? effectsMap[effectId].symptoms : []
   const countAppend = count > 1 ? ` (${count})` : ""
@@ -61,10 +61,7 @@ export default function ConsumableRow({
           : "-"}
         {challengeLabel && <Txt>{challengeLabel}</Txt>}
       </View>
-      <TouchableOpacity
-        style={styles.deleteContainer}
-        onPress={() => character.removeFromInv(charConsumable)}
-      >
+      <TouchableOpacity style={styles.deleteContainer} onPress={() => onDelete(charConsumable)}>
         {isSelected && <AntDesign name="delete" size={17} color={colors.secColor} />}
       </TouchableOpacity>
     </Pressable>
