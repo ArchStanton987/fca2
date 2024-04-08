@@ -98,7 +98,7 @@ export default function ClothingRow({ clothing, isSelected, ...rest }: ClothingR
       </View>
       <TouchableOpacity
         style={styles.deleteContainer}
-        onPress={() => character.removeFromInv(clothing)}
+        onPress={() => character.removeFromInv(clothing, isEquiped)}
       >
         {isSelected && <AntDesign name="delete" size={17} color={colors.secColor} />}
       </TouchableOpacity>

@@ -69,7 +69,7 @@ export default function WeaponRow({ weapon, isSelected, ...rest }: WeaponRowProp
       </View>
       <TouchableOpacity
         style={styles.deleteContainer}
-        onPress={() => character.removeFromInv(weapon)}
+        onPress={() => character.removeFromInv(weapon, isEquiped)}
       >
         {isSelected && <AntDesign name="delete" size={17} color={colors.secColor} />}
       </TouchableOpacity>

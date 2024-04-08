@@ -4,6 +4,9 @@
 -- update status modal
 -- update status confirmation modal
 
+create Class for objects
+-> methode remove
+
 PERF:
 - try removing screen params (charId, squadId) and replace by context API
 - replace Drawer with a Stack, drawer will be a view in a layout

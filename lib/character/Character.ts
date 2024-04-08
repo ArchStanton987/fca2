@@ -535,9 +535,22 @@ export default class Character {
     return Promise.all(promises)
   }
 
-  removeFromInv = async (obj: Weapon | Clothing | Consumable | MiscObject) => {
+  removeFromInv = async (
+    obj: Weapon | Clothing | Consumable | MiscObject,
+    isEquiped: boolean = false
+  ) => {
+    const promises = []
     const { url } = this.getDbObj(obj.data)
     const objectPath = url.concat(`/${obj.dbKey}`)
-    return removeCollectible(objectPath)
+    promises.push(removeCollectible(objectPath))
+    if (isEquiped) {
+      const isWeapon = "damageType" in obj.data
+      const category = isWeapon ? "weapons" : "clothings"
+      const equipedObjPath = dbKeys
+        .char(this.charId)
+        .equipedObjects[category].concat(`/${obj.dbKey}`)
+      promises.push(removeCollectible(equipedObjPath))
+    }
+    return Promise.all(promises)
   }
 }
