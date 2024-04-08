@@ -1,3 +1,9 @@
+-- update health modal
+-- update health confirmation modal
+
+-- update status modal
+-- update status confirmation modal
+
 PERF:
 - try removing screen params (charId, squadId) and replace by context API
 - replace Drawer with a Stack, drawer will be a view in a layout
