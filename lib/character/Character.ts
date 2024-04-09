@@ -1,4 +1,5 @@
 import dbKeys from "db/db-keys"
+import { StatusUpdateState } from "lib/character/health/health-reducer"
 import { getRandomArbitrary } from "lib/common/utils/dice-calc"
 import { getRemainingTime } from "lib/common/utils/time-calc"
 import {
@@ -424,6 +425,15 @@ export default class Character {
     const updatesArr = Object.entries(updates).map(([id, value]) => ({
       url: statusPath.concat(`/${id}`),
       data: value
+    }))
+    return groupUpdateValue(updatesArr)
+  }
+
+  updateHealth = async (update: StatusUpdateState) => {
+    const statusPath = dbKeys.char(this.charId).status.index
+    const updatesArr = Object.entries(update).map(([id, value]) => ({
+      url: statusPath.concat(`/${id}`),
+      data: value.initValue + value.count
     }))
     return groupUpdateValue(updatesArr)
   }

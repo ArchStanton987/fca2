@@ -39,6 +39,9 @@ const healthReducer = (
       if (initValue + newValue < healthMap[id].minValue) {
         newValue = -initValue
       }
+      if (initValue + newValue > healthMap[id].maxValue) {
+        newValue = healthMap[id].maxValue - initValue
+      }
       return { ...state, [id]: { count: newValue, label, initValue } }
     }
 
