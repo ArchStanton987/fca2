@@ -3,8 +3,6 @@ import { TouchableOpacity, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import { UpdatableStatusElement } from "lib/character/status/status.types"
-
 import AmountSelector from "components/AmountSelector"
 import List from "components/List"
 import ModalCta from "components/ModalCta/ModalCta"
@@ -15,43 +13,41 @@ import ViewSection from "components/ViewSection"
 import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import ModalBody from "components/wrappers/ModalBody"
-import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { UpdateStatusModalParams } from "screens/MainTabs/modals/UpdateStatusModal/UpdateStatusModal.params"
+import {
+  UpdatableStatusElement,
+  UpdateStatusState
+} from "screens/MainTabs/modals/UpdateStatusModal/UpdateStatusModal.types"
 import ScreenParams, { SearchParams } from "screens/ScreenParams"
 
 import styles from "./UpdateStatusModal.styles"
 
-type UpdateState = Record<UpdatableStatusElement, number>
+const defaultState = { exp: { count: 0, initValue: 0 } }
 
 export default function UpdateStatusModal() {
-  const localParams = useLocalSearchParams<SearchParams<UpdateStatusModalParams>>()
-  const { squadId, charId } = ScreenParams.fromLocalParams(localParams)
+  const localParams = useLocalSearchParams() as SearchParams<UpdateStatusModalParams>
+  const { initCategory } = ScreenParams.fromLocalParams(localParams)
 
-  const [updateState, setUpdateState] = useState<Record<UpdatableStatusElement, number>>(
-    {} as UpdateState
-  )
-  const [selectedItem, setSelectedItem] = useState<UpdatableStatusElement | null>(null)
+  const [updateState, setUpdateState] = useState<UpdateStatusState>(defaultState)
+  const [selectedItem, setSelectedItem] = useState<UpdatableStatusElement | null>(initCategory)
   const [selectedAmount, setSelectedAmount] = useState<number>(1)
 
-  const { status } = useCharacter()
+  const character = useCharacter()
+  const { status } = character
   const currentValue = selectedItem ? status[selectedItem] : 0
-  const currCount = selectedItem ? updateState[selectedItem] : 0
+  const currCount = selectedItem ? updateState[selectedItem].count : 0
 
   const onPressIcon = (type: "plus" | "minus") => {
     if (!selectedItem) return
-    const value = updateState[selectedItem]
-    const newValue = type === "plus" ? value + selectedAmount : value - selectedAmount
-    setUpdateState(prev => ({ ...prev, [selectedItem]: newValue }))
+    const { count, initValue } = updateState[selectedItem]
+    const newValue = type === "plus" ? count + selectedAmount : count - selectedAmount
+    setUpdateState(prev => ({ ...prev, [selectedItem]: { count: newValue, initValue } }))
   }
 
-  const onPressConfirm = () => {
-    // updateState to JSON serializable :
-    const updates = JSON.stringify(updateState)
-    router.push({
-      pathname: `${routes.modal.updateStatusConfirmation}`,
-      params: { squadId, charId, updates }
-    })
+  const onPressConfirm = async () => {
+    await character.updateStatus(updateState)
+    router.back()
   }
 
   return (

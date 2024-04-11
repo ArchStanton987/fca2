@@ -33,7 +33,6 @@ const routes = {
     updateHealth: `${modal}/update-health`,
     updateHealthConfirmation: `${modal}/update-health-confirmation`,
     updateStatus: `${modal}/update-status`,
-    updateStatusConfirmation: `${modal}/update-status-confirmation`,
     updateObjects: `${modal}/update-objects`,
     updateObjectsConfirmation: `${modal}/update-objects-confirmation`
   }

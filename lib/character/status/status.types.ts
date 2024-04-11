@@ -8,5 +8,3 @@ export type DbStatus = {
   poison: number
   rads: number
 } & DbLimbsHp
-
-export type UpdatableStatusElement = Extract<keyof DbStatus, "exp">

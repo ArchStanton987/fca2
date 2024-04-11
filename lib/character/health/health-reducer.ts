@@ -21,16 +21,16 @@ export type HealthUpdatePayload = {
   initValue: number
 }
 
-export type StatusUpdateState = typeof defaultHealthUpdate
+export type HealthUpdateState = typeof defaultHealthUpdate
 
 export type UpdateHealthAction =
   | { type: "mod"; payload: HealthUpdatePayload }
   | { type: "reset"; payload?: undefined }
 
 const healthReducer = (
-  state: StatusUpdateState,
+  state: HealthUpdateState,
   { type, payload }: UpdateHealthAction
-): StatusUpdateState => {
+): HealthUpdateState => {
   switch (type) {
     case "mod": {
       const { id, count, label, initValue } = payload

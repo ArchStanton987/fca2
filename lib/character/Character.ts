@@ -1,5 +1,5 @@
 import dbKeys from "db/db-keys"
-import { StatusUpdateState } from "lib/character/health/health-reducer"
+import { HealthUpdateState } from "lib/character/health/health-reducer"
 import { getRandomArbitrary } from "lib/common/utils/dice-calc"
 import { getRemainingTime } from "lib/common/utils/time-calc"
 import {
@@ -34,6 +34,7 @@ import {
   removeCollectible,
   updateValue
 } from "api/api-rtdb"
+import { UpdateStatusState } from "screens/MainTabs/modals/UpdateStatusModal/UpdateStatusModal.types"
 
 import { getModAttribute } from "../common/utils/char-calc"
 import clothingsMap from "../objects/data/clothings/clothings"
@@ -323,13 +324,13 @@ export default class Character {
     return { weapons, clothings }
   }
 
-  getEffectLengthInH = (effect: EffectData) => {
+  private getEffectLengthInH = (effect: EffectData) => {
     const isJunkie = this.dbAbilities.traits?.includes("chemReliant")
     if (effect.length && effect.isWithdrawal && isJunkie) return effect.length * 0.5
     return effect.length
   }
 
-  getExpiringEffects = (newDate: Date) =>
+  private getExpiringEffects = (newDate: Date) =>
     this.effects.filter(effect => {
       if (!effect.data.length) return false
       if (effect.endTs && effect?.endTs.getTime() < newDate.getTime()) return true
@@ -339,7 +340,7 @@ export default class Character {
       return effect.startTs.getTime() + lengthInH * 3600 * 1000 < newDate.getTime()
     })
 
-  getFollowingEffects = (newDate: Date): DbEffect[] =>
+  private getFollowingEffects = (newDate: Date): DbEffect[] =>
     this.getExpiringEffects(newDate)
       .filter(effect => !!effect.data.nextEffectId && !!effect.endTs)
       .map(effect => {
@@ -351,7 +352,7 @@ export default class Character {
         return { id: newEffectId, endTs }
       })
 
-  getNewLimbsHp = (newDate: Date) => {
+  private getNewLimbsHp = (newDate: Date) => {
     const { healHpPerHour } = this.secAttr.curr
     const hoursPassed = (newDate.getTime() - this.date.getTime()) / 3600000
     const missingHp = getMissingHp(this.status)
@@ -420,16 +421,16 @@ export default class Character {
     removeCollectible(effectPath)
   }
 
-  updateStatus = async (updates: Partial<DbStatus>) => {
+  updateStatus = async (updates: UpdateStatusState) => {
     const statusPath = dbKeys.char(this.charId).status.index
     const updatesArr = Object.entries(updates).map(([id, value]) => ({
       url: statusPath.concat(`/${id}`),
-      data: value
+      data: value.initValue + value.count
     }))
     return groupUpdateValue(updatesArr)
   }
 
-  updateHealth = async (update: StatusUpdateState) => {
+  updateHealth = async (update: HealthUpdateState) => {
     const statusPath = dbKeys.char(this.charId).status.index
     const updatesArr = Object.entries(update).map(([id, value]) => ({
       url: statusPath.concat(`/${id}`),
@@ -467,9 +468,8 @@ export default class Character {
     // clothings : no more than 1 armor per body part
     const isCloth = clothingsMap[obj.id as ClothingId] !== undefined
     const objectCategory = isCloth ? ("clothings" as const) : ("weapons" as const)
-    const isEquiped = !!this.dbEquipedObjects[objectCategory]?.[obj.dbKey]
     const path = dbKeys.char(this.charId).equipedObjects[objectCategory].concat(`/${obj.dbKey}`)
-    if (!isEquiped) {
+    if (!obj.isEquiped) {
       const newEquipedObject = { id: obj.id }
       updateValue(path, newEquipedObject)
       return
