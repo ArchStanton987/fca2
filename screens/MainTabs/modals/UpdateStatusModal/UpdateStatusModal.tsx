@@ -3,11 +3,9 @@ import { TouchableOpacity, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import { limbsMap } from "lib/character/health/health"
-import { DbStatus } from "lib/character/status/status.types"
+import { UpdatableStatusElement } from "lib/character/status/status.types"
 
 import AmountSelector from "components/AmountSelector"
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import List from "components/List"
 import ModalCta from "components/ModalCta/ModalCta"
 import ScrollableSection from "components/ScrollableSection"
@@ -19,18 +17,21 @@ import PlusIcon from "components/icons/PlusIcon"
 import ModalBody from "components/wrappers/ModalBody"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
+import { UpdateStatusModalParams } from "screens/MainTabs/modals/UpdateStatusModal/UpdateStatusModal.params"
 import ScreenParams, { SearchParams } from "screens/ScreenParams"
 
 import styles from "./UpdateStatusModal.styles"
 
-type UpdateState = Record<keyof DbStatus, number>
+type UpdateState = Record<UpdatableStatusElement, number>
 
 export default function UpdateStatusModal() {
-  const localParams = useLocalSearchParams<SearchParams<DrawerParams>>()
+  const localParams = useLocalSearchParams<SearchParams<UpdateStatusModalParams>>()
   const { squadId, charId } = ScreenParams.fromLocalParams(localParams)
 
-  const [updateState, setUpdateState] = useState<Record<keyof DbStatus, number>>({} as UpdateState)
-  const [selectedItem, setSelectedItem] = useState<keyof DbStatus | null>(null)
+  const [updateState, setUpdateState] = useState<Record<UpdatableStatusElement, number>>(
+    {} as UpdateState
+  )
+  const [selectedItem, setSelectedItem] = useState<UpdatableStatusElement | null>(null)
   const [selectedAmount, setSelectedAmount] = useState<number>(1)
 
   const { status } = useCharacter()
@@ -57,19 +58,6 @@ export default function UpdateStatusModal() {
     <ModalBody>
       <View style={styles.row}>
         <ScrollableSection title="STATUT">
-          {Object.values(limbsMap).map(limb => (
-            <TouchableOpacity
-              key={limb.id}
-              style={[
-                styles.listItemContainer,
-                selectedItem === limb.id && styles.listItemContainerSelected
-              ]}
-              onPress={() => setSelectedItem(limb.id)}
-            >
-              <Txt style={styles.listItem}>{limb.label}</Txt>
-              <Spacer y={5} />
-            </TouchableOpacity>
-          ))}
           <TouchableOpacity
             key="exp"
             style={[
@@ -79,17 +67,6 @@ export default function UpdateStatusModal() {
             onPress={() => setSelectedItem("exp")}
           >
             <Txt style={styles.listItem}>EXP</Txt>
-            <Spacer y={5} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            key="rads"
-            style={[
-              styles.listItemContainer,
-              selectedItem === "rads" && styles.listItemContainerSelected
-            ]}
-            onPress={() => setSelectedItem("rads")}
-          >
-            <Txt style={styles.listItem}>RADS</Txt>
             <Spacer y={5} />
           </TouchableOpacity>
         </ScrollableSection>
