@@ -396,11 +396,11 @@ export default class Character {
   addEffect = async (effectId: EffectId) => {
     const hasEffect = this.effects.some(el => el.id === effectId)
     if (hasEffect) return null
-    const effectsPath = dbKeys.char(this.charId).effects
     const length = effectId && this.getEffectLengthInH(effectsMap[effectId])
     const startTs = this.date
     const endTs = length ? new Date(startTs.getTime() + length * 3600 * 1000) : null
     const newEffect = { id: effectId, startTs, endTs }
+    const effectsPath = dbKeys.char(this.charId).effects
     return addCollectible(effectsPath, newEffect)
   }
 
@@ -494,6 +494,9 @@ export default class Character {
 
   groupAddToInv = async (state: ExchangeState) => {
     // TODO: allow to remove at the same time
+    // TODO: prevent to add if:
+    // - new total weight > maxCarryWeight
+    // - new total place > maxPlace
     const promises = []
     const { caps, ammo, weapons, clothings, consumables, miscObjects } = state
     const capsUpdates = Object.values(caps).map(content => {
