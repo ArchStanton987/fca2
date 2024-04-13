@@ -11,6 +11,7 @@ import AmountSelector from "components/AmountSelector"
 import List from "components/List"
 import ModalCta from "components/ModalCta/ModalCta"
 import ScrollableSection from "components/ScrollableSection"
+import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import ViewSection from "components/ViewSection"
 import MinusIcon from "components/icons/MinusIcon"
@@ -63,32 +64,34 @@ export default function UpdateHealthModal() {
   return (
     <ModalBody>
       <View style={styles.row}>
-        <ScrollableSection title="ÉLÉMENT">
+        <ScrollableSection title="ÉLÉMENT" style={styles.categoriesSection}>
           {Object.values(healthMap).map(health => (
             <TouchableOpacity
               key={health.id}
               onPress={() => setSelectedItem(health.id)}
-              style={[styles.listItem, selectedItem === health.id && styles.selected]}
+              style={[styles.listItemContainer, selectedItem === health.id && styles.selected]}
             >
               <Txt>{health.label}</Txt>
             </TouchableOpacity>
           ))}
         </ScrollableSection>
-        <ViewSection title="TOTAL">
-          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Spacer x={15} />
+        <ViewSection title="TOTAL" style={styles.listSection}>
+          <View style={styles.listItemContainer}>
             <Txt>actuel : </Txt>
             <Txt>{initValue}</Txt>
           </View>
-          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View style={styles.listItemContainer}>
             <Txt>{currCount > 0 ? "à ajouter" : "à retirer"}</Txt>
             <Txt>{currCount}</Txt>
           </View>
-          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View style={styles.listItemContainer}>
             <Txt>Prévisionnel</Txt>
             <Txt>{prev}</Txt>
           </View>
         </ViewSection>
-        <ViewSection title="MODIFIER">
+        <Spacer x={15} />
+        <ViewSection title="MODIFIER" style={styles.addSection}>
           <View style={{ flex: 1, justifyContent: "space-evenly" }}>
             <List
               data={[1, 5, 20, 100]}

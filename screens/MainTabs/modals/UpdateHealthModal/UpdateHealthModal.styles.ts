@@ -32,9 +32,6 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
     paddingVertical: 7
   },
-  listItemContainerSelected: {
-    backgroundColor: colors.terColor
-  },
   listItem: {},
   selected: {
     backgroundColor: colors.terColor

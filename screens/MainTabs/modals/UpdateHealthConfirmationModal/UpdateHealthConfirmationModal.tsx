@@ -1,8 +1,7 @@
 import React from "react"
 import { View } from "react-native"
 
-import { router } from "expo-router"
-import { useLocalSearchParams } from "expo-router/src/hooks"
+import { router, useLocalSearchParams } from "expo-router"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import ModalCta from "components/ModalCta/ModalCta"
