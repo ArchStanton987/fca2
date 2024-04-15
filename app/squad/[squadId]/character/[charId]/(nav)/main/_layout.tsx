@@ -1,4 +1,5 @@
 /* eslint-disable react/no-unstable-nested-components */
+import { useLocalSearchParams } from "expo-router"
 import { Tabs } from "expo-router/tabs"
 
 import Header from "components/Header/Header"
@@ -18,6 +19,7 @@ const special: HeaderElementId[] = [
 const datetime: HeaderElementId[] = ["date", "time"]
 
 export default function CharLayout() {
+  const { squadId, charId } = useLocalSearchParams<{ squadId: string; charId: string }>()
   return (
     <Tabs
       // eslint-disable-next-line react/no-unstable-nested-components
@@ -37,7 +39,7 @@ export default function CharLayout() {
         backgroundColor: colors.primColor
       }}
     >
-      <Tabs.Screen name="recap" options={{ title: "Résumé" }} />
+      <Tabs.Screen name="recap" options={{ title: "Résumé" }} initialParams={{ squadId, charId }} />
       <Tabs.Screen name="effects" options={{ title: "Effets" }} />
       <Tabs.Screen name="special" options={{ title: "SPECIAL" }} />
       <Tabs.Screen name="sec-attr" options={{ title: "Attr. Sec." }} />

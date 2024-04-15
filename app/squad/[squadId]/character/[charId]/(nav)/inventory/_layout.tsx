@@ -1,4 +1,5 @@
 /* eslint-disable react/no-unstable-nested-components */
+import { useLocalSearchParams } from "expo-router"
 import { Tabs } from "expo-router/tabs"
 
 import Header from "components/Header/Header"
@@ -17,6 +18,7 @@ const special: HeaderElementId[] = [
 ]
 const datetime: HeaderElementId[] = ["date", "time"]
 export default function InventoryLayout() {
+  const { squadId, charId } = useLocalSearchParams<{ squadId: string; charId: string }>()
   return (
     <Tabs
       // eslint-disable-next-line react/no-unstable-nested-components
@@ -36,7 +38,11 @@ export default function InventoryLayout() {
         backgroundColor: colors.primColor
       }}
     >
-      <Tabs.Screen name="weapons" options={{ title: "Armes" }} />
+      <Tabs.Screen
+        name="weapons"
+        options={{ title: "Armes" }}
+        initialParams={{ squadId, charId }}
+      />
       <Tabs.Screen name="clothings" options={{ title: "Armures" }} />
       <Tabs.Screen name="consumables" options={{ title: "Consommables" }} />
       <Tabs.Screen name="misc-objects" options={{ title: "Divers" }} />
