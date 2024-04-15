@@ -1,4 +1,4 @@
-import { FlatList } from "react-native-gesture-handler"
+import { FlatList } from "react-native"
 
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"

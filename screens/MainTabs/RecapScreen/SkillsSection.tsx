@@ -1,8 +1,7 @@
 import React from "react"
-import { ActivityIndicator, View } from "react-native"
+import { ActivityIndicator, FlatList, View } from "react-native"
 
 import skillsMap from "lib/character/abilities/skills/skills"
-import { FlatList } from "react-native-gesture-handler"
 
 import Section from "components/Section"
 import Txt from "components/Txt"
