@@ -6,17 +6,16 @@ import typos from "styles/typos"
 
 const styles = StyleSheet.create({
   drawerContainer: {
+    top: layout.headerHeight + 10,
+    width: layout.drawerWidth,
+    height: layout.drawerHeight,
     position: "absolute",
-    marginVertical: 40,
-    marginHorizontal: 0,
     backgroundColor: colors.primColor,
     borderWidth: 0,
     borderTopWidth: 1,
-    // HACK it seems that a glitch create a border on the right, so we need to set it to 0
     borderRightWidth: 0,
     borderLeftWidth: 0,
-    borderTopColor: colors.secColor,
-    width: layout.drawerWidth
+    borderTopColor: colors.secColor
   },
   fcaContainer: {
     borderWidth: 0,

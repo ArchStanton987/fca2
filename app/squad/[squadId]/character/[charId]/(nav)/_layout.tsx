@@ -1,29 +1,18 @@
-import { useLocalSearchParams } from "expo-router"
-import { Drawer } from "expo-router/drawer"
+import { View } from "react-native"
 
-import CustomDrawer from "components/Drawer/Drawer"
+import { Slot, useLocalSearchParams } from "expo-router"
+
+import Drawer from "components/Drawer/Drawer"
 import { DrawerParams } from "components/Drawer/Drawer.params"
-import styles from "components/Drawer/Drawer.styles"
 import { SearchParams } from "screens/ScreenParams"
 
 export default function CharLayout() {
-  const { charId, squadId } = useLocalSearchParams() as SearchParams<DrawerParams>
+  const { squadId, charId } = useLocalSearchParams() as SearchParams<DrawerParams>
 
   return (
-    <Drawer
-      defaultStatus="open"
-      screenOptions={{
-        headerShown: false,
-        drawerType: "permanent",
-        drawerStyle: styles.drawerContainer,
-        drawerPosition: "right"
-      }}
-      // eslint-disable-next-line react/no-unstable-nested-components
-      drawerContent={props => <CustomDrawer charId={charId} squadId={squadId} {...props} />}
-    >
-      <Drawer.Screen name="main" options={{ title: "Perso" }} />
-      <Drawer.Screen name="inventory" options={{ title: "Inventaire" }} />
-      <Drawer.Screen name="combat" options={{ title: "Combat" }} />
-    </Drawer>
+    <View style={{ flexDirection: "row", flex: 1 }}>
+      <Slot />
+      <Drawer squadId={squadId} charId={charId} />
+    </View>
   )
 }

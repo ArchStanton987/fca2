@@ -1,55 +1,65 @@
-import { TouchableOpacity } from "react-native"
+import { TouchableHighlight, TouchableOpacity, View } from "react-native"
 
-import { router } from "expo-router"
+import { router, useSegments } from "expo-router"
 
-import { DrawerContentComponentProps, DrawerContentScrollView } from "@react-navigation/drawer"
-
+import List from "components/List"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import SmallLine from "components/draws/Line/Line"
-import WithItemSeparator from "components/wrappers/WithItemSeparator"
 import { charRoute } from "constants/routes"
 
 import styles from "./Drawer.styles"
 
-type CustomDrawerProps = DrawerContentComponentProps & {
+type DrawerProps = {
   charId: string
   squadId: string
 }
 
-export default function CustomDrawer(props: CustomDrawerProps) {
-  const { state, descriptors, charId, squadId } = props
-  const { routes } = state
+// TODO: REFACTOR: move somewhere else
+const navElements = [
+  { path: "main", label: "Perso" },
+  { path: "inventory", label: "Inventaire" },
+  { path: "combat", label: "Combat" }
+]
+
+export default function Drawer({ squadId, charId }: DrawerProps) {
+  const segments = useSegments()
 
   const toHome = () => router.push("/")
 
+  const toTabs = (path: string) =>
+    router.push({
+      pathname: `${charRoute}/${path}`,
+      params: { squadId, charId }
+    })
+
   return (
-    <DrawerContentScrollView scrollEnabled={false} {...props}>
+    <View style={styles.drawerContainer}>
       <SmallLine top left />
+      <SmallLine top right />
+      <Spacer y={10} />
       <TouchableOpacity onPress={toHome} style={styles.fcaContainer}>
         <Txt style={styles.fca}>{"<FCA>"}</Txt>
       </TouchableOpacity>
       <Spacer y={20} />
-
-      <WithItemSeparator ItemSeparatorComponent={<Spacer y={16} />}>
-        {routes.map((route, index) => {
-          const { title } = descriptors[route.key].options
-          const isFocused = state.index === index
-          const pathname = `${charRoute}/${route.name}`
-          const onPress = () => router.push({ pathname, params: { charId, squadId } })
+      <List
+        data={navElements}
+        keyExtractor={item => item.label}
+        renderItem={({ item }) => {
+          const isSelected = segments.includes(item.path)
           return (
-            <TouchableOpacity
-              key={route.key}
-              style={[styles.navButton, isFocused && styles.navButtonActive]}
-              onPress={onPress}
+            <TouchableHighlight
+              style={[styles.navButton, isSelected && styles.navButtonActive]}
+              onPress={() => toTabs(item.path)}
             >
-              <Txt style={[styles.navButtonText, isFocused && styles.navButtonActiveText]}>
-                {title}
+              <Txt style={[styles.navButtonText, isSelected && styles.navButtonActiveText]}>
+                {item.label}
               </Txt>
-            </TouchableOpacity>
+            </TouchableHighlight>
           )
-        })}
-      </WithItemSeparator>
-    </DrawerContentScrollView>
+        }}
+        separator={<Spacer y={20} />}
+      />
+    </View>
   )
 }
