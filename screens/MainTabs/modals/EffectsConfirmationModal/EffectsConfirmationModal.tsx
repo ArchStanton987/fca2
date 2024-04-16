@@ -2,6 +2,7 @@ import { View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import effectController from "lib/EffectsController"
 import effectsMap from "lib/character/effects/effects"
 import { EffectId } from "lib/character/effects/effects.types"
 
@@ -26,8 +27,8 @@ export default function EffectsConfirmationModal() {
     effects = effectsToAdd.split(",") as EffectId[]
   }
 
-  const onPressConfirm = () => {
-    character.groupAddEffects(effects)
+  const onPressConfirm = async () => {
+    await effectController.groupAdd(character, effects)
     router.push({ pathname: routes.main.effects, params: { squadId, charId } })
   }
 

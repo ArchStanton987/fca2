@@ -12,7 +12,7 @@ function effectsController() {
   const getDbEffect = (char: Character, effectId: EffectId) => {
     const hasEffect = char.effects.some(effect => effect.id === effectId)
     if (hasEffect) return null
-    const dbEffect: DbEffect = { id: effectId, startTs: char.date.toJSON(), endTs: undefined }
+    const dbEffect: DbEffect = { id: effectId, startTs: char.date.toJSON() }
     const length = char.getEffectLengthInH(effectsMap[effectId])
     if (length) {
       const lengthInMs = length * 3600 * 1000
@@ -28,20 +28,23 @@ function effectsController() {
 
     add: async (char: Character, effectId: EffectId) => {
       const dbEffect = getDbEffect(char, effectId)
-      return repository.add(char, dbEffect)
+      return repository.add(char.charId, dbEffect)
     },
 
     groupAdd: (char: Character, effectIds: EffectId[]) => {
       const dbEffects = effectIds
         .filter(effect => !char.effects.some(eff => eff.id === effect))
         .map(effectId => getDbEffect(char, effectId))
-      return repository.groupAdd(char, dbEffects)
+      return repository.groupAdd(char.charId, dbEffects)
     },
 
-    remove: async (char: Character, effect: Effect) => repository.remove(char, effect),
+    remove: async (char: Character, effect: Effect) => repository.remove(char.charId, effect),
 
-    groupRemove: (char: Character, effects: Effect[]) => repository.groupRemove(char, effects)
+    groupRemove: (char: Character, effects: Effect[]) =>
+      repository.groupRemove(char.charId, effects)
   }
 }
 
-export default effectsController()
+// export default effectsController()
+const effectController = effectsController()
+export default effectController

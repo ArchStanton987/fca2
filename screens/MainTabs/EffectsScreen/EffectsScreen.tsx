@@ -3,6 +3,7 @@ import { FlatList, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import effectController from "lib/EffectsController"
 import { Effect } from "lib/character/effects/effects.types"
 
 import AddElement from "components/AddElement"
@@ -18,20 +19,21 @@ import { SearchParams } from "screens/ScreenParams"
 
 export default function EffectsScreen() {
   const { squadId, charId } = useLocalSearchParams<SearchParams<DrawerParams>>()
-  const [selectedId, setSelectedId] = useState<Effect["dbKey"] | null>(null)
+  const [selectedId, setSelectedId] = useState<Effect["id"] | null>(null)
 
-  const { effects, removeEffect } = useCharacter()
+  const character = useCharacter()
+  const { effects } = character
 
   const onPressAdd = () =>
     router.push({ pathname: routes.modal.updateEffects, params: { squadId, charId } })
 
-  const onPressDelete = (dbKey?: Effect["dbKey"]) => {
-    if (!dbKey) return
+  const onPressDelete = (effect: Effect) => {
+    if (!effect.dbKey) return
     setSelectedId(null)
-    removeEffect(dbKey)
+    effectController.remove(character, effect)
   }
 
-  const selectedEffect = effects.find(effect => effect.dbKey === selectedId)
+  const selectedEffect = effects.find(effect => effect.id === selectedId)
 
   return (
     <DrawerPage style={{ flex: 1 }}>
@@ -46,8 +48,8 @@ export default function EffectsScreen() {
               <EffectRow
                 isSelected={isSelected}
                 effect={item}
-                onPress={() => setSelectedId(item.dbKey)}
-                onPressDelete={() => onPressDelete(item.dbKey)}
+                onPress={() => setSelectedId(item.id)}
+                onPressDelete={() => onPressDelete(item)}
               />
             )
           }}
