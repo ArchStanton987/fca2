@@ -324,7 +324,7 @@ export default class Character {
     return { weapons, clothings }
   }
 
-  private getEffectLengthInH = (effect: EffectData) => {
+  getEffectLengthInH = (effect: EffectData) => {
     const isJunkie = this.dbAbilities.traits?.includes("chemReliant")
     if (effect.length && effect.isWithdrawal && isJunkie) return effect.length * 0.5
     return effect.length
