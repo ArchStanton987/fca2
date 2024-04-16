@@ -24,7 +24,7 @@ function effectsController() {
   return {
     get: (charId: string, effectId: EffectId) => repository.get(charId, effectId),
 
-    getAll: (charId: string, effectId: EffectId) => repository.get(charId, effectId),
+    getAll: (charId: string) => repository.getAll(charId),
 
     add: async (char: Character, effectId: EffectId) => {
       const dbEffect = getDbEffect(char, effectId)

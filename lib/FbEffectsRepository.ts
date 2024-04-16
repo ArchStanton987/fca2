@@ -17,21 +17,21 @@ export default function fbEffectsRepository(): CollectibleRepository {
     get: (charId: string, effectId: EffectId) => {
       const path = dbKeys.char(charId).effects.concat("/", effectId)
       const dbRef = ref(database, path)
-      let effect = null
-      const unsub = onValue(dbRef, snapshot => {
+      let effect
+      const unsubscribe = onValue(dbRef, snapshot => {
         effect = snapshot.val()
       })
-      return { effect, unsubscribe: unsub }
+      return { effect, unsubscribe }
     },
 
     getAll: (charId: string) => {
       const path = dbKeys.char(charId).effects
       const dbRef = ref(database, path)
-      let effects = null
-      const unsub = onValue(dbRef, (snapshot: DataSnapshot) => {
+      let effects
+      const unsubscribe = onValue(dbRef, (snapshot: DataSnapshot) => {
         effects = snapshot.val()
       })
-      return { effects, unsubscribe: unsub }
+      return { effects, unsubscribe }
     },
 
     add: async (charId: string, dbEffect: DbEffect) =>
