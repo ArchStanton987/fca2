@@ -1,4 +1,4 @@
-import { EquipableCategory, EquipableObject } from "lib/EquipedObjectsRepository"
+import { DbEquipableObject, EquipableCategory, EquipableObject } from "lib/EquipedObjectsRepository"
 import { getRepository } from "lib/RepositoryBuilder"
 import Character from "lib/character/Character"
 import clothingsMap from "lib/objects/data/clothings/clothings"
@@ -25,8 +25,8 @@ const controller = (db: keyof typeof getRepository = "rtdb") => {
       const category = getObjectCategory(object)
       const dbKey = object.id
       if (!object.isEquiped) {
-        // TODO: fix TS issue
-        return repository.add(char.charId, category, dbKey, { id: object.id })
+        const payload = { id: object.id } as DbEquipableObject
+        return repository.add(char.charId, category, dbKey, payload)
       }
       return repository.remove(char.charId, category, dbKey)
     }
