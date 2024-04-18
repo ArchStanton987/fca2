@@ -3,48 +3,46 @@ import Character from "lib/character/Character"
 import effectsMap from "lib/character/effects/effects"
 import { DbEffect, Effect, EffectId } from "lib/character/effects/effects.types"
 
-function effectsController() {
-  const db = "rtdb"
-  const repository = getRepository[db].Effects()
+const createDbEffect = (char: Character, effectId: EffectId) => {
+  const hasEffect = char.effects.some(effect => effect.id === effectId)
+  if (hasEffect) throw new Error("Effect already exists")
+  const dbEffect: DbEffect = { id: effectId, startTs: char.date.toJSON() }
+  const length = char.getEffectLengthInH(effectsMap[effectId])
+  if (length) {
+    const lengthInMs = length * 3600 * 1000
+    dbEffect.endTs = new Date(char.date.getTime() + lengthInMs).toJSON()
+  }
+  return dbEffect
+}
+
+function effectsController(db: keyof typeof getRepository = "rtdb") {
+  const repository = getRepository[db].effects
 
   // TODO: add replace Effect logic
-
-  const getDbEffect = (char: Character, effectId: EffectId) => {
-    const hasEffect = char.effects.some(effect => effect.id === effectId)
-    if (hasEffect) return null
-    const dbEffect: DbEffect = { id: effectId, startTs: char.date.toJSON() }
-    const length = char.getEffectLengthInH(effectsMap[effectId])
-    if (length) {
-      const lengthInMs = length * 3600 * 1000
-      dbEffect.endTs = new Date(char.date.getTime() + lengthInMs).toJSON()
-    }
-    return dbEffect
-  }
 
   return {
     get: (charId: string, effectId: EffectId) => repository.get(charId, effectId),
 
-    getAll: (charId: string, effectId: EffectId) => repository.get(charId, effectId),
+    getAll: (charId: string) => repository.getAll(charId),
 
     add: async (char: Character, effectId: EffectId) => {
-      const dbEffect = getDbEffect(char, effectId)
+      const dbEffect = createDbEffect(char, effectId)
       return repository.add(char.charId, dbEffect)
     },
 
     groupAdd: (char: Character, effectIds: EffectId[]) => {
       const dbEffects = effectIds
         .filter(effect => !char.effects.some(eff => eff.id === effect))
-        .map(effectId => getDbEffect(char, effectId))
+        .map(effectId => createDbEffect(char, effectId))
       return repository.groupAdd(char.charId, dbEffects)
     },
 
-    remove: async (char: Character, effect: Effect) => repository.remove(char.charId, effect),
+    remove: async (charId: string, effect: Effect) => repository.remove(charId, effect),
 
     groupRemove: (char: Character, effects: Effect[]) =>
       repository.groupRemove(char.charId, effects)
   }
 }
 
-// export default effectsController()
 const effectController = effectsController()
 export default effectController

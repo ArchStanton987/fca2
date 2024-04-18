@@ -1,9 +1,9 @@
-import fbEffectsRepository from "lib/FbEffectsRepository"
+import FbEffectsRepository from "lib/FbEffectsRepository"
 
-export type RepositoryName = "Effects" | "Inventory" | "Status" | "Health"
+export type RepositoryName = "effects" | "inventory" | "status" | "health"
 
 export const getRepository = {
   rtdb: {
-    Effects: fbEffectsRepository
+    effects: FbEffectsRepository
   }
 }
