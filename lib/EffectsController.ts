@@ -15,7 +15,7 @@ const createDbEffect = (char: Character, effectId: EffectId) => {
   return dbEffect
 }
 
-function effectsController(db: keyof typeof getRepository = "rtdb") {
+function controller(db: keyof typeof getRepository = "rtdb") {
   const repository = getRepository[db].effects
 
   // TODO: add replace Effect logic
@@ -44,5 +44,5 @@ function effectsController(db: keyof typeof getRepository = "rtdb") {
   }
 }
 
-const effectController = effectsController()
-export default effectController
+const effectsController = controller()
+export default effectsController
