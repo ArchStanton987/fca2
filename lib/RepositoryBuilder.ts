@@ -1,9 +1,11 @@
+import equipedObjectsRepository from "lib/EquipedObjectsRepository"
 import fbEffectsRepository from "lib/FbEffectsRepository"
 
-export type RepositoryName = "Effects" | "Inventory" | "Status" | "Health"
+export type RepositoryName = "effects" | "inventory" | "status" | "health"
 
 export const getRepository = {
   rtdb: {
-    Effects: fbEffectsRepository
+    effects: fbEffectsRepository,
+    equipedObjects: equipedObjectsRepository
   }
 }
