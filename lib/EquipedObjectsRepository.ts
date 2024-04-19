@@ -1,10 +1,12 @@
 import database from "config/firebase"
 import dbKeys from "db/db-keys"
-import { DataSnapshot, onValue, ref } from "firebase/database"
+import { onValue, ref } from "firebase/database"
 import { Clothing, DbClothing } from "lib/objects/data/clothings/clothings.types"
 import { DbWeapon, Weapon } from "lib/objects/data/weapons/weapons.types"
 
 import { removeCollectible, updateValue } from "api/api-rtdb"
+
+import { DbEquipedObjects } from "./objects/data/objects.types"
 
 const getContainerPath = (charId: string) => dbKeys.char(charId).equipedObjects.index
 const getCategoryPath = (charId: string, category: string) =>
@@ -15,36 +17,58 @@ const getItemPath = (charId: string, category: string, dbKey: string) =>
 export type EquipableCategory = "weapons" | "clothings"
 export type EquipableObject = Clothing | Weapon
 export type DbEquipableObject = DbClothing | DbWeapon
+export type DbEquipableCategory = Record<string, DbClothing> | Record<string, DbWeapon>
 
 const equipedObjectsRepository = {
   get: (charId: string, category: string, dbKey: string) => {
     const path = getItemPath(charId, category, dbKey)
     const dbRef = ref(database, path)
-    let equipedObject = null
-    const unsub = onValue(dbRef, snapshot => {
-      equipedObject = snapshot.val()
-    })
-    return { equipedObject, unsubscribe: unsub }
+    let equipedObject: DbClothing | DbWeapon | undefined
+    const subscribe = (callback: () => void) => {
+      const unsub = onValue(dbRef, snapshot => {
+        equipedObject = snapshot.val()
+        callback()
+      })
+      return () => {
+        equipedObject = undefined
+        unsub()
+      }
+    }
+    return { subscribe, getSnapshot: () => equipedObject }
   },
 
   getByCategory: (charId: string, category: string) => {
     const path = getCategoryPath(charId, category)
     const dbRef = ref(database, path)
-    let equipedObjects = null
-    const unsub = onValue(dbRef, (snapshot: DataSnapshot) => {
-      equipedObjects = snapshot.val()
-    })
-    return { equipedObjects, unsubscribe: unsub }
+    let equipedObjectsCategory: DbEquipableCategory | undefined
+    const subscribe = (callback: () => void) => {
+      const unsub = onValue(dbRef, snapshot => {
+        equipedObjectsCategory = snapshot.val()
+        callback()
+      })
+      return () => {
+        equipedObjectsCategory = undefined
+        unsub()
+      }
+    }
+    return { subscribe, getSnapshot: () => equipedObjectsCategory }
   },
 
   getAll: (charId: string) => {
     const path = getContainerPath(charId)
     const dbRef = ref(database, path)
-    let equipedObjects = null
-    const unsub = onValue(dbRef, (snapshot: DataSnapshot) => {
-      equipedObjects = snapshot.val()
-    })
-    return { equipedObjects, unsubscribe: unsub }
+    let equipedObjects: DbEquipedObjects | undefined
+    const subscribe = (callback: () => void) => {
+      const unsub = onValue(dbRef, snapshot => {
+        equipedObjects = snapshot.val()
+        callback()
+      })
+      return () => {
+        equipedObjects = undefined
+        unsub()
+      }
+    }
+    return { subscribe, getSnapshot: () => equipedObjects }
   },
 
   add: async (

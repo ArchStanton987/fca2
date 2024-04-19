@@ -6,16 +6,17 @@ import { NativeStackNavigationOptions } from "@react-navigation/native-stack"
 import dbKeys from "db/db-keys"
 import Character, { DbChar } from "lib/character/Character"
 import { DbAbilities } from "lib/character/abilities/abilities.types"
-import { DbEffects } from "lib/character/effects/effects.types"
 import { DbStatus } from "lib/character/status/status.types"
+import { effectsController, equipedObjectsController } from "lib/common/controllers"
 import Inventory from "lib/objects/Inventory"
-import { DbEquipedObjects, DbInventory } from "lib/objects/data/objects.types"
+import { DbInventory } from "lib/objects/data/objects.types"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import { CharacterContext } from "contexts/CharacterContext"
 import { InventoryContext } from "contexts/InventoryContext"
 import { useSquad } from "contexts/SquadContext"
 import useDbSubscribe from "hooks/db/useDbSubscribe"
+import useRtdbSub from "hooks/db/useRtdbSub"
 import UpdateObjectsProvider from "providers/UpdateObjectsProvider"
 import LoadingScreen from "screens/LoadingScreen"
 import { SearchParams } from "screens/ScreenParams"
@@ -41,8 +42,8 @@ export default function CharStack() {
   const dbCharUrl = dbKeys.char(charId)
   // use separate subscriptions to avoid unnecessary bandwidth usage
   const abilities: DbRecord<DbAbilities> = useDbSubscribe(dbCharUrl.abilities)
-  const effects: DbCollection<DbEffects> = useDbSubscribe(dbCharUrl.effects)
-  const equipedObj: DbCollection<DbEquipedObjects> = useDbSubscribe(dbCharUrl.equipedObjects.index)
+  const effects = useRtdbSub(effectsController.getAll(charId))
+  const equipedObj = useRtdbSub(equipedObjectsController.getAll(charId))
   const inventory: DbCollection<DbInventory> = useDbSubscribe(dbCharUrl.inventory.index)
   const status: DbRecord<DbStatus> = useDbSubscribe(dbCharUrl.status.index)
 

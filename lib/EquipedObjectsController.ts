@@ -1,6 +1,5 @@
 import { DbEquipableObject, EquipableCategory, EquipableObject } from "lib/EquipedObjectsRepository"
 import { getRepository } from "lib/RepositoryBuilder"
-import Character from "lib/character/Character"
 import clothingsMap from "lib/objects/data/clothings/clothings"
 import { Clothing, ClothingId } from "lib/objects/data/clothings/clothings.types"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
@@ -10,7 +9,7 @@ const getObjectCategory = (object: EquipableObject): EquipableCategory => {
   return isCloth ? ("clothings" as const) : ("weapons" as const)
 }
 
-const controller = (db: keyof typeof getRepository = "rtdb") => {
+const equipedObjectsController = (db: keyof typeof getRepository = "rtdb") => {
   const repository = getRepository[db].equipedObjects
 
   return {
@@ -21,17 +20,16 @@ const controller = (db: keyof typeof getRepository = "rtdb") => {
 
     getAll: (charId: string) => repository.getAll(charId),
 
-    toggle: async (char: Character, object: Weapon | Clothing) => {
+    toggle: async (charId: string, object: Weapon | Clothing) => {
       const category = getObjectCategory(object)
-      const dbKey = object.id
+      const { dbKey } = object
       if (!object.isEquiped) {
         const payload = { id: object.id } as DbEquipableObject
-        return repository.add(char.charId, category, dbKey, payload)
+        return repository.add(charId, category, dbKey, payload)
       }
-      return repository.remove(char.charId, category, dbKey)
+      return repository.remove(charId, category, dbKey)
     }
   }
 }
 
-const equipedObjectsController = controller()
 export default equipedObjectsController

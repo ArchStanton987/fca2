@@ -2,6 +2,7 @@ import { Pressable, PressableProps, TouchableOpacity, View } from "react-native"
 
 import { AntDesign } from "@expo/vector-icons"
 import combatModsMap from "lib/character/combat/combat-mods"
+import { equipedObjectsController } from "lib/common/controllers"
 import { Clothing } from "lib/objects/data/clothings/clothings.types"
 
 import CheckBox from "components/CheckBox/CheckBox"
@@ -63,7 +64,7 @@ export default function ClothingRow({ clothing, isSelected, ...rest }: ClothingR
         <CheckBox
           isChecked={isEquiped}
           containerStyle={{ backgroundColor: isSelected ? colors.terColor : colors.primColor }}
-          onPress={() => character.toggleEquip(clothing)}
+          onPress={() => equipedObjectsController.toggle(character.charId, clothing)}
         />
       </View>
       <View style={styles.labelContainer}>

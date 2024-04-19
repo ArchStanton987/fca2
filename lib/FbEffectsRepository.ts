@@ -1,8 +1,8 @@
 /* eslint-disable import/prefer-default-export */
 import database from "config/firebase"
 import dbKeys from "db/db-keys"
-import { DataSnapshot, onValue, ref } from "firebase/database"
-import { DbEffect, Effect, EffectId } from "lib/character/effects/effects.types"
+import { onValue, ref } from "firebase/database"
+import { DbEffect, DbEffects, Effect, EffectId } from "lib/character/effects/effects.types"
 
 import {
   addCollectible,
@@ -18,21 +18,35 @@ const fbEffectsRepository = {
   get: (charId: string, effectId: EffectId) => {
     const path = getItemPath(charId, effectId)
     const dbRef = ref(database, path)
-    let effect = null
-    const unsub = onValue(dbRef, snapshot => {
-      effect = snapshot.val()
-    })
-    return { effect, unsubscribe: unsub }
+    let effect: DbEffect | undefined
+    const subscribe = (callback: () => void) => {
+      const unsub = onValue(dbRef, snapshot => {
+        effect = snapshot.val()
+        callback()
+      })
+      return () => {
+        effect = undefined
+        unsub()
+      }
+    }
+    return { subscribe, getSnapshot: () => effect }
   },
 
   getAll: (charId: string) => {
     const path = getContainerPath(charId)
     const dbRef = ref(database, path)
-    let effects = null
-    const unsub = onValue(dbRef, (snapshot: DataSnapshot) => {
-      effects = snapshot.val()
-    })
-    return { effects, unsubscribe: unsub }
+    let effects: DbEffects | undefined
+    const subscribe = (callback: () => void) => {
+      const unsub = onValue(dbRef, snapshot => {
+        effects = snapshot.val()
+        callback()
+      })
+      return () => {
+        effects = undefined
+        unsub()
+      }
+    }
+    return { subscribe, getSnapshot: () => effects }
   },
 
   add: async (charId: string, dbEffect: DbEffect) => {

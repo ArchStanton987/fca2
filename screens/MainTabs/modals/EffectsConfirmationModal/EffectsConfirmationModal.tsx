@@ -2,9 +2,9 @@ import { View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import effectController from "lib/EffectsController"
 import effectsMap from "lib/character/effects/effects"
 import { EffectId } from "lib/character/effects/effects.types"
+import { effectsController } from "lib/common/controllers"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import ModalCta from "components/ModalCta/ModalCta"
@@ -28,7 +28,7 @@ export default function EffectsConfirmationModal() {
   }
 
   const onPressConfirm = async () => {
-    await effectController.groupAdd(character, effects)
+    await effectsController.groupAdd(character, effects)
     router.push({ pathname: routes.main.effects, params: { squadId, charId } })
   }
 

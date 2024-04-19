@@ -3,8 +3,8 @@ import { FlatList, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import effectController from "lib/EffectsController"
 import { Effect } from "lib/character/effects/effects.types"
+import { effectsController } from "lib/common/controllers"
 
 import AddElement from "components/AddElement"
 import { DrawerParams } from "components/Drawer/Drawer.params"
@@ -30,7 +30,7 @@ export default function EffectsScreen() {
   const onPressDelete = (effect: Effect) => {
     if (!effect.dbKey) return
     setSelectedId(null)
-    effectController.remove(character, effect)
+    effectsController.remove(character.charId, effect)
   }
 
   const selectedEffect = effects.find(effect => effect.id === selectedId)
