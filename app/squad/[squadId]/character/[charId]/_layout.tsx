@@ -7,9 +7,12 @@ import dbKeys from "db/db-keys"
 import Character, { DbChar } from "lib/character/Character"
 import { DbAbilities } from "lib/character/abilities/abilities.types"
 import { DbStatus } from "lib/character/status/status.types"
-import { effectsController, equipedObjectsController } from "lib/common/controllers"
+import {
+  effectsController,
+  equipedObjectsController,
+  inventoryController
+} from "lib/common/controllers"
 import Inventory from "lib/objects/Inventory"
-import { DbInventory } from "lib/objects/data/objects.types"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import { CharacterContext } from "contexts/CharacterContext"
@@ -22,7 +25,6 @@ import LoadingScreen from "screens/LoadingScreen"
 import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
 
-type DbCollection<T> = T | undefined | null
 type DbRecord<T> = T | undefined
 
 const modalOptions: NativeStackNavigationOptions = {
@@ -44,7 +46,7 @@ export default function CharStack() {
   const abilities: DbRecord<DbAbilities> = useDbSubscribe(dbCharUrl.abilities)
   const effects = useRtdbSub(effectsController.getAll(charId))
   const equipedObj = useRtdbSub(equipedObjectsController.getAll(charId))
-  const inventory: DbCollection<DbInventory> = useDbSubscribe(dbCharUrl.inventory.index)
+  const inventory = useRtdbSub(inventoryController.getAll(charId))
   const status: DbRecord<DbStatus> = useDbSubscribe(dbCharUrl.status.index)
 
   const character = useMemo(() => {
