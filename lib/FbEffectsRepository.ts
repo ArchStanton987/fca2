@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import database from "config/firebase"
+import database from "config/firebase-env"
 import dbKeys from "db/db-keys"
 import { onValue, ref } from "firebase/database"
 import { DbEffect, DbEffects, Effect, EffectId } from "lib/character/effects/effects.types"

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-import database from "config/firebase"
+import database from "config/firebase-env"
 import { onValue, ref } from "firebase/database"
 
 export default function useDbSubscribe<T, K>(

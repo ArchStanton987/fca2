@@ -1,4 +1,4 @@
-import database from "config/firebase"
+import database from "config/firebase-env"
 import { child, push, ref, remove, update } from "firebase/database"
 
 export const addCollectible = (containerUrl: string, data: any) => {

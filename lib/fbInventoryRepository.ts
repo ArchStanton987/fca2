@@ -1,4 +1,4 @@
-import database from "config/firebase"
+import database from "config/firebase-env"
 import dbKeys from "db/db-keys"
 import { onValue, ref } from "firebase/database"
 
