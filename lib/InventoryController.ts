@@ -14,7 +14,7 @@ const getObjectCategory = (object: Weapon | Clothing | Consumable | MiscObject) 
   if (clothingsMap[object.id as ClothingId] !== undefined) return "clothings"
   if (consumablesMap[object.id as ConsumableId] !== undefined) return "consumables"
   // TODO: do match db name (objects -> miscObjects)
-  if (miscObjectsMap[object.id as MiscObjectId] !== undefined) return "objects"
+  if (miscObjectsMap[object.id as MiscObjectId] !== undefined) return "miscObjects"
   throw new Error("Object category not found")
 }
 
