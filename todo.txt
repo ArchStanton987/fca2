@@ -1,57 +1,5 @@
--- update health modal
--- update health confirmation modal
-
--- update status modal
--- update status confirmation modal
-
-create Class for objects
--> methode remove
-
-PERF:
-- try removing screen params (charId, squadId) and replace by context API
-- replace Drawer with a Stack, drawer will be a view in a layout
-
-- effects: gestion startTs / endTs (allow 2 versions to coexist)
-- calculate remaining effect length 
+- controllers & repositories
 
 
-/* eslint-disable max-classes-per-file */
-type DbType = "rtdb" | "supabase"
-interface Repo {
-  params: any
-  add: () => void
-}
 
-class FbEffectsRepository implements Repo {
-  params: any
-  add() {
-    console.log("Adding effect to Firebase", this.params)
-  }
-}
-class SBEffectsRepository implements Repo {
-  params: any
-  add() {
-    console.log("Adding effect to Supabase", this.params)
-  }
-}
 
-export default function repoBuilder(params: any, db: DbType = "rtdb") {
-  const DB: Record<DbType, new () => Repo> = {
-    rtdb: FbEffectsRepository,
-    supabase: SBEffectsRepository
-  }
-  return new DB[db]()
-}
-
-_________
-
-const EffectsController = () => {
-  const repoName = "fb-rtdb"
-  const repo = repoBuider("coucou", repoName)
-  return {
-    add: (char: Character, effectId: EffectId) => {
-      const hasAlreadyEffect = char.effects.some(effect => effect.id === effectId)
-      repo.add(char.id, "effects", { id: effectId })
-    }
-  }
-}

@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app"
 import { getDatabase } from "firebase/database"
 
+// Copy this file, then rename it to firebase-env.ts
 // Replace with your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "yourApiKey",
