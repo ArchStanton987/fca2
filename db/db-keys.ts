@@ -18,7 +18,7 @@ const dbKeys = {
       weapons: `/v2/characters/${charId}/inventory/weapons`,
       clothings: `/v2/characters/${charId}/inventory/clothings`,
       consumables: `/v2/characters/${charId}/inventory/consumables`,
-      miscObjects: `/v2/characters/${charId}/inventory/objects`
+      miscObjects: `/v2/characters/${charId}/inventory/miscObjects`
     },
     equipedObjects: {
       index: `/v2/characters/${charId}/equipedObj`,
