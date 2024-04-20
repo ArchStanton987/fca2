@@ -1,5 +1,5 @@
 import React from "react"
-import { Pressable, PressableProps, View } from "react-native"
+import { Pressable, PressableProps, TouchableOpacity, View } from "react-native"
 
 import { AntDesign } from "@expo/vector-icons"
 import miscObjectsMap from "lib/objects/data/misc-objects/misc-objects"
@@ -25,9 +25,16 @@ type MiscObjRowProps = PressableProps & {
   isSelected: boolean
   objId: MiscObjectId
   count: number
+  onPressDelete: () => void
 }
 
-export default function MiscObjRow({ isSelected, objId, count, ...rest }: MiscObjRowProps) {
+export default function MiscObjRow({
+  isSelected,
+  objId,
+  count,
+  onPressDelete,
+  ...rest
+}: MiscObjRowProps) {
   const { label } = miscObjectsMap[objId]
   const countAppend = count > 1 ? ` (${count})` : ""
   return (
@@ -38,9 +45,9 @@ export default function MiscObjRow({ isSelected, objId, count, ...rest }: MiscOb
           {countAppend}
         </Txt>
       </View>
-      <View style={styles.deleteContainer}>
+      <TouchableOpacity style={styles.deleteContainer} onPress={onPressDelete}>
         {isSelected && <AntDesign name="delete" size={17} color={colors.secColor} />}
-      </View>
+      </TouchableOpacity>
     </Pressable>
   )
 }

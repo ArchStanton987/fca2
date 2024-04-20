@@ -2,14 +2,14 @@ import database from "config/firebase"
 import dbKeys from "db/db-keys"
 import { onValue, ref } from "firebase/database"
 
-import { groupAddCollectible, groupUpdateValue } from "api/api-rtdb"
+import { groupAddCollectible, groupUpdateValue, removeCollectible } from "api/api-rtdb"
 
-import { ClothingId } from "./objects/data/clothings/clothings.types"
+import { Clothing } from "./objects/data/clothings/clothings.types"
 import consumablesMap from "./objects/data/consumables/consumables"
-import { ConsumableId } from "./objects/data/consumables/consumables.types"
-import { MiscObjectId } from "./objects/data/misc-objects/misc-objects-types"
+import { Consumable, ConsumableId } from "./objects/data/consumables/consumables.types"
+import { MiscObject } from "./objects/data/misc-objects/misc-objects-types"
 import { DbInventory } from "./objects/data/objects.types"
-import { WeaponId } from "./objects/data/weapons/weapons.types"
+import { Weapon } from "./objects/data/weapons/weapons.types"
 import { ExchangeState } from "./objects/objects-reducer"
 
 const getContainerPath = (charId: string) => dbKeys.char(charId).inventory.index
@@ -18,7 +18,7 @@ const getCategoryPath = (charId: string, category: string) =>
 const getElementPath = (charId: string, category: string, id: string) =>
   getCategoryPath(charId, category).concat("/", id)
 
-const getDbObject = (objectId: WeaponId | ClothingId | ConsumableId | MiscObjectId) => {
+const getDbObject = (objectId: string) => {
   const consumable = consumablesMap[objectId as ConsumableId]
   if (consumable) {
     return { id: objectId, remainingUse: consumable.maxUsage }
@@ -79,6 +79,15 @@ const fbInventoryRepository = {
 
     const promises = [groupAddCollectible(addCollectiblesUpdates), groupUpdateValue(recordsUpdates)]
     return Promise.all(promises)
+  },
+
+  remove: async (
+    charId: string,
+    category: string,
+    object: Weapon | Clothing | Consumable | MiscObject
+  ) => {
+    const path = getElementPath(charId, category, object.dbKey)
+    return removeCollectible(path)
   }
 }
 

@@ -2,6 +2,8 @@ import { StyleSheet, View } from "react-native"
 
 import { router } from "expo-router"
 
+import { inventoryController } from "lib/common/controllers"
+
 import ModalCta from "components/ModalCta/ModalCta"
 import ScrollableSection from "components/ScrollableSection"
 import Spacer from "components/Spacer"
@@ -42,17 +44,14 @@ export default function UpdateObjectsConfirmationModal() {
       category,
       objects: Object.entries(objects)
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        .filter(([_, content]) => content.count > 0)
+        .filter(([_, content]) => content.count !== 0)
         .map(([id, content]) => ({ ...content, id }))
     }))
 
   const onPressConfirm = () => {
     // TODO: add apropriate redirection
-    character.groupAddToInv(state)
-    router.replace({
-      pathname: routes.inventory.weapons
-      // params: { charId, squadId }
-    })
+    inventoryController.groupAdd(character.charId, state)
+    router.replace({ pathname: routes.inventory.weapons })
   }
 
   return (

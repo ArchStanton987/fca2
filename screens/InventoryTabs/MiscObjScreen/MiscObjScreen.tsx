@@ -3,6 +3,7 @@ import { FlatList, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { inventoryController } from "lib/common/controllers"
 import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
 
 import AddElement from "components/AddElement"
@@ -18,7 +19,7 @@ import { SearchParams } from "screens/ScreenParams"
 import { filterUnique } from "utils/array-utils"
 
 export default function MiscObjScreen() {
-  const localParams = useLocalSearchParams<SearchParams<DrawerParams>>()
+  const { squadId, charId } = useLocalSearchParams() as SearchParams<DrawerParams>
   const [selectedItem, setSelectedItem] = useState<MiscObject | null>(null)
 
   const { miscObjects } = useInventory()
@@ -35,11 +36,7 @@ export default function MiscObjScreen() {
   const onPressAdd = () =>
     router.push({
       pathname: routes.modal.updateObjects,
-      params: {
-        squadId: localParams.squadId,
-        charId: localParams.charId,
-        initCategory: "miscObjects"
-      }
+      params: { squadId, charId, initCategory: "miscObjects" }
     })
 
   return (
@@ -56,6 +53,7 @@ export default function MiscObjScreen() {
               count={item.count}
               isSelected={item.id === selectedItem?.id}
               onPress={() => setSelectedItem(prev => (prev?.id === item.id ? null : item))}
+              onPressDelete={() => inventoryController.remove(charId, item)}
             />
           )}
         />
