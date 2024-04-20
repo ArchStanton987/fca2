@@ -20,7 +20,7 @@ import {
   MiscObject,
   MiscObjectData
 } from "lib/objects/data/misc-objects/misc-objects-types"
-import { DbEquipedObjects, DbInventory } from "lib/objects/data/objects.types"
+import { DbEquipedObjects } from "lib/objects/data/objects.types"
 import weaponsMap from "lib/objects/data/weapons/weapons"
 import { DbWeapon, Weapon, WeaponData } from "lib/objects/data/weapons/weapons.types"
 import { ExchangeState } from "lib/objects/objects-reducer"
@@ -64,7 +64,6 @@ export type DbChar = {
   abilities: DbAbilities
   effects?: DbEffects
   equipedObj?: DbEquipedObjects
-  inventory?: DbInventory
   status: DbStatus
 }
 
@@ -73,7 +72,6 @@ export default class Character {
   dbAbilities: DbAbilities
   dbEffects: DbEffects
   dbEquipedObjects: DbEquipedObjects
-  dbInventory: DbInventory
   status: DbStatus
   date: Date
 
@@ -82,7 +80,6 @@ export default class Character {
     this.dbAbilities = obj.abilities
     this.dbEffects = obj.effects || {}
     this.dbEquipedObjects = obj.equipedObj || {}
-    this.dbInventory = obj.inventory || { caps: 0 }
     this.status = obj.status
     this.date = date
 
@@ -90,7 +87,6 @@ export default class Character {
       dbAbilities: observable,
       dbEffects: observable,
       dbEquipedObjects: observable,
-      dbInventory: observable,
       status: observable,
       date: observable,
       //

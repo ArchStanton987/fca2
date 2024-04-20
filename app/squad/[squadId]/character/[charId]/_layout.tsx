@@ -50,18 +50,18 @@ export default function CharStack() {
   const status: DbRecord<DbStatus> = useDbSubscribe(dbCharUrl.status.index)
 
   const character = useMemo(() => {
-    const dbCharData = { abilities, effects, equipedObj, inventory, status }
+    const dbCharData = { abilities, effects, equipedObj, status }
     if (Object.values(dbCharData).some(data => data === undefined)) return null
     if (!squad) return null
     return new Character(dbCharData as DbChar, squad.date, charId)
-  }, [squad, charId, abilities, effects, equipedObj, inventory, status])
+  }, [squad, charId, abilities, effects, equipedObj, status])
 
   const charInventory = useMemo(() => {
-    if (!character) return null
+    if (!character || !inventory) return null
     const { dbAbilities, innateSymptoms, currSkills, dbEquipedObjects } = character
     const charData = { dbAbilities, innateSymptoms, currSkills, dbEquipedObjects }
-    return new Inventory(character?.dbInventory, charData)
-  }, [character])
+    return new Inventory(inventory, charData)
+  }, [character, inventory])
 
   if (!character || !charInventory || !squad) return <LoadingScreen />
 
