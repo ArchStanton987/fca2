@@ -1,9 +1,8 @@
-import database from "config/firebase-env"
 import dbKeys from "db/db-keys"
-import { onValue, ref } from "firebase/database"
 
 import { groupAddCollectible, groupUpdateValue, removeCollectible } from "api/api-rtdb"
 
+import { getRtdbSub } from "./common/utils/rtdb-utils"
 import { Clothing } from "./objects/data/clothings/clothings.types"
 import consumablesMap from "./objects/data/consumables/consumables"
 import { Consumable, ConsumableId } from "./objects/data/consumables/consumables.types"
@@ -29,19 +28,8 @@ const getDbObject = (objectId: string) => {
 const fbInventoryRepository = {
   getAll: (charId: string) => {
     const path = dbKeys.char(charId).inventory.index
-    const dbRef = ref(database, path)
-    let inventory: DbInventory | undefined
-    const subscribe = (callback: () => void) => {
-      const unsub = onValue(dbRef, snapshot => {
-        inventory = snapshot.val()
-        callback()
-      })
-      return () => {
-        inventory = undefined
-        unsub()
-      }
-    }
-    return { subscribe, getSnapshot: () => inventory }
+    const sub = getRtdbSub<DbInventory>(path)
+    return sub
   },
 
   // TODO: rename to update, add possibility to remove collectibles.

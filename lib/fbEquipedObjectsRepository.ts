@@ -1,11 +1,10 @@
-import database from "config/firebase-env"
 import dbKeys from "db/db-keys"
-import { onValue, ref } from "firebase/database"
 import { Clothing, DbClothing } from "lib/objects/data/clothings/clothings.types"
 import { DbWeapon, Weapon } from "lib/objects/data/weapons/weapons.types"
 
 import { removeCollectible, updateValue } from "api/api-rtdb"
 
+import { getRtdbSub } from "./common/utils/rtdb-utils"
 import { DbEquipedObjects } from "./objects/data/objects.types"
 
 const getContainerPath = (charId: string) => dbKeys.char(charId).equipedObjects.index
@@ -22,53 +21,20 @@ export type DbEquipableCategory = Record<string, DbClothing> | Record<string, Db
 const fbEquipedObjectsRepository = {
   get: (charId: string, category: string, dbKey: string) => {
     const path = getItemPath(charId, category, dbKey)
-    const dbRef = ref(database, path)
-    let equipedObject: DbClothing | DbWeapon | undefined
-    const subscribe = (callback: () => void) => {
-      const unsub = onValue(dbRef, snapshot => {
-        equipedObject = snapshot.val()
-        callback()
-      })
-      return () => {
-        equipedObject = undefined
-        unsub()
-      }
-    }
-    return { subscribe, getSnapshot: () => equipedObject }
+    const sub = getRtdbSub<DbClothing | DbWeapon>(path)
+    return sub
   },
 
   getByCategory: (charId: string, category: string) => {
     const path = getCategoryPath(charId, category)
-    const dbRef = ref(database, path)
-    let equipedObjectsCategory: DbEquipableCategory | undefined
-    const subscribe = (callback: () => void) => {
-      const unsub = onValue(dbRef, snapshot => {
-        equipedObjectsCategory = snapshot.val()
-        callback()
-      })
-      return () => {
-        equipedObjectsCategory = undefined
-        unsub()
-      }
-    }
-    return { subscribe, getSnapshot: () => equipedObjectsCategory }
+    const sub = getRtdbSub<DbEquipableCategory>(path)
+    return sub
   },
 
   getAll: (charId: string) => {
     const path = getContainerPath(charId)
-    const dbRef = ref(database, path)
-    let equipedObjects: DbEquipedObjects | undefined
-    const subscribe = (callback: () => void) => {
-      const unsub = onValue(dbRef, snapshot => {
-        equipedObjects = snapshot.val()
-        callback()
-      })
-      return () => {
-        equipedObjects = undefined
-        unsub()
-      }
-    }
-    return { subscribe, getSnapshot: () => equipedObjects }
+    const sub = getRtdbSub<DbEquipedObjects>(path)
+    return sub
   },
 
   add: async (

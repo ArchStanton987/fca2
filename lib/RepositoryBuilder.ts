@@ -3,7 +3,7 @@ import equipedObjectsRepository from "lib/fbEquipedObjectsRepository"
 import fbInventoryRepository from "lib/fbInventoryRepository"
 import fbStatusRepository from "lib/fbStatusRepository"
 
-export type RepositoryName = "effects" | "inventory" | "status"
+export type RepositoryName = "effects" | "equipedObjects" | "inventory" | "status"
 
 export const getRepository = {
   rtdb: {

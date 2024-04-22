@@ -1,7 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import database from "config/firebase-env"
 import dbKeys from "db/db-keys"
-import { onValue, ref } from "firebase/database"
 import { DbEffect, DbEffects, Effect, EffectId } from "lib/character/effects/effects.types"
 
 import {
@@ -11,42 +10,22 @@ import {
   removeCollectible
 } from "api/api-rtdb"
 
+import { getRtdbSub } from "./common/utils/rtdb-utils"
+
 const getContainerPath = (charId: string) => dbKeys.char(charId).effects
 const getItemPath = (charId: string, dbKey: string) => getContainerPath(charId).concat("/", dbKey)
 
 const fbEffectsRepository = {
   get: (charId: string, effectId: EffectId) => {
     const path = getItemPath(charId, effectId)
-    const dbRef = ref(database, path)
-    let effect: DbEffect | undefined
-    const subscribe = (callback: () => void) => {
-      const unsub = onValue(dbRef, snapshot => {
-        effect = snapshot.val()
-        callback()
-      })
-      return () => {
-        effect = undefined
-        unsub()
-      }
-    }
-    return { subscribe, getSnapshot: () => effect }
+    const sub = getRtdbSub<DbEffect>(path)
+    return sub
   },
 
   getAll: (charId: string) => {
     const path = getContainerPath(charId)
-    const dbRef = ref(database, path)
-    let effects: DbEffects | undefined
-    const subscribe = (callback: () => void) => {
-      const unsub = onValue(dbRef, snapshot => {
-        effects = snapshot.val()
-        callback()
-      })
-      return () => {
-        effects = undefined
-        unsub()
-      }
-    }
-    return { subscribe, getSnapshot: () => effects }
+    const sub = getRtdbSub<DbEffects>(path)
+    return sub
   },
 
   add: async (charId: string, dbEffect: DbEffect) => {
