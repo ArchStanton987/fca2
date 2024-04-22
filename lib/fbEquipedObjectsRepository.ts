@@ -19,7 +19,7 @@ export type EquipableObject = Clothing | Weapon
 export type DbEquipableObject = DbClothing | DbWeapon
 export type DbEquipableCategory = Record<string, DbClothing> | Record<string, DbWeapon>
 
-const equipedObjectsRepository = {
+const fbEquipedObjectsRepository = {
   get: (charId: string, category: string, dbKey: string) => {
     const path = getItemPath(charId, category, dbKey)
     const dbRef = ref(database, path)
@@ -87,4 +87,4 @@ const equipedObjectsRepository = {
   }
 }
 
-export default equipedObjectsRepository
+export default fbEquipedObjectsRepository

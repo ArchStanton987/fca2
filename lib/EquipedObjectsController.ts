@@ -1,5 +1,9 @@
-import { DbEquipableObject, EquipableCategory, EquipableObject } from "lib/EquipedObjectsRepository"
 import { getRepository } from "lib/RepositoryBuilder"
+import {
+  DbEquipableObject,
+  EquipableCategory,
+  EquipableObject
+} from "lib/fbEquipedObjectsRepository"
 import clothingsMap from "lib/objects/data/clothings/clothings"
 import { Clothing, ClothingId } from "lib/objects/data/clothings/clothings.types"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
