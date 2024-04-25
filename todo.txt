@@ -1,5 +1,33 @@
 - controllers & repositories
 
+actions
+
+STATUS
+- update health
+- update exp
+- update AP
+
+EFFECTS
+- add effect
+- remove effect
+
+INVENTORY
+- update caps
+- add item
+- throw item
+- sell item
+- equip item
+- unequip item
+- consume
+- add / remove ammo
+
+ADMIN
+- update datetime
+
+
+
+
+
 
 
 
