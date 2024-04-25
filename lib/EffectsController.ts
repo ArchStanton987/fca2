@@ -1,19 +1,7 @@
 import { getRepository } from "lib/RepositoryBuilder"
 import Character from "lib/character/Character"
-import effectsMap from "lib/character/effects/effects"
-import { DbEffect, Effect, EffectId } from "lib/character/effects/effects.types"
-
-const createDbEffect = (char: Character, effectId: EffectId) => {
-  const hasEffect = char.effects.some(effect => effect.id === effectId)
-  if (hasEffect) throw new Error("Effect already exists")
-  const dbEffect: DbEffect = { id: effectId, startTs: char.date.toJSON() }
-  const length = char.getEffectLengthInH(effectsMap[effectId])
-  if (length) {
-    const lengthInMs = length * 3600 * 1000
-    dbEffect.endTs = new Date(char.date.getTime() + lengthInMs).toJSON()
-  }
-  return dbEffect
-}
+import { createDbEffect } from "lib/character/effects/effects-utils"
+import { Effect, EffectId } from "lib/character/effects/effects.types"
 
 function effectsController(db: keyof typeof getRepository = "rtdb") {
   const repository = getRepository[db].effects
