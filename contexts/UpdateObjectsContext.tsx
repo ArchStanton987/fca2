@@ -1,15 +1,16 @@
 import { createContext, useContext } from "react"
 
-import { ExchangeState, UpdateObjectAction } from "lib/objects/objects-reducer"
+import { DbInventory } from "lib/objects/data/objects.types"
+import { ExchangeState, ExchangeableObject, UpdateObjectAction } from "lib/objects/objects-reducer"
 
-type UpdateObjectsContextType = {
+type UpdateObjectsContextType<C extends keyof DbInventory, O extends ExchangeableObject> = {
   state: ExchangeState
-  dispatch: React.Dispatch<UpdateObjectAction>
+  dispatch: React.Dispatch<UpdateObjectAction<C, O>>
 }
 
-export const UpdateObjectsContext = createContext<UpdateObjectsContextType>(
-  {} as UpdateObjectsContextType
-)
+export const UpdateObjectsContext = createContext<
+  UpdateObjectsContextType<keyof DbInventory, ExchangeableObject>
+>({} as UpdateObjectsContextType<keyof DbInventory, ExchangeableObject>)
 export const useUpdateObjects = () => {
   const updateObjects = useContext(UpdateObjectsContext)
   if (!updateObjects)

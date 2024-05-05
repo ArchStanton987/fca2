@@ -7,6 +7,7 @@ import ammoMap from "lib/objects/data/ammo/ammo"
 import clothingsMap from "lib/objects/data/clothings/clothings"
 import consumablesMap from "lib/objects/data/consumables/consumables"
 import miscObjectsMap from "lib/objects/data/misc-objects/misc-objects"
+import { DbInventory } from "lib/objects/data/objects.types"
 import weaponsMap from "lib/objects/data/weapons/weapons"
 
 import AmountSelector from "components/AmountSelector"
@@ -28,7 +29,15 @@ import ScreenParams, { SearchParams } from "screens/ScreenParams"
 
 import styles from "./UpdateObjectsModal.styles"
 
-export const categoriesMap = {
+type Category = {
+  id: string
+  label: string
+  selectors: number[]
+  hasSearch: boolean
+  data: Record<string, { id: string; label: string }>
+}
+
+export const categoriesMap: Record<keyof DbInventory, Category> = {
   weapons: {
     id: "weapons",
     label: "Armes",
@@ -73,7 +82,7 @@ export const categoriesMap = {
   }
 }
 
-type SelectedCat = keyof typeof categoriesMap
+type SelectedCat = keyof DbInventory
 type SelectedItem = { id: string; label: string; inInventory: number } | null
 
 const categories = Object.values(categoriesMap)
@@ -96,13 +105,8 @@ export default function UpdateObjectsModal() {
   const onPressMod = (modType: "minus" | "plus") => {
     if (selectedItem === null) return
     const count = modType === "minus" ? -selectedAmount : selectedAmount
-    const payload = {
-      category: selectedCat,
-      id: selectedItem.id,
-      count,
-      label: selectedItem.label,
-      inInventory: selectedItem.inInventory
-    }
+    const { inInventory, label, id } = selectedItem
+    const payload = { category: selectedCat, id, count, label, inInventory }
     dispatch({ type: "modObject", payload })
   }
 

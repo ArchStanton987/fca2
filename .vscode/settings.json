@@ -4,6 +4,7 @@
     "engine",
     "nav",
     "character",
-    "build"
+    "build",
+    "inventory"
   ]
 }
