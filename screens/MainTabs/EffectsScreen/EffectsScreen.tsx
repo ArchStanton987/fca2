@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { FlatList, View } from "react-native"
+import { FlatList, ScrollView, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
@@ -37,7 +37,7 @@ export default function EffectsScreen() {
   const selectedEffect = effects.find(effect => effect.id === selectedId)
 
   return (
-    <DrawerPage style={{ flex: 1 }}>
+    <DrawerPage>
       <Section style={{ flex: 1 }}>
         <FlatList
           data={effects}
@@ -58,10 +58,13 @@ export default function EffectsScreen() {
       </Section>
       <Spacer x={10} />
       <View style={{ width: 200 }}>
-        <Section style={{ width: 200, flexGrow: 1 }}>
+        <Section style={{ width: 200, flex: 1 }}>
           <Txt>DESCRIPTION</Txt>
           <Spacer y={10} />
-          <Txt>{!!selectedEffect && selectedEffect.data.description}</Txt>
+          <ScrollView>
+            <Txt>{!!selectedEffect && selectedEffect.data.description}</Txt>
+            <Spacer y={10} />
+          </ScrollView>
         </Section>
         <Section style={{ width: 200 }}>
           <AddElement title="AJOUTER UN EFFET" onPressAdd={onPressAdd} />

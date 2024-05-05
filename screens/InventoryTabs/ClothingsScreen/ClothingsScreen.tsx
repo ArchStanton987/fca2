@@ -51,7 +51,7 @@ export default function ClothingsScreen() {
       </Section>
       <Spacer x={10} />
       <View style={{ width: 120 }}>
-        <Section style={{ width: 120 }}>
+        <Section style={{ width: 120, flex: 1 }}>
           <ClothingsDetails charClothing={selectedCloth} />
         </Section>
         <Section style={{ width: 120 }}>

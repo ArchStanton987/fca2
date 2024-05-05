@@ -51,7 +51,7 @@ export default function WeaponsScreen() {
       </Section>
       <Spacer x={10} />
       <View style={{ width: 130 }}>
-        <Section style={{ width: 130, flexGrow: 1 }}>
+        <Section style={{ width: 130, flex: 1 }}>
           <WeaponsDetails charWeapon={selectedWeapon} />
         </Section>
         <Section style={{ width: 130 }}>

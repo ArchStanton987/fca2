@@ -5,6 +5,7 @@ import layout from "styles/layout"
 const createStyles = (platform: Platform) =>
   StyleSheet.create({
     drawerPage: {
+      flex: 1,
       flexDirection: "row",
       marginLeft: layout.drawerWidth + layout.globalPadding,
       marginTop: platform.OS === "web" ? 10 : 40

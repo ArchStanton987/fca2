@@ -50,8 +50,10 @@ export default function AmmoScreen() {
       </Section>
       <Spacer x={10} />
       <View style={{ width: 130 }}>
-        <Spacer fullspace />
-        <Section style={{ width: 180 }}>
+        <Section style={{ width: 130, flex: 1 }}>
+          <Spacer fullspace />
+        </Section>
+        <Section style={{ width: 130 }}>
           <AddElement title="AJOUTER" onPressAdd={onPressAdd} />
         </Section>
       </View>

@@ -60,7 +60,7 @@ export default function MiscObjScreen() {
       </Section>
       <Spacer x={10} />
       <View style={{ width: 180 }}>
-        <Section style={{ width: 180, flexGrow: 1 }}>
+        <Section style={{ width: 180, flex: 1 }}>
           <MiscObjDetails miscObj={selectedItem} />
         </Section>
         <Section style={{ width: 180 }}>
