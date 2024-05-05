@@ -2,7 +2,7 @@ import React from "react"
 import { Pressable, PressableProps, TouchableOpacity, View } from "react-native"
 
 import { AntDesign } from "@expo/vector-icons"
-import { inventoryController } from "lib/common/controllers"
+import useCases from "lib/common/use-cases"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
 
 import CheckBox from "components/CheckBox/CheckBox"
@@ -70,7 +70,7 @@ export default function WeaponRow({ weapon, isSelected, ...rest }: WeaponRowProp
       </View>
       <TouchableOpacity
         style={styles.deleteContainer}
-        onPress={() => inventoryController.remove(character.charId, weapon)}
+        onPress={() => useCases.inventory.remove(character.charId, weapon)}
       >
         {isSelected && <AntDesign name="delete" size={17} color={colors.secColor} />}
       </TouchableOpacity>

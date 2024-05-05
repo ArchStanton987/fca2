@@ -3,7 +3,7 @@ import { FlatList, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import { inventoryController } from "lib/common/controllers"
+import useCases from "lib/common/use-cases"
 import { Consumable } from "lib/objects/data/consumables/consumables.types"
 
 import AddElement from "components/AddElement"
@@ -46,7 +46,7 @@ export default function ConsumablesScreen() {
     })
 
   const onDelete = (item: Consumable) => {
-    inventoryController.remove(character.charId, item)
+    useCases.inventory.remove(character.charId, item)
     setSelectedItem(null)
   }
 

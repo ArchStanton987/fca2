@@ -3,7 +3,7 @@ import { FlatList, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import { inventoryController } from "lib/common/controllers"
+import useCases from "lib/common/use-cases"
 import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
 
 import AddElement from "components/AddElement"
@@ -53,7 +53,7 @@ export default function MiscObjScreen() {
               count={item.count}
               isSelected={item.id === selectedItem?.id}
               onPress={() => setSelectedItem(prev => (prev?.id === item.id ? null : item))}
-              onPressDelete={() => inventoryController.remove(charId, item)}
+              onPressDelete={() => useCases.inventory.remove(charId, item)}
             />
           )}
         />

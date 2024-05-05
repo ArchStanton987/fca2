@@ -1,9 +1,9 @@
-import fbEffectsRepository from "lib/FbEffectsRepository"
-import fbCharacterRepository from "lib/fbCharacterRepository"
-import equipedObjectsRepository from "lib/fbEquipedObjectsRepository"
-import fbInventoryRepository from "lib/fbInventoryRepository"
-import fbSquadsRepository from "lib/fbSquadRepository"
-import fbStatusRepository from "lib/fbStatusRepository"
+import fbEffectsRepository from "./character/effects/FbEffectsRepository"
+import fbStatusRepository from "./character/status/fbStatusRepository"
+import fbCharacterRepository from "./fbCharacterRepository"
+import fbSquadsRepository from "./fbSquadRepository"
+import fbEquipedObjectsRepository from "./objects/fbEquipedObjectsRepository"
+import fbInventoryRepository from "./objects/fbInventoryRepository"
 
 export type RepositoryName =
   | "effects"
@@ -16,7 +16,7 @@ export type RepositoryName =
 export const getRepository = {
   rtdb: {
     effects: fbEffectsRepository,
-    equipedObjects: equipedObjectsRepository,
+    equipedObjects: fbEquipedObjectsRepository,
     inventory: fbInventoryRepository,
     status: fbStatusRepository,
     squads: fbSquadsRepository,

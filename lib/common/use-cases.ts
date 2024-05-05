@@ -3,7 +3,16 @@ import getStatusUseCases from "lib/character/status/status-use-cases"
 import getEquipedObjectsUseCases from "lib/objects/equiped-objects-use-cases"
 import getInventoryUseCases from "lib/objects/inventory-yse-cases"
 
-export const useCharEffects = getEffectsUseCases()
-export const useEquipedObjects = getEquipedObjectsUseCases()
-export const useInventory = getInventoryUseCases()
-export const useStatus = getStatusUseCases()
+const effects = getEffectsUseCases()
+const equipedObjects = getEquipedObjectsUseCases()
+const inventory = getInventoryUseCases()
+const status = getStatusUseCases()
+
+const useCases = {
+  effects,
+  equipedObjects,
+  inventory,
+  status
+}
+
+export default useCases

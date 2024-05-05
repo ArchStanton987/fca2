@@ -2,7 +2,7 @@ import { StyleSheet, View } from "react-native"
 
 import { router } from "expo-router"
 
-import { inventoryController } from "lib/common/controllers"
+import useCases from "lib/common/use-cases"
 
 import ModalCta from "components/ModalCta/ModalCta"
 import ScrollableSection from "components/ScrollableSection"
@@ -50,7 +50,7 @@ export default function UpdateObjectsConfirmationModal() {
 
   const onPressConfirm = () => {
     // TODO: add apropriate redirection
-    inventoryController.groupAdd(character.charId, state)
+    useCases.inventory.groupAdd(character.charId, state)
     router.replace({ pathname: routes.inventory.weapons })
   }
 

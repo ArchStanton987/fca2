@@ -2,7 +2,7 @@ import { Pressable, PressableProps, TouchableOpacity, View } from "react-native"
 
 import { AntDesign } from "@expo/vector-icons"
 import combatModsMap from "lib/character/combat/combat-mods"
-import { equipedObjectsController, inventoryController } from "lib/common/controllers"
+import useCases from "lib/common/use-cases"
 import { Clothing } from "lib/objects/data/clothings/clothings.types"
 
 import CheckBox from "components/CheckBox/CheckBox"
@@ -64,7 +64,7 @@ export default function ClothingRow({ clothing, isSelected, ...rest }: ClothingR
         <CheckBox
           isChecked={isEquiped}
           containerStyle={{ backgroundColor: isSelected ? colors.terColor : colors.primColor }}
-          onPress={() => equipedObjectsController.toggle(character.charId, clothing)}
+          onPress={() => useCases.equipedObjects.toggle(character.charId, clothing)}
         />
       </View>
       <View style={styles.labelContainer}>
@@ -99,7 +99,7 @@ export default function ClothingRow({ clothing, isSelected, ...rest }: ClothingR
       </View>
       <TouchableOpacity
         style={styles.deleteContainer}
-        onPress={() => inventoryController.remove(character.charId, clothing)}
+        onPress={() => useCases.inventory.remove(character.charId, clothing)}
       >
         {isSelected && <AntDesign name="delete" size={17} color={colors.secColor} />}
       </TouchableOpacity>

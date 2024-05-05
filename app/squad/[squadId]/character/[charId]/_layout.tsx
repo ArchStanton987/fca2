@@ -7,11 +7,7 @@ import dbKeys from "db/db-keys"
 import Character, { DbChar } from "lib/character/Character"
 import { DbAbilities } from "lib/character/abilities/abilities.types"
 import { DbStatus } from "lib/character/status/status.types"
-import {
-  effectsController,
-  equipedObjectsController,
-  inventoryController
-} from "lib/common/controllers"
+import useCases from "lib/common/use-cases"
 import Inventory from "lib/objects/Inventory"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
@@ -44,9 +40,9 @@ export default function CharStack() {
   const dbCharUrl = dbKeys.char(charId)
   // use separate subscriptions to avoid unnecessary bandwidth usage
   const abilities: DbRecord<DbAbilities> = useDbSubscribe(dbCharUrl.abilities)
-  const effects = useRtdbSub(effectsController.getAll(charId))
-  const equipedObj = useRtdbSub(equipedObjectsController.getAll(charId))
-  const inventory = useRtdbSub(inventoryController.getAll(charId))
+  const effects = useRtdbSub(useCases.effects.getAll(charId))
+  const equipedObj = useRtdbSub(useCases.equipedObjects.getAll(charId))
+  const inventory = useRtdbSub(useCases.inventory.getAll(charId))
   const status: DbRecord<DbStatus> = useDbSubscribe(dbCharUrl.status.index)
 
   const character = useMemo(() => {
