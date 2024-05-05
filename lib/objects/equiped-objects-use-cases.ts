@@ -1,26 +1,24 @@
 import { getRepository } from "lib/RepositoryBuilder"
-import {
-  DbEquipableObject,
-  EquipableCategory,
-  EquipableObject
-} from "lib/fbEquipedObjectsRepository"
 import clothingsMap from "lib/objects/data/clothings/clothings"
 import { Clothing, ClothingId } from "lib/objects/data/clothings/clothings.types"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
+
+import { DbEquipableObject, EquipableCategory, EquipableObject } from "./fbEquipedObjectsRepository"
 
 const getObjectCategory = (object: EquipableObject): EquipableCategory => {
   const isCloth = clothingsMap[object.id as ClothingId] !== undefined
   return isCloth ? ("clothings" as const) : ("weapons" as const)
 }
 
-const equipedObjectsController = (db: keyof typeof getRepository = "rtdb") => {
+const getEquipedObjectsUseCases = (db: keyof typeof getRepository = "rtdb") => {
   const repository = getRepository[db].equipedObjects
 
   return {
-    get: (charId: string, category: string, dbKey: string) =>
+    get: (charId: string, category: EquipableCategory, dbKey: EquipableObject["dbKey"]) =>
       repository.get(charId, category, dbKey),
 
-    getByCategory: (charId: string, category: string) => repository.getByCategory(charId, category),
+    getByCategory: (charId: string, category: EquipableCategory) =>
+      repository.getByCategory(charId, category),
 
     getAll: (charId: string) => repository.getAll(charId),
 
@@ -32,8 +30,11 @@ const equipedObjectsController = (db: keyof typeof getRepository = "rtdb") => {
         return repository.add(charId, category, dbKey, payload)
       }
       return repository.remove(charId, category, dbKey)
-    }
+    },
+
+    remove: (charId: string, category: EquipableCategory, dbKey: EquipableObject["dbKey"]) =>
+      repository.remove(charId, category, dbKey)
   }
 }
 
-export default equipedObjectsController
+export default getEquipedObjectsUseCases

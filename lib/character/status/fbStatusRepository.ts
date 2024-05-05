@@ -5,26 +5,25 @@ import { getRtdbSub } from "lib/common/utils/rtdb-utils"
 import { groupUpdateValue, updateValue } from "api/api-rtdb"
 
 const getContainerPath = (charId: string) => dbKeys.char(charId).status.index
-const getFieldPath = (charId: string, id: string) => getContainerPath(charId).concat("/", id)
+const getFieldPath = (charId: string, id: keyof DbStatus) =>
+  getContainerPath(charId).concat("/", id)
 
 const fbStatusRepository = {
   get: <T extends keyof DbStatus>(charId: string, field: T) => {
     const path = getFieldPath(charId, field)
-    const sub = getRtdbSub<keyof DbStatus[T]>(path)
-    return sub
+    return getRtdbSub<keyof DbStatus[T]>(path)
   },
   getAll: (charId: string) => {
     const path = getContainerPath(charId)
-    const sub = getRtdbSub<DbStatus>(path)
-    return sub
+    return getRtdbSub<DbStatus>(path)
   },
-  updateElement: <T extends keyof DbStatus>(charId: string, field: T, data: string | number) => {
+  updateElement: <T extends keyof DbStatus>(charId: string, field: T, data: DbStatus[T]) => {
     const path = getFieldPath(charId, field)
     return updateValue(path, data)
   },
   groupUpdate: (charId: string, updates: Partial<DbStatus>) => {
     const payload = Object.entries(updates).map(([key, value]) => ({
-      url: getFieldPath(charId, key),
+      url: getFieldPath(charId, key as keyof DbStatus),
       data: value
     }))
     return groupUpdateValue(payload)

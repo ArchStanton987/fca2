@@ -8,26 +8,27 @@ export const getEffectLengthInH = (char: Character, effect: EffectData) => {
   return effect.length
 }
 
-export const createDbEffect = (char: Character, effectId: EffectId) => {
+export const createDbEffect = (char: Character, effectId: EffectId, refDate?: Date) => {
   const hasEffect = char.effects.some(effect => effect.id === effectId)
   if (hasEffect) throw new Error("Effect already exists")
   const dbEffect: DbEffect = { id: effectId, startTs: char.date.toJSON() }
   const length = getEffectLengthInH(char, effectsMap[effectId])
   if (length) {
     const lengthInMs = length * 3600 * 1000
-    dbEffect.endTs = new Date(char.date.getTime() + lengthInMs).toJSON()
+    const startDate = refDate || char.date
+    dbEffect.endTs = new Date(startDate.getTime() + lengthInMs).toJSON()
   }
   return dbEffect
 }
 
-export const getExpiringEffects = (char: Character, newDate: Date) =>
+export const getExpiringEffects = (char: Character, refDate: Date) =>
   char.effects.filter(effect => {
-    if (effect.endTs && effect?.endTs.getTime() < newDate.getTime()) return true
+    if (effect.endTs && effect?.endTs.getTime() < refDate.getTime()) return true
     if (!effect.data.length) return false
     if (!effect.startTs) return false
     const effectLength = getEffectLengthInH(char, effect.data)
     const lengthInH = effectLength || effect.data.length
-    return effect.startTs.getTime() + lengthInH * 3600 * 1000 < newDate.getTime()
+    return effect.startTs.getTime() + lengthInH * 3600 * 1000 < refDate.getTime()
   })
 
 export const getFollowingEffects = (char: Character, newDate: Date) =>

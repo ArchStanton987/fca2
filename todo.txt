@@ -25,6 +25,12 @@ ADMIN
 - update datetime
 
 
+char heals
+char gains exp
+char gains ap
+char spends ap
+
+
 
 
 
