@@ -15,6 +15,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingBottom: 10,
     paddingHorizontal: 10
+  },
+  equObjRow: {
+    flexDirection: "row",
+    justifyContent: "space-between"
   }
 })
 export default styles

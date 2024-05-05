@@ -9,51 +9,48 @@ import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 
+import { getPlaceColor, getWeightColor } from "./EquipedObjSection.utils"
+import styles from "./RecapScreen.styles"
+
 function EquipedObjSection() {
   const character = useCharacter()
   const inventory = useInventory()
   const { equipedObjects, currSecAttr } = character
+  const { normalCarryWeight, tempCarryWeight, maxCarryWeight, maxPlace } = currSecAttr
   const { weapons, clothings } = equipedObjects
   const { currPlace, currWeight } = inventory.currentCarry
 
   return (
     <View style={{ flex: 1 }}>
+      <Section style={{ paddingHorizontal: 10 }}>
+        <View style={styles.equObjRow}>
+          <Txt style={{ color: getWeightColor(currWeight, currSecAttr) }}>POIDS: {currWeight}</Txt>
+          <Txt>{`(${normalCarryWeight}/${tempCarryWeight}/${maxCarryWeight})`}</Txt>
+        </View>
+        <Spacer y={10} />
+        <View style={styles.equObjRow}>
+          <Txt style={{ color: getPlaceColor(currPlace, maxPlace) }}>PLACE: {currPlace}</Txt>
+          <Txt>/{maxPlace || "-"}</Txt>
+        </View>
+      </Section>
+      <Spacer y={10} />
       <Section style={{ paddingHorizontal: 10, flex: 1 }}>
-        <Txt>ARMES EQUIPEES</Txt>
+        <Txt>ARMES EQUIPES</Txt>
         <Spacer y={10} />
         {weapons.map(weapon => (
-          <View
-            key={weapon.dbKey}
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
+          <View key={weapon.dbKey} style={styles.equObjRow}>
             <CheckBox isChecked />
             <Txt>{weapon.data.label}</Txt>
           </View>
         ))}
-      </Section>
-      <Spacer y={10} />
-      <Section style={{ paddingHorizontal: 10, flex: 1 }}>
-        <Txt>ARMURES EQUIPEES</Txt>
+        <Txt>ARMURES EQUIPES</Txt>
         <Spacer y={10} />
         {clothings.map(cloth => (
-          <View key={cloth.dbKey} style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View key={cloth.dbKey} style={styles.equObjRow}>
             <CheckBox isChecked />
             <Txt>{cloth.data.label}</Txt>
           </View>
         ))}
-      </Section>
-      <Spacer y={10} />
-      <Section style={{ paddingHorizontal: 10, flex: 1 }}>
-        <Txt>
-          POIDS: {currWeight}{" "}
-          {`(${currSecAttr?.normalCarryWeight}/${currSecAttr?.tempCarryWeight}/${currSecAttr?.maxCarryWeight})`}
-        </Txt>
-      </Section>
-      <Spacer y={10} />
-      <Section style={{ paddingHorizontal: 10, flex: 1 }}>
-        <Txt>
-          PLACE: {currPlace}/{currSecAttr?.maxPlace || "-"}
-        </Txt>
       </Section>
     </View>
   )
