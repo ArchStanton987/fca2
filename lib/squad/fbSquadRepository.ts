@@ -11,15 +11,15 @@ const getElementPath = (squadId: string, id: keyof DbSquad) => getSquadPath(squa
 type DbSquads = Record<string, DbSquad>
 
 const fbSquadsRepository = {
-  get: <DbSquad>(squadId: string) => {
+  get: (squadId: string) => {
     const path = getSquadPath(squadId)
     return getRtdbSub<DbSquad>(path)
   },
-  getAll: <DbSquads>() => {
+  getAll: () => {
     const path = getContainerPath()
     return getRtdbSub<DbSquads>(path)
   },
-  updateElement: (squadId: string, id: keyof DbSquad, data: string | number) => {
+  updateElement: <K extends keyof DbSquad>(squadId: string, id: K, data: DbSquad[K]) => {
     const path = getElementPath(squadId, id)
     return updateValue(path, data)
   }

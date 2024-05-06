@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { View } from "react-native"
 
+import useCases from "lib/common/use-cases"
+
 import AmountSelector from "components/AmountSelector"
 import List from "components/List"
 import Spacer from "components/Spacer"
@@ -52,7 +54,8 @@ export default function DatetimeSelectionScreen() {
 
   const onPressSave = async () => {
     if (!newDate) return
-    await squad.setDatetime(newDate, characters)
+    // await squad.setDatetime(newDate, characters)
+    await useCases.squad.updateDate(squad.squadId, newDate, Object.values(characters))
   }
 
   return (

@@ -1,9 +1,9 @@
 import fbEffectsRepository from "./character/effects/FbEffectsRepository"
 import fbStatusRepository from "./character/status/fbStatusRepository"
 import fbCharacterRepository from "./fbCharacterRepository"
-import fbSquadsRepository from "./fbSquadRepository"
 import fbEquipedObjectsRepository from "./objects/fbEquipedObjectsRepository"
 import fbInventoryRepository from "./objects/fbInventoryRepository"
+import fbSquadsRepository from "./squad/fbSquadRepository"
 
 export type RepositoryName =
   | "effects"

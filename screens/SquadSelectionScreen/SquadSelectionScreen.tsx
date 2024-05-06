@@ -2,22 +2,22 @@ import { ScrollView } from "react-native"
 
 import { useRouter } from "expo-router"
 
-import { DbSquad } from "lib/squad/squad-types"
+import useCases from "lib/common/use-cases"
 
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import RevertColorsPressable from "components/wrappers/RevertColorsPressable/RevertColorsPressable"
 import WithItemSeparator from "components/wrappers/WithItemSeparator"
 import routes from "constants/routes"
-import useDbSubscribe from "hooks/db/useDbSubscribe"
+import useRtdbSub from "hooks/db/useRtdbSub"
 import { getDDMMYYYY } from "utils/date"
 
-import dbKeys from "../../db/db-keys"
 import styles from "./SquadSelectionScreen.styles"
 
 export default function SquadSelectionScreen() {
   const router = useRouter()
-  const squadsObj: Record<string, DbSquad> | undefined = useDbSubscribe(dbKeys.squads)
+  // const squadsObj: Record<string, DbSquad> | undefined = useDbSubscribe(dbKeys.squads)
+  const squadsObj = useRtdbSub(useCases.squad.getAll())
   const squadsArray = squadsObj
     ? Object.entries(squadsObj).map(([id, squad]) => ({ ...squad, id }))
     : []
