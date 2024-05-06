@@ -1,11 +1,11 @@
 import dbKeys from "db/db-keys"
 import { getRepository } from "lib/RepositoryBuilder"
-import squadController from "lib/SquadController"
 import Character from "lib/character/Character"
 import effectsMap from "lib/character/effects/effects"
 import { EffectData } from "lib/character/effects/effects.types"
 import { LimbHpId, limbsMap } from "lib/character/health/health"
 import { getRandomArbitrary } from "lib/common/utils/dice-calc"
+import squadController from "lib/squad/squad-use-cases"
 
 import { groupAddCollectible, groupRemoveCollectible, groupUpdateValue } from "api/api-rtdb"
 

@@ -3,6 +3,8 @@ import Character from "lib/character/Character"
 import { createDbEffect } from "lib/character/effects/effects-utils"
 import { Effect, EffectId } from "lib/character/effects/effects.types"
 
+type EffectsConstr = { effectId: EffectId; refDate?: Date }
+
 function getEffectsUseCases(db: keyof typeof getRepository = "rtdb") {
   const repository = getRepository[db].effects
 
@@ -18,10 +20,11 @@ function getEffectsUseCases(db: keyof typeof getRepository = "rtdb") {
       return repository.add(char.charId, dbEffect)
     },
 
-    groupAdd: (char: Character, effectIds: EffectId[], refDate?: Date) => {
-      const dbEffects = effectIds
-        .filter(effect => !char.effects.some(eff => eff.id === effect))
-        .map(effectId => createDbEffect(char, effectId, refDate))
+    // groupAdd: (char: Character, effectIds: EffectId[], refDate?: Date) => {
+    groupAdd: (char: Character, effects: EffectsConstr[]) => {
+      const dbEffects = effects
+        .filter(({ effectId }) => !char.effects.some(eff => eff.id === effectId))
+        .map(({ effectId, refDate }) => createDbEffect(char, effectId, refDate))
       return repository.groupAdd(char.charId, dbEffects)
     },
 
