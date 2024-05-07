@@ -1,14 +1,11 @@
 import { getRepository } from "lib/RepositoryBuilder"
 import Character from "lib/character/Character"
+import { WithDbKeyEffect } from "lib/character/effects/FbEffectsRepository"
 import { createDbEffect } from "lib/character/effects/effects-utils"
-import { Effect, EffectId } from "lib/character/effects/effects.types"
-
-type EffectsConstr = { effectId: EffectId; refDate?: Date }
+import { EffectId } from "lib/character/effects/effects.types"
 
 function getEffectsUseCases(db: keyof typeof getRepository = "rtdb") {
   const repository = getRepository[db].effects
-
-  // TODO: add replace Effect logic
 
   return {
     get: (charId: string, effectId: EffectId) => repository.get(charId, effectId),
@@ -20,18 +17,16 @@ function getEffectsUseCases(db: keyof typeof getRepository = "rtdb") {
       return repository.add(char.charId, dbEffect)
     },
 
-    // groupAdd: (char: Character, effectIds: EffectId[], refDate?: Date) => {
-    groupAdd: (char: Character, effects: EffectsConstr[]) => {
+    groupAdd: (char: Character, effects: { effectId: EffectId; startDate?: Date }[]) => {
       const dbEffects = effects
         .filter(({ effectId }) => !char.effects.some(eff => eff.id === effectId))
-        .map(({ effectId, refDate }) => createDbEffect(char, effectId, refDate))
+        .map(({ effectId, startDate }) => createDbEffect(char, effectId, startDate))
       return repository.groupAdd(char.charId, dbEffects)
     },
 
-    remove: async (charId: string, effect: Effect & Required<Pick<Effect, "dbKey">>) =>
-      repository.remove(charId, effect),
+    remove: async (charId: string, effect: WithDbKeyEffect) => repository.remove(charId, effect),
 
-    groupRemove: (char: Character, effects: Effect[]) =>
+    groupRemove: (char: Character, effects: WithDbKeyEffect[]) =>
       repository.groupRemove(char.charId, effects)
   }
 }

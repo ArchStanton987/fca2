@@ -11,7 +11,7 @@ import {
 
 import { getRtdbSub } from "../../common/utils/rtdb-utils"
 
-type WithDbKeyEffect = Effect & Required<Pick<Effect, "dbKey">>
+export type WithDbKeyEffect = Effect & Required<Pick<Effect, "dbKey">>
 
 const getContainerPath = (charId: string) => dbKeys.char(charId).effects
 const getElementPath = (charId: string, dbKey: WithDbKeyEffect["dbKey"]) =>

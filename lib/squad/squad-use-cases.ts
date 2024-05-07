@@ -1,8 +1,9 @@
 import { getRepository } from "lib/RepositoryBuilder"
 import Character from "lib/character/Character"
+import getEffectsUseCases from "lib/character/effects/effects-use-cases"
 import { getExpiringEffects, getFollowingEffects } from "lib/character/effects/effects-utils"
 import { getNewLimbsHp } from "lib/character/health/health-utils"
-import useCases from "lib/common/use-cases"
+import getStatusUseCases from "lib/character/status/status-use-cases"
 
 function getSquadUseCases(db: keyof typeof getRepository = "rtdb") {
   const squadRepo = getRepository[db].squads
@@ -13,20 +14,25 @@ function getSquadUseCases(db: keyof typeof getRepository = "rtdb") {
     getAll: () => squadRepo.getAll(),
 
     updateDate: (squadId: string, date: Date, characters: Character[]) => {
+      const effectsUseCases = getEffectsUseCases(db)
+      const statusUseCases = getStatusUseCases(db)
+
       const promises = []
 
       characters.forEach(char => {
         const expiringEffects = getExpiringEffects(char, date)
-        promises.push(useCases.effects.groupRemove(char, expiringEffects))
+        promises.push(effectsUseCases.groupRemove(char, expiringEffects))
 
         const followingEffects = getFollowingEffects(char, date)
-        promises.push(useCases.effects.groupAdd(char, followingEffects))
+        promises.push(effectsUseCases.groupAdd(char, followingEffects))
 
         const newLimbsHp = getNewLimbsHp(char, date)
-        promises.push(useCases.status.groupUpdate(char.charId, newLimbsHp))
+        promises.push(statusUseCases.groupUpdate(char.charId, newLimbsHp))
       })
 
-      squadRepo.updateElement(squadId, "datetime", date.toJSON())
+      promises.push(squadRepo.updateElement(squadId, "datetime", date.toJSON()))
+
+      return Promise.all(promises)
     }
   }
 }
