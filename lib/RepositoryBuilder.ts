@@ -1,6 +1,5 @@
 import fbEffectsRepository from "./character/effects/FbEffectsRepository"
 import fbStatusRepository from "./character/status/fbStatusRepository"
-import fbCharacterRepository from "./fbCharacterRepository"
 import fbEquipedObjectsRepository from "./objects/fbEquipedObjectsRepository"
 import fbInventoryRepository from "./objects/fbInventoryRepository"
 import fbSquadsRepository from "./squad/fbSquadRepository"
@@ -19,7 +18,6 @@ export const getRepository = {
     equipedObjects: fbEquipedObjectsRepository,
     inventory: fbInventoryRepository,
     status: fbStatusRepository,
-    squads: fbSquadsRepository,
-    character: fbCharacterRepository
+    squads: fbSquadsRepository
   }
 }

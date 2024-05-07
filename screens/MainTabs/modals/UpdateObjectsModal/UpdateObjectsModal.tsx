@@ -1,14 +1,9 @@
 import { useMemo, useState } from "react"
-import { TouchableOpacity, View } from "react-native"
+import { TouchableOpacity, TouchableOpacityProps, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import ammoMap from "lib/objects/data/ammo/ammo"
-import clothingsMap from "lib/objects/data/clothings/clothings"
-import consumablesMap from "lib/objects/data/consumables/consumables"
-import miscObjectsMap from "lib/objects/data/misc-objects/misc-objects"
 import { DbInventory } from "lib/objects/data/objects.types"
-import weaponsMap from "lib/objects/data/weapons/weapons"
 
 import AmountSelector from "components/AmountSelector"
 import List from "components/List"
@@ -25,72 +20,47 @@ import routes from "constants/routes"
 import { useInventory } from "contexts/InventoryContext"
 import { useUpdateObjects } from "contexts/UpdateObjectsContext"
 import { UpdateObjectsModalParams } from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.params"
+import { categoriesMap } from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.utils"
 import ScreenParams, { SearchParams } from "screens/ScreenParams"
 
 import styles from "./UpdateObjectsModal.styles"
 
-type Category = {
-  id: string
-  label: string
-  selectors: number[]
-  hasSearch: boolean
-  data: Record<string, { id: string; label: string }>
-}
-
-export const categoriesMap: Record<keyof DbInventory, Category> = {
-  weapons: {
-    id: "weapons",
-    label: "Armes",
-    selectors: [1, 5],
-    hasSearch: true,
-    data: weaponsMap
-  },
-  clothings: {
-    id: "clothings",
-    label: "Armures",
-    selectors: [1, 5],
-    hasSearch: false,
-    data: clothingsMap
-  },
-  consumables: {
-    id: "consumables",
-    label: "Consommables",
-    selectors: [1, 5, 20],
-    hasSearch: false,
-    data: consumablesMap
-  },
-  miscObjects: {
-    id: "miscObjects",
-    label: "Objets",
-    selectors: [1, 5, 20, 100],
-    hasSearch: true,
-    data: miscObjectsMap
-  },
-  ammo: {
-    id: "ammo",
-    label: "Munitions",
-    selectors: [1, 5, 20, 100],
-    hasSearch: false,
-    data: ammoMap
-  },
-  caps: {
-    id: "caps",
-    label: "Caps",
-    selectors: [1, 5, 20, 100, 500],
-    hasSearch: false,
-    data: { caps: { id: "caps", label: "Capsule(s)" } }
-  }
-}
-
-type SelectedCat = keyof DbInventory
 type SelectedItem = { id: string; label: string; inInventory: number } | null
 
 const categories = Object.values(categoriesMap)
 
+type ListItemRowProps = TouchableOpacityProps & {
+  label: string
+  inv: string | number
+  mod: string | number
+  prev: string | number
+  isSelected?: boolean
+}
+
+function ListItemRow({ label, inv, mod, prev, isSelected, ...rest }: ListItemRowProps) {
+  return (
+    <TouchableOpacity
+      style={[styles.listItemContainer, isSelected && styles.listItemContainerSelected]}
+      {...rest}
+    >
+      <Txt style={[styles.listItem, styles.listItemLabel]} numberOfLines={1}>
+        {label}
+      </Txt>
+      <Txt style={[styles.listItem, styles.listItemInfo]}>{inv}</Txt>
+      <Txt style={[styles.listItem, styles.listItemInfo]}>{mod}</Txt>
+      <Txt style={[styles.listItem, styles.listItemInfo]}>{prev}</Txt>
+    </TouchableOpacity>
+  )
+}
+
+function ListItemHeader() {
+  return <ListItemRow label="Obj" inv="Inv" mod="Mod" prev="Prev" />
+}
+
 export default function UpdateObjectsModal() {
   const localParams = useLocalSearchParams() as SearchParams<UpdateObjectsModalParams>
   const { initCategory = "weapons" } = ScreenParams.fromLocalParams(localParams)
-  const [selectedCat, setSelectedCat] = useState<SelectedCat>(initCategory)
+  const [selectedCat, setSelectedCat] = useState<keyof DbInventory>(initCategory)
   const [selectedItem, setSelectedItem] = useState<SelectedItem>(null)
   const [selectedAmount, setSelectedAmount] = useState<number>(1)
   const [searchInput, setSearchInput] = useState("")
@@ -110,14 +80,12 @@ export default function UpdateObjectsModal() {
     dispatch({ type: "modObject", payload })
   }
 
-  const onPressItem = (item: { id: string; label: string }) => {
-    let inInventory = 0
-    if (selectedCat === "caps") {
-      inInventory = caps
-    } else {
-      inInventory = inventory[selectedCat].filter(el => item.id === el.id).length || 0
+  const onPressCategory = (category: keyof DbInventory) => {
+    if (category === "caps") {
+      const { id, label } = categoriesMap.caps
+      setSelectedItem({ id, label, inInventory: caps })
     }
-    setSelectedItem({ ...item, inInventory })
+    setSelectedCat(category)
   }
 
   const onPressNext = () => router.push({ pathname: routes.modal.updateObjectsConfirmation })
@@ -126,8 +94,7 @@ export default function UpdateObjectsModal() {
     router.back()
   }
 
-  const hasSearch = selectedCat !== null && categoriesMap[selectedCat]?.hasSearch
-  const selectors = selectedCat !== null ? categoriesMap[selectedCat].selectors : [1, 5, 20]
+  const hasSearch = categoriesMap[selectedCat]?.hasSearch
 
   const objectsList = useMemo(() => {
     if (selectedCat === null) return []
@@ -150,7 +117,7 @@ export default function UpdateObjectsModal() {
                 styles.listItemContainer,
                 selectedCat === id && styles.listItemContainerSelected
               ]}
-              onPress={() => setSelectedCat(id as SelectedCat)}
+              onPress={() => onPressCategory(id as keyof DbInventory)}
             >
               <Txt style={styles.listItem}>{label}</Txt>
               <Spacer y={5} />
@@ -162,19 +129,22 @@ export default function UpdateObjectsModal() {
           <List
             data={objectsList}
             keyExtractor={item => item.id}
+            ListHeaderComponent={ListItemHeader}
             renderItem={({ item }) => {
               const count = state[selectedCat][item.id]?.count || 0
+              const inInventory =
+                selectedCat === "caps"
+                  ? caps
+                  : inventory[selectedCat].filter(el => item.id === el.id).length || 0
               return (
-                <TouchableOpacity
-                  style={[
-                    styles.listItemContainer,
-                    selectedItem?.id === item.id && styles.listItemContainerSelected
-                  ]}
-                  onPress={() => onPressItem(item)}
-                >
-                  <Txt style={styles.listItem}>{item.label}</Txt>
-                  {count > 0 && <Txt style={styles.listItem}>{count}</Txt>}
-                </TouchableOpacity>
+                <ListItemRow
+                  label={item.label}
+                  inv={inInventory}
+                  mod={count}
+                  prev={inInventory + count}
+                  isSelected={selectedItem?.id === item.id}
+                  onPress={() => setSelectedItem({ ...item, inInventory })}
+                />
               )
             }}
           />
@@ -189,7 +159,7 @@ export default function UpdateObjectsModal() {
           <ViewSection title="AJOUTER" style={styles.addSection}>
             <View style={{ flex: 1, justifyContent: "space-evenly" }}>
               <List
-                data={selectors}
+                data={categoriesMap[selectedCat].selectors}
                 keyExtractor={item => item.toString()}
                 renderItem={({ item }) => (
                   <AmountSelector

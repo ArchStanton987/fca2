@@ -35,7 +35,13 @@ const styles = StyleSheet.create({
   listItemContainerSelected: {
     backgroundColor: colors.terColor
   },
-  listItem: {}
+  listItem: {},
+  listItemLabel: {
+    flex: 1
+  },
+  listItemInfo: {
+    width: 45
+  }
 })
 
 export default styles

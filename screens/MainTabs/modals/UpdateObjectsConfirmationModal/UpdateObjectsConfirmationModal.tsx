@@ -12,9 +12,8 @@ import ModalBody from "components/wrappers/ModalBody"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useUpdateObjects } from "contexts/UpdateObjectsContext"
+import { categoriesMap } from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.utils"
 import colors from "styles/colors"
-
-import { categoriesMap } from "../UpdateObjectsModal/UpdateObjectsModal"
 
 const styles = StyleSheet.create({
   section: {

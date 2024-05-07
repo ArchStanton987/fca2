@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 import Character from "lib/character/Character"
 import { LimbHpId, limbsMap } from "lib/character/health/health"
 import { getMissingHp } from "lib/character/health/health-calc"
@@ -21,5 +22,3 @@ export const getNewLimbsHp = (char: Character, newDate: Date) => {
   }
   return newLimbsHp
 }
-
-export const mock = () => {}
