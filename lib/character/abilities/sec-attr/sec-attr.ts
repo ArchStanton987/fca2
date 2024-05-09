@@ -90,4 +90,6 @@ const secAttrMap: Record<SecAttrId, SecAttr> = {
   }
 }
 
+export const secAttrArray = Object.values(secAttrMap)
+
 export default secAttrMap

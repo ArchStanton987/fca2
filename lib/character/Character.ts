@@ -41,10 +41,11 @@ import clothingsMap from "../objects/data/clothings/clothings"
 import { DbAbilities } from "./abilities/abilities.types"
 import { KnowledgeId } from "./abilities/knowledges/knowledge-types"
 import perksMap from "./abilities/perks/perks"
-import secAttrMap from "./abilities/sec-attr/sec-attr"
+import { secAttrArray } from "./abilities/sec-attr/sec-attr"
 import { SecAttrsValues } from "./abilities/sec-attr/sec-attr-types"
 import skillsMap from "./abilities/skills/skills"
 import { SkillsValues } from "./abilities/skills/skills.types"
+import { specialArray } from "./abilities/special/special"
 import { Special } from "./abilities/special/special.types"
 import traitsMap from "./abilities/traits/traits"
 import effectsMap from "./effects/effects"
@@ -91,22 +92,11 @@ export default class Character {
       date: observable,
       //
       innateSymptoms: computed,
-      baseSpecial: computed,
-      baseSecAttr: computed,
-      baseSkills: computed,
       //
       health: computed,
       //
       effects: computed,
       symptoms: computed,
-      //
-      modSpecial: computed,
-      modSecAttr: computed,
-      modSkills: computed,
-      //
-      currSpecial: computed,
-      currSecAttr: computed,
-      currSkills: computed,
       //
       special: computed,
       secAttr: computed,
@@ -123,38 +113,8 @@ export default class Character {
     return [...traitsSymptoms, ...perksSymptoms].flat()
   }
 
-  get baseSpecial() {
-    const result = {} as Special
-    const specialKeys = Object.keys(this.dbAbilities.baseSPECIAL) as (keyof Special)[]
-    const { baseSPECIAL } = this.dbAbilities
-    specialKeys.forEach(key => {
-      result[key] = baseSPECIAL[key] + getModAttribute(this.innateSymptoms, key)
-    })
-    return result
-  }
-
-  get baseSecAttr() {
-    const result = {} as SecAttrsValues
-    const secAttrKeys = Object.keys(secAttrMap) as (keyof SecAttrsValues)[]
-    secAttrKeys.forEach(key => {
-      result[key] =
-        secAttrMap[key].calc(this.baseSpecial) + getModAttribute(this.innateSymptoms, key)
-    })
-    return result
-  }
-
-  get baseSkills() {
-    const result = {} as SkillsValues
-    const skillsKeys = Object.keys(skillsMap) as (keyof SkillsValues)[]
-    skillsKeys.forEach(key => {
-      result[key] =
-        skillsMap[key].calc(this.baseSpecial) + getModAttribute(this.innateSymptoms, key)
-    })
-    return result
-  }
-
   get health(): Health {
-    const maxHp = getMaxHP(this.baseSpecial, this.status.exp)
+    const maxHp = getMaxHP(this.dbAbilities.baseSPECIAL, this.status.exp)
     const missingHp = getMissingHp(this.status)
     const currHp = maxHp - missingHp
     return {
@@ -227,75 +187,51 @@ export default class Character {
     return [...effectsSymptoms, ...clothingsSymptoms].flat()
   }
 
-  get modSpecial() {
-    const result = {} as Special
-    const specialKeys = Object.keys(this.baseSpecial) as (keyof Special)[]
-    specialKeys.forEach(key => {
-      result[key] = getModAttribute(this.symptoms, key)
-    })
-    return result
-  }
-
-  get modSecAttr() {
-    const result = {} as SecAttrsValues
-    const secAttrKeys = Object.keys(this.baseSecAttr) as (keyof SecAttrsValues)[]
-    secAttrKeys.forEach(key => {
-      result[key] = getModAttribute(this.symptoms, key)
-    })
-    return result
-  }
-
-  get modSkills() {
-    const result = {} as SkillsValues
-    const skillsKeys = Object.keys(this.baseSkills) as (keyof SkillsValues)[]
-    skillsKeys.forEach(key => {
-      result[key] = getModAttribute(this.symptoms, key)
-    })
-    return result
-  }
-
-  get currSpecial() {
-    const result = {} as Special
-    const specialKeys = Object.keys(this.modSpecial) as (keyof Special)[]
-    specialKeys.forEach(key => {
-      result[key] = this.baseSpecial[key] + this.modSpecial[key]
-    })
-    return result
-  }
-
-  get currSecAttr() {
-    const result = {} as SecAttrsValues
-    const secAttrKeys = Object.keys(this.modSecAttr) as (keyof SecAttrsValues)[]
-    secAttrKeys.forEach(key => {
-      result[key] = this.baseSecAttr[key] + this.modSecAttr[key]
-    })
-    return result
-  }
-
-  get currSkills() {
-    const result = {} as SkillsValues
-    const skillsKeys = Object.keys(this.modSkills) as (keyof SkillsValues)[]
-    skillsKeys.forEach(key => {
-      result[key] = Math.max(this.baseSkills[key] + this.modSkills[key], 1)
-    })
-    return result
-  }
-
   get special() {
-    return { base: this.baseSpecial, mod: this.modSpecial, curr: this.currSpecial }
+    const result = { base: {}, mod: {}, curr: {} } as {
+      base: Special
+      mod: Special
+      curr: Special
+    }
+    specialArray.forEach(({ id }) => {
+      result.base[id] = this.dbAbilities.baseSPECIAL[id] + getModAttribute(this.innateSymptoms, id)
+      result.mod[id] = getModAttribute(this.symptoms, id)
+      result.curr[id] = result.base[id] + result.mod[id]
+    })
+    return result
   }
 
   get secAttr() {
-    return { base: this.baseSecAttr, mod: this.modSecAttr, curr: this.currSecAttr }
+    const result = { base: {}, mod: {}, curr: {} } as {
+      base: SecAttrsValues
+      mod: SecAttrsValues
+      curr: SecAttrsValues
+    }
+    secAttrArray.forEach(({ id, calc }) => {
+      result.base[id] = calc(this.special.base) + getModAttribute(this.innateSymptoms, id)
+      result.curr[id] = calc(this.special.curr) + getModAttribute(this.symptoms, id)
+      result.mod[id] = result.curr[id] - result.base[id]
+    })
+    return result
   }
 
   get skills() {
-    return {
-      base: this.baseSkills,
-      up: this.dbAbilities.upSkills,
-      mod: this.modSkills,
-      curr: this.currSkills
+    const result = { base: {}, up: {}, mod: {}, curr: {} } as {
+      base: SkillsValues
+      up: SkillsValues
+      mod: SkillsValues
+      curr: SkillsValues
     }
+    Object.values(skillsMap).forEach(({ id, calc }) => {
+      result.base[id] = calc(this.special.base) + getModAttribute(this.innateSymptoms, id)
+      result.up[id] = this.dbAbilities.upSkills[id]
+      result.curr[id] = Math.max(
+        calc(this.special.curr) + getModAttribute(this.symptoms, id) + result.up[id],
+        1
+      )
+      result.mod[id] = result.curr[id] - result.base[id] - result.up[id]
+    })
+    return result
   }
 
   get knowledges() {

@@ -2,7 +2,6 @@ import { View } from "react-native"
 
 import { observer } from "mobx-react-lite"
 
-import CheckBox from "components/CheckBox/CheckBox"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
@@ -15,8 +14,8 @@ import styles from "./RecapScreen.styles"
 function EquipedObjSection() {
   const character = useCharacter()
   const inventory = useInventory()
-  const { equipedObjects, currSecAttr } = character
-  const { normalCarryWeight, tempCarryWeight, maxCarryWeight, maxPlace } = currSecAttr
+  const { equipedObjects, secAttr } = character
+  const { normalCarryWeight, tempCarryWeight, maxCarryWeight, maxPlace } = secAttr.curr
   const { weapons, clothings } = equipedObjects
   const { currPlace, currWeight } = inventory.currentCarry
 
@@ -24,7 +23,7 @@ function EquipedObjSection() {
     <View style={{ flex: 1 }}>
       <Section style={{ paddingHorizontal: 10 }}>
         <View style={styles.equObjRow}>
-          <Txt style={{ color: getWeightColor(currWeight, currSecAttr) }}>POIDS: {currWeight}</Txt>
+          <Txt style={{ color: getWeightColor(currWeight, secAttr.curr) }}>POIDS: {currWeight}</Txt>
           <Txt>{`(${normalCarryWeight}/${tempCarryWeight}/${maxCarryWeight})`}</Txt>
         </View>
         <Spacer y={10} />
@@ -39,16 +38,15 @@ function EquipedObjSection() {
         <Spacer y={10} />
         {weapons.map(weapon => (
           <View key={weapon.dbKey} style={styles.equObjRow}>
-            <CheckBox isChecked />
-            <Txt>{weapon.data.label}</Txt>
+            <Txt>- {weapon.data.label}</Txt>
           </View>
         ))}
+        <Spacer y={10} />
         <Txt>ARMURES EQUIPES</Txt>
         <Spacer y={10} />
         {clothings.map(cloth => (
           <View key={cloth.dbKey} style={styles.equObjRow}>
-            <CheckBox isChecked />
-            <Txt>{cloth.data.label}</Txt>
+            <Txt>- {cloth.data.label}</Txt>
           </View>
         ))}
       </Section>

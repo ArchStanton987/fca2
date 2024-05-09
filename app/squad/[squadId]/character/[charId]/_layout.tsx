@@ -54,8 +54,8 @@ export default function CharStack() {
 
   const charInventory = useMemo(() => {
     if (!character || !inventory) return null
-    const { dbAbilities, innateSymptoms, currSkills, dbEquipedObjects } = character
-    const charData = { dbAbilities, innateSymptoms, currSkills, dbEquipedObjects }
+    const { dbAbilities, innateSymptoms, skills, dbEquipedObjects } = character
+    const charData = { dbAbilities, innateSymptoms, currSkills: skills.curr, dbEquipedObjects }
     return new Inventory(inventory, charData)
   }, [character, inventory])
 
