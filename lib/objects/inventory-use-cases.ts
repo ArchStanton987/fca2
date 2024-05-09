@@ -1,5 +1,4 @@
-import Character from "lib/character/Character"
-
+// import Character from "lib/character/Character"
 import { getRepository } from "../RepositoryBuilder"
 import clothingsMap from "./data/clothings/clothings"
 import { Clothing, ClothingId } from "./data/clothings/clothings.types"
@@ -29,12 +28,13 @@ const getInventoryUseCases = (db: keyof typeof getRepository = "rtdb") => {
     groupAdd: (charId: string, payload: ExchangeState) => repository.groupAdd(charId, payload),
 
     // TODO: group update
-    groupUpdate: (char: Character, payload: ExchangeState) => {},
+    // groupUpdate: (char: Character, payload: ExchangeState) => {},
 
     remove: (charId: string, object: Weapon | Clothing | Consumable | MiscObject) => {
       const promises = []
       const category = getObjectCategory(object)
-      if ("isEquiped" in object && object.isEquiped) {
+      const isEquipableCategory = category === "weapons" || category === "clothings"
+      if ("isEquiped" in object && object.isEquiped && isEquipableCategory) {
         promises.push(equipedObjectsRepository.remove(charId, category, object.dbKey))
       }
       promises.push(repository.remove(charId, category, object))

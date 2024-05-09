@@ -3,7 +3,7 @@ import clothingsMap from "lib/objects/data/clothings/clothings"
 import { Clothing, ClothingId } from "lib/objects/data/clothings/clothings.types"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
 
-import { DbEquipableObject, EquipableCategory, EquipableObject } from "./fbEquipedObjectsRepository"
+import { EquipableCategory, EquipableObject } from "./fbEquipedObjectsRepository"
 
 const getObjectCategory = (object: EquipableObject): EquipableCategory => {
   const isCloth = clothingsMap[object.id as ClothingId] !== undefined
@@ -26,8 +26,7 @@ const getEquipedObjectsUseCases = (db: keyof typeof getRepository = "rtdb") => {
       const category = getObjectCategory(object)
       const { dbKey } = object
       if (!object.isEquiped) {
-        const payload = { id: object.id } as DbEquipableObject
-        return repository.add(charId, category, dbKey, payload)
+        return repository.add(charId, category, object)
       }
       return repository.remove(charId, category, dbKey)
     },

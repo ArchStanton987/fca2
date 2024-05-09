@@ -28,7 +28,10 @@ export default function EffectsConfirmationModal() {
   }
 
   const onPressConfirm = async () => {
-    await useCases.effects.groupAdd(character, effects)
+    await useCases.effects.groupAdd(
+      character,
+      effects.map(effect => ({ effectId: effect, startDate: character.date }))
+    )
     router.push({ pathname: routes.main.effects, params: { squadId, charId } })
   }
 

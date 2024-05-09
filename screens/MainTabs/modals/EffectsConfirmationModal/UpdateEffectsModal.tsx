@@ -25,7 +25,7 @@ import styles from "./UpdateEffectsModal.styles"
 const effects = Object.values(effectsMap)
 
 export default function UpdateEffectsModal() {
-  const localParams = useLocalSearchParams<SearchParams<DrawerParams>>()
+  const localParams = useLocalSearchParams() as SearchParams<DrawerParams>
   const { squadId, charId } = ScreenParams.fromLocalParams(localParams)
   const [searchValue, setSearchValue] = useState("")
   const [selectedEffectId, setSelectedEffectId] = useState<EffectId | null>(null)

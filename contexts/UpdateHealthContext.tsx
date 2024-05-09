@@ -1,9 +1,9 @@
 import { createContext, useContext } from "react"
 
-import { StatusUpdateState, UpdateHealthAction } from "lib/character/health/health-reducer"
+import { HealthUpdateState, UpdateHealthAction } from "lib/character/health/health-reducer"
 
 type UpdateHealthContextType = {
-  state: StatusUpdateState
+  state: HealthUpdateState
   dispatch: React.Dispatch<UpdateHealthAction>
 }
 
