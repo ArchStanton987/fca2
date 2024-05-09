@@ -1,10 +1,9 @@
-import React, { useReducer, useState } from "react"
+import React, { useState } from "react"
 import { TouchableOpacity, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
 import healthMap from "lib/character/health/health"
-import healthReducer, { defaultHealthUpdate } from "lib/character/health/health-reducer"
 import { HealthStatusId } from "lib/character/health/health-types"
 
 import AmountSelector from "components/AmountSelector"
@@ -19,6 +18,7 @@ import PlusIcon from "components/icons/PlusIcon"
 import ModalBody from "components/wrappers/ModalBody"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
+import { useUpdateHealth } from "contexts/UpdateHealthContext"
 import { UpdateHealthModalParams } from "screens/MainTabs/modals/UpdateHealthModal/UpdateHealthModal.params"
 import ScreenParams, { SearchParams } from "screens/ScreenParams"
 
@@ -31,7 +31,7 @@ export default function UpdateHealthModal() {
   const character = useCharacter()
   const { status } = character
 
-  const [state, dispatch] = useReducer(healthReducer, defaultHealthUpdate)
+  const { state, dispatch } = useUpdateHealth()
   const [selectedItem, setSelectedItem] = useState<HealthStatusId>(initElement)
   const [selectedAmount, setSelectedAmount] = useState<number>(1)
 

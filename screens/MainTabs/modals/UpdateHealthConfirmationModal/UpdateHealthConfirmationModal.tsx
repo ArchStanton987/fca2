@@ -3,6 +3,8 @@ import { View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import useCases from "lib/common/use-cases"
+
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import ModalCta from "components/ModalCta/ModalCta"
 import ScrollableSection from "components/ScrollableSection"
@@ -10,13 +12,11 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import ModalBody from "components/wrappers/ModalBody"
 import routes from "constants/routes"
-import { useCharacter } from "contexts/CharacterContext"
 import { useUpdateHealth } from "contexts/UpdateHealthContext"
 import { SearchParams } from "screens/ScreenParams"
 
 export default function UpdateHealthConfirmationModal() {
-  const character = useCharacter()
-  const { squadId, charId } = useLocalSearchParams<SearchParams<DrawerParams>>()
+  const { squadId, charId } = useLocalSearchParams() as SearchParams<DrawerParams>
 
   const { state, dispatch } = useUpdateHealth()
 
@@ -26,7 +26,7 @@ export default function UpdateHealthConfirmationModal() {
     .map(([id, content]) => ({ id, ...content }))
 
   const onPressConfirm = async () => {
-    await character.updateHealth(state)
+    await useCases.status.groupUpdate(charId, state)
     dispatch({ type: "reset" })
     router.push({ pathname: routes.main.index, params: { squadId, charId } })
   }

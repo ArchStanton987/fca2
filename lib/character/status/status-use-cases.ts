@@ -1,5 +1,7 @@
 import { getRepository } from "lib/RepositoryBuilder"
 
+import { HealthUpdateState } from "../health/health-reducer"
+import { DbLimbsHp } from "../health/health-types"
 import { DbStatus } from "./status.types"
 
 function getStatusUseCases(db: keyof typeof getRepository = "rtdb") {
@@ -12,9 +14,15 @@ function getStatusUseCases(db: keyof typeof getRepository = "rtdb") {
     updateElement: <T extends keyof DbStatus>(charId: string, field: T, data: DbStatus[T]) =>
       repository.updateElement(charId, field, data),
 
-    groupUpdate: (charId: string, updates: Partial<DbStatus>) =>
-      repository.groupUpdate(charId, updates),
-
+    groupUpdate: (charId: string, updateHealthState: HealthUpdateState) => {
+      const updates: Partial<DbStatus> = {}
+      Object.entries(updateHealthState).forEach(([key, value]) => {
+        if (typeof value.count === "number" && typeof value.initValue === "number") {
+          updates[key as keyof DbLimbsHp] = value.initValue + value.count
+        }
+      })
+      return repository.groupUpdate(charId, updates)
+    },
     updateAll: (charId: string, data: DbStatus) => repository.updateAll(charId, data)
   }
 }

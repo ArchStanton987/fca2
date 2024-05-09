@@ -43,14 +43,6 @@ export default function HealthFigure() {
       </TouchableOpacity>
       <Spacer y={5} />
       <View style={styles.armsContainer}>
-        <TouchableOpacity onPress={() => onPressElement("leftArmHp")}>
-          <ProgressionBar
-            {...smallBarProps}
-            max={limbsMap.leftArmHp.maxValue}
-            min={0}
-            value={limbsHp.leftArmHp}
-          />
-        </TouchableOpacity>
         <TouchableOpacity onPress={() => onPressElement("rightArmHp")}>
           <ProgressionBar
             {...smallBarProps}
@@ -59,19 +51,19 @@ export default function HealthFigure() {
             value={limbsHp.rightArmHp}
           />
         </TouchableOpacity>
+        <TouchableOpacity onPress={() => onPressElement("leftArmHp")}>
+          <ProgressionBar
+            {...smallBarProps}
+            max={limbsMap.leftArmHp.maxValue}
+            min={0}
+            value={limbsHp.leftArmHp}
+          />
+        </TouchableOpacity>
       </View>
       <TouchableOpacity onPress={() => onPressElement("leftTorsoHp")}>
         <Image source={pipboy} style={styles.img} />
       </TouchableOpacity>
       <View style={styles.torsoContainer}>
-        <TouchableOpacity onPress={() => onPressElement("leftTorsoHp")}>
-          <ProgressionBar
-            {...smallBarProps}
-            max={limbsMap.leftTorsoHp.maxValue}
-            min={0}
-            value={limbsHp.leftTorsoHp}
-          />
-        </TouchableOpacity>
         <TouchableOpacity onPress={() => onPressElement("rightTorsoHp")}>
           <ProgressionBar
             {...smallBarProps}
@@ -80,23 +72,31 @@ export default function HealthFigure() {
             value={limbsHp.rightTorsoHp}
           />
         </TouchableOpacity>
+        <TouchableOpacity onPress={() => onPressElement("leftTorsoHp")}>
+          <ProgressionBar
+            {...smallBarProps}
+            max={limbsMap.leftTorsoHp.maxValue}
+            min={0}
+            value={limbsHp.leftTorsoHp}
+          />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.legsContainer}>
-        <TouchableOpacity onPress={() => onPressElement("leftLegHp")}>
-          <ProgressionBar
-            {...smallBarProps}
-            max={limbsMap.leftLegHp.maxValue}
-            min={0}
-            value={limbsHp.leftLegHp}
-          />
-        </TouchableOpacity>
         <TouchableOpacity onPress={() => onPressElement("rightLegHp")}>
           <ProgressionBar
             {...smallBarProps}
             max={limbsMap.rightLegHp.maxValue}
             min={0}
             value={limbsHp.rightLegHp}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => onPressElement("leftLegHp")}>
+          <ProgressionBar
+            {...smallBarProps}
+            max={limbsMap.leftLegHp.maxValue}
+            min={0}
+            value={limbsHp.leftLegHp}
           />
         </TouchableOpacity>
       </View>

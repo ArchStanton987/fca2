@@ -16,7 +16,7 @@ import { InventoryContext } from "contexts/InventoryContext"
 import { useSquad } from "contexts/SquadContext"
 import useDbSubscribe from "hooks/db/useDbSubscribe"
 import useRtdbSub from "hooks/db/useRtdbSub"
-import UpdateObjectsProvider from "providers/UpdateObjectsProvider"
+import UpdatesProvider from "providers/UpdatesProvider"
 import LoadingScreen from "screens/LoadingScreen"
 import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
@@ -64,7 +64,7 @@ export default function CharStack() {
   return (
     <CharacterContext.Provider value={character}>
       <InventoryContext.Provider value={charInventory}>
-        <UpdateObjectsProvider>
+        <UpdatesProvider>
           <Stack
             screenOptions={{
               headerShown: false,
@@ -80,7 +80,7 @@ export default function CharStack() {
             <Stack.Screen name="(modal)/update-health" options={modalOptions} />
             <Stack.Screen name="(modal)/update-health-confirmation" options={modalOptions} />
           </Stack>
-        </UpdateObjectsProvider>
+        </UpdatesProvider>
       </InventoryContext.Provider>
     </CharacterContext.Provider>
   )

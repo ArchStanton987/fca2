@@ -105,14 +105,14 @@ const healthMap: Record<HealthStatusId, HealthType> = {
   },
   leftTorsoHp: {
     id: "leftTorsoHp",
-    label: "PV torse",
+    label: "PV torse gauche",
     short: "PVto",
     minValue: 0,
     maxValue: 25
   },
   rightTorsoHp: {
     id: "rightTorsoHp",
-    label: "PV torse",
+    label: "PV torse droit",
     short: "PVto",
     minValue: 0,
     maxValue: 30
