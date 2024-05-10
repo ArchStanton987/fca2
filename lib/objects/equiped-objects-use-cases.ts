@@ -23,6 +23,9 @@ const getEquipedObjectsUseCases = (db: keyof typeof getRepository = "rtdb") => {
     getAll: (charId: string) => repository.getAll(charId),
 
     toggle: async (charId: string, object: Weapon | Clothing) => {
+      // TODO: prevent equiping if requirements are not met
+      // weapons : no more than 2 light weapons or 1 heavy weapon
+      // clothings : no more than 1 armor per body part
       const category = getObjectCategory(object)
       const { dbKey } = object
       if (!object.isEquiped) {

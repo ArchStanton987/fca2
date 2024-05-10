@@ -3,6 +3,8 @@ import { TouchableOpacity, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import useCases from "lib/common/use-cases"
+
 import AmountSelector from "components/AmountSelector"
 import List from "components/List"
 import ModalCta from "components/ModalCta/ModalCta"
@@ -37,16 +39,17 @@ export default function UpdateStatusModal() {
   const { status } = character
   const currentValue = selectedItem ? status[selectedItem] : 0
   const currCount = selectedItem ? updateState[selectedItem].count : 0
+  const newValue = currentValue + currCount
 
   const onPressIcon = (type: "plus" | "minus") => {
     if (!selectedItem) return
     const { count, initValue } = updateState[selectedItem]
-    const newValue = type === "plus" ? count + selectedAmount : count - selectedAmount
-    setUpdateState(prev => ({ ...prev, [selectedItem]: { count: newValue, initValue } }))
+    const val = type === "plus" ? count + selectedAmount : count - selectedAmount
+    setUpdateState(prev => ({ ...prev, [selectedItem]: { count: val, initValue } }))
   }
 
   const onPressConfirm = async () => {
-    await character.updateStatus(updateState)
+    await useCases.status.updateElement(character.charId, "exp", newValue)
     router.back()
   }
 
@@ -79,7 +82,7 @@ export default function UpdateStatusModal() {
               </View>
               <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                 <Txt>Prévisionnel</Txt>
-                <Txt>{currentValue + currCount}</Txt>
+                <Txt>{newValue}</Txt>
               </View>
             </>
           )}

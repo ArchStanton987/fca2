@@ -1,9 +1,5 @@
-import dbKeys from "db/db-keys"
-import Character from "lib/character/Character"
 import { DbSquad, SquadMember } from "lib/squad/squad-types"
 import { computed, makeObservable, observable } from "mobx"
-
-import { updateValue } from "api/api-rtdb"
 
 export default class Squad {
   dbSquad: DbSquad
@@ -45,15 +41,5 @@ export default class Squad {
     const { date } = this
     const { members } = this
     return { ...this.dbSquad, date, members }
-  }
-
-  async setDatetime(newDate: Date, characters: Record<string, Character>) {
-    const promises = []
-    Object.values(characters).forEach(character => {
-      promises.push(character.onChangeDate(newDate))
-    })
-    const datetimeDbKey = dbKeys.squad(this.squadId).datetime
-    promises.push(updateValue(datetimeDbKey, newDate))
-    return Promise.all(promises)
   }
 }
