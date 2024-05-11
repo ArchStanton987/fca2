@@ -54,7 +54,6 @@ export default function DatetimeSelectionScreen() {
 
   const onPressSave = async () => {
     if (!newDate) return
-    // await squad.setDatetime(newDate, characters)
     await useCases.squad.updateDate(squad.squadId, newDate, Object.values(characters))
   }
 

@@ -11,9 +11,12 @@ import LoadingScreen from "screens/LoadingScreen"
 import colors from "styles/colors"
 
 export default function AdminLayout() {
-  const squad = useSquad()
-  const squadMembersIds = squad.members.map(member => member.id)
-  const characters = useGetSquadCharacters(squadMembersIds, squad.date)
+  const { date, members } = useSquad()
+  // TODO: fix useGetSquadCharacters loop when dependencies are registered, insure stable ref of params
+  const squadMembersIds = useMemo(() => members.map(member => member.id), [members])
+  const jsonDate = date.toJSON()
+  const squadDate = useMemo(() => jsonDate, [jsonDate])
+  const characters = useGetSquadCharacters(squadMembersIds || [], squadDate)
 
   const context = useMemo(() => {
     if (!characters) return null
