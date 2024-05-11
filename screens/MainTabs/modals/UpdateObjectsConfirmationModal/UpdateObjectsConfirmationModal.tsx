@@ -47,9 +47,9 @@ export default function UpdateObjectsConfirmationModal() {
         .map(([id, content]) => ({ ...content, id }))
     }))
 
-  const onPressConfirm = () => {
+  const onPressConfirm = async () => {
     // TODO: add apropriate redirection
-    useCases.inventory.groupAdd(character.charId, state)
+    await useCases.inventory.groupAdd(character.charId, state)
     router.replace({ pathname: routes.inventory.weapons })
   }
 

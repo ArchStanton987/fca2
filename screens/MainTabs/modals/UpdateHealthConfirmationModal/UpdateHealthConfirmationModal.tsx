@@ -26,7 +26,7 @@ export default function UpdateHealthConfirmationModal() {
     .map(([id, content]) => ({ id, ...content }))
 
   const onPressConfirm = async () => {
-    await useCases.status.groupUpdate(charId, state)
+    await useCases.status.groupMod(charId, state)
     dispatch({ type: "reset" })
     router.push({ pathname: routes.main.index, params: { squadId, charId } })
   }

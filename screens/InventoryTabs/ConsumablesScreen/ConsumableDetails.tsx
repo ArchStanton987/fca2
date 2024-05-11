@@ -23,9 +23,10 @@ export default function ConsumableDetails({ dbKey }: { dbKey: Consumable["dbKey"
   const character = useCharacter()
   const { consumablesRecord } = useInventory()
 
-  if (!dbKey) return <Header />
+  const consumable = dbKey ? consumablesRecord[dbKey] : null
 
-  const consumable = consumablesRecord[dbKey]
+  if (!consumable) return <Header />
+
   const { data, remainingUse } = consumable
   const { description, maxUsage } = data
 

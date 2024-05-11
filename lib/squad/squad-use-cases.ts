@@ -26,8 +26,10 @@ function getSquadUseCases(db: keyof typeof getRepository = "rtdb") {
         const followingEffects = getFollowingEffects(char, date)
         promises.push(effectsUseCases.groupAdd(char, followingEffects))
 
-        const newLimbsHp = getNewLimbsHp(char, date)
-        promises.push(statusUseCases.groupUpdate(char.charId, newLimbsHp))
+        if (char.health.missingHp > 0) {
+          const newLimbsHp = getNewLimbsHp(char, date)
+          promises.push(statusUseCases.groupUpdate(char.charId, newLimbsHp))
+        }
       })
 
       promises.push(squadRepo.updateElement(squadId, "datetime", date.toJSON()))

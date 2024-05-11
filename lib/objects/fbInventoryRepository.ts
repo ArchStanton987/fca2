@@ -21,9 +21,9 @@ export type InventoryCollectible = Weapon | Clothing | Consumable | MiscObject
 
 type DbObjPayload = Partial<DbWeapon | DbClothing | DbConsumable | DbMiscObject>
 
-const getDbConsumable = (id: ConsumableId, data: Partial<DbConsumable>): DbConsumable => ({
+const getDbConsumable = (id: ConsumableId, data?: Partial<DbConsumable>): DbConsumable => ({
   id,
-  remainingUse: data.remainingUse || consumablesMap[id].maxUsage
+  remainingUse: data?.remainingUse || consumablesMap[id].maxUsage
 })
 
 const getDbObject = (objectId: InventoryCollectible["id"], data?: DbObjPayload) => {

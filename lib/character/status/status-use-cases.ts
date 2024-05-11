@@ -14,7 +14,15 @@ function getStatusUseCases(db: keyof typeof getRepository = "rtdb") {
     updateElement: <T extends keyof DbStatus>(charId: string, field: T, data: DbStatus[T]) =>
       repository.updateElement(charId, field, data),
 
-    groupUpdate: (charId: string, updateHealthState: HealthUpdateState) => {
+    groupUpdate: (charId: string, data: Partial<DbStatus>) => {
+      const updates = {} as Partial<DbStatus>
+      Object.entries(data).forEach(([key, value]) => {
+        // TODO: fix ts error
+        updates[key as keyof DbStatus] = value
+      })
+      return repository.groupUpdate(charId, updates)
+    },
+    groupMod: (charId: string, updateHealthState: HealthUpdateState) => {
       const updates: Partial<DbStatus> = {}
       Object.entries(updateHealthState).forEach(([key, value]) => {
         if (typeof value.count === "number" && typeof value.initValue === "number") {
