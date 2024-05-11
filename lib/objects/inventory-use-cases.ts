@@ -1,4 +1,7 @@
 // import Character from "lib/character/Character"
+import Character from "lib/character/Character"
+import getEffectsUseCases from "lib/character/effects/effects-use-cases"
+
 import { getRepository } from "../RepositoryBuilder"
 import clothingsMap from "./data/clothings/clothings"
 import { Clothing, ClothingId } from "./data/clothings/clothings.types"
@@ -21,6 +24,7 @@ const getObjectCategory = (object: Weapon | Clothing | Consumable | MiscObject) 
 const getInventoryUseCases = (db: keyof typeof getRepository = "rtdb") => {
   const repository = getRepository[db].inventory
   const equipedObjectsRepository = getRepository[db].equipedObjects
+  const effectsUseCases = getEffectsUseCases(db)
 
   return {
     getAll: (charId: string) => repository.getAll(charId),
@@ -39,6 +43,29 @@ const getInventoryUseCases = (db: keyof typeof getRepository = "rtdb") => {
       }
       promises.push(repository.remove(charId, category, object))
       return Promise.all(promises)
+    },
+
+    consume: (character: Character, consumable: Consumable) => {
+      // TODO: apply modifiers
+      const { charId } = character
+      const { data, remainingUse } = consumable
+      const promises = []
+      const newEffectId = data.effectId
+      if (!newEffectId) throw new Error("Consumable has no effectId")
+      promises.push(effectsUseCases.add(character, newEffectId))
+
+      const shouldRemoveObject = remainingUse === undefined || remainingUse <= 1
+      if (shouldRemoveObject) {
+        promises.push(getInventoryUseCases(db).remove(charId, consumable))
+      } else {
+        repository.updateCollectible(
+          charId,
+          "consumables",
+          consumable,
+          "remainingUse",
+          remainingUse - 1
+        )
+      }
     }
   }
 }

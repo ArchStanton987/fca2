@@ -2,12 +2,7 @@ import dbKeys from "db/db-keys"
 import { HealthUpdateState } from "lib/character/health/health-reducer"
 import { getRandomArbitrary } from "lib/common/utils/dice-calc"
 import { getRemainingTime } from "lib/common/utils/time-calc"
-import {
-  Clothing,
-  ClothingData,
-  ClothingId,
-  DbClothing
-} from "lib/objects/data/clothings/clothings.types"
+import { Clothing, ClothingData, DbClothing } from "lib/objects/data/clothings/clothings.types"
 import consumablesMap from "lib/objects/data/consumables/consumables"
 import {
   Consumable,
@@ -31,8 +26,7 @@ import {
   groupAddCollectible,
   groupRemoveCollectible,
   groupUpdateValue,
-  removeCollectible,
-  updateValue
+  removeCollectible
 } from "api/api-rtdb"
 import { UpdateStatusState } from "screens/MainTabs/modals/UpdateStatusModal/UpdateStatusModal.types"
 
@@ -369,44 +363,6 @@ export default class Character {
       data: value.initValue + value.count
     }))
     return groupUpdateValue(updatesArr)
-  }
-
-  consume = async (consumable: Consumable) => {
-    // TODO: apply modifiers
-
-    const { data, dbKey, remainingUse } = consumable
-    const promises = []
-
-    const newEffectId = data.effectId
-    if (newEffectId) {
-      promises.push(this.addEffect(newEffectId))
-    }
-
-    const shouldRemoveObject = remainingUse === undefined || remainingUse <= 1
-    if (shouldRemoveObject) {
-      promises.push(this.removeFromInv(consumable))
-    } else {
-      const consumablePath = dbKeys.char(this.charId).inventory.consumables
-      const remainingUsePath = consumablePath.concat(`/${dbKey}`).concat("/remainingUse")
-      const updates = remainingUse - 1
-      promises.push(updateValue(remainingUsePath, updates))
-    }
-    return Promise.all(promises)
-  }
-
-  toggleEquip = async (obj: Weapon | Clothing) => {
-    // TODO: prevent equiping if requirements are not met
-    // weapons : no more than 2 light weapons or 1 heavy weapon
-    // clothings : no more than 1 armor per body part
-    const isCloth = clothingsMap[obj.id as ClothingId] !== undefined
-    const objectCategory = isCloth ? ("clothings" as const) : ("weapons" as const)
-    const path = dbKeys.char(this.charId).equipedObjects[objectCategory].concat(`/${obj.dbKey}`)
-    if (!obj.isEquiped) {
-      const newEquipedObject = { id: obj.id }
-      updateValue(path, newEquipedObject)
-      return
-    }
-    removeCollectible(path)
   }
 
   getDbObj = (obj: WeaponData | ClothingData | ConsumableData | MiscObjectData): DbObj => {

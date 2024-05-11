@@ -1,6 +1,7 @@
 import React from "react"
 import { ScrollView } from "react-native"
 
+import useCases from "lib/common/use-cases"
 import { Consumable } from "lib/objects/data/consumables/consumables.types"
 
 import Spacer from "components/Spacer"
@@ -41,7 +42,7 @@ export default function ConsumableDetails({ dbKey }: { dbKey: Consumable["dbKey"
             </Txt>
           ) : null}
           <Spacer y={20} />
-          <RevertColorsPressable onPress={() => character.consume(consumable)}>
+          <RevertColorsPressable onPress={() => useCases.inventory.consume(character, consumable)}>
             <Txt>CONSOMMER</Txt>
           </RevertColorsPressable>
           <Spacer y={20} />

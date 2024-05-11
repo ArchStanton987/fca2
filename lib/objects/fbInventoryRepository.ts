@@ -1,14 +1,14 @@
 import dbKeys from "db/db-keys"
 
-import { groupAddCollectible, groupUpdateValue, removeCollectible } from "api/api-rtdb"
+import { groupAddCollectible, groupUpdateValue, removeCollectible, updateValue } from "api/api-rtdb"
 
 import { getRtdbSub } from "../common/utils/rtdb-utils"
-import { Clothing } from "./data/clothings/clothings.types"
+import { Clothing, DbClothing } from "./data/clothings/clothings.types"
 import consumablesMap from "./data/consumables/consumables"
-import { Consumable, ConsumableId } from "./data/consumables/consumables.types"
-import { MiscObject } from "./data/misc-objects/misc-objects-types"
+import { Consumable, ConsumableId, DbConsumable } from "./data/consumables/consumables.types"
+import { DbMiscObject, MiscObject } from "./data/misc-objects/misc-objects-types"
 import { DbInventory } from "./data/objects.types"
-import { Weapon } from "./data/weapons/weapons.types"
+import { DbWeapon, Weapon } from "./data/weapons/weapons.types"
 import { ExchangeState } from "./objects-reducer"
 
 export type InventoryCategory = keyof DbInventory
@@ -19,11 +19,17 @@ export type CollectibleInventoryCategory = keyof Pick<
 export type RecordInventoryCategory = keyof Pick<DbInventory, "ammo" | "caps">
 export type InventoryCollectible = Weapon | Clothing | Consumable | MiscObject
 
-const getDbObject = (objectId: InventoryCollectible["id"]) => {
+type DbObjPayload = Partial<DbWeapon | DbClothing | DbConsumable | DbMiscObject>
+
+const getDbConsumable = (id: ConsumableId, data: Partial<DbConsumable>): DbConsumable => ({
+  id,
+  remainingUse: data.remainingUse || consumablesMap[id].maxUsage
+})
+
+const getDbObject = (objectId: InventoryCollectible["id"], data?: DbObjPayload) => {
   const consumable = consumablesMap[objectId as ConsumableId]
-  if (consumable) {
-    return { id: objectId, remainingUse: consumable.maxUsage }
-  }
+  // TODO: use a generic instead of casting type
+  if (consumable) return getDbConsumable(objectId as ConsumableId, data as Partial<DbConsumable>)
   return { id: objectId }
 }
 
@@ -69,7 +75,6 @@ const fbInventoryRepository = {
       Object.entries(data).forEach(([id, state]) => {
         const path = getCategoryPath(charId, category as keyof DbInventory)
         if (state.count > 0) {
-          // TODO: fix ts warning
           const newData = getDbObject(id)
           for (let i = 0; i < state.count; i += 1) {
             addCollectiblesUpdates.push({ containerUrl: path, data: newData })
@@ -89,6 +94,20 @@ const fbInventoryRepository = {
   ) => {
     const path = getCollectiblePath(charId, category, object.dbKey)
     return removeCollectible(path)
+  },
+
+  // REFACTOR: use an object for params
+  // REFACTOR: build generic type
+  updateCollectible: async (
+    charId: string,
+    category: CollectibleInventoryCategory,
+    object: InventoryCollectible,
+    objectChar: string,
+    payload: any
+  ) => {
+    const objectPath = getCollectiblePath(charId, category, object.dbKey).concat("/", objectChar)
+    const path = objectPath
+    return updateValue(path, payload)
   }
 }
 
