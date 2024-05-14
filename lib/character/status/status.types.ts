@@ -1,10 +1,12 @@
-import { DbLimbsHp } from "../health/health-types"
+import { HealthStatusId } from "../health/health-types"
 
-export type DbStatus = {
-  background: string
-  currAp: number
-  exp: number
-  level: number
-  poison: number
-  rads: number
-} & DbLimbsHp
+export type DbStatus = Record<StatusId, number>
+
+export type StatusId =
+  | "background"
+  | "currAp"
+  | "exp"
+  | "level"
+  | "poison"
+  | "rads"
+  | HealthStatusId
