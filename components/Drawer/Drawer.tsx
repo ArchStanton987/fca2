@@ -15,7 +15,6 @@ type DrawerProps = {
   squadId: string
 }
 
-// TODO: REFACTOR: move somewhere else
 const navElements = [
   { path: "main", label: "Perso" },
   { path: "inventory", label: "Inventaire" },
