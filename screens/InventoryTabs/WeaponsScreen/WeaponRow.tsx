@@ -52,7 +52,7 @@ export default function WeaponRow({ weapon, isSelected, ...rest }: WeaponRowProp
         <CheckBox
           isChecked={isEquiped}
           containerStyle={{ backgroundColor: isSelected ? colors.terColor : colors.primColor }}
-          onPress={() => useCases.equipedObjects.toggle(character.charId, weapon)}
+          onPress={() => useCases.equipedObjects.toggle(character, weapon)}
         />
       </View>
       <View style={styles.labelContainer}>

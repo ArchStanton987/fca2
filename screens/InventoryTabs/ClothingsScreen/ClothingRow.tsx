@@ -64,7 +64,7 @@ export default function ClothingRow({ clothing, isSelected, ...rest }: ClothingR
         <CheckBox
           isChecked={isEquiped}
           containerStyle={{ backgroundColor: isSelected ? colors.terColor : colors.primColor }}
-          onPress={() => useCases.equipedObjects.toggle(character.charId, clothing)}
+          onPress={() => useCases.equipedObjects.toggle(character, clothing)}
         />
       </View>
       <View style={styles.labelContainer}>

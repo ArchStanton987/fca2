@@ -1,6 +1,8 @@
 import { getRepository } from "lib/RepositoryBuilder"
+import Character from "lib/character/Character"
 import clothingsMap from "lib/objects/data/clothings/clothings"
 import { Clothing, ClothingId } from "lib/objects/data/clothings/clothings.types"
+import weaponsMap from "lib/objects/data/weapons/weapons"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
 
 import { EquipableCategory, EquipableObject } from "./fbEquipedObjectsRepository"
@@ -22,16 +24,34 @@ const getEquipedObjectsUseCases = (db: keyof typeof getRepository = "rtdb") => {
 
     getAll: (charId: string) => repository.getAll(charId),
 
-    toggle: async (charId: string, object: Weapon | Clothing) => {
-      // TODO: prevent equiping if requirements are not met
-      // weapons : no more than 2 light weapons or 1 heavy weapon
-      // clothings : no more than 1 armor per body part
+    toggle: async (char: Character, object: Weapon | Clothing) => {
       const category = getObjectCategory(object)
+
       const { dbKey } = object
       if (!object.isEquiped) {
-        return repository.add(charId, category, object)
+        // REFACTOR: move to helper functions
+        if (category === "weapons") {
+          const { weapons } = char.equipedObjects
+          const hasHeavyWeapon = weapons.some(({ id }) => weaponsMap[id].skill === "heavyWeapons")
+          const has2LightWeapons =
+            weapons.filter(({ id }) => weaponsMap[id].skill === "lightMedWeapons").length >= 2
+          if (hasHeavyWeapon) throw new Error("You can't equip more than one heavy weapon")
+          if (has2LightWeapons) throw new Error("You can't equip more than two light weapons")
+        }
+
+        if (category === "clothings") {
+          const { clothings } = char.equipedObjects
+          const protectedBodyParts = clothings.map(obj => obj.data.protects).flat()
+          const hasClothOnBodyPart = protectedBodyParts.some(part =>
+            clothingsMap[object.id as ClothingId].protects.includes(part)
+          )
+          if (hasClothOnBodyPart)
+            throw new Error("You can't equip more than one armor per body part")
+        }
+
+        return repository.add(char.charId, category, object)
       }
-      return repository.remove(charId, category, dbKey)
+      return repository.remove(char.charId, category, dbKey)
     },
 
     remove: (charId: string, category: EquipableCategory, dbKey: EquipableObject["dbKey"]) =>
