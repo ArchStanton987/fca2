@@ -1,34 +1,7 @@
-import dbKeys from "db/db-keys"
-import { HealthUpdateState } from "lib/character/health/health-reducer"
-import { getRandomArbitrary } from "lib/common/utils/dice-calc"
 import { getRemainingTime } from "lib/common/utils/time-calc"
-import { Clothing, ClothingData, DbClothing } from "lib/objects/data/clothings/clothings.types"
-import consumablesMap from "lib/objects/data/consumables/consumables"
-import {
-  Consumable,
-  ConsumableData,
-  ConsumableId,
-  DbConsumable
-} from "lib/objects/data/consumables/consumables.types"
-import {
-  DbMiscObject,
-  MiscObject,
-  MiscObjectData
-} from "lib/objects/data/misc-objects/misc-objects-types"
 import { DbEquipedObjects } from "lib/objects/data/objects.types"
 import weaponsMap from "lib/objects/data/weapons/weapons"
-import { DbWeapon, Weapon, WeaponData } from "lib/objects/data/weapons/weapons.types"
-import { ExchangeState } from "lib/objects/objects-reducer"
 import { computed, makeObservable, observable } from "mobx"
-
-import {
-  addCollectible,
-  groupAddCollectible,
-  groupRemoveCollectible,
-  groupUpdateValue,
-  removeCollectible
-} from "api/api-rtdb"
-import { UpdateStatusState } from "screens/MainTabs/modals/UpdateStatusModal/UpdateStatusModal.types"
 
 import { getModAttribute } from "../common/utils/char-calc"
 import clothingsMap from "../objects/data/clothings/clothings"
@@ -43,17 +16,12 @@ import { specialArray } from "./abilities/special/special"
 import { Special } from "./abilities/special/special.types"
 import traitsMap from "./abilities/traits/traits"
 import effectsMap from "./effects/effects"
-import { DbEffect, DbEffects, Effect, EffectData, EffectId } from "./effects/effects.types"
+import { DbEffects, Effect } from "./effects/effects.types"
 import { Symptom } from "./effects/symptoms.type"
 import { LimbHpId, healthStates, limbsMap, radStates } from "./health/health"
 import { getMaxHP, getMissingHp } from "./health/health-calc"
 import { Health } from "./health/health-types"
 import { DbStatus } from "./status/status.types"
-
-type DbObj = {
-  data: DbWeapon | DbClothing | DbConsumable | DbMiscObject
-  url: string
-}
 
 export type DbChar = {
   abilities: DbAbilities
@@ -86,17 +54,13 @@ export default class Character {
       date: observable,
       //
       innateSymptoms: computed,
-      //
       health: computed,
-      //
       effects: computed,
       symptoms: computed,
-      //
       special: computed,
       secAttr: computed,
       skills: computed,
       knowledges: computed,
-      //
       equipedObjects: computed
     })
   }
@@ -248,210 +212,5 @@ export default class Character {
       })
     )
     return { weapons, clothings }
-  }
-
-  getEffectLengthInH = (effect: EffectData) => {
-    const isJunkie = this.dbAbilities.traits?.includes("chemReliant")
-    if (effect.length && effect.isWithdrawal && isJunkie) return effect.length * 0.5
-    return effect.length
-  }
-
-  private getExpiringEffects = (newDate: Date) =>
-    this.effects.filter(effect => {
-      if (!effect.data.length) return false
-      if (effect.endTs && effect?.endTs.getTime() < newDate.getTime()) return true
-      if (!effect.startTs || !effect.data.length) return false
-      const effectLength = this.getEffectLengthInH(effect.data)
-      const lengthInH = effectLength || effect.data.length
-      return effect.startTs.getTime() + lengthInH * 3600 * 1000 < newDate.getTime()
-    })
-
-  private getFollowingEffects = (newDate: Date): DbEffect[] =>
-    this.getExpiringEffects(newDate)
-      .filter(effect => !!effect.data.nextEffectId && !!effect.endTs)
-      .map(effect => {
-        const newEffectId = effect.data.nextEffectId as EffectId
-        const newEffectStartTs = new Date(effect.endTs as Date)
-        const lengthInH = this.getEffectLengthInH(effectsMap[newEffectId]) as number
-        const endInMs = newEffectStartTs.getTime() + lengthInH * 3600
-        const endTs = new Date(endInMs).toJSON()
-        return { id: newEffectId, endTs }
-      })
-
-  private getNewLimbsHp = (newDate: Date) => {
-    const { healHpPerHour } = this.secAttr.curr
-    const hoursPassed = (newDate.getTime() - this.date.getTime()) / 3600000
-    const missingHp = getMissingHp(this.status)
-    const maxHealedHp = Math.round(healHpPerHour * hoursPassed)
-    const healedHp = Math.min(missingHp, maxHealedHp)
-    const newLimbsHp = { ...this.health.limbsHp }
-    const limbsHpArray = Object.entries(this.health.limbsHp).map(([id, value]) => ({ id, value }))
-    for (let i = 0; i < healedHp; i += 1) {
-      const healableLimbs = limbsHpArray.filter(
-        ({ value, id }) => value < limbsMap[id as LimbHpId].maxValue
-      )
-      const randomIndex = getRandomArbitrary(0, healableLimbs.length)
-      const limbIdToHeal = healableLimbs[randomIndex].id
-      newLimbsHp[limbIdToHeal as LimbHpId] += 1
-    }
-    return newLimbsHp
-  }
-
-  onChangeDate = async (newDate: Date) => {
-    const effectsUrl = dbKeys.char(this.charId).effects
-    const expiringEffectsPaths = this.getExpiringEffects(newDate).map(el =>
-      effectsUrl.concat(`/${el.dbKey as string}`)
-    )
-    const followingEffects = this.getFollowingEffects(newDate).map(el => ({
-      data: el,
-      containerUrl: effectsUrl
-    }))
-    const newLimbsHp = this.getNewLimbsHp(newDate)
-    const statusUrl = dbKeys.char(this.charId).status.index
-    const limbsArr = Object.entries(newLimbsHp).map(([id, value]) => ({
-      url: statusUrl.concat(`/${id}`),
-      data: value
-    }))
-    return Promise.all([
-      groupRemoveCollectible(expiringEffectsPaths),
-      groupAddCollectible(followingEffects),
-      groupUpdateValue(limbsArr)
-    ])
-  }
-
-  addEffect = async (effectId: EffectId) => {
-    const hasEffect = this.effects.some(el => el.id === effectId)
-    if (hasEffect) return null
-    const length = effectId && this.getEffectLengthInH(effectsMap[effectId])
-    const startTs = this.date
-    const endTs = length ? new Date(startTs.getTime() + length * 3600 * 1000) : null
-    const newEffect = { id: effectId, startTs, endTs }
-    const effectsPath = dbKeys.char(this.charId).effects
-    return addCollectible(effectsPath, newEffect)
-  }
-
-  groupAddEffects = async (effects: EffectId[]) => {
-    const effectsToAdd = effects.filter(el => !this.effects.some(effect => effect.id === el))
-    const effectsPath = dbKeys.char(this.charId).effects
-    const dbEffects = effectsToAdd.map(el => {
-      const length = this.getEffectLengthInH(effectsMap[el])
-      const endTs = length ? new Date(this.date.getTime() + length * 3600 * 1000) : null
-      const data = { id: el, startTs: this.date, endTs }
-      return { data, containerUrl: effectsPath }
-    })
-    return groupAddCollectible(dbEffects)
-  }
-
-  removeEffect = async (dbKey: string) => {
-    const effectPath = dbKeys.char(this.charId).effects.concat(`/${dbKey}`)
-    removeCollectible(effectPath)
-  }
-
-  updateStatus = async (updates: UpdateStatusState) => {
-    const statusPath = dbKeys.char(this.charId).status.index
-    const updatesArr = Object.entries(updates).map(([id, value]) => ({
-      url: statusPath.concat(`/${id}`),
-      data: value.initValue + value.count
-    }))
-    return groupUpdateValue(updatesArr)
-  }
-
-  updateHealth = async (update: HealthUpdateState) => {
-    const statusPath = dbKeys.char(this.charId).status.index
-    const updatesArr = Object.entries(update).map(([id, value]) => ({
-      url: statusPath.concat(`/${id}`),
-      data: value.initValue + value.count
-    }))
-    return groupUpdateValue(updatesArr)
-  }
-
-  getDbObj = (obj: WeaponData | ClothingData | ConsumableData | MiscObjectData): DbObj => {
-    const url = dbKeys.char(this.charId).inventory
-    const isWeapon = "damageType" in obj
-    const isCloth = "armorClass" in obj
-    const isConsumable = "effectId" in obj
-    if (isWeapon) return { data: { id: obj.id }, url: url.weapons }
-    if (isCloth) return { data: { id: obj.id }, url: url.clothings }
-    if (isConsumable)
-      return {
-        data: { id: obj.id, remainingUse: consumablesMap[obj.id].maxUsage },
-        url: url.consumables
-      }
-    return { data: { id: obj.id }, url: url.miscObjects }
-  }
-
-  groupAddToInv = async (state: ExchangeState) => {
-    // TODO: allow to remove at the same time
-    // TODO: prevent to add if:
-    // - new total weight > maxCarryWeight
-    // - new total place > maxPlace
-    const promises = []
-    const { caps, ammo, weapons, clothings, consumables, miscObjects } = state
-    const capsUpdates = Object.values(caps).map(content => {
-      const url = dbKeys.char(this.charId).inventory.caps
-      return { url, data: content.inInventory + content.count }
-    })
-    promises.push(groupUpdateValue(capsUpdates))
-    const ammoUpdates = Object.entries(ammo).map(([id, content]) => {
-      const url = dbKeys.char(this.charId).inventory.ammo.concat(`/${id}`)
-      const data = content.inInventory + content.count
-      return { url, data }
-    })
-    promises.push(groupUpdateValue(ammoUpdates))
-    const weaponsUpdates: { containerUrl: string; data: any }[] = []
-    Object.entries(weapons).forEach(([id, content]) => {
-      const containerUrl = dbKeys.char(this.charId).inventory.weapons
-      for (let i = 0; i < content.count; i += 1) {
-        weaponsUpdates.push({ containerUrl, data: { id } })
-      }
-    })
-    promises.push(groupAddCollectible(weaponsUpdates))
-    const clothingsUpdates: { containerUrl: string; data: any }[] = []
-    Object.entries(clothings).forEach(([id, content]) => {
-      const containerUrl = dbKeys.char(this.charId).inventory.clothings
-      for (let i = 0; i < content.count; i += 1) {
-        clothingsUpdates.push({ containerUrl, data: { id } })
-      }
-    })
-    promises.push(groupAddCollectible(clothingsUpdates))
-    const consumablesUpdates: { containerUrl: string; data: any }[] = []
-    Object.entries(consumables).forEach(([id, content]) => {
-      const containerUrl = dbKeys.char(this.charId).inventory.consumables
-      for (let i = 0; i < content.count; i += 1) {
-        consumablesUpdates.push({
-          containerUrl,
-          data: { id, remainingUse: consumablesMap[id as ConsumableId].maxUsage }
-        })
-      }
-    })
-    promises.push(groupAddCollectible(consumablesUpdates))
-    const miscObjectsUpdates: { containerUrl: string; data: any }[] = []
-    Object.entries(miscObjects).forEach(([id, content]) => {
-      const containerUrl = dbKeys.char(this.charId).inventory.miscObjects
-      for (let i = 0; i < content.count; i += 1) {
-        miscObjectsUpdates.push({ containerUrl, data: { id } })
-      }
-    })
-    promises.push(groupAddCollectible(miscObjectsUpdates))
-    return Promise.all(promises)
-  }
-
-  removeFromInv = async (
-    obj: Weapon | Clothing | Consumable | MiscObject,
-    isEquiped: boolean = false
-  ) => {
-    const promises = []
-    const { url } = this.getDbObj(obj.data)
-    const objectPath = url.concat(`/${obj.dbKey}`)
-    promises.push(removeCollectible(objectPath))
-    if (isEquiped) {
-      const isWeapon = "damageType" in obj.data
-      const category = isWeapon ? "weapons" : "clothings"
-      const equipedObjPath = dbKeys
-        .char(this.charId)
-        .equipedObjects[category].concat(`/${obj.dbKey}`)
-      promises.push(removeCollectible(equipedObjPath))
-    }
-    return Promise.all(promises)
   }
 }
