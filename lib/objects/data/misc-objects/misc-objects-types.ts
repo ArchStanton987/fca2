@@ -1,5 +1,6 @@
 import { Symptom } from "lib/character/effects/symptoms.type"
 
+// TODO: decide if carry items (purse, holster, etc) should be considered as misc objects / clothings
 export type MiscObjectId =
   | "brahmin"
   | "militaryBelt"

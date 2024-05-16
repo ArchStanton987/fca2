@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
 })
 
 export default function UpdateObjectsConfirmationModal() {
-  const { state } = useUpdateObjects()
+  const { state, dispatch } = useUpdateObjects()
   const character = useCharacter()
   const categoryList = Object.entries(state)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -50,6 +50,8 @@ export default function UpdateObjectsConfirmationModal() {
   const onPressConfirm = async () => {
     // TODO: add apropriate redirection
     await useCases.inventory.groupAdd(character.charId, state)
+    dispatch({ type: "reset" })
+    // BUG: redirection seems to not forward screen params
     router.replace({ pathname: routes.inventory.weapons })
   }
 
@@ -68,7 +70,10 @@ export default function UpdateObjectsConfirmationModal() {
             {cat.objects.map(obj => (
               <View key={obj.id} style={styles.listItemContainer}>
                 <Txt>{obj.label}</Txt>
-                <Txt>x{obj.count}</Txt>
+                <Txt>
+                  {obj.count > 0 ? "x" : null}
+                  {obj.count}
+                </Txt>
               </View>
             ))}
           </View>
