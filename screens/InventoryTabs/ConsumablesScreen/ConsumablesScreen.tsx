@@ -17,23 +17,13 @@ import { useInventory } from "contexts/InventoryContext"
 import ConsumableDetails from "screens/InventoryTabs/ConsumablesScreen/ConsumableDetails"
 import ConsumableRow, { ListHeader } from "screens/InventoryTabs/ConsumablesScreen/ConsumableRow"
 import { SearchParams } from "screens/ScreenParams"
-import { filterUnique } from "utils/array-utils"
 
 export default function ConsumablesScreen() {
   const localParams = useLocalSearchParams<SearchParams<DrawerParams>>()
   const [selectedItem, setSelectedItem] = useState<Consumable["dbKey"] | null>(null)
 
-  const { consumables } = useInventory()
+  const { groupedConsumables } = useInventory()
   const character = useCharacter()
-
-  // TODO: GROUP in Inventory class
-  const groupedConsumables = filterUnique(
-    "id",
-    consumables.map((consumable, _, currArr) => {
-      const count = currArr.filter(el => el.id === consumable.id).length
-      return { ...consumable, count }
-    })
-  )
 
   const onPressAdd = () =>
     router.push({

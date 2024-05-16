@@ -16,22 +16,12 @@ import { useInventory } from "contexts/InventoryContext"
 import MiscObjDetails from "screens/InventoryTabs/MiscObjScreen/MiscObjDetails"
 import MiscObjRow, { ListHeader } from "screens/InventoryTabs/MiscObjScreen/MiscObjRow"
 import { SearchParams } from "screens/ScreenParams"
-import { filterUnique } from "utils/array-utils"
 
 export default function MiscObjScreen() {
   const { squadId, charId } = useLocalSearchParams() as SearchParams<DrawerParams>
   const [selectedItem, setSelectedItem] = useState<MiscObject | null>(null)
 
-  const { miscObjects } = useInventory()
-
-  // TODO: group in inventory class
-  const groupedObjects = filterUnique(
-    "id",
-    miscObjects.map((consumable, _, currArr) => {
-      const count = currArr.filter(el => el.id === consumable.id).length
-      return { ...consumable, count }
-    })
-  )
+  const { groupedMiscObjects } = useInventory()
 
   const onPressAdd = () =>
     router.push({
@@ -43,7 +33,7 @@ export default function MiscObjScreen() {
     <DrawerPage>
       <Section style={{ flex: 1 }}>
         <FlatList
-          data={groupedObjects}
+          data={groupedMiscObjects}
           keyExtractor={item => item.id}
           ListHeaderComponent={ListHeader}
           stickyHeaderIndices={[0]}

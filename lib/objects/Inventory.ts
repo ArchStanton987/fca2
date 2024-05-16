@@ -12,6 +12,8 @@ import weaponsMap from "lib/objects/data/weapons/weapons"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
 import { computed, makeObservable, observable } from "mobx"
 
+import { filterUnique } from "utils/array-utils"
+
 import { DbAbilities } from "../character/abilities/abilities.types"
 import { KnowledgeId } from "../character/abilities/knowledges/knowledge-types"
 import { SkillsValues } from "../character/abilities/skills/skills.types"
@@ -55,6 +57,9 @@ export default class Inventory {
       ammoRecord: computed,
       //
       inventory: computed,
+      //
+      groupedConsumables: computed,
+      groupedMiscObjects: computed,
 
       currentCarry: computed
     })
@@ -99,12 +104,32 @@ export default class Inventory {
     }))
   }
 
+  get groupedConsumables(): (Consumable & { count: number })[] {
+    return filterUnique(
+      "id",
+      this.consumables.map((consumable, _, currArr) => {
+        const count = currArr.filter(el => el.id === consumable.id).length
+        return { ...consumable, count }
+      })
+    )
+  }
+
   get miscObjects(): MiscObject[] {
     return Object.entries(this.dbInventory.miscObjects || {}).map(([dbKey, { id }]) => ({
       data: miscObjectsMap[id],
       dbKey,
       id
     }))
+  }
+
+  get groupedMiscObjects(): (MiscObject & { count: number })[] {
+    return filterUnique(
+      "id",
+      this.miscObjects.map((consumable, _, currArr) => {
+        const count = currArr.filter(el => el.id === consumable.id).length
+        return { ...consumable, count }
+      })
+    )
   }
 
   get ammo(): Ammo[] {
