@@ -7,16 +7,9 @@ import { HeaderElementId } from "components/Header/Header.utils"
 import TabBar from "components/TabBar/TabBar"
 import colors from "styles/colors"
 
-const special: HeaderElementId[] = [
-  "strength",
-  "perception",
-  "endurance",
-  "charisma",
-  "intelligence",
-  "agility",
-  "luck"
-]
 const datetime: HeaderElementId[] = ["date", "time"]
+const carry: HeaderElementId[] = ["weight", "place"]
+
 export default function InventoryLayout() {
   const { squadId, charId } = useLocalSearchParams<{ squadId: string; charId: string }>()
   return (
@@ -26,7 +19,7 @@ export default function InventoryLayout() {
       screenOptions={{
         tabBarHideOnKeyboard: true,
         header: props => (
-          <Header headerElementsIds={[...datetime, "progression", ...special, "caps"]} {...props} />
+          <Header headerElementsIds={[...datetime, "progression", ...carry, "caps"]} {...props} />
         ),
         headerStyle: {
           backgroundColor: colors.primColor,

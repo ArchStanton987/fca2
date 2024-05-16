@@ -40,7 +40,8 @@ const styles = StyleSheet.create({
     flex: 1
   },
   listItemInfo: {
-    width: 45
+    width: 40,
+    textAlign: "right"
   }
 })
 
