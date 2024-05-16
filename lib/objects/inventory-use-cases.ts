@@ -27,7 +27,6 @@ const getObjectCategory = (object: Weapon | Clothing | Consumable | MiscObject) 
 const getInventoryUseCases = (db: keyof typeof getRepository = "rtdb") => {
   const repository = getRepository[db].inventory
   const equipedObjectsRepository = getRepository[db].equipedObjects
-  const inventoryUseCases = getInventoryUseCases(db)
   const effectsUseCases = getEffectsUseCases(db)
   const statusUseCases = getStatusUseCases(db)
 
@@ -74,7 +73,7 @@ const getInventoryUseCases = (db: keyof typeof getRepository = "rtdb") => {
       // handle object in inventory
       const shouldRemoveObject = remainingUse === undefined || remainingUse <= 1
       if (shouldRemoveObject) {
-        promises.push(inventoryUseCases.remove(charId, consumable))
+        promises.push(getInventoryUseCases(db).remove(charId, consumable))
       } else {
         repository.updateCollectible(
           charId,
