@@ -16,7 +16,7 @@ import { specialArray } from "./abilities/special/special"
 import { Special } from "./abilities/special/special.types"
 import traitsMap from "./abilities/traits/traits"
 import effectsMap from "./effects/effects"
-import { DbEffects, Effect } from "./effects/effects.types"
+import { DbEffect, DbEffects, Effect, EffectId } from "./effects/effects.types"
 import { Symptom } from "./effects/symptoms.type"
 import { LimbHpId, healthStates, limbsMap, radStates } from "./health/health"
 import { getMaxHP, getMissingHp } from "./health/health-calc"
@@ -61,7 +61,9 @@ export default class Character {
       secAttr: computed,
       skills: computed,
       knowledges: computed,
-      equipedObjects: computed
+      equipedObjects: computed,
+      //
+      effectsRecord: computed
     })
   }
 
@@ -212,5 +214,13 @@ export default class Character {
       })
     )
     return { weapons, clothings }
+  }
+
+  get effectsRecord() {
+    const effectsRecord = {} as Record<EffectId, DbEffect & { dbKey: string }>
+    Object.entries(this.dbEffects).forEach(([dbKey, value]) => {
+      effectsRecord[value.id] = { ...value, dbKey }
+    })
+    return effectsRecord
   }
 }

@@ -2,7 +2,7 @@ import { getRepository } from "lib/RepositoryBuilder"
 import Character from "lib/character/Character"
 import { WithDbKeyEffect } from "lib/character/effects/FbEffectsRepository"
 import { createDbEffect } from "lib/character/effects/effects-utils"
-import { EffectId } from "lib/character/effects/effects.types"
+import { DbEffect, EffectId } from "lib/character/effects/effects.types"
 
 function getEffectsUseCases(db: keyof typeof getRepository = "rtdb") {
   const repository = getRepository[db].effects
@@ -14,14 +14,31 @@ function getEffectsUseCases(db: keyof typeof getRepository = "rtdb") {
 
     add: async (char: Character, effectId: EffectId, refDate?: Date) => {
       const dbEffect = createDbEffect(char, effectId, refDate)
+      const existingEffect = char.effectsRecord[effectId]
+      if (existingEffect) {
+        return repository.update(char.charId, existingEffect.dbKey, dbEffect)
+      }
       return repository.add(char.charId, dbEffect)
     },
 
+    // we process one start date for each effect, as start dates can be different inside a batch of effects (e.g. datetime update)
     groupAdd: (char: Character, effects: { effectId: EffectId; startDate?: Date }[]) => {
-      const dbEffects = effects
-        .filter(({ effectId }) => !char.effects.some(eff => eff.id === effectId))
-        .map(({ effectId, startDate }) => createDbEffect(char, effectId, startDate))
-      return repository.groupAdd(char.charId, dbEffects)
+      const newDbEffects: DbEffect[] = []
+      const updatedDbEffects: { dbKey: WithDbKeyEffect["dbKey"]; updatedEffect: DbEffect }[] = []
+      effects.forEach(({ effectId, startDate }) => {
+        const dbEffect = createDbEffect(char, effectId, startDate)
+        const existingEffect = char.effectsRecord[effectId]
+        if (existingEffect) {
+          updatedDbEffects.push({ dbKey: existingEffect.dbKey, updatedEffect: dbEffect })
+        } else {
+          newDbEffects.push(dbEffect)
+        }
+      })
+      const promises = [
+        repository.groupAdd(char.charId, newDbEffects),
+        repository.groupUpdate(char.charId, updatedDbEffects)
+      ]
+      return Promise.all(promises)
     },
 
     remove: async (charId: string, effect: WithDbKeyEffect) => repository.remove(charId, effect),

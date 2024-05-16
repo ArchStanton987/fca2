@@ -6,7 +6,9 @@ import {
   addCollectible,
   groupAddCollectible,
   groupRemoveCollectible,
-  removeCollectible
+  groupUpdateValue,
+  removeCollectible,
+  updateValue
 } from "api/api-rtdb"
 
 import { getRtdbSub } from "../../common/utils/rtdb-utils"
@@ -43,6 +45,22 @@ const fbEffectsRepository = {
       data: dbEffect
     }))
     return groupAddCollectible(payload)
+  },
+
+  update: async (charId: string, dbKey: WithDbKeyEffect["dbKey"], updatedEffect: DbEffect) => {
+    const path = getElementPath(charId, dbKey)
+    return updateValue(path, updatedEffect)
+  },
+
+  groupUpdate: (
+    charId: string,
+    updates: { dbKey: WithDbKeyEffect["dbKey"]; updatedEffect: DbEffect }[]
+  ) => {
+    const payload = updates.map(({ dbKey, updatedEffect }) => ({
+      url: getElementPath(charId, dbKey),
+      data: updatedEffect
+    }))
+    return groupUpdateValue(payload)
   },
 
   remove: async (charId: string, effect: WithDbKeyEffect) => {
