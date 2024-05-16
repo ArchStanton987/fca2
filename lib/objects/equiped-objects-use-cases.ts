@@ -7,10 +7,8 @@ import { Weapon } from "lib/objects/data/weapons/weapons.types"
 
 import { EquipableCategory, EquipableObject } from "./fbEquipedObjectsRepository"
 
-const getObjectCategory = (object: EquipableObject): EquipableCategory => {
-  const isCloth = clothingsMap[object.id as ClothingId] !== undefined
-  return isCloth ? ("clothings" as const) : ("weapons" as const)
-}
+const getObjectCategory = (object: EquipableObject): EquipableCategory =>
+  "armorClass" in object.data ? "clothings" : "weapons"
 
 const getEquipedObjectsUseCases = (db: keyof typeof getRepository = "rtdb") => {
   const repository = getRepository[db].equipedObjects
@@ -26,12 +24,10 @@ const getEquipedObjectsUseCases = (db: keyof typeof getRepository = "rtdb") => {
 
     toggle: async (char: Character, object: Weapon | Clothing) => {
       const category = getObjectCategory(object)
-
+      const { weapons, clothings } = char.equipedObjects
       const { dbKey } = object
       if (!object.isEquiped) {
-        // REFACTOR: move to helper functions
         if (category === "weapons") {
-          const { weapons } = char.equipedObjects
           const hasHeavyWeapon = weapons.some(({ id }) => weaponsMap[id].skill === "heavyWeapons")
           const has2LightWeapons =
             weapons.filter(({ id }) => weaponsMap[id].skill === "lightMedWeapons").length >= 2
@@ -40,7 +36,6 @@ const getEquipedObjectsUseCases = (db: keyof typeof getRepository = "rtdb") => {
         }
 
         if (category === "clothings") {
-          const { clothings } = char.equipedObjects
           const protectedBodyParts = clothings.map(obj => obj.data.protects).flat()
           const hasClothOnBodyPart = protectedBodyParts.some(part =>
             clothingsMap[object.id as ClothingId].protects.includes(part)
