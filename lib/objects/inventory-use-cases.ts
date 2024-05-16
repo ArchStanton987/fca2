@@ -1,6 +1,9 @@
 // import Character from "lib/character/Character"
 import Character from "lib/character/Character"
 import getEffectsUseCases from "lib/character/effects/effects-use-cases"
+import getStatusUseCases from "lib/character/status/status-use-cases"
+import { DbStatus } from "lib/character/status/status.types"
+import { applyMod } from "lib/common/utils/char-calc"
 
 import { getRepository } from "../RepositoryBuilder"
 import clothingsMap from "./data/clothings/clothings"
@@ -24,7 +27,9 @@ const getObjectCategory = (object: Weapon | Clothing | Consumable | MiscObject) 
 const getInventoryUseCases = (db: keyof typeof getRepository = "rtdb") => {
   const repository = getRepository[db].inventory
   const equipedObjectsRepository = getRepository[db].equipedObjects
+  const inventoryUseCases = getInventoryUseCases(db)
   const effectsUseCases = getEffectsUseCases(db)
+  const statusUseCases = getStatusUseCases(db)
 
   return {
     getAll: (charId: string) => repository.getAll(charId),
@@ -46,17 +51,30 @@ const getInventoryUseCases = (db: keyof typeof getRepository = "rtdb") => {
     },
 
     consume: (character: Character, consumable: Consumable) => {
-      // TODO: apply modifiers
       const { charId } = character
       const { data, remainingUse } = consumable
-      const promises = []
-      const newEffectId = data.effectId
-      if (!newEffectId) throw new Error("Consumable has no effectId")
-      promises.push(effectsUseCases.add(character, newEffectId))
+      const { effectId, modifiers } = data
 
+      const promises = []
+
+      // add effect related to consumable
+      if (effectId) {
+        promises.push(effectsUseCases.add(character, effectId))
+      }
+
+      // apply modifiers related to consumable
+      if (modifiers) {
+        const updates: Partial<DbStatus> = {}
+        modifiers.forEach(mod => {
+          updates[mod.id] = applyMod(character.status[mod.id], mod)
+        })
+        promises.push(statusUseCases.groupUpdate(charId, updates))
+      }
+
+      // handle object in inventory
       const shouldRemoveObject = remainingUse === undefined || remainingUse <= 1
       if (shouldRemoveObject) {
-        promises.push(getInventoryUseCases(db).remove(charId, consumable))
+        promises.push(inventoryUseCases.remove(charId, consumable))
       } else {
         repository.updateCollectible(
           charId,

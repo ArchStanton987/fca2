@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import { ChangeableAttribute, Symptom } from "lib/character/effects/symptoms.type"
 
-const applyMod = (initValue: number, symptom: Symptom) => {
+export const applyMod = (initValue: number, symptom: Symptom) => {
   const { operation, value } = symptom
   switch (operation) {
     case "add":
