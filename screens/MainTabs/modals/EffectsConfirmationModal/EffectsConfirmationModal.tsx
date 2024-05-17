@@ -12,7 +12,6 @@ import ScrollableSection from "components/ScrollableSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import ModalBody from "components/wrappers/ModalBody"
-import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 
 type EffectConfirmationModalParams = DrawerParams & {
@@ -21,7 +20,7 @@ type EffectConfirmationModalParams = DrawerParams & {
 
 export default function EffectsConfirmationModal() {
   const character = useCharacter()
-  const { squadId, charId, effectsToAdd } = useLocalSearchParams<EffectConfirmationModalParams>()
+  const { effectsToAdd } = useLocalSearchParams<EffectConfirmationModalParams>()
   let effects: EffectId[] = []
   if (effectsToAdd) {
     effects = effectsToAdd.split(",") as EffectId[]
@@ -32,7 +31,7 @@ export default function EffectsConfirmationModal() {
       character,
       effects.map(effect => ({ effectId: effect, startDate: character.date }))
     )
-    router.push({ pathname: routes.main.effects, params: { squadId, charId } })
+    router.dismiss(2)
   }
 
   return (

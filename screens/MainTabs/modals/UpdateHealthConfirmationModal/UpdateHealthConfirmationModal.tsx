@@ -11,24 +11,22 @@ import ScrollableSection from "components/ScrollableSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import ModalBody from "components/wrappers/ModalBody"
-import routes from "constants/routes"
 import { useUpdateHealth } from "contexts/UpdateHealthContext"
 import { SearchParams } from "screens/ScreenParams"
 
 export default function UpdateHealthConfirmationModal() {
-  const { squadId, charId } = useLocalSearchParams() as SearchParams<DrawerParams>
+  const { charId } = useLocalSearchParams() as SearchParams<DrawerParams>
 
   const { state, dispatch } = useUpdateHealth()
 
   const updates = Object.entries(state)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    .filter(([_, value]) => ("count" in value ? value.count !== 0 : false))
+    .filter(([, value]) => ("count" in value ? value.count !== 0 : false))
     .map(([id, content]) => ({ id, ...content }))
 
   const onPressConfirm = async () => {
     await useCases.status.groupMod(charId, state)
     dispatch({ type: "reset" })
-    router.push({ pathname: routes.main.index, params: { squadId, charId } })
+    router.dismiss(2)
   }
   return (
     <ModalBody>

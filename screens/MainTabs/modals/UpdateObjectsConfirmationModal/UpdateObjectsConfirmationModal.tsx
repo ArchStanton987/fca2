@@ -9,7 +9,6 @@ import ScrollableSection from "components/ScrollableSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import ModalBody from "components/wrappers/ModalBody"
-import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useUpdateObjects } from "contexts/UpdateObjectsContext"
 import { categoriesMap } from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.utils"
@@ -51,8 +50,7 @@ export default function UpdateObjectsConfirmationModal() {
     // TODO: add apropriate redirection
     await useCases.inventory.groupAdd(character.charId, state)
     dispatch({ type: "reset" })
-    // BUG: redirection seems to not forward screen params
-    router.replace({ pathname: routes.inventory.weapons })
+    router.dismiss(2)
   }
 
   return (

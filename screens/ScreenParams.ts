@@ -4,6 +4,7 @@ export type SearchParams<T> = {
   [Property in keyof T]: string
 }
 
+// TODO: get version from sav
 export default abstract class ScreenParams {
   static strToBool = (str: string | string[] | undefined): boolean => str === "true"
 
