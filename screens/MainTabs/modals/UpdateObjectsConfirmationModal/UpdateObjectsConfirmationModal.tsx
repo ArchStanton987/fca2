@@ -10,6 +10,7 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import ModalBody from "components/wrappers/ModalBody"
 import { useCharacter } from "contexts/CharacterContext"
+import { useInventory } from "contexts/InventoryContext"
 import { useUpdateObjects } from "contexts/UpdateObjectsContext"
 import { categoriesMap } from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.utils"
 import colors from "styles/colors"
@@ -35,6 +36,7 @@ const styles = StyleSheet.create({
 export default function UpdateObjectsConfirmationModal() {
   const { state, dispatch } = useUpdateObjects()
   const character = useCharacter()
+  const inventory = useInventory()
   const categoryList = Object.entries(state)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .filter(([_, objects]) => Object.values(objects).some(el => el.count !== 0))
@@ -47,8 +49,7 @@ export default function UpdateObjectsConfirmationModal() {
     }))
 
   const onPressConfirm = async () => {
-    // TODO: add apropriate redirection
-    await useCases.inventory.groupAdd(character.charId, state)
+    await useCases.inventory.exchange(character, state, inventory)
     dispatch({ type: "reset" })
     router.dismiss(2)
   }

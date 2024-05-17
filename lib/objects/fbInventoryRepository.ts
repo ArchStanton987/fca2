@@ -1,15 +1,21 @@
 import dbKeys from "db/db-keys"
 
-import { groupAddCollectible, groupUpdateValue, removeCollectible, updateValue } from "api/api-rtdb"
+import {
+  groupAddCollectible,
+  groupRemoveCollectible,
+  groupUpdateValue,
+  removeCollectible,
+  updateValue
+} from "api/api-rtdb"
 
 import { getRtdbSub } from "../common/utils/rtdb-utils"
+import { AmmoType } from "./data/ammo/ammo.types"
 import { Clothing, DbClothing } from "./data/clothings/clothings.types"
 import consumablesMap from "./data/consumables/consumables"
 import { Consumable, ConsumableId, DbConsumable } from "./data/consumables/consumables.types"
 import { DbMiscObject, MiscObject } from "./data/misc-objects/misc-objects-types"
 import { DbInventory } from "./data/objects.types"
 import { DbWeapon, Weapon } from "./data/weapons/weapons.types"
-import { ExchangeState } from "./objects-reducer"
 
 export type InventoryCategory = keyof DbInventory
 export type CollectibleInventoryCategory = keyof Pick<
@@ -51,53 +57,33 @@ const fbInventoryRepository = {
     return sub
   },
 
-  // TODO: rename to update, add possibility to remove collectibles.
-  // e.g.: provide an array of dbKeys to remove in related categories
-  groupAdd: (charId: string, payload: ExchangeState) => {
-    const recordsUpdates: { url: string; data: any }[] = []
-    const addCollectiblesUpdates: { containerUrl: string; data: any }[] = []
-
-    Object.entries(payload).forEach(([category, data]) => {
-      if (category === "ammo") {
-        Object.entries(data).forEach(([id, state]) => {
-          const path = getCategoryPath(charId, category).concat("/", id)
-          const newAmount = state.inInventory + state.count
-          recordsUpdates.push({ url: path, data: newAmount })
-        })
-      }
-      if (category === "caps") {
-        Object.values(data).forEach(state => {
-          const path = getCategoryPath(charId, category)
-          const newAmount = state.inInventory + state.count
-          recordsUpdates.push({ url: path, data: newAmount })
-        })
-      }
-      Object.entries(data).forEach(([id, state]) => {
-        const path = getCategoryPath(charId, category as keyof DbInventory)
-        if (state.count > 0) {
-          const newData = getDbObject(id)
-          for (let i = 0; i < state.count; i += 1) {
-            addCollectiblesUpdates.push({ containerUrl: path, data: newData })
-          }
-        }
-      })
+  groupAddCollectible: async (
+    charId: string,
+    array: {
+      category: CollectibleInventoryCategory
+      objectId: InventoryCollectible["id"]
+    }[]
+  ) => {
+    const updates: { containerUrl: string; data: any }[] = []
+    array.forEach(({ category, objectId }) => {
+      const path = getCategoryPath(charId, category)
+      const dbObject = getDbObject(objectId)
+      updates.push({ containerUrl: path, data: dbObject })
     })
 
-    const promises = [groupAddCollectible(addCollectiblesUpdates), groupUpdateValue(recordsUpdates)]
-    return Promise.all(promises)
+    return groupAddCollectible(updates)
   },
 
-  remove: async (
+  groupRemoveCollectible: async (
     charId: string,
-    category: CollectibleInventoryCategory,
-    object: Weapon | Clothing | Consumable | MiscObject
+    array: { category: CollectibleInventoryCategory; dbKey: InventoryCollectible["dbKey"] }[]
   ) => {
-    const path = getCollectiblePath(charId, category, object.dbKey)
-    return removeCollectible(path)
+    const urls = array.map(({ category, dbKey }) => getCollectiblePath(charId, category, dbKey))
+    return groupRemoveCollectible(urls)
   },
 
-  // REFACTOR: use an object for params
-  // REFACTOR: build generic type
+  // TODO: use an object for params
+  // TODO: build generic type
   updateCollectible: async (
     charId: string,
     category: CollectibleInventoryCategory,
@@ -108,6 +94,29 @@ const fbInventoryRepository = {
     const objectPath = getCollectiblePath(charId, category, object.dbKey).concat("/", objectChar)
     const path = objectPath
     return updateValue(path, payload)
+  },
+  remove: async (
+    charId: string,
+    category: CollectibleInventoryCategory,
+    object: Weapon | Clothing | Consumable | MiscObject
+  ) => {
+    const path = getCollectiblePath(charId, category, object.dbKey)
+    return removeCollectible(path)
+  },
+
+  groupUpdateRecords: async (
+    charId: string,
+    array: { category: RecordInventoryCategory; id?: AmmoType; newValue: number }[]
+  ) => {
+    const updates: { url: string; data: any }[] = []
+    array.forEach(({ category, id, newValue }) => {
+      let path = getCategoryPath(charId, category)
+      if (id) {
+        path = getCategoryPath(charId, category).concat("/", id)
+      }
+      updates.push({ url: path, data: newValue })
+    })
+    return groupUpdateValue(updates)
   }
 }
 

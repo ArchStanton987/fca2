@@ -70,7 +70,7 @@ export default function WeaponRow({ weapon, isSelected, ...rest }: WeaponRowProp
       </View>
       <TouchableOpacity
         style={styles.deleteContainer}
-        onPress={() => useCases.inventory.remove(character.charId, weapon)}
+        onPress={() => useCases.inventory.throw(character.charId, weapon)}
       >
         {isSelected && <AntDesign name="delete" size={17} color={colors.secColor} />}
       </TouchableOpacity>

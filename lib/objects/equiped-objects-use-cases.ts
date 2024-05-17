@@ -29,10 +29,10 @@ const getEquipedObjectsUseCases = (db: keyof typeof getRepository = "rtdb") => {
       if (!object.isEquiped) {
         if (category === "weapons") {
           const hasHeavyWeapon = weapons.some(({ id }) => weaponsMap[id].skill === "heavyWeapons")
-          const has2LightWeapons =
-            weapons.filter(({ id }) => weaponsMap[id].skill === "lightMedWeapons").length >= 2
+          const has2EquWeapons = weapons.length >= 2
+          // TODO: use a toast in ui for those errors
           if (hasHeavyWeapon) throw new Error("You can't equip more than one heavy weapon")
-          if (has2LightWeapons) throw new Error("You can't equip more than two light weapons")
+          if (has2EquWeapons) throw new Error("You can't equip more than two weapons")
         }
 
         if (category === "clothings") {

@@ -6,6 +6,8 @@ import { DbStatus } from "lib/character/status/status.types"
 import { applyMod } from "lib/common/utils/char-calc"
 
 import { getRepository } from "../RepositoryBuilder"
+import Inventory from "./Inventory"
+import { AmmoType } from "./data/ammo/ammo.types"
 import clothingsMap from "./data/clothings/clothings"
 import { Clothing, ClothingId } from "./data/clothings/clothings.types"
 import consumablesMap from "./data/consumables/consumables"
@@ -14,6 +16,11 @@ import miscObjectsMap from "./data/misc-objects/misc-objects"
 import { MiscObject, MiscObjectId } from "./data/misc-objects/misc-objects-types"
 import weaponsMap from "./data/weapons/weapons"
 import { Weapon, WeaponId } from "./data/weapons/weapons.types"
+import {
+  CollectibleInventoryCategory,
+  InventoryCollectible,
+  RecordInventoryCategory
+} from "./fbInventoryRepository"
 import { ExchangeState } from "./objects-reducer"
 
 const getObjectCategory = (object: Weapon | Clothing | Consumable | MiscObject) => {
@@ -33,12 +40,70 @@ const getInventoryUseCases = (db: keyof typeof getRepository = "rtdb") => {
   return {
     getAll: (charId: string) => repository.getAll(charId),
 
-    groupAdd: (charId: string, payload: ExchangeState) => repository.groupAdd(charId, payload),
+    exchange: (character: Character, payload: ExchangeState, inventory: Inventory) => {
+      const recordsUpdates: {
+        category: RecordInventoryCategory
+        id?: AmmoType
+        newValue: number
+      }[] = []
+      const addCollectiblesUpdates: {
+        category: CollectibleInventoryCategory
+        objectId: InventoryCollectible["id"]
+      }[] = []
+      const removeCollectiblesUpdates: {
+        category: CollectibleInventoryCategory
+        dbKey: InventoryCollectible["dbKey"]
+      }[] = []
+
+      Object.entries(payload).forEach(([category, data]) => {
+        if (category === "ammo") {
+          Object.entries(data).forEach(([id, state]) => {
+            const newAmount = state.inInventory + state.count
+            recordsUpdates.push({ category, id: id as AmmoType, newValue: newAmount })
+          })
+          return
+        }
+        if (category === "caps") {
+          Object.values(data).forEach(state => {
+            const newAmount = state.inInventory + state.count
+            recordsUpdates.push({ category, newValue: newAmount })
+          })
+          return
+        }
+        Object.entries(data).forEach(([id, state]) => {
+          if (state.count > 0) {
+            for (let i = 0; i < state.count; i += 1) {
+              addCollectiblesUpdates.push({
+                category: category as CollectibleInventoryCategory,
+                objectId: id as InventoryCollectible["id"]
+              })
+            }
+          }
+          if (state.count < 0) {
+            for (let i = 0; i > state.count; i -= 1) {
+              const objToRemove = inventory[category as CollectibleInventoryCategory].filter(
+                el => el.id === id
+              )[Math.abs(i)]
+              removeCollectiblesUpdates.push({
+                category: category as CollectibleInventoryCategory,
+                dbKey: objToRemove.dbKey
+              })
+            }
+          }
+        })
+      })
+      const promises = [
+        repository.groupUpdateRecords(character.charId, recordsUpdates),
+        repository.groupAddCollectible(character.charId, addCollectiblesUpdates),
+        repository.groupRemoveCollectible(character.charId, removeCollectiblesUpdates)
+      ]
+      return Promise.all(promises)
+    },
 
     // TODO: group update
     // groupUpdate: (char: Character, payload: ExchangeState) => {},
 
-    remove: (charId: string, object: Weapon | Clothing | Consumable | MiscObject) => {
+    throw: (charId: string, object: Weapon | Clothing | Consumable | MiscObject) => {
       const promises = []
       const category = getObjectCategory(object)
       const isEquipableCategory = category === "weapons" || category === "clothings"
@@ -73,7 +138,7 @@ const getInventoryUseCases = (db: keyof typeof getRepository = "rtdb") => {
       // handle object in inventory
       const shouldRemoveObject = remainingUse === undefined || remainingUse <= 1
       if (shouldRemoveObject) {
-        promises.push(getInventoryUseCases(db).remove(charId, consumable))
+        promises.push(getInventoryUseCases(db).throw(charId, consumable))
       } else {
         repository.updateCollectible(
           charId,

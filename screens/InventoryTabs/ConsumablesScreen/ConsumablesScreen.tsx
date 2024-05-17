@@ -36,7 +36,7 @@ export default function ConsumablesScreen() {
     })
 
   const onDelete = (item: Consumable) => {
-    useCases.inventory.remove(character.charId, item)
+    useCases.inventory.throw(character.charId, item)
     setSelectedItem(null)
   }
 
