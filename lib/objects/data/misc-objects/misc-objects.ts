@@ -11,54 +11,54 @@ const miscObjectsMap: Record<MiscObjectId, MiscObjectData> = {
     symptoms: [],
     weight: 0
   },
-  militaryBelt: {
-    id: "militaryBelt",
-    label: "ceinture militaire",
-    description: "Une ceinture très bien conçue qui vous permet de ranger d'avantage de choses.",
-    value: 120,
-    place: 0,
-    symptoms: [{ id: "maxPlace", operation: "add", value: 2 }],
-    weight: 0.4
-  },
-  holster: {
-    id: "holster",
-    label: "holster",
-    description:
-      "Holster en peau de brahmine, le tout fait au crochet de 12. Un travail minutieux !",
-    value: 50,
-    place: 0,
-    symptoms: [{ id: "maxPlace", operation: "add", value: 1 }],
-    weight: 0.1
-  },
-  purse: {
-    id: "purse",
-    label: "sacoche",
-    description:
-      "Faite de peau de brahamine, elle est résistante et permet de stocker des affaires",
-    value: 100,
-    place: 0,
-    symptoms: [{ id: "maxPlace", operation: "add", value: 4 }],
-    weight: 0.5
-  },
-  backpack: {
-    id: "backpack",
-    label: "sac à dos",
-    description:
-      "Un bon sac à dos, bien conçu qui vous permet de transporter d'avantage de choses.",
-    value: 70,
-    place: 0,
-    symptoms: [{ id: "maxPlace", operation: "add", value: 8 }],
-    weight: 0.8
-  },
-  militaryBackpack: {
-    id: "militaryBackpack",
-    label: "sac à dos militaire",
-    description: "Le top du sac à dos.",
-    value: 140,
-    place: 0,
-    symptoms: [{ id: "maxPlace", operation: "add", value: 12 }],
-    weight: 1
-  },
+  // militaryBelt: {
+  //   id: "militaryBelt",
+  //   label: "ceinture militaire",
+  //   description: "Une ceinture très bien conçue qui vous permet de ranger d'avantage de choses.",
+  //   value: 120,
+  //   place: 0,
+  //   symptoms: [{ id: "maxPlace", operation: "add", value: 2 }],
+  //   weight: 0.4
+  // },
+  // holster: {
+  //   id: "holster",
+  //   label: "holster",
+  //   description:
+  //     "Holster en peau de brahmine, le tout fait au crochet de 12. Un travail minutieux !",
+  //   value: 50,
+  //   place: 0,
+  //   symptoms: [{ id: "maxPlace", operation: "add", value: 1 }],
+  //   weight: 0.1
+  // },
+  // purse: {
+  //   id: "purse",
+  //   label: "sacoche",
+  //   description:
+  //     "Faite de peau de brahamine, elle est résistante et permet de stocker des affaires",
+  //   value: 100,
+  //   place: 0,
+  //   symptoms: [{ id: "maxPlace", operation: "add", value: 4 }],
+  //   weight: 0.5
+  // },
+  // backpack: {
+  //   id: "backpack",
+  //   label: "sac à dos",
+  //   description:
+  //     "Un bon sac à dos, bien conçu qui vous permet de transporter d'avantage de choses.",
+  //   value: 70,
+  //   place: 0,
+  //   symptoms: [{ id: "maxPlace", operation: "add", value: 8 }],
+  //   weight: 0.8
+  // },
+  // militaryBackpack: {
+  //   id: "militaryBackpack",
+  //   label: "sac à dos militaire",
+  //   description: "Le top du sac à dos.",
+  //   value: 140,
+  //   place: 0,
+  //   symptoms: [{ id: "maxPlace", operation: "add", value: 12 }],
+  //   weight: 1
+  // },
 
   ballgag: {
     id: "ballgag",
