@@ -3,6 +3,7 @@ import { TouchableOpacity, TouchableOpacityProps, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { AmmoType } from "lib/objects/data/ammo/ammo.types"
 import { DbInventory } from "lib/objects/data/objects.types"
 
 import AmountSelector from "components/AmountSelector"
@@ -59,7 +60,7 @@ function ListItemHeader() {
 
 export default function UpdateObjectsModal() {
   const localParams = useLocalSearchParams() as SearchParams<UpdateObjectsModalParams>
-  const { initCategory = "weapons" } = ScreenParams.fromLocalParams(localParams)
+  const { squadId, charId, initCategory = "weapons" } = ScreenParams.fromLocalParams(localParams)
   const [selectedCat, setSelectedCat] = useState<keyof DbInventory>(initCategory)
   const [selectedItem, setSelectedItem] = useState<SelectedItem>(null)
   const [selectedAmount, setSelectedAmount] = useState<number>(1)
@@ -88,10 +89,20 @@ export default function UpdateObjectsModal() {
     setSelectedCat(category)
   }
 
-  const onPressNext = () => router.push({ pathname: routes.modal.updateObjectsConfirmation })
+  const onPressNext = () => {
+    const params = ScreenParams.toLocalParams({ squadId, charId })
+    router.push({ pathname: routes.modal.updateObjectsConfirmation, params })
+  }
+
   const onPressCancel = () => {
     dispatch({ type: "reset" })
     router.back()
+  }
+
+  const getInInv = (id: string) => {
+    if (selectedCat === "caps") return caps
+    if (selectedCat === "ammo") return inventory.ammoRecord[id as AmmoType] || 0
+    return inventory[selectedCat].filter(el => el.id === id).length || 0
   }
 
   const hasSearch = categoriesMap[selectedCat]?.hasSearch
@@ -132,10 +143,7 @@ export default function UpdateObjectsModal() {
             ListHeaderComponent={ListItemHeader}
             renderItem={({ item }) => {
               const count = state[selectedCat][item.id]?.count || 0
-              const inInventory =
-                selectedCat === "caps"
-                  ? caps
-                  : inventory[selectedCat].filter(el => item.id === el.id).length || 0
+              const inInventory = getInInv(item.id)
               return (
                 <ListItemRow
                   label={item.label}
