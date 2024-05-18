@@ -25,7 +25,6 @@ export default function WeaponsScreen() {
   const toggleSelect = (weapon: Weapon) =>
     setSelectedWeapon(prev => (prev?.dbKey === weapon.dbKey ? null : weapon))
 
-  // BUG: under some circumstances, screen params can't be accessed
   const onPressAdd = () =>
     router.push({
       pathname: routes.modal.updateObjects,

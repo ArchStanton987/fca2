@@ -71,8 +71,6 @@ export default function UpdateObjectsModal() {
 
   const { state, dispatch } = useUpdateObjects()
 
-  // TODO: allow to buy / sell products
-
   const onPressMod = (modType: "minus" | "plus") => {
     if (selectedItem === null) return
     const count = modType === "minus" ? -selectedAmount : selectedAmount

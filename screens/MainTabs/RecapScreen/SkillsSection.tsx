@@ -32,7 +32,6 @@ function EmptyComponent() {
 export default function SkillsSection() {
   const character = useCharacter()
   const currSkills = character.skills.curr
-  // TODO: check wheter clothings affect skills (helmet, etc.)
   return (
     <Section style={{ width: 160 }}>
       <FlatList

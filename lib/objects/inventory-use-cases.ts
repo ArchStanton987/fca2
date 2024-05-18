@@ -100,9 +100,6 @@ const getInventoryUseCases = (db: keyof typeof getRepository = "rtdb") => {
       return Promise.all(promises)
     },
 
-    // TODO: group update
-    // groupUpdate: (char: Character, payload: ExchangeState) => {},
-
     throw: (charId: string, object: Weapon | Clothing | Consumable | MiscObject) => {
       const promises = []
       const category = getObjectCategory(object)
