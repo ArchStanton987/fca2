@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: typos.jukebox,
-    fontSize: 100,
+    fontSize: 70,
     textAlign: "center"
   },
   text: {

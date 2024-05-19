@@ -16,7 +16,6 @@ import styles from "./SquadSelectionScreen.styles"
 
 export default function SquadSelectionScreen() {
   const router = useRouter()
-  // const squadsObj: Record<string, DbSquad> | undefined = useDbSubscribe(dbKeys.squads)
   const squadsObj = useRtdbSub(useCases.squad.getAll())
   const squadsArray = squadsObj
     ? Object.entries(squadsObj).map(([id, squad]) => ({ ...squad, id }))
@@ -30,6 +29,7 @@ export default function SquadSelectionScreen() {
 
   return (
     <ScrollView style={styles.container}>
+      <Spacer y={30} />
       <Txt style={styles.title}>
         {"<"}Fallout Companion App{">"}
       </Txt>

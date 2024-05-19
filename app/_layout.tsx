@@ -5,6 +5,7 @@ import { Slot } from "expo-router"
 
 import { useFonts } from "expo-font"
 import * as ScreenOrientation from "expo-screen-orientation"
+import { StatusBar } from "expo-status-bar"
 import { toastConfig } from "lib/common/ui/toast"
 import Toast from "react-native-toast-message"
 
@@ -36,6 +37,7 @@ export default function RootLayout() {
 
   return (
     <AuthContainer>
+      <StatusBar hidden />
       <Slot />
       <Toast config={toastConfig} />
     </AuthContainer>

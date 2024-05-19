@@ -28,6 +28,7 @@ export default function CharacterSelectionScreen() {
 
   return (
     <>
+      <Spacer y={30} />
       <Txt style={styles.title}>
         {"<"}Fallout Companion App{">"}
       </Txt>
