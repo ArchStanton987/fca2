@@ -4,6 +4,7 @@ import { Pressable, PressableProps, TouchableOpacity, View } from "react-native"
 import { AntDesign } from "@expo/vector-icons"
 import useCases from "lib/common/use-cases"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
+import Toast from "react-native-toast-message"
 
 import CheckBox from "components/CheckBox/CheckBox"
 import Txt from "components/Txt"
@@ -46,13 +47,24 @@ export default function WeaponRow({ weapon, isSelected, ...rest }: WeaponRowProp
   const character = useCharacter()
   const { isEquiped, skill, ammo, data } = weapon
   const { label, damageBasic, damageBurst } = data
+
+  const handleEquip = async () => {
+    try {
+      await useCases.equipedObjects.toggle(character, weapon)
+    } catch (err: any) {
+      if (err?.message) {
+        Toast.show({ type: "custom", text1: err.message })
+      }
+    }
+  }
+
   return (
     <Pressable style={[styles.row, styles.container, isSelected && styles.selected]} {...rest}>
       <View style={styles.equipedContainer}>
         <CheckBox
           isChecked={isEquiped}
           containerStyle={{ backgroundColor: isSelected ? colors.terColor : colors.primColor }}
-          onPress={() => useCases.equipedObjects.toggle(character, weapon)}
+          onPress={handleEquip}
         />
       </View>
       <View style={styles.labelContainer}>

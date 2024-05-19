@@ -4,6 +4,7 @@ import { AntDesign } from "@expo/vector-icons"
 import combatModsMap from "lib/character/combat/combat-mods"
 import useCases from "lib/common/use-cases"
 import { Clothing } from "lib/objects/data/clothings/clothings.types"
+import Toast from "react-native-toast-message"
 
 import CheckBox from "components/CheckBox/CheckBox"
 import Txt from "components/Txt"
@@ -58,13 +59,23 @@ export default function ClothingRow({ clothing, isSelected, ...rest }: ClothingR
     malus
   } = data
 
+  const handleEquip = async () => {
+    try {
+      await useCases.equipedObjects.toggle(character, clothing)
+    } catch (err: any) {
+      if (err?.message) {
+        Toast.show({ type: "custom", text1: err.message })
+      }
+    }
+  }
+
   return (
     <Pressable style={[styles.row, styles.container, isSelected && styles.selected]} {...rest}>
       <View style={styles.equipedContainer}>
         <CheckBox
           isChecked={isEquiped}
           containerStyle={{ backgroundColor: isSelected ? colors.terColor : colors.primColor }}
-          onPress={() => useCases.equipedObjects.toggle(character, clothing)}
+          onPress={handleEquip}
         />
       </View>
       <View style={styles.labelContainer}>

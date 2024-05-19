@@ -30,9 +30,8 @@ const getEquipedObjectsUseCases = (db: keyof typeof getRepository = "rtdb") => {
         if (category === "weapons") {
           const hasHeavyWeapon = weapons.some(({ id }) => weaponsMap[id].skill === "heavyWeapons")
           const has2EquWeapons = weapons.length >= 2
-          // TODO: use a toast in ui for those errors
-          if (hasHeavyWeapon) throw new Error("You can't equip more than one heavy weapon")
-          if (has2EquWeapons) throw new Error("You can't equip more than two weapons")
+          if (hasHeavyWeapon) throw new Error("Vous ne pouvez pas équiper plus d'une arme lourde")
+          if (has2EquWeapons) throw new Error("Vous ne pouvez pas équiper plus de deux armes")
         }
 
         if (category === "clothings") {
@@ -41,7 +40,9 @@ const getEquipedObjectsUseCases = (db: keyof typeof getRepository = "rtdb") => {
             clothingsMap[object.id as ClothingId].protects.includes(part)
           )
           if (hasClothOnBodyPart)
-            throw new Error("You can't equip more than one armor per body part")
+            throw new Error(
+              "Vous ne pouvez pas avoir plusieurs armures sur la même partie du corps"
+            )
         }
 
         return repository.add(char.charId, category, object)
