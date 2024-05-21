@@ -2,6 +2,7 @@ import { useState } from "react"
 import { View } from "react-native"
 
 import useCases from "lib/common/use-cases"
+import Toast from "react-native-toast-message"
 
 import AmountSelector from "components/AmountSelector"
 import List from "components/List"
@@ -54,7 +55,15 @@ export default function DatetimeSelectionScreen() {
 
   const onPressSave = async () => {
     if (!newDate) return
-    await useCases.squad.updateDate(squad.squadId, newDate, Object.values(characters))
+    try {
+      await useCases.squad.updateDate(squad.squadId, newDate, Object.values(characters))
+      Toast.show({
+        type: "custom",
+        text1: "Le temps a bien été modifié"
+      })
+    } catch (err: any) {
+      Toast.show({ type: "error", text1: "Erreur lors de la mise à jour de la date" })
+    }
   }
 
   return (
