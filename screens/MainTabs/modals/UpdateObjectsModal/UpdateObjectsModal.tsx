@@ -22,7 +22,7 @@ import { useInventory } from "contexts/InventoryContext"
 import { useUpdateObjects } from "contexts/UpdateObjectsContext"
 import { UpdateObjectsModalParams } from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.params"
 import { categoriesMap } from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.utils"
-import ScreenParams, { SearchParams } from "screens/ScreenParams"
+import { SearchParams, fromLocalParams, toLocalParams } from "screens/ScreenParams"
 
 import styles from "./UpdateObjectsModal.styles"
 
@@ -60,7 +60,7 @@ function ListItemHeader() {
 
 export default function UpdateObjectsModal() {
   const localParams = useLocalSearchParams() as SearchParams<UpdateObjectsModalParams>
-  const { squadId, charId, initCategory = "weapons" } = ScreenParams.fromLocalParams(localParams)
+  const { squadId, charId, initCategory = "weapons" } = fromLocalParams(localParams)
   const [selectedCat, setSelectedCat] = useState<keyof DbInventory>(initCategory)
   const [selectedItem, setSelectedItem] = useState<SelectedItem>(null)
   const [selectedAmount, setSelectedAmount] = useState<number>(1)
@@ -88,7 +88,7 @@ export default function UpdateObjectsModal() {
   }
 
   const onPressNext = () => {
-    const params = ScreenParams.toLocalParams({ squadId, charId })
+    const params = toLocalParams({ squadId, charId })
     router.push({ pathname: routes.modal.updateObjectsConfirmation, params })
   }
 

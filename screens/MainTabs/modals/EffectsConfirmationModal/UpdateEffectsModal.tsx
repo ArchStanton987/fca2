@@ -18,7 +18,7 @@ import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import ModalBody from "components/wrappers/ModalBody"
 import routes from "constants/routes"
-import ScreenParams, { SearchParams } from "screens/ScreenParams"
+import { SearchParams, fromLocalParams } from "screens/ScreenParams"
 
 import styles from "./UpdateEffectsModal.styles"
 
@@ -26,7 +26,7 @@ const effects = Object.values(effectsMap)
 
 export default function UpdateEffectsModal() {
   const localParams = useLocalSearchParams() as SearchParams<DrawerParams>
-  const { squadId, charId } = ScreenParams.fromLocalParams(localParams)
+  const { squadId, charId } = fromLocalParams(localParams)
   const [searchValue, setSearchValue] = useState("")
   const [selectedEffectId, setSelectedEffectId] = useState<EffectId | null>(null)
   const [effectsToAdd, setEffectsToAdd] = useState<EffectId[]>([])
