@@ -27,7 +27,7 @@ export default function CharLayout() {
       screenOptions={{
         tabBarHideOnKeyboard: true,
         header: props => (
-          <Header headerElementsIds={[...datetime, "progression", ...special, "caps"]} {...props} />
+          <Header headerElementsIds={[...datetime, "progression", ...special, "hp"]} {...props} />
         ),
         headerStyle: {
           backgroundColor: colors.primColor,

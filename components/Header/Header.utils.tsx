@@ -8,6 +8,7 @@ import HeaderSpecialElement from "components/Header/elements/HeaderSpecialElemen
 
 import HeaderDate from "./elements/HeaderDate"
 import HeaderHome from "./elements/HeaderHome"
+import HeaderHp from "./elements/HeaderHp"
 import HeaderPlace from "./elements/HeaderPlace"
 import HeaderSquadName from "./elements/HeaderSquadName"
 import HeaderTime from "./elements/HeaderTime"
@@ -23,6 +24,7 @@ export type HeaderElementId =
   | "home"
   | "weight"
   | "place"
+  | "hp"
 
 export const headerElements: Record<HeaderElementId, ReactElement> = {
   date: <HeaderDate key="date" />,
@@ -39,5 +41,6 @@ export const headerElements: Record<HeaderElementId, ReactElement> = {
   squadName: <HeaderSquadName key="squadName" />,
   home: <HeaderHome key="home" />,
   weight: <HeaderWeight key="weight" />,
-  place: <HeaderPlace key="place" />
+  place: <HeaderPlace key="place" />,
+  hp: <HeaderHp key="hp" />
 }
