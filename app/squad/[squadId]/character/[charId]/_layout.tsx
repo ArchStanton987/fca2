@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 
 import { Stack, useLocalSearchParams } from "expo-router"
 
@@ -9,6 +9,7 @@ import { DbAbilities } from "lib/character/abilities/abilities.types"
 import { DbStatus } from "lib/character/status/status.types"
 import useCases from "lib/common/use-cases"
 import Inventory from "lib/objects/Inventory"
+import Toast from "react-native-toast-message"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import { CharacterContext } from "contexts/CharacterContext"
@@ -20,6 +21,7 @@ import UpdatesProvider from "providers/UpdatesProvider"
 import LoadingScreen from "screens/LoadingScreen"
 import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
+import { getDDMMYYYY, getHHMM } from "utils/date"
 
 type DbRecord<T> = T | undefined
 
@@ -36,6 +38,8 @@ export default function CharStack() {
   const { charId } = useLocalSearchParams() as SearchParams<DrawerParams>
 
   const squad = useSquad()
+
+  const [currDatetime, setCurrDatetime] = useState(squad.date.toJSON())
 
   const dbCharUrl = dbKeys.char(charId)
   // use separate subscriptions to avoid unnecessary bandwidth usage
@@ -60,6 +64,17 @@ export default function CharStack() {
   }, [character, inventory])
 
   if (!character || !charInventory || !squad) return <LoadingScreen />
+
+  if (squad.date.toJSON() !== currDatetime) {
+    setCurrDatetime(squad.date.toJSON())
+    const newDate = getDDMMYYYY(squad.date)
+    const newHour = getHHMM(squad.date)
+    Toast.show({
+      type: "custom",
+      text1: `Le temps passe ! Nous sommes le ${newDate}, il est ${newHour}.`,
+      autoHide: false
+    })
+  }
 
   return (
     <CharacterContext.Provider value={character}>

@@ -12,3 +12,8 @@ export const getHHMM = (date: Date, separator: string = ":") => {
   const minutes = date.getMinutes()
   return `${add0WhenSingleDigit(hours)}${separator}${add0WhenSingleDigit(minutes)}`
 }
+
+export const isISOString = (date: string) => {
+  const dateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/
+  return dateRegex.test(date)
+}

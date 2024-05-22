@@ -20,13 +20,13 @@ import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useUpdateHealth } from "contexts/UpdateHealthContext"
 import { UpdateHealthModalParams } from "screens/MainTabs/modals/UpdateHealthModal/UpdateHealthModal.params"
-import ScreenParams, { SearchParams } from "screens/ScreenParams"
+import { SearchParams, fromLocalParams } from "screens/ScreenParams"
 
 import styles from "./UpdateHealthModal.styles"
 
 export default function UpdateHealthModal() {
   const localParams = useLocalSearchParams() as SearchParams<UpdateHealthModalParams>
-  const { squadId, charId, initElement } = ScreenParams.fromLocalParams(localParams)
+  const { squadId, charId, initElement } = fromLocalParams(localParams)
 
   const character = useCharacter()
   const { status } = character

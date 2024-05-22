@@ -21,7 +21,7 @@ import {
   UpdatableStatusElement,
   UpdateStatusState
 } from "screens/MainTabs/modals/UpdateStatusModal/UpdateStatusModal.types"
-import ScreenParams, { SearchParams } from "screens/ScreenParams"
+import { SearchParams, fromLocalParams } from "screens/ScreenParams"
 
 import styles from "./UpdateStatusModal.styles"
 
@@ -29,7 +29,7 @@ const defaultState = { exp: { count: 0, initValue: 0 } }
 
 export default function UpdateStatusModal() {
   const localParams = useLocalSearchParams() as SearchParams<UpdateStatusModalParams>
-  const { initCategory } = ScreenParams.fromLocalParams(localParams)
+  const { initCategory } = fromLocalParams(localParams)
 
   const [updateState, setUpdateState] = useState<UpdateStatusState>(defaultState)
   const [selectedItem, setSelectedItem] = useState<UpdatableStatusElement | null>(initCategory)
@@ -49,7 +49,7 @@ export default function UpdateStatusModal() {
   }
 
   const onPressConfirm = async () => {
-    await useCases.status.updateElement(character.charId, "exp", newValue)
+    await useCases.status.updateElement(character, "exp", newValue)
     router.back()
   }
 

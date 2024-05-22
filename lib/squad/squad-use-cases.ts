@@ -28,7 +28,7 @@ function getSquadUseCases(db: keyof typeof getRepository = "rtdb") {
 
         if (char.health.missingHp > 0) {
           const newLimbsHp = getNewLimbsHp(char, date)
-          promises.push(statusUseCases.groupUpdate(char.charId, newLimbsHp))
+          promises.push(statusUseCases.groupUpdate(char, newLimbsHp))
         }
       })
 
