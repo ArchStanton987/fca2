@@ -1,36 +1,6 @@
-- controllers & repositories
-
-actions
-
-STATUS
-- update health
-- update exp
-- update AP
-
-EFFECTS
-- add effect
-- remove effect
-
-INVENTORY
-- update caps
-- add item
-- throw item
-- sell item
-- equip item
-- unequip item
-- consume
-- add / remove ammo
-
-ADMIN
-- update datetime
-
-
-char heals
-char gains exp
-char gains ap
-char spends ap
-
-
+TODO: sort collectibles
+TODO: check effects updates on status change
+TODO: check modifier (ex: radaway)
 
 
 
