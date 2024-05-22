@@ -16,9 +16,8 @@ import { specialArray } from "./abilities/special/special"
 import { Special } from "./abilities/special/special.types"
 import traitsMap from "./abilities/traits/traits"
 import effectsMap from "./effects/effects"
-import { DbEffect, DbEffects, Effect, EffectId } from "./effects/effects.types"
+import { DbEffects, Effect, EffectId } from "./effects/effects.types"
 import { Symptom } from "./effects/symptoms.type"
-import { LimbHpId, healthStates, limbsMap, radStates } from "./health/health"
 import { getMaxHP, getMissingHp } from "./health/health-calc"
 import { Health } from "./health/health-types"
 import { DbStatus } from "./status/status.types"
@@ -99,23 +98,23 @@ export default class Character {
   get effects(): Effect[] {
     // get all calculated effects
     // hp effects
-    const { hp, maxHp } = this.health
-    const currHpPercent = (hp / maxHp) * 100
-    const healthState = healthStates.find(el => currHpPercent < el.min)
-    const hpEffects = healthState ? [{ id: healthState.id, data: effectsMap[healthState.id] }] : []
-    // cripled effects
-    const { limbsHp } = this.health
-    const noHpLimbs = Object.keys(limbsHp).filter(el => limbsHp[el as LimbHpId] === 0)
-    const cripledEffects = noHpLimbs.map(el => ({
-      id: limbsMap[el as LimbHpId].cripledEffect,
-      data: effectsMap[limbsMap[el as LimbHpId].cripledEffect]
-    }))
-    // rads effects
-    const { rads } = this.health
-    const radsState = radStates.find(el => rads > el.threshold)
-    const radsEffects = radsState ? [{ id: radsState.id, data: effectsMap[radsState.id] }] : []
-    // get all calculated effects objects
-    const calculatedEffects = [...hpEffects, ...cripledEffects, ...radsEffects]
+    // const { hp, maxHp } = this.health
+    // const currHpPercent = (hp / maxHp) * 100
+    // const healthState = healthStates.find(el => currHpPercent < el.min)
+    // const hpEffects = healthState ? [{ id: healthState.id, data: effectsMap[healthState.id] }] : []
+    // // cripled effects
+    // const { limbsHp } = this.health
+    // const noHpLimbs = Object.keys(limbsHp).filter(el => limbsHp[el as LimbHpId] === 0)
+    // const cripledEffects = noHpLimbs.map(el => ({
+    //   id: limbsMap[el as LimbHpId].cripledEffect,
+    //   data: effectsMap[limbsMap[el as LimbHpId].cripledEffect]
+    // }))
+    // // rads effects
+    // const { rads } = this.health
+    // const radsState = radStates.find(el => rads > el.threshold)
+    // const radsEffects = radsState ? [{ id: radsState.id, data: effectsMap[radsState.id] }] : []
+    // // get all calculated effects objects
+    // const calculatedEffects = [...hpEffects, ...cripledEffects, ...radsEffects]
 
     // get all db stored effects
     const effectsIds = Object.entries(this.dbEffects).map(([dbKey, value]) => {
@@ -137,7 +136,8 @@ export default class Character {
       return { ...value, timeRemaining, dbKey, data: effectsMap[value.id], startTs, endTs }
     })
     // merge all effects
-    return [...calculatedEffects, ...effectsIds]
+    // return [...calculatedEffects, ...effectsIds]
+    return effectsIds
   }
 
   get symptoms(): Symptom[] {
@@ -217,8 +217,8 @@ export default class Character {
   }
 
   get effectsRecord() {
-    const effectsRecord = {} as Record<EffectId, DbEffect & { dbKey: string }>
-    Object.entries(this.dbEffects).forEach(([dbKey, value]) => {
+    const effectsRecord = {} as Record<EffectId, Effect>
+    Object.entries(this.effects).forEach(([dbKey, value]) => {
       effectsRecord[value.id] = { ...value, dbKey }
     })
     return effectsRecord

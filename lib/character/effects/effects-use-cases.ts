@@ -1,8 +1,7 @@
 import { getRepository } from "lib/RepositoryBuilder"
 import Character from "lib/character/Character"
-import { WithDbKeyEffect } from "lib/character/effects/FbEffectsRepository"
 import { createDbEffect } from "lib/character/effects/effects-utils"
-import { DbEffect, EffectId } from "lib/character/effects/effects.types"
+import { DbEffect, Effect, EffectId } from "lib/character/effects/effects.types"
 
 function getEffectsUseCases(db: keyof typeof getRepository = "rtdb") {
   const repository = getRepository[db].effects
@@ -24,7 +23,7 @@ function getEffectsUseCases(db: keyof typeof getRepository = "rtdb") {
     // we process one start date for each effect, as start dates can be different inside a batch of effects (e.g. datetime update)
     groupAdd: (char: Character, effects: { effectId: EffectId; startDate?: Date }[]) => {
       const newDbEffects: DbEffect[] = []
-      const updatedDbEffects: { dbKey: WithDbKeyEffect["dbKey"]; updatedEffect: DbEffect }[] = []
+      const updatedDbEffects: { dbKey: Effect["dbKey"]; updatedEffect: DbEffect }[] = []
       effects.forEach(({ effectId, startDate }) => {
         const dbEffect = createDbEffect(char, effectId, startDate)
         const existingEffect = char.effectsRecord[effectId]
@@ -41,9 +40,9 @@ function getEffectsUseCases(db: keyof typeof getRepository = "rtdb") {
       return Promise.all(promises)
     },
 
-    remove: async (charId: string, effect: WithDbKeyEffect) => repository.remove(charId, effect),
+    remove: async (charId: string, effect: Effect) => repository.remove(charId, effect),
 
-    groupRemove: (char: Character, effects: WithDbKeyEffect[]) =>
+    groupRemove: (char: Character, effects: Effect[]) =>
       repository.groupRemove(char.charId, effects)
   }
 }

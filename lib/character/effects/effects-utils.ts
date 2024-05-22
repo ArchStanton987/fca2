@@ -1,7 +1,6 @@
 import Character from "lib/character/Character"
-import { WithDbKeyEffect } from "lib/character/effects/FbEffectsRepository"
 import effectsMap from "lib/character/effects/effects"
-import { DbEffect, EffectData, EffectId } from "lib/character/effects/effects.types"
+import { DbEffect, Effect, EffectData, EffectId } from "lib/character/effects/effects.types"
 
 const getEffectLengthInMs = (char: Character, effect: EffectData) => {
   const isChemReliant = char.dbAbilities.traits?.includes("chemReliant")
@@ -29,7 +28,7 @@ export const getExpiringEffects = (char: Character, refDate: Date) =>
     const effectLengthInMs = getEffectLengthInMs(char, data)
     if (!effectLengthInMs) return false
     return startTs.getTime() + effectLengthInMs < refDate.getTime()
-  }) as WithDbKeyEffect[]
+  }) as Effect[]
 
 export const getFollowingEffects = (char: Character, newDate: Date) =>
   getExpiringEffects(char, newDate)

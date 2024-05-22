@@ -129,7 +129,7 @@ const getInventoryUseCases = (db: keyof typeof getRepository = "rtdb") => {
         modifiers.forEach(mod => {
           updates[mod.id] = applyMod(character.status[mod.id], mod)
         })
-        promises.push(statusUseCases.groupUpdate(charId, updates))
+        promises.push(statusUseCases.groupUpdate(character, updates))
       }
 
       // handle object in inventory

@@ -49,7 +49,7 @@ export default function UpdateStatusModal() {
   }
 
   const onPressConfirm = async () => {
-    await useCases.status.updateElement(character.charId, "exp", newValue)
+    await useCases.status.updateElement(character, "exp", newValue)
     router.back()
   }
 

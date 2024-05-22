@@ -13,10 +13,10 @@ import {
 
 import { getRtdbSub } from "../../common/utils/rtdb-utils"
 
-export type WithDbKeyEffect = Effect & Required<Pick<Effect, "dbKey">>
+// export type WithDbKeyEffect = Effect & Required<Pick<Effect, "dbKey">>
 
 const getContainerPath = (charId: string) => dbKeys.char(charId).effects
-const getElementPath = (charId: string, dbKey: WithDbKeyEffect["dbKey"]) =>
+const getElementPath = (charId: string, dbKey: Effect["dbKey"]) =>
   getContainerPath(charId).concat("/", dbKey)
 
 const fbEffectsRepository = {
@@ -47,15 +47,12 @@ const fbEffectsRepository = {
     return groupAddCollectible(payload)
   },
 
-  update: async (charId: string, dbKey: WithDbKeyEffect["dbKey"], updatedEffect: DbEffect) => {
+  update: async (charId: string, dbKey: Effect["dbKey"], updatedEffect: DbEffect) => {
     const path = getElementPath(charId, dbKey)
     return updateValue(path, updatedEffect)
   },
 
-  groupUpdate: (
-    charId: string,
-    updates: { dbKey: WithDbKeyEffect["dbKey"]; updatedEffect: DbEffect }[]
-  ) => {
+  groupUpdate: (charId: string, updates: { dbKey: Effect["dbKey"]; updatedEffect: DbEffect }[]) => {
     const payload = updates.map(({ dbKey, updatedEffect }) => ({
       url: getElementPath(charId, dbKey),
       data: updatedEffect
@@ -63,12 +60,12 @@ const fbEffectsRepository = {
     return groupUpdateValue(payload)
   },
 
-  remove: async (charId: string, effect: WithDbKeyEffect) => {
+  remove: async (charId: string, effect: Effect) => {
     const path = getElementPath(charId, effect.dbKey)
     return removeCollectible(path)
   },
 
-  groupRemove: (charId: string, effects: WithDbKeyEffect[]) => {
+  groupRemove: (charId: string, effects: Effect[]) => {
     const urls = effects.map(effect => getElementPath(charId, effect.dbKey))
     return groupRemoveCollectible(urls)
   }
