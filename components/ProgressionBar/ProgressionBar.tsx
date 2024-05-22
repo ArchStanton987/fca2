@@ -13,6 +13,7 @@ type ProgressionBarProps = {
   containerStyle?: StyleProp<ViewStyle>
   style?: StyleProp<ViewStyle>
   horizontal?: boolean
+  color?: string
 }
 
 export default function ProgressionBar(props: ProgressionBarProps) {
@@ -25,7 +26,8 @@ export default function ProgressionBar(props: ProgressionBarProps) {
     borderWidth = 1,
     containerStyle,
     style,
-    horizontal = true
+    horizontal = true,
+    color = colors.secColor
   } = props
 
   const innerWidth = ((value - min) / (max - min)) * width
@@ -38,7 +40,7 @@ export default function ProgressionBar(props: ProgressionBarProps) {
           height,
           width,
           backgroundColor: "transparent",
-          borderColor: colors.secColor,
+          borderColor: color,
           borderWidth,
           transform: [{ rotateX: horizontal ? "0deg" : "90deg" }]
         },
@@ -48,7 +50,7 @@ export default function ProgressionBar(props: ProgressionBarProps) {
       <View
         style={[
           {
-            backgroundColor: colors.secColor,
+            backgroundColor: color,
             height: height - 2 * borderWidth,
             width: innerWidth
           },

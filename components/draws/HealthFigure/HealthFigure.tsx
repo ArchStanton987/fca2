@@ -12,6 +12,7 @@ import Spacer from "components/Spacer"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useSquad } from "contexts/SquadContext"
+import colors from "styles/colors"
 
 import styles from "./HealthFigure.styles"
 
@@ -31,6 +32,14 @@ export default function HealthFigure() {
     router.push({ pathname, params })
   }
 
+  const getProgressionBarColor = (value: number, maxValue: number) => {
+    const currHpPercent = (value / maxValue) * 100
+    if (value <= 0) return colors.red
+    if (currHpPercent < 25) return colors.orange
+    if (currHpPercent < 50) return colors.yellow
+    return colors.secColor
+  }
+
   return (
     <View style={{ alignItems: "center" }}>
       <TouchableOpacity onPress={() => onPressElement("headHp")}>
@@ -38,6 +47,7 @@ export default function HealthFigure() {
           max={limbsMap.headHp.maxValue}
           min={0}
           value={limbsHp.headHp}
+          color={getProgressionBarColor(limbsHp.headHp, limbsMap.headHp.maxValue)}
           {...smallBarProps}
         />
       </TouchableOpacity>
@@ -49,6 +59,7 @@ export default function HealthFigure() {
             max={limbsMap.rightArmHp.maxValue}
             min={0}
             value={limbsHp.rightArmHp}
+            color={getProgressionBarColor(limbsHp.rightArmHp, limbsMap.rightArmHp.maxValue)}
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => onPressElement("leftArmHp")}>
@@ -57,6 +68,7 @@ export default function HealthFigure() {
             max={limbsMap.leftArmHp.maxValue}
             min={0}
             value={limbsHp.leftArmHp}
+            color={getProgressionBarColor(limbsHp.leftArmHp, limbsMap.leftArmHp.maxValue)}
           />
         </TouchableOpacity>
       </View>
@@ -70,6 +82,7 @@ export default function HealthFigure() {
             max={limbsMap.rightTorsoHp.maxValue}
             min={0}
             value={limbsHp.rightTorsoHp}
+            color={getProgressionBarColor(limbsHp.rightTorsoHp, limbsMap.rightTorsoHp.maxValue)}
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => onPressElement("leftTorsoHp")}>
@@ -78,6 +91,7 @@ export default function HealthFigure() {
             max={limbsMap.leftTorsoHp.maxValue}
             min={0}
             value={limbsHp.leftTorsoHp}
+            color={getProgressionBarColor(limbsHp.leftTorsoHp, limbsMap.leftTorsoHp.maxValue)}
           />
         </TouchableOpacity>
       </View>
@@ -89,6 +103,7 @@ export default function HealthFigure() {
             max={limbsMap.rightLegHp.maxValue}
             min={0}
             value={limbsHp.rightLegHp}
+            color={getProgressionBarColor(limbsHp.rightLegHp, limbsMap.rightLegHp.maxValue)}
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => onPressElement("leftLegHp")}>
@@ -97,6 +112,7 @@ export default function HealthFigure() {
             max={limbsMap.leftLegHp.maxValue}
             min={0}
             value={limbsHp.leftLegHp}
+            color={getProgressionBarColor(limbsHp.leftLegHp, limbsMap.leftLegHp.maxValue)}
           />
         </TouchableOpacity>
       </View>
@@ -107,6 +123,7 @@ export default function HealthFigure() {
           max={limbsMap.groinHp.maxValue}
           min={0}
           value={limbsHp.groinHp}
+          color={getProgressionBarColor(limbsHp.groinHp, limbsMap.groinHp.maxValue)}
         />
       </TouchableOpacity>
     </View>

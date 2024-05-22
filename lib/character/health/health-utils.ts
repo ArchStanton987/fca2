@@ -1,8 +1,10 @@
 /* eslint-disable import/prefer-default-export */
 import Character from "lib/character/Character"
-import { LimbHpId, limbsMap } from "lib/character/health/health"
+import { LimbHpId, healthStates, limbsMap } from "lib/character/health/health"
 import { getMissingHp } from "lib/character/health/health-calc"
 import { getRandomArbitrary } from "lib/common/utils/dice-calc"
+
+import { EffectId } from "../effects/effects.types"
 
 export const getNewLimbsHp = (char: Character, newDate: Date) => {
   const { healHpPerHour } = char.secAttr.curr
@@ -21,4 +23,16 @@ export const getNewLimbsHp = (char: Character, newDate: Date) => {
     newLimbsHp[limbIdToHeal as LimbHpId] += 1
   }
   return newLimbsHp
+}
+
+export const getHealthState = (currHp: number, maxHp: number): EffectId | null => {
+  const currHpPercent = (currHp / maxHp) * 100
+  // TODO: check in rules for negative values actions (dead = hp < -5 ? -END HP ?)
+  const negativeValue = Math.min(currHp, currHpPercent)
+  if (negativeValue <= healthStates.vanished.min) return healthStates.vanished.id
+  if (negativeValue <= healthStates.dead.min) return healthStates.dead.id
+  if (currHp < 1) return healthStates.woundedUnconscious.id
+  if (currHpPercent < healthStates.woundedExhausted.min) return healthStates.woundedExhausted.id
+  if (currHpPercent < healthStates.woundedTired.min) return healthStates.woundedTired.id
+  return null
 }

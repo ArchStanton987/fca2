@@ -2,11 +2,12 @@ import { getRepository } from "lib/RepositoryBuilder"
 import Character from "lib/character/Character"
 import getEffectsUseCases from "lib/character/effects/effects-use-cases"
 import { Effect } from "lib/character/effects/effects.types"
-import { healthStates, limbsMap, radStates } from "lib/character/health/health"
+import { limbsMap, radStates } from "lib/character/health/health"
 import { getMissingHp } from "lib/character/health/health-calc"
 
 import { HealthUpdateState } from "../health/health-reducer"
 import { DbLimbsHp } from "../health/health-types"
+import { getHealthState } from "../health/health-utils"
 import { DbStatus } from "./status.types"
 
 const onStatusUpdate = (
@@ -22,7 +23,7 @@ const onStatusUpdate = (
   if (limbData) {
     // handles cripled effects
     const effectsUseCases = getEffectsUseCases(db)
-    const cripledEffect: Effect | undefined = character.effectsRecord[limbData.cripledEffect]
+    const cripledEffect: Effect | undefined = character?.effectsRecord[limbData.cripledEffect]
     // remove cripled effect if the new value is greater than 0
     if (cripledEffect && newValue > 0) {
       promises.push(effectsUseCases.remove(character.charId, cripledEffect))
@@ -34,24 +35,20 @@ const onStatusUpdate = (
 
     // handle health status effects
     const { hp, maxHp } = character.health
-    const currHpPercent = (hp / maxHp) * 100
-    const currHealthState = healthStates.find(el => currHpPercent < el.min)
-    const currHealthStateEffect = currHealthState
-      ? character.effectsRecord[currHealthState.id]
-      : null
+    const currHealthState = getHealthState(hp, maxHp)
+    const currHealthStateEffect = currHealthState ? character.effectsRecord[currHealthState] : null
 
     const newStatus = { ...character.status, [field]: newValue }
     const newMissingHp = getMissingHp(newStatus)
     const newCurrHp = maxHp - newMissingHp
-    const newHpPercent = (newCurrHp / maxHp) * 100
-    const newHealthState = healthStates.find(el => newHpPercent < el.min)
+    const newHealthState = getHealthState(newCurrHp, maxHp)
 
     // add new health state effect if the new health state is different from the current one
-    if (newHealthState && newHealthState.id !== currHealthStateEffect?.id) {
-      promises.push(effectsUseCases.add(character, newHealthState.id))
+    if (newHealthState && newHealthState !== currHealthStateEffect?.id) {
+      promises.push(effectsUseCases.add(character, newHealthState))
     }
     // remove current health state effect if the new health state is different from the current one
-    if (currHealthStateEffect && newHealthState?.id !== currHealthStateEffect.id) {
+    if (currHealthStateEffect && newHealthState !== currHealthStateEffect.id) {
       promises.push(effectsUseCases.remove(character.charId, currHealthStateEffect))
     }
   }
@@ -73,6 +70,8 @@ const onStatusUpdate = (
       promises.push(effectsUseCases.remove(character.charId, radsStateEffect))
     }
   }
+
+  return Promise.all(promises)
 }
 
 function getStatusUseCases(db: keyof typeof getRepository = "rtdb") {
@@ -99,14 +98,17 @@ function getStatusUseCases(db: keyof typeof getRepository = "rtdb") {
       return repository.groupUpdate(character.charId, updates)
     },
 
-    groupMod: (charId: string, updateHealthState: HealthUpdateState) => {
+    groupMod: (character: Character, updateHealthState: HealthUpdateState) => {
       const updates: Partial<DbStatus> = {}
       Object.entries(updateHealthState).forEach(([key, value]) => {
         if (typeof value.count === "number" && typeof value.initValue === "number") {
           updates[key as keyof DbLimbsHp] = value.initValue + value.count
         }
       })
-      return repository.groupUpdate(charId, updates)
+      Object.entries(updates).forEach(([key, value]) => {
+        onStatusUpdate(character, key as keyof DbStatus, value, db)
+      })
+      return repository.groupUpdate(character.charId, updates)
     },
 
     updateAll: (charId: string, data: DbStatus) => repository.updateAll(charId, data)

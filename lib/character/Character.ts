@@ -218,8 +218,8 @@ export default class Character {
 
   get effectsRecord() {
     const effectsRecord = {} as Record<EffectId, Effect>
-    Object.entries(this.effects).forEach(([dbKey, value]) => {
-      effectsRecord[value.id] = { ...value, dbKey }
+    Object.values(this.effects).forEach(effect => {
+      effectsRecord[effect.id] = { ...effect }
     })
     return effectsRecord
   }

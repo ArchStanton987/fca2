@@ -2,13 +2,14 @@ import { EffectId } from "lib/character/effects/effects.types"
 
 import { HealthStatusId, HealthType } from "./health-types"
 
-export const healthStates: { id: EffectId; min: number }[] = [
-  { id: "vanished", min: -25 },
-  { id: "dead", min: -5 },
-  { id: "woundedUnconscious", min: 1 },
-  { id: "woundedExhausted", min: 25 },
-  { id: "woundedTired", min: 50 }
-]
+// TODO: fix ts
+export const healthStates: Record<EffectId, { id: EffectId; min: number }> = {
+  vanished: { id: "vanished", min: -25 },
+  dead: { id: "dead", min: -5 },
+  woundedUnconscious: { id: "woundedUnconscious", min: 1 },
+  woundedExhausted: { id: "woundedExhausted", min: 25 },
+  woundedTired: { id: "woundedTired", min: 50 }
+}
 
 export const radStates: { id: EffectId; threshold: number }[] = [
   { id: "radLvl6", threshold: 1000 },
@@ -28,6 +29,7 @@ export type LimbHpId =
   | "groinHp"
   | "leftLegHp"
   | "rightLegHp"
+
 export type Limb = {
   id: LimbHpId
   cripledEffect: EffectId
