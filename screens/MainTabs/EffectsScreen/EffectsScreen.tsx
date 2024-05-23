@@ -30,7 +30,6 @@ export default function EffectsScreen() {
   const onPressDelete = (effect: Effect) => {
     if (!effect.dbKey) return
     setSelectedId(null)
-    // TODO: fix ts
     useCases.effects.remove(character.charId, effect)
   }
 

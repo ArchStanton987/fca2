@@ -2,8 +2,7 @@ import { EffectId } from "lib/character/effects/effects.types"
 
 import { HealthStatusId, HealthType } from "./health-types"
 
-// TODO: fix ts
-export const healthStates: Record<EffectId, { id: EffectId; min: number }> = {
+export const healthStates: Record<string, { id: EffectId; min: number }> = {
   vanished: { id: "vanished", min: -25 },
   dead: { id: "dead", min: -5 },
   woundedUnconscious: { id: "woundedUnconscious", min: 1 },

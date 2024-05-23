@@ -27,7 +27,6 @@ export const getNewLimbsHp = (char: Character, newDate: Date) => {
 
 export const getHealthState = (currHp: number, maxHp: number): EffectId | null => {
   const currHpPercent = (currHp / maxHp) * 100
-  // TODO: check in rules for negative values actions (dead = hp < -5 ? -END HP ?)
   const negativeValue = Math.max(currHp, currHpPercent)
   if (negativeValue < healthStates.vanished.min) return healthStates.vanished.id
   if (negativeValue < healthStates.dead.min) return healthStates.dead.id
