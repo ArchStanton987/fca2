@@ -2,8 +2,6 @@ import { TouchableOpacity } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import { getHealthState } from "lib/character/health/health-utils"
-
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import ProgressionBar from "components/ProgressionBar/ProgressionBar"
 import Spacer from "components/Spacer"
@@ -25,8 +23,6 @@ export default function HeaderHp() {
     const params: UpdateHealthModalParams = { charId, squadId, initElement: "rightTorsoHp" }
     router.push({ pathname, params })
   }
-
-  console.log(getHealthState(health.hp, health.maxHp))
 
   const getColor = () => {
     if (health.hp <= 0) return colors.red

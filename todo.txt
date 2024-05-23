@@ -1,6 +1,6 @@
+TODO: add rads
+TODO: add poison types & damages
 TODO: sort collectibles
-TODO: check effects updates on status change
-TODO: check modifier (ex: radaway)
 
 
 
