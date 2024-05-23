@@ -56,7 +56,7 @@ export default function UpdateStatusModal() {
   return (
     <ModalBody>
       <View style={styles.row}>
-        <ScrollableSection title="STATUT">
+        <ScrollableSection title="STATUT" style={styles.statusSection}>
           <TouchableOpacity
             key="exp"
             style={[
@@ -69,7 +69,8 @@ export default function UpdateStatusModal() {
             <Spacer y={5} />
           </TouchableOpacity>
         </ScrollableSection>
-        <ViewSection title="TOTAL">
+        <Spacer x={15} />
+        <ViewSection title="TOTAL" style={styles.listSection}>
           {!!selectedItem && typeof currentValue === "number" && (
             <>
               <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -87,7 +88,8 @@ export default function UpdateStatusModal() {
             </>
           )}
         </ViewSection>
-        <ViewSection title="MODIFIER">
+        <Spacer x={15} />
+        <ViewSection title="MODIFIER" style={styles.addSection}>
           <View style={{ flex: 1, justifyContent: "space-evenly" }}>
             <List
               data={[1, 5, 20, 100]}

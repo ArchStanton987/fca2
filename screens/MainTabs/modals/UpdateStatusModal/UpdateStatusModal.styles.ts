@@ -7,19 +7,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flex: 1
   },
-  categoriesSection: {
+  statusSection: {
     width: 160
   },
   listSection: {
     flex: 1
   },
-  searchSection: {
-    width: 280,
-    height: 90
-  },
   addSection: {
-    width: 280,
-    flex: 1
+    width: 280
   },
   iconsContainer: {
     flexDirection: "row",
