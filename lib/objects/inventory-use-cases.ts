@@ -1,6 +1,7 @@
 // import Character from "lib/character/Character"
 import Character from "lib/character/Character"
 import getEffectsUseCases from "lib/character/effects/effects-use-cases"
+import healthMap from "lib/character/health/health"
 import getStatusUseCases from "lib/character/status/status-use-cases"
 import { DbStatus } from "lib/character/status/status.types"
 import { applyMod } from "lib/common/utils/char-calc"
@@ -127,7 +128,10 @@ const getInventoryUseCases = (db: keyof typeof getRepository = "rtdb") => {
       if (modifiers) {
         const updates: Partial<DbStatus> = {}
         modifiers.forEach(mod => {
-          updates[mod.id] = applyMod(character.status[mod.id], mod)
+          const { minValue, maxValue } = healthMap[mod.id]
+          const calcValue = applyMod(character.status[mod.id], mod)
+          const newValue = Math.min(Math.max(calcValue, minValue), maxValue)
+          updates[mod.id] = newValue
         })
         promises.push(statusUseCases.groupUpdate(character, updates))
       }
