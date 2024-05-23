@@ -1,5 +1,7 @@
 import { EffectId } from "lib/character/effects/effects.types"
 
+import colors from "styles/colors"
+
 import { HealthStatusId, HealthType } from "./health-types"
 
 export const healthStates: Record<string, { id: EffectId; min: number }> = {
@@ -10,13 +12,13 @@ export const healthStates: Record<string, { id: EffectId; min: number }> = {
   woundedTired: { id: "woundedTired", min: 50 }
 }
 
-export const radStates: { id: EffectId; threshold: number }[] = [
-  { id: "radLvl6", threshold: 1000 },
-  { id: "radLvl5", threshold: 800 },
-  { id: "radLvl4", threshold: 600 },
-  { id: "radLvl3", threshold: 400 },
-  { id: "radLvl2", threshold: 100 },
-  { id: "radLvl1", threshold: 50 }
+export const radStates: { id: EffectId; threshold: number; color: string }[] = [
+  { id: "radLvl6", threshold: 1000, color: colors.red },
+  { id: "radLvl5", threshold: 800, color: colors.red },
+  { id: "radLvl4", threshold: 600, color: colors.orange },
+  { id: "radLvl3", threshold: 400, color: colors.orange },
+  { id: "radLvl2", threshold: 100, color: colors.yellow },
+  { id: "radLvl1", threshold: 50, color: colors.yellow }
 ]
 
 export type LimbHpId =

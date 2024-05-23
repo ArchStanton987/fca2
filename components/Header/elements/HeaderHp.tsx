@@ -34,12 +34,20 @@ export default function HeaderHp() {
 
   return (
     <TouchableOpacity onPress={onPress}>
-      <HeaderElement style={{ flexGrow: 2, justifyContent: "flex-end", alignItems: "center" }}>
-        <Txt style={{ color: getColor() }}>
-          PV: {health.hp}/{health.maxHp}
+      <HeaderElement style={{ justifyContent: "flex-end", alignItems: "center" }}>
+        <Txt style={{ color: getColor() }}>PV:</Txt>
+        <Txt style={{ fontSize: 5 }}> </Txt>
+        <Txt>
+          {health.hp}/{health.maxHp}
         </Txt>
         <Spacer x={10} />
-        <ProgressionBar value={health.hp} min={0} max={health.maxHp} color={getColor()} />
+        <ProgressionBar
+          value={health.hp}
+          min={0}
+          max={health.maxHp}
+          color={getColor()}
+          width={40}
+        />
       </HeaderElement>
     </TouchableOpacity>
   )

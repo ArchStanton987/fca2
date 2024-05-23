@@ -31,7 +31,7 @@ export default function HeaderProgression() {
       <HeaderElement>
         <Txt>NIV:{level}</Txt>
         <Spacer x={10} />
-        <ProgressionBar value={exp} min={prev} max={next} />
+        <ProgressionBar value={exp} min={prev} max={next} width={40} />
       </HeaderElement>
     </TouchableOpacity>
   )

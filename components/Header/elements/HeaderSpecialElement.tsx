@@ -9,11 +9,12 @@ export default function HeaderSpecialElement({ specialId }: { specialId: Special
   const character = useCharacter()
   const label = specialMap[specialId].short
   const value = character.special.curr[specialId]
-  const txt = `${label}: ${value}`
 
   return (
     <HeaderElement>
-      <Txt>{txt}</Txt>
+      <Txt>{label}:</Txt>
+      <Txt style={{ fontSize: 5 }}> </Txt>
+      <Txt>{value}</Txt>
     </HeaderElement>
   )
 }
