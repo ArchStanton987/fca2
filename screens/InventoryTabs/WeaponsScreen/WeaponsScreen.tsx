@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import { FlatList, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
@@ -30,6 +30,8 @@ export default function WeaponsScreen() {
       pathname: routes.modal.updateObjects,
       params: { squadId: localParams.squadId, charId: localParams.charId, initCategory: "weapons" }
     })
+
+  const weaponsList = useMemo(() => {}, [])
 
   return (
     <DrawerPage>
