@@ -801,6 +801,118 @@ const effectsMap: Record<EffectId, EffectData> = {
     description: "Votre regain en vitalité vous permet de dire bonjour aux éléphants roses.",
     od: null,
     nextEffectId: null
+  },
+  poisonMustardGas: {
+    id: "poisonMustardGas",
+    label: "Poison : gaz moutarde",
+    symptoms: [
+      { id: "healHpPerHour", operation: "add", value: -10 },
+      { id: "perceptionSkill", operation: "add", value: -20 }
+    ],
+    length: 6,
+    isWithdrawal: false,
+    description:
+      "Vous avez inhalé du gaz moutarde. Cela vous brûle les poumons et vous rend temporairement aveugle.",
+    od: null,
+    nextEffectId: null
+  },
+  poisonRadRatVenom: {
+    id: "poisonRadRatVenom",
+    label: "Poison : venin de radrat",
+    symptoms: [
+      { id: "healHpPerHour", operation: "add", value: -5 },
+      { id: "stealth", operation: "add", value: -15 }
+    ],
+    length: 48,
+    isWithdrawal: false,
+    description:
+      "Les radrats n'ont pas une bonne hygiène bucco-dentaire... Vous voilà infecté suite à la morsure.",
+    od: null,
+    nextEffectId: null
+  },
+
+  poisonRadScorpionLightVenom: {
+    id: "poisonRadScorpionLightVenom",
+    label: "Poison : venin de radscorpion léger",
+    symptoms: [
+      { id: "healHpPerHour", operation: "add", value: -500 },
+      { id: "agility", operation: "add", value: -5 }
+    ],
+    length: 48,
+    isWithdrawal: false,
+    description:
+      "Le venin de radscorpion, c'est du sérieux. Si vous n'êtes pas soigné très rapidement, vous allez y rester.",
+    od: null,
+    nextEffectId: null
+  },
+
+  poisonRadScorpionMedVenom: {
+    id: "poisonRadScorpionMedVenom",
+    label: "Poison : venin de radscorpion moyen",
+    symptoms: [
+      { id: "healHpPerHour", operation: "add", value: -1000 },
+      { id: "agility", operation: "add", value: -7 }
+    ],
+    length: 48,
+    isWithdrawal: false,
+    description:
+      "Le venin de radscorpion, c'est du sérieux. Si vous n'êtes pas soigné très rapidement, vous allez y rester.",
+    od: null,
+    nextEffectId: null
+  },
+
+  poisonRadScorpionStrongVenom: {
+    id: "poisonRadScorpionStrongVenom",
+    label: "Poison : venin de radscorpion puissant",
+    symptoms: [
+      { id: "healHpPerHour", operation: "add", value: -1500 },
+      { id: "agility", operation: "add", value: -9 }
+    ],
+    length: 48,
+    isWithdrawal: false,
+    description:
+      "Le venin de radscorpion, c'est du sérieux. Si vous n'êtes pas soigné très rapidement, vous allez y rester.",
+    od: null,
+    nextEffectId: null
+  },
+
+  poisonTribal: {
+    id: "poisonTribal",
+    label: "Poison : mixture tribale",
+    symptoms: [
+      { id: "healHpPerHour", operation: "add", value: -5 },
+      { id: "reflexion", operation: "add", value: -20 }
+    ],
+    length: 24,
+    isWithdrawal: false,
+    description:
+      "Vous avez été empoisonnés par une mixture tribale. Cela vous rend confus et vous donne des vertiges.",
+    od: null,
+    nextEffectId: null
+  },
+
+  poisonPlantLight: {
+    id: "poisonPlantLight",
+    label: "Poison : venin de plante léger",
+    symptoms: [{ id: "healHpPerHour", operation: "add", value: -5 }],
+    length: 96,
+    isWithdrawal: false,
+    description:
+      "Vous avez été empoisonnés par une plante. Cela vous rend faible et vous donne des nausées.",
+    od: null,
+    nextEffectId: null
+  },
+
+  poisonPlantStrong: {
+    id: "poisonPlantStrong",
+    label: "Poison : venin de plante léger",
+    symptoms: [{ id: "healHpPerHour", operation: "add", value: -60 }],
+    length: 96,
+    isWithdrawal: false,
+    description:
+      "Vous avez été empoisonnés par une plante. Cela vous rend faible et vous donne des nausées.",
+    od: null,
+    nextEffectId: null
   }
 }
 

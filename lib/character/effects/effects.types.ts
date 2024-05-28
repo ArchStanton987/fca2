@@ -52,6 +52,14 @@ export type EffectId =
   | "radLvl4"
   | "radLvl5"
   | "radLvl6"
+  | "poisonMustardGas"
+  | "poisonRadRatVenom"
+  | "poisonRadScorpionLightVenom"
+  | "poisonRadScorpionMedVenom"
+  | "poisonRadScorpionStrongVenom"
+  | "poisonTribal"
+  | "poisonPlantLight"
+  | "poisonPlantStrong"
 
 export type EffectData = {
   id: EffectId
