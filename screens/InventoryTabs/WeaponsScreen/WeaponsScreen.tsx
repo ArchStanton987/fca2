@@ -3,6 +3,7 @@ import { FlatList, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { getDamageEst } from "lib/common/utils/dice-calc"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
 
 import AddElement from "components/AddElement"
@@ -11,15 +12,19 @@ import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
 import routes from "constants/routes"
+import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import WeaponRow, { ListHeader } from "screens/InventoryTabs/WeaponsScreen/WeaponRow"
 import WeaponsDetails from "screens/InventoryTabs/WeaponsScreen/WeaponsDetails"
+import { Sort, Sortable } from "screens/InventoryTabs/WeaponsScreen/WeaponsScreen.types"
 import { SearchParams } from "screens/ScreenParams"
 
 export default function WeaponsScreen() {
   const localParams = useLocalSearchParams<SearchParams<DrawerParams>>()
   const [selectedWeapon, setSelectedWeapon] = useState<Weapon | null>(null)
+  const [sort, setSort] = useState<Sort>({ type: "dbKey", isAsc: true })
 
+  const char = useCharacter()
   const { weapons } = useInventory()
 
   const toggleSelect = (weapon: Weapon) =>
@@ -31,15 +36,30 @@ export default function WeaponsScreen() {
       params: { squadId: localParams.squadId, charId: localParams.charId, initCategory: "weapons" }
     })
 
-  const weaponsList = useMemo(() => {}, [])
+  const onPressWeaponHeader = (type: Sortable) => {
+    setSort(prev => ({ type, isAsc: prev.type === type ? !prev.isAsc : true }))
+  }
+
+  const sortedWeapons = useMemo(() => {
+    const sortFn = (a: Weapon, b: Weapon) => {
+      if (sort.type === "dbKey") return a.dbKey.localeCompare(b.dbKey)
+      if (sort.type === "name") return a.data.label.localeCompare(b.data.label)
+      if (sort.type === "damage") return getDamageEst(char, a) > getDamageEst(char, b) ? -1 : 1
+      if (sort.type === "skill") return b.skill > a.skill ? -1 : 1
+      if (sort.type === "ammo") return b.ammo > a.ammo ? -1 : 1
+      if (sort.type === "equiped") return a.isEquiped ? -1 : 1
+      return 0
+    }
+    return weapons.sort(sortFn)
+  }, [weapons, sort.type, char])
 
   return (
     <DrawerPage>
       <Section style={{ flex: 1 }}>
         <FlatList
-          data={weapons}
+          data={sortedWeapons}
           keyExtractor={item => item.dbKey}
-          ListHeaderComponent={ListHeader}
+          ListHeaderComponent={<ListHeader onPress={onPressWeaponHeader} />}
           stickyHeaderIndices={[0]}
           renderItem={({ item }) => (
             <WeaponRow

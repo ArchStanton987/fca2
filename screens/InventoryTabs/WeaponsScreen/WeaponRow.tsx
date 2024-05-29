@@ -9,28 +9,29 @@ import Toast from "react-native-toast-message"
 import CheckBox from "components/CheckBox/CheckBox"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
+import { Sortable } from "screens/InventoryTabs/WeaponsScreen/WeaponsScreen.types"
 import colors from "styles/colors"
 
 import styles from "./WeaponRow.styles"
 
-export function ListHeader() {
+export function ListHeader({ onPress }: { onPress: (type: Sortable) => void }) {
   return (
     <View style={[styles.row, styles.container, styles.header]}>
-      <View style={styles.equipedContainer}>
+      <TouchableOpacity onPress={() => onPress("equiped")} style={styles.equipedContainer}>
         <Txt>EQU</Txt>
-      </View>
-      <View style={styles.labelContainer}>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => onPress("name")} style={styles.labelContainer}>
         <Txt>NOM</Txt>
-      </View>
-      <View style={styles.damageContainer}>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => onPress("damage")} style={styles.damageContainer}>
         <Txt>DEG</Txt>
-      </View>
-      <View style={styles.skillContainer}>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => onPress("skill")} style={styles.skillContainer}>
         <Txt>COMP</Txt>
-      </View>
-      <View style={styles.ammoContainer}>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => onPress("ammo")} style={styles.ammoContainer}>
         <Txt>MUN</Txt>
-      </View>
+      </TouchableOpacity>
       <View style={styles.deleteContainer}>
         <Txt> </Txt>
       </View>
