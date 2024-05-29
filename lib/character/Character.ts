@@ -96,26 +96,6 @@ export default class Character {
   }
 
   get effects(): Effect[] {
-    // get all calculated effects
-    // hp effects
-    // const { hp, maxHp } = this.health
-    // const currHpPercent = (hp / maxHp) * 100
-    // const healthState = healthStates.find(el => currHpPercent < el.min)
-    // const hpEffects = healthState ? [{ id: healthState.id, data: effectsMap[healthState.id] }] : []
-    // // cripled effects
-    // const { limbsHp } = this.health
-    // const noHpLimbs = Object.keys(limbsHp).filter(el => limbsHp[el as LimbHpId] === 0)
-    // const cripledEffects = noHpLimbs.map(el => ({
-    //   id: limbsMap[el as LimbHpId].cripledEffect,
-    //   data: effectsMap[limbsMap[el as LimbHpId].cripledEffect]
-    // }))
-    // // rads effects
-    // const { rads } = this.health
-    // const radsState = radStates.find(el => rads > el.threshold)
-    // const radsEffects = radsState ? [{ id: radsState.id, data: effectsMap[radsState.id] }] : []
-    // // get all calculated effects objects
-    // const calculatedEffects = [...hpEffects, ...cripledEffects, ...radsEffects]
-
     // get all db stored effects
     const effectsIds = Object.entries(this.dbEffects).map(([dbKey, value]) => {
       let timeRemaining = null
@@ -135,8 +115,6 @@ export default class Character {
 
       return { ...value, timeRemaining, dbKey, data: effectsMap[value.id], startTs, endTs }
     })
-    // merge all effects
-    // return [...calculatedEffects, ...effectsIds]
     return effectsIds
   }
 
