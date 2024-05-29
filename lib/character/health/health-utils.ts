@@ -8,19 +8,36 @@ import { EffectId } from "../effects/effects.types"
 
 export const getNewLimbsHp = (char: Character, newDate: Date) => {
   const { healHpPerHour } = char.secAttr.curr
-  const hoursPassed = (newDate.getTime() - char.date.getTime()) / 3600000
-  const missingHp = getMissingHp(char.status)
-  const maxHealedHp = Math.round(healHpPerHour * hoursPassed)
-  const healedHp = Math.min(missingHp, maxHealedHp)
   const newLimbsHp = { ...char.health.limbsHp }
+  if (healHpPerHour === 0) return newLimbsHp
+  const hoursPassed = (newDate.getTime() - char.date.getTime()) / 3600000
   const limbsHpArray = Object.entries(char.health.limbsHp).map(([id, value]) => ({ id, value }))
-  for (let i = 0; i < healedHp; i += 1) {
-    const healableLimbs = limbsHpArray.filter(
-      ({ value, id }) => value < limbsMap[id as LimbHpId].maxValue
-    )
-    const randomIndex = getRandomArbitrary(0, healableLimbs.length)
-    const limbIdToHeal = healableLimbs[randomIndex].id
-    newLimbsHp[limbIdToHeal as LimbHpId] += 1
+  const hpDiff = Math.round(healHpPerHour * hoursPassed)
+
+  // if hpDiff is positive, character is healing
+  if (hpDiff > 0) {
+    const missingHp = getMissingHp(char.status)
+    const healedHp = Math.min(missingHp, hpDiff)
+    for (let i = 0; i < healedHp; i += 1) {
+      const healableLimbs = limbsHpArray.filter(
+        ({ value, id }) => value < limbsMap[id as LimbHpId].maxValue
+      )
+      const randomIndex = getRandomArbitrary(0, healableLimbs.length)
+      const limbIdToHeal = healableLimbs[randomIndex].id
+      newLimbsHp[limbIdToHeal as LimbHpId] += 1
+    }
+    return newLimbsHp
+  }
+
+  // hpDiff can be negative if character is poisoned
+  const baseDamageHp = Math.abs(hpDiff)
+  // damage to be taken with poison resistance
+  const damageHp = (char.secAttr.curr.poisResist / 100) * baseDamageHp
+  for (let i = 0; i < damageHp; i += 1) {
+    const limbsToTakeDamage = limbsHpArray.filter(({ value }) => value > 0)
+    const randomIndex = getRandomArbitrary(0, limbsToTakeDamage.length)
+    const limbIdToDamage = limbsToTakeDamage[randomIndex].id
+    newLimbsHp[limbIdToDamage as LimbHpId] -= 1
   }
   return newLimbsHp
 }

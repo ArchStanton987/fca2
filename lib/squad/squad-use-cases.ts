@@ -26,7 +26,10 @@ function getSquadUseCases(db: keyof typeof getRepository = "rtdb") {
         const followingEffects = getFollowingEffects(char, date)
         promises.push(effectsUseCases.groupAdd(char, followingEffects))
 
-        if (char.health.missingHp > 0) {
+        // TODO: add "types" for effects (poison, withdrawal, cripled, healthState, etc)
+        const hasPoison = Object.values(char.effectsRecord).some(el => el.id.startsWith("poison"))
+
+        if (hasPoison || char.health.missingHp > 0) {
           const newLimbsHp = getNewLimbsHp(char, date)
           promises.push(statusUseCases.groupUpdate(char, newLimbsHp))
         }
