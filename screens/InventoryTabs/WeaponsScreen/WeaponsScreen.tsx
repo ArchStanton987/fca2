@@ -50,8 +50,9 @@ export default function WeaponsScreen() {
       if (sort.type === "equiped") return a.isEquiped ? -1 : 1
       return 0
     }
-    return weapons.sort(sortFn)
-  }, [weapons, sort.type, char])
+    const sorted = weapons.sort(sortFn)
+    return sort.isAsc ? sorted : sorted.reverse()
+  }, [weapons, sort, char])
 
   return (
     <DrawerPage>
@@ -59,7 +60,7 @@ export default function WeaponsScreen() {
         <FlatList
           data={sortedWeapons}
           keyExtractor={item => item.dbKey}
-          ListHeaderComponent={<ListHeader onPress={onPressWeaponHeader} />}
+          ListHeaderComponent={<ListHeader onPress={onPressWeaponHeader} sortState={sort} />}
           stickyHeaderIndices={[0]}
           renderItem={({ item }) => (
             <WeaponRow

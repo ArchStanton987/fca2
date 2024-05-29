@@ -15,6 +15,10 @@ const styles = StyleSheet.create({
   selected: {
     backgroundColor: colors.terColor
   },
+  listHeader: {
+    flexDirection: "row",
+    alignItems: "center"
+  },
   equipedContainer: {
     width: 40
   },
