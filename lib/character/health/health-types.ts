@@ -9,7 +9,6 @@ export type HealthStatusId =
   | "leftLegHp"
   | "rightLegHp"
   | "groinHp"
-  | "poison"
   | "rads"
 
 export type HealthStatus = {
@@ -42,6 +41,5 @@ export type Health = {
   missingHp: number
   hp: number
   limbsHp: LimbsHp
-  poison: number
   rads: number
 }

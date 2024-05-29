@@ -155,13 +155,6 @@ const healthMap: Record<HealthStatusId, HealthType> = {
     minValue: 0,
     maxValue: 15
   },
-  poison: {
-    id: "poison",
-    label: "Poison",
-    short: "Pois",
-    minValue: 0,
-    maxValue: 15
-  },
   rads: {
     id: "rads",
     label: "Rads",

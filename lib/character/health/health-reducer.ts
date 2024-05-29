@@ -7,7 +7,6 @@ export const defaultHealthUpdate = {
   leftArmHp: {} as ItemUpdate,
   leftLegHp: {} as ItemUpdate,
   leftTorsoHp: {} as ItemUpdate,
-  poison: {} as ItemUpdate,
   rads: {} as ItemUpdate,
   rightArmHp: {} as ItemUpdate,
   rightLegHp: {} as ItemUpdate,

@@ -80,7 +80,6 @@ export default class Character {
       maxHp,
       missingHp,
       hp: currHp,
-      poison: this.status.poison,
       rads: this.status.rads,
       limbsHp: {
         headHp: this.status.headHp,
