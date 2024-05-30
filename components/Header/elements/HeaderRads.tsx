@@ -6,6 +6,7 @@ import { radStates } from "lib/character/health/health"
 
 import HeaderElement from "components/Header/HeaderElement"
 import Txt from "components/Txt"
+import RadsIcon from "components/icons/RadsIcon"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useSquad } from "contexts/SquadContext"
@@ -31,8 +32,8 @@ export default function HeaderRads() {
   return (
     <TouchableOpacity onPress={onPress}>
       <HeaderElement>
-        <Txt style={{ color: getColor() }}>RADS:</Txt>
-        <Txt style={{ fontSize: 5, color: getColor() }}> </Txt>
+        <RadsIcon color={getColor()} size={15} />
+        <Txt style={{ fontSize: 8 }}> </Txt>
         <Txt style={{ color: getColor() }}>{health.rads}</Txt>
       </HeaderElement>
     </TouchableOpacity>

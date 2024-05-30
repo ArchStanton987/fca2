@@ -37,7 +37,7 @@ export default function HeaderHp() {
       <HeaderElement style={{ justifyContent: "flex-end", alignItems: "center" }}>
         <Txt style={{ color: getColor() }}>PV:</Txt>
         <Txt style={{ fontSize: 5 }}> </Txt>
-        <Txt>
+        <Txt style={{ color: getColor() }}>
           {health.hp}/{health.maxHp}
         </Txt>
         <Spacer x={10} />
