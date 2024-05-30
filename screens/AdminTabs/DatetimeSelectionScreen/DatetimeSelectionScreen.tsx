@@ -7,6 +7,7 @@ import Toast from "react-native-toast-message"
 import AmountSelector from "components/AmountSelector"
 import List from "components/List"
 import Spacer from "components/Spacer"
+import TabPage from "components/TabPage"
 import Txt from "components/Txt"
 import ViewSection from "components/ViewSection"
 import MinusIcon from "components/icons/MinusIcon"
@@ -67,71 +68,74 @@ export default function DatetimeSelectionScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.row}>
-        <ViewSection title="NOUVELLE DATE" style={{ flex: 1 }}>
-          <Spacer fullspace />
-          <Txt style={{ textAlign: "center", fontSize: 35 }}>
-            {getDDMMYYYY(newDate)} - {getHHMM(newDate)}
-          </Txt>
-          <Spacer fullspace />
-          <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
-            <RevertColorsPressable
-              onPress={onPressReset}
-              initAnimColor={colors.primColor}
-              endAnimColor={colors.secColor}
-              style={styles.cta}
-            >
-              <Txt>REINITIALISER</Txt>
-            </RevertColorsPressable>
-            <RevertColorsPressable
-              disabled={newDate === null}
-              onPress={onPressSave}
-              style={[styles.cta, { backgroundColor: colors.secColor }]}
-              initAnimColor={colors.secColor}
-              endAnimColor={colors.primColor}
-            >
-              <Txt style={{ color: colors.primColor }}>ENREGISTRER</Txt>
-            </RevertColorsPressable>
-          </View>
-          <Spacer y={30} />
-        </ViewSection>
-        <Spacer x={15} />
-        <ViewSection title="MODIFICATION" style={{ width: 300 }}>
-          <Spacer fullspace />
-          <List
-            data={timespans}
-            keyExtractor={item => item}
-            renderItem={({ item }) => (
-              <AmountSelector
-                value={item}
-                isSelected={selectedTimespan === item}
-                onPress={() => setSelectedTimespan(item)}
-              />
-            )}
-            style={{ flexDirection: "row", justifyContent: "space-evenly" }}
-          />
-          <Spacer fullspace />
-          <List
-            data={selectors}
-            keyExtractor={item => item.toString()}
-            renderItem={({ item }) => (
-              <AmountSelector
-                value={item}
-                isSelected={selectedAmount === item}
-                onPress={() => setSelectedAmount(item)}
-              />
-            )}
-            style={{ flexDirection: "row", justifyContent: "space-evenly" }}
-          />
-          <Spacer fullspace />
-          <View style={styles.iconsContainer}>
-            <MinusIcon size={62} onPress={() => onPressMod("minus")} />
-            <PlusIcon size={62} onPress={() => onPressMod("plus")} />
-          </View>
-          <Spacer fullspace />
-        </ViewSection>
-      </View>
-    </View>
+    <>
+      <TabPage>
+        <View style={styles.row}>
+          <ViewSection title="NOUVELLE DATE" style={{ flex: 1 }}>
+            <Spacer fullspace />
+            <Txt style={{ textAlign: "center", fontSize: 35 }}>
+              {getDDMMYYYY(newDate)} - {getHHMM(newDate)}
+            </Txt>
+            <Spacer fullspace />
+            <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
+              <RevertColorsPressable
+                onPress={onPressReset}
+                initAnimColor={colors.primColor}
+                endAnimColor={colors.secColor}
+                style={styles.cta}
+              >
+                <Txt>REINITIALISER</Txt>
+              </RevertColorsPressable>
+              <RevertColorsPressable
+                disabled={newDate === null}
+                onPress={onPressSave}
+                style={[styles.cta, { backgroundColor: colors.secColor }]}
+                initAnimColor={colors.secColor}
+                endAnimColor={colors.primColor}
+              >
+                <Txt style={{ color: colors.primColor }}>ENREGISTRER</Txt>
+              </RevertColorsPressable>
+            </View>
+            <Spacer y={30} />
+          </ViewSection>
+          <Spacer x={15} />
+          <ViewSection title="MODIFICATION" style={{ width: 300 }}>
+            <Spacer fullspace />
+            <List
+              data={timespans}
+              keyExtractor={item => item}
+              renderItem={({ item }) => (
+                <AmountSelector
+                  value={item}
+                  isSelected={selectedTimespan === item}
+                  onPress={() => setSelectedTimespan(item)}
+                />
+              )}
+              style={{ flexDirection: "row", justifyContent: "space-evenly" }}
+            />
+            <Spacer fullspace />
+            <List
+              data={selectors}
+              keyExtractor={item => item.toString()}
+              renderItem={({ item }) => (
+                <AmountSelector
+                  value={item}
+                  isSelected={selectedAmount === item}
+                  onPress={() => setSelectedAmount(item)}
+                />
+              )}
+              style={{ flexDirection: "row", justifyContent: "space-evenly" }}
+            />
+            <Spacer fullspace />
+            <View style={styles.iconsContainer}>
+              <MinusIcon size={62} onPress={() => onPressMod("minus")} />
+              <PlusIcon size={62} onPress={() => onPressMod("plus")} />
+            </View>
+            <Spacer fullspace />
+          </ViewSection>
+        </View>
+      </TabPage>
+      <Spacer y={10} />
+    </>
   )
 }

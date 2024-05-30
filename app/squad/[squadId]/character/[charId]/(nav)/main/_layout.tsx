@@ -38,9 +38,7 @@ export default function CharLayout() {
           borderBottomWidth: 0
         }
       }}
-      sceneContainerStyle={{
-        backgroundColor: colors.primColor
-      }}
+      sceneContainerStyle={{ backgroundColor: colors.primColor }}
     >
       <Tabs.Screen name="recap" options={{ title: "Résumé" }} initialParams={{ squadId, charId }} />
       <Tabs.Screen name="effects" options={{ title: "Effets" }} />

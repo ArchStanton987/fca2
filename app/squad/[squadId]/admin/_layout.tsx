@@ -1,4 +1,5 @@
 import { useMemo } from "react"
+import { View } from "react-native"
 
 import { Tabs } from "expo-router"
 
@@ -27,25 +28,23 @@ export default function AdminLayout() {
 
   return (
     <AdminContext.Provider value={context}>
-      <Tabs
-        // eslint-disable-next-line react/no-unstable-nested-components
-        tabBar={props => <TabBar tabBarId="main" {...props} />}
-        screenOptions={{
-          tabBarHideOnKeyboard: true,
+      <View style={{ padding: 10, flex: 1 }}>
+        <Tabs
           // eslint-disable-next-line react/no-unstable-nested-components
-          header: props => (
-            <Header headerElementsIds={["date", "time", "squadName", "home"]} {...props} />
-          ),
-          headerStyle: {
-            backgroundColor: colors.primColor,
-            height: 40,
-            borderBottomWidth: 0
-          }
-        }}
-        sceneContainerStyle={{ backgroundColor: colors.primColor, padding: 10 }}
-      >
-        <Tabs.Screen name="datetime" options={{ title: "Horloge" }} />
-      </Tabs>
+          tabBar={props => <TabBar tabBarId="main" {...props} />}
+          screenOptions={{
+            tabBarHideOnKeyboard: true,
+            // eslint-disable-next-line react/no-unstable-nested-components
+            header: props => (
+              <Header headerElementsIds={["date", "time", "squadName", "home"]} {...props} />
+            ),
+            headerStyle: { backgroundColor: colors.primColor, borderBottomWidth: 0 }
+          }}
+          sceneContainerStyle={{ backgroundColor: colors.primColor }}
+        >
+          <Tabs.Screen name="datetime" options={{ title: "Horloge" }} />
+        </Tabs>
+      </View>
     </AdminContext.Provider>
   )
 }
