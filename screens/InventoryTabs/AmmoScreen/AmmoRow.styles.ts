@@ -16,13 +16,16 @@ const styles = StyleSheet.create({
     backgroundColor: colors.terColor
   },
   labelContainer: {
-    alignSelf: "flex-start",
-    justifyContent: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
     flex: 1
   },
   quantityContainer: {
-    width: 80,
-    alignItems: "flex-end"
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    width: 80
   },
   deleteContainer: {
     width: 100,

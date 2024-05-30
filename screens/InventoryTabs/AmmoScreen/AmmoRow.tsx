@@ -1,23 +1,36 @@
 import React from "react"
-import { Pressable, PressableProps, View } from "react-native"
+import { Pressable, PressableProps, TouchableOpacity, View } from "react-native"
 
 import { AntDesign } from "@expo/vector-icons"
 import { Ammo } from "lib/objects/data/ammo/ammo.types"
 
+import Spacer from "components/Spacer"
 import Txt from "components/Txt"
+import Caret from "components/icons/Caret"
 import colors from "styles/colors"
 
 import styles from "./AmmoRow.styles"
+import { AmmoSort, AmmoSortableKey } from "./AmmoScreen.types"
 
-export function ListHeader() {
+type ListHeaderProps = {
+  onPress: (type: AmmoSortableKey) => void
+  sortState: AmmoSort
+}
+
+export function ListHeader({ onPress, sortState }: ListHeaderProps) {
+  const { type, isAsc } = sortState
   return (
     <View style={[styles.row, styles.container, styles.header]}>
-      <View style={styles.labelContainer}>
+      <TouchableOpacity onPress={() => onPress("name")} style={styles.labelContainer}>
         <Txt>MUNITION</Txt>
-      </View>
-      <View style={styles.quantityContainer}>
+        <Spacer x={3} />
+        <Caret isVisible={type === "name"} direction={isAsc ? "up" : "down"} />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => onPress("count")} style={styles.quantityContainer}>
+        <Caret isVisible={type === "count"} direction={isAsc ? "up" : "down"} />
+        <Spacer x={3} />
         <Txt>QUANTITE</Txt>
-      </View>
+      </TouchableOpacity>
       <View style={styles.deleteContainer} />
     </View>
   )

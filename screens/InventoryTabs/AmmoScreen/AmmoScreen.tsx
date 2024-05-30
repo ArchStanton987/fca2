@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import { FlatList, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
@@ -15,9 +15,12 @@ import { useInventory } from "contexts/InventoryContext"
 import AmmoRow, { ListHeader } from "screens/InventoryTabs/AmmoScreen/AmmoRow"
 import { SearchParams } from "screens/ScreenParams"
 
+import { AmmoSort, AmmoSortableKey } from "./AmmoScreen.types"
+
 export default function AmmoScreen() {
   const localParams = useLocalSearchParams<SearchParams<DrawerParams>>()
   const [selectedAmmo, setSelectedAmmo] = useState<Ammo | null>(null)
+  const [sort, setSort] = useState<AmmoSort>({ type: "name", isAsc: false })
 
   const { ammo } = useInventory()
 
@@ -31,13 +34,27 @@ export default function AmmoScreen() {
       }
     })
 
+  const onPressHeader = (type: AmmoSortableKey) => {
+    setSort(prev => ({ type, isAsc: prev.type === type ? !prev.isAsc : true }))
+  }
+
+  const sortedAmmo = useMemo(() => {
+    const sortFn = (a: Ammo, b: Ammo) => {
+      if (sort.type === "name") return b.data.label.localeCompare(a.data.label)
+      if (sort.type === "count") return a.amount - b.amount
+      return 0
+    }
+    const sorted = ammo.sort(sortFn)
+    return sort.isAsc ? sorted : sorted.reverse()
+  }, [ammo, sort])
+
   return (
     <DrawerPage>
       <Section style={{ flex: 1 }}>
         <FlatList
-          data={ammo}
+          data={sortedAmmo}
           keyExtractor={item => item.id}
-          ListHeaderComponent={ListHeader}
+          ListHeaderComponent={<ListHeader onPress={onPressHeader} sortState={sort} />}
           stickyHeaderIndices={[0]}
           renderItem={({ item }) => (
             <AmmoRow

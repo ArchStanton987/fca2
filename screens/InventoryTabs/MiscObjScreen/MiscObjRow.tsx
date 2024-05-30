@@ -5,17 +5,21 @@ import { AntDesign } from "@expo/vector-icons"
 import miscObjectsMap from "lib/objects/data/misc-objects/misc-objects"
 import { MiscObjectId } from "lib/objects/data/misc-objects/misc-objects-types"
 
+import Spacer from "components/Spacer"
 import Txt from "components/Txt"
+import Caret from "components/icons/Caret"
 import colors from "styles/colors"
 
 import styles from "./MiscObjRow.styles"
 
-export function ListHeader() {
+export function ListHeader({ onPress, isAsc }: { onPress: () => void; isAsc: boolean }) {
   return (
     <View style={[styles.row, styles.container, styles.header]}>
-      <View style={styles.labelContainer}>
+      <TouchableOpacity onPress={onPress} style={styles.labelContainer}>
         <Txt>OBJET</Txt>
-      </View>
+        <Spacer x={3} />
+        <Caret isVisible direction={isAsc ? "up" : "down"} />
+      </TouchableOpacity>
       <View style={styles.deleteContainer} />
     </View>
   )

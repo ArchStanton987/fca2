@@ -16,8 +16,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.terColor
   },
   labelContainer: {
-    alignSelf: "flex-start",
-    justifyContent: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
     flex: 1
   },
   effectContainer: {

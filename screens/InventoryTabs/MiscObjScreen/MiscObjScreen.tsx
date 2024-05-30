@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import { FlatList, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
@@ -20,6 +20,7 @@ import { SearchParams } from "screens/ScreenParams"
 export default function MiscObjScreen() {
   const { squadId, charId } = useLocalSearchParams() as SearchParams<DrawerParams>
   const [selectedItem, setSelectedItem] = useState<MiscObject | null>(null)
+  const [isAscSort, setIsAscSort] = useState(true)
 
   const { groupedMiscObjects } = useInventory()
 
@@ -29,13 +30,24 @@ export default function MiscObjScreen() {
       params: { squadId, charId, initCategory: "miscObjects" }
     })
 
+  const onPressHeader = () => setIsAscSort(prev => !prev)
+
+  const sortedMiscObjects = useMemo(() => {
+    const sortFn = (a: MiscObject, b: MiscObject) => {
+      if (isAscSort) return a.data.label.localeCompare(b.data.label)
+      return b.data.label.localeCompare(a.data.label)
+    }
+    const sorted = groupedMiscObjects.sort(sortFn)
+    return sorted
+  }, [groupedMiscObjects, isAscSort])
+
   return (
     <DrawerPage>
       <Section style={{ flex: 1 }}>
         <FlatList
-          data={groupedMiscObjects}
+          data={sortedMiscObjects}
           keyExtractor={item => item.id}
-          ListHeaderComponent={ListHeader}
+          ListHeaderComponent={<ListHeader onPress={onPressHeader} isAsc={isAscSort} />}
           stickyHeaderIndices={[0]}
           renderItem={({ item }) => (
             <MiscObjRow
