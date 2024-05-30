@@ -1,5 +1,5 @@
-TODO: sort collectibles
 TODO: add levelup
+TODO: collectibles UI
 
 
 
