@@ -28,12 +28,16 @@ const getEquipedObjectsUseCases = (db: keyof typeof getRepository = "rtdb") => {
       const { dbKey } = object
       if (!object.isEquiped) {
         if (category === "weapons") {
+          const is2HandedWeapon =
+            weaponsMap[object.id as Weapon["id"]].knowledges.includes("kTwoHandedWeapons")
           const has2HandedWeapon = weapons.some(({ id }) =>
             weaponsMap[id].knowledges.includes("kTwoHandedWeapons")
           )
           const has2EquWeapons = weapons.length >= 2
-          if (has2HandedWeapon) throw new Error("Vous êtes déjà équipé d'une arme à deux mains")
-          if (has2EquWeapons) throw new Error("Vous êtes déjà équipé de deux armes")
+          if (is2HandedWeapon && weapons.length > 0)
+            throw new Error("Pour faire ça, il vous faudrait plus de mains !")
+          if (has2HandedWeapon) throw new Error("Pour faire ça, il vous faudrait plus de mains !")
+          if (has2EquWeapons) throw new Error("Pour faire ça, il vous faudrait plus de mains !")
         }
 
         if (category === "clothings") {
