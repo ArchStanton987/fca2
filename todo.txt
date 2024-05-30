@@ -1,5 +1,6 @@
 TODO: add levelup
 TODO: collectibles UI
+TODO: updates & versionning
 
 
 
