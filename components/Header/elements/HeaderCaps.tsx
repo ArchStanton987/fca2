@@ -33,7 +33,7 @@ export default function HeaderCaps() {
           style={{ height: 15, width: 15, marginRight: 3 }}
           source={capsIcon}
         />
-        <Txt>{caps}</Txt>
+        <Txt style={{ fontSize: 12 }}>{caps}</Txt>
       </HeaderElement>
     </TouchableOpacity>
   )

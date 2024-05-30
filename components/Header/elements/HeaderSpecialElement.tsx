@@ -12,9 +12,8 @@ export default function HeaderSpecialElement({ specialId }: { specialId: Special
 
   return (
     <HeaderElement>
-      <Txt>{label}:</Txt>
-      <Txt style={{ fontSize: 5 }}> </Txt>
-      <Txt>{value}</Txt>
+      <Txt style={{ fontSize: 12 }}>{label}:</Txt>
+      <Txt style={{ fontSize: 12 }}>{value}</Txt>
     </HeaderElement>
   )
 }

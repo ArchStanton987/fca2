@@ -14,8 +14,8 @@ export default function HeaderPlace() {
 
   return (
     <HeaderElement style={{ flexGrow: 2 }}>
-      <Txt style={{ color }}>PLACE: {currPlace}</Txt>
-      <Txt style={{ color }}>/{maxPlace || "-"}</Txt>
+      <Txt style={{ color, fontSize: 12 }}>PLACE: {currPlace}</Txt>
+      <Txt style={{ color, fontSize: 12 }}>/{maxPlace || "-"}</Txt>
     </HeaderElement>
   )
 }

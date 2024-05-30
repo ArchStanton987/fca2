@@ -8,7 +8,7 @@ export default function HeaderSquadName() {
 
   return (
     <HeaderElement style={{ flexGrow: 4, justifyContent: "flex-end" }}>
-      <Txt>{label}</Txt>
+      <Txt style={{ fontSize: 12 }}>{label}</Txt>
     </HeaderElement>
   )
 }

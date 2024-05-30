@@ -8,7 +8,8 @@ const createStyles = (platform: Platform) =>
       flex: 1,
       flexDirection: "row",
       marginLeft: layout.drawerWidth + layout.globalPadding,
-      marginTop: platform.OS === "web" ? 10 : 40
+      marginTop:
+        platform.OS === "web" ? layout.globalPadding : layout.globalPadding + layout.headerHeight
     }
   })
 

@@ -16,9 +16,11 @@ export default function HeaderWeight() {
 
   return (
     <HeaderElement style={{ flexGrow: 2 }}>
-      <Txt style={{ color }}>POIDS: {currWeight}</Txt>
+      <Txt style={{ color, fontSize: 12 }}>POIDS: {currWeight}</Txt>
       <Spacer x={10} />
-      <Txt style={{ color }}>{`(${normalCarryWeight}/${tempCarryWeight}/${maxCarryWeight})`}</Txt>
+      <Txt
+        style={{ color, fontSize: 12 }}
+      >{`(${normalCarryWeight}/${tempCarryWeight}/${maxCarryWeight})`}</Txt>
     </HeaderElement>
   )
 }

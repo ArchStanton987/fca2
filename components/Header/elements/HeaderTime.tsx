@@ -10,7 +10,7 @@ export default function HeaderTime() {
 
   return (
     <HeaderElement style={{ flexGrow: 2 }}>
-      <Txt>{displayDate}</Txt>
+      <Txt style={{ fontSize: 12 }}>{displayDate}</Txt>
     </HeaderElement>
   )
 }

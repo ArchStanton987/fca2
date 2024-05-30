@@ -29,8 +29,8 @@ export default function HeaderProgression() {
   return (
     <TouchableOpacity onPress={onPress}>
       <HeaderElement>
-        <Txt>NIV:{level}</Txt>
-        <Spacer x={10} />
+        <Txt style={{ fontSize: 12 }}>NIV:{level}</Txt>
+        <Spacer x={5} />
         <ProgressionBar value={exp} min={prev} max={next} width={40} />
       </HeaderElement>
     </TouchableOpacity>
