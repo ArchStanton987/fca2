@@ -25,6 +25,12 @@ const styles = StyleSheet.create({
   },
   squadLabel: {
     textAlign: "center"
+  },
+  version: {
+    fontSize: 8,
+    position: "absolute",
+    right: 0,
+    top: 5
   }
 })
 

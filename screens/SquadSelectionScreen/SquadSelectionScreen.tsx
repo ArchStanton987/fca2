@@ -3,6 +3,7 @@ import { ScrollView } from "react-native"
 import { useRouter } from "expo-router"
 
 import useCases from "lib/common/use-cases"
+import { getVersion } from "lib/common/utils/expo-utils"
 
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
@@ -29,6 +30,7 @@ export default function SquadSelectionScreen() {
 
   return (
     <ScrollView style={styles.container}>
+      <Txt style={styles.version}>{getVersion()}</Txt>
       <Spacer y={30} />
       <Txt style={styles.title}>
         {"<"}Fallout Companion App{">"}
