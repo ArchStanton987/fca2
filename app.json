@@ -15,7 +15,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#021000"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -24,10 +26,10 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      
+      "package": "com.archstanton987.fca2"
     },
     "androidStatusBar": {
-      "hidden": true,
+      "hidden": true
     },
     "androidNavigationBar": {
       "backgroundColor": "#021000"
@@ -37,6 +39,16 @@
       "bundler": "metro",
       "backgroundColor": "#021000"
     },
-    "plugins": ["expo-router"]
+    "plugins": [
+      "expo-router"
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "56bb3475-f8d1-4161-a940-9b7e02dc5cf0"
+      }
+    }
   }
 }
