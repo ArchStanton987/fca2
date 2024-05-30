@@ -31,8 +31,9 @@ export const getNewLimbsHp = (char: Character, newDate: Date) => {
 
   // hpDiff can be negative if character is poisoned
   const baseDamageHp = Math.abs(hpDiff)
+  const poisonDamageMultiplier = 1 - char.secAttr.curr.poisResist / 100
   // damage to be taken with poison resistance
-  const damageHp = (char.secAttr.curr.poisResist / 100) * baseDamageHp
+  const damageHp = poisonDamageMultiplier * baseDamageHp
   for (let i = 0; i < damageHp; i += 1) {
     const limbsToTakeDamage = limbsHpArray.filter(({ value }) => value > 0)
     const randomIndex = getRandomArbitrary(0, limbsToTakeDamage.length)

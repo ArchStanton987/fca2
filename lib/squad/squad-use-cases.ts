@@ -28,8 +28,10 @@ function getSquadUseCases(db: keyof typeof getRepository = "rtdb") {
 
         // TODO: add "types" for effects (poison, withdrawal, cripled, healthState, etc)
         const hasPoison = Object.values(char.effectsRecord).some(el => el.id.startsWith("poison"))
+        const isMissingHp = char.health.missingHp > 0
 
-        if (hasPoison || char.health.missingHp > 0) {
+        // if character has poison or missing hp, his health might need to be updated
+        if (hasPoison || isMissingHp) {
           const newLimbsHp = getNewLimbsHp(char, date)
           promises.push(statusUseCases.groupUpdate(char, newLimbsHp))
         }

@@ -905,7 +905,7 @@ const effectsMap: Record<EffectId, EffectData> = {
 
   poisonPlantStrong: {
     id: "poisonPlantStrong",
-    label: "Poison : venin de plante léger",
+    label: "Poison : venin de plante puissant",
     symptoms: [{ id: "healHpPerHour", operation: "add", value: -60 }],
     length: 96,
     isWithdrawal: false,
