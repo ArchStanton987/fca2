@@ -26,6 +26,7 @@ export function ListHeader({
   onPress: (type: WeaponSortableKey) => void
   sortState: WeaponSort
 }) {
+  const { type, isAsc } = sortState
   return (
     <View style={[styles.row, styles.container, styles.header]}>
       <TouchableOpacity
@@ -34,7 +35,7 @@ export function ListHeader({
       >
         <Txt>EQU</Txt>
         <Spacer x={3} />
-        <Caret type="equiped" sortState={sortState} />
+        <Caret isVisible={type === "equiped"} direction={isAsc ? "up" : "down"} />
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => onPress("name")}
@@ -42,7 +43,7 @@ export function ListHeader({
       >
         <Txt>NOM</Txt>
         <Spacer x={3} />
-        <Caret type="name" sortState={sortState} />
+        <Caret isVisible={type === "name"} direction={isAsc ? "up" : "down"} />
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => onPress("damage")}
@@ -50,13 +51,13 @@ export function ListHeader({
       >
         <Txt>DEG</Txt>
         <Spacer x={3} />
-        <Caret type="damage" sortState={sortState} />
+        <Caret isVisible={type === "damage"} direction={isAsc ? "up" : "down"} />
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => onPress("skill")}
         style={[styles.listHeader, styles.skillContainer]}
       >
-        <Caret type="skill" sortState={sortState} />
+        <Caret isVisible={type === "skill"} direction={isAsc ? "up" : "down"} />
         <Spacer x={3} />
         <Txt>COMP</Txt>
       </TouchableOpacity>
@@ -64,7 +65,7 @@ export function ListHeader({
         onPress={() => onPress("ammo")}
         style={[styles.listHeader, styles.ammoContainer]}
       >
-        <Caret type="ammo" sortState={sortState} />
+        <Caret isVisible={type === "ammo"} direction={isAsc ? "up" : "down"} />
         <Spacer x={3} />
         <Txt>MUN</Txt>
       </TouchableOpacity>

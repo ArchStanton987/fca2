@@ -15,6 +15,11 @@ const styles = StyleSheet.create({
   selected: {
     backgroundColor: colors.terColor
   },
+  labelHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1
+  },
   labelContainer: {
     alignSelf: "flex-start",
     justifyContent: "center",

@@ -1,25 +1,16 @@
 import { AntDesign } from "@expo/vector-icons"
 
-import {
-  ClothingSort,
-  ClothingSortableKey
-} from "screens/InventoryTabs/ClothingsScreen/ClothingsScreen.types"
-import {
-  WeaponSort,
-  WeaponSortableKey
-} from "screens/InventoryTabs/WeaponsScreen/WeaponsScreen.types"
 import colors from "styles/colors"
 
 type CaretProps = {
-  type: WeaponSortableKey | ClothingSortableKey
-  sortState: WeaponSort | ClothingSort
+  direction: "up" | "down"
+  isVisible: boolean
 }
 
-export default function Caret({ type, sortState }: CaretProps) {
-  const isVisible = sortState.type === type
+export default function Caret({ isVisible, direction }: CaretProps) {
   return (
     <AntDesign
-      name={sortState.isAsc ? "caretup" : "caretdown"}
+      name={direction === "up" ? "caretup" : "caretdown"}
       size={6}
       color={isVisible ? colors.secColor : "transparent"}
     />

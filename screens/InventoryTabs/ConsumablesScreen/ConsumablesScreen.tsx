@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import { FlatList, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
@@ -21,6 +21,7 @@ import { SearchParams } from "screens/ScreenParams"
 export default function ConsumablesScreen() {
   const localParams = useLocalSearchParams<SearchParams<DrawerParams>>()
   const [selectedItem, setSelectedItem] = useState<Consumable["dbKey"] | null>(null)
+  const [isAscSort, setIsAscSort] = useState(true)
 
   const { groupedConsumables } = useInventory()
   const character = useCharacter()
@@ -40,13 +41,24 @@ export default function ConsumablesScreen() {
     setSelectedItem(null)
   }
 
+  const onPressHeader = () => setIsAscSort(prev => !prev)
+
+  const sortedConsumables = useMemo(() => {
+    const sortFn = (a: Consumable, b: Consumable) => {
+      if (isAscSort) return a.data.label.localeCompare(b.data.label)
+      return b.data.label.localeCompare(a.data.label)
+    }
+    const sorted = groupedConsumables.sort(sortFn)
+    return sorted
+  }, [groupedConsumables, isAscSort])
+
   return (
     <DrawerPage>
       <Section style={{ flex: 1 }}>
         <FlatList
-          data={groupedConsumables}
+          data={sortedConsumables}
           keyExtractor={item => item.dbKey}
-          ListHeaderComponent={ListHeader}
+          ListHeaderComponent={<ListHeader onPress={onPressHeader} isAsc={isAscSort} />}
           stickyHeaderIndices={[0]}
           renderItem={({ item }) => (
             <ConsumableRow

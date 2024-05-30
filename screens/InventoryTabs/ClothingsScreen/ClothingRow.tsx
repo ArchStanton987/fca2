@@ -23,6 +23,7 @@ export function ListHeader({
   onPress: (type: ClothingSortableKey) => void
   sortState: ClothingSort
 }) {
+  const { isAsc, type } = sortState
   return (
     <View style={[styles.row, styles.container, styles.header]}>
       <TouchableOpacity
@@ -31,18 +32,18 @@ export function ListHeader({
       >
         <Txt>EQU</Txt>
         <Spacer x={3} />
-        <Caret type="equiped" sortState={sortState} />
+        <Caret isVisible={type === "equiped"} direction={isAsc ? "up" : "down"} />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => onPress("name")} style={[styles.row, styles.labelContainer]}>
         <Txt>OBJET</Txt>
         <Spacer x={3} />
-        <Caret type="name" sortState={sortState} />
+        <Caret isVisible={type === "name"} direction={isAsc ? "up" : "down"} />
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => onPress("physRes")}
         style={[styles.row, styles.damageContainer]}
       >
-        <Caret type="physRes" sortState={sortState} />
+        <Caret isVisible={type === "physRes"} direction={isAsc ? "up" : "down"} />
         <Spacer x={2} />
         <Txt>PHY</Txt>
       </TouchableOpacity>
@@ -50,7 +51,7 @@ export function ListHeader({
         onPress={() => onPress("lasRes")}
         style={[styles.row, styles.damageContainer]}
       >
-        <Caret type="lasRes" sortState={sortState} />
+        <Caret isVisible={type === "lasRes"} direction={isAsc ? "up" : "down"} />
         <Spacer x={2} />
         <Txt>LAS</Txt>
       </TouchableOpacity>
@@ -58,7 +59,7 @@ export function ListHeader({
         onPress={() => onPress("fireRes")}
         style={[styles.row, styles.damageContainer]}
       >
-        <Caret type="fireRes" sortState={sortState} />
+        <Caret isVisible={type === "fireRes"} direction={isAsc ? "up" : "down"} />
         <Spacer x={2} />
         <Txt>FEU</Txt>
       </TouchableOpacity>
@@ -66,7 +67,7 @@ export function ListHeader({
         onPress={() => onPress("plaRes")}
         style={[styles.row, styles.damageContainer]}
       >
-        <Caret type="plaRes" sortState={sortState} />
+        <Caret isVisible={type === "plaRes"} direction={isAsc ? "up" : "down"} />
         <Spacer x={2} />
         <Txt>PLA</Txt>
       </TouchableOpacity>
@@ -74,7 +75,7 @@ export function ListHeader({
         onPress={() => onPress("malus")}
         style={[styles.row, styles.damageContainer]}
       >
-        <Caret type="malus" sortState={sortState} />
+        <Caret isVisible={type === "malus"} direction={isAsc ? "up" : "down"} />
         <Spacer x={2} />
         <Txt>MAL</Txt>
       </TouchableOpacity>
