@@ -1,4 +1,3 @@
-TODO: add poison types & damages
 TODO: sort collectibles
 TODO: add levelup
 

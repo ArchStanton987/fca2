@@ -23,22 +23,20 @@ const styles = StyleSheet.create({
     width: 40
   },
   labelContainer: {
-    justifyContent: "center",
     flex: 1
   },
   damageContainer: {
-    width: 60,
-    justifyContent: "center"
+    width: 60
   },
   skillContainer: {
-    justifyContent: "center",
-    width: 40,
-    alignItems: "flex-end"
+    width: 50,
+    flexDirection: "row",
+    justifyContent: "flex-end"
   },
   ammoContainer: {
-    justifyContent: "center",
-    alignItems: "flex-end",
-    width: 50
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    width: 55
   },
   deleteContainer: {
     width: 40,

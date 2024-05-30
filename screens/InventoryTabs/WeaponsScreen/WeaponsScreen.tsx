@@ -22,7 +22,7 @@ import { SearchParams } from "screens/ScreenParams"
 export default function WeaponsScreen() {
   const localParams = useLocalSearchParams<SearchParams<DrawerParams>>()
   const [selectedWeapon, setSelectedWeapon] = useState<Weapon | null>(null)
-  const [sort, setSort] = useState<Sort>({ type: "dbKey", isAsc: true })
+  const [sort, setSort] = useState<Sort>({ type: "dbKey", isAsc: false })
 
   const char = useCharacter()
   const { weapons } = useInventory()
@@ -42,12 +42,12 @@ export default function WeaponsScreen() {
 
   const sortedWeapons = useMemo(() => {
     const sortFn = (a: Weapon, b: Weapon) => {
-      if (sort.type === "dbKey") return a.dbKey.localeCompare(b.dbKey)
-      if (sort.type === "name") return a.data.label.localeCompare(b.data.label)
-      if (sort.type === "damage") return getDamageEst(char, a) > getDamageEst(char, b) ? -1 : 1
+      if (sort.type === "dbKey") return b.dbKey.localeCompare(a.dbKey)
+      if (sort.type === "name") return b.data.label.localeCompare(a.data.label)
+      if (sort.type === "damage") return getDamageEst(char, a) > getDamageEst(char, b) ? 1 : -1
       if (sort.type === "skill") return b.skill > a.skill ? -1 : 1
       if (sort.type === "ammo") return b.ammo > a.ammo ? -1 : 1
-      if (sort.type === "equiped") return a.isEquiped ? -1 : 1
+      if (sort.type === "equiped") return a.isEquiped ? 1 : -1
       return 0
     }
     const sorted = weapons.sort(sortFn)

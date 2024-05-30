@@ -7,6 +7,7 @@ import { Weapon } from "lib/objects/data/weapons/weapons.types"
 import Toast from "react-native-toast-message"
 
 import CheckBox from "components/CheckBox/CheckBox"
+import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { Sort, Sortable } from "screens/InventoryTabs/WeaponsScreen/WeaponsScreen.types"
@@ -15,9 +16,13 @@ import colors from "styles/colors"
 import styles from "./WeaponRow.styles"
 
 function Caret({ type, sortState }: { type: Sortable; sortState: Sort }) {
-  if (sortState.type !== type) return null
+  const isVisible = sortState.type === type
   return (
-    <AntDesign name={sortState.isAsc ? "caretup" : "caretdown"} size={17} color={colors.secColor} />
+    <AntDesign
+      name={sortState.isAsc ? "caretup" : "caretdown"}
+      size={6}
+      color={isVisible ? colors.secColor : "transparent"}
+    />
   )
 }
 
@@ -35,6 +40,7 @@ export function ListHeader({
         style={[styles.listHeader, styles.equipedContainer]}
       >
         <Txt>EQU</Txt>
+        <Spacer x={3} />
         <Caret type="equiped" sortState={sortState} />
       </TouchableOpacity>
       <TouchableOpacity
@@ -42,6 +48,7 @@ export function ListHeader({
         style={[styles.listHeader, styles.labelContainer]}
       >
         <Txt>NOM</Txt>
+        <Spacer x={3} />
         <Caret type="name" sortState={sortState} />
       </TouchableOpacity>
       <TouchableOpacity
@@ -49,21 +56,24 @@ export function ListHeader({
         style={[styles.listHeader, styles.damageContainer]}
       >
         <Txt>DEG</Txt>
+        <Spacer x={3} />
         <Caret type="damage" sortState={sortState} />
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => onPress("skill")}
         style={[styles.listHeader, styles.skillContainer]}
       >
-        <Txt>COMP</Txt>
         <Caret type="skill" sortState={sortState} />
+        <Spacer x={3} />
+        <Txt>COMP</Txt>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => onPress("ammo")}
         style={[styles.listHeader, styles.ammoContainer]}
       >
-        <Txt>MUN</Txt>
         <Caret type="ammo" sortState={sortState} />
+        <Spacer x={3} />
+        <Txt>MUN</Txt>
       </TouchableOpacity>
       <View style={styles.deleteContainer}>
         <Txt> </Txt>
