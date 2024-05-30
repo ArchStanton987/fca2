@@ -24,8 +24,9 @@ const styles = StyleSheet.create({
     flex: 1
   },
   damageContainer: {
-    width: 32,
-    alignItems: "flex-end"
+    width: 34,
+    flexDirection: "row",
+    justifyContent: "flex-end"
   },
   deleteContainer: {
     width: 40,

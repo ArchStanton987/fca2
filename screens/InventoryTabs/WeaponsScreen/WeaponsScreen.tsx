@@ -16,13 +16,16 @@ import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import WeaponRow, { ListHeader } from "screens/InventoryTabs/WeaponsScreen/WeaponRow"
 import WeaponsDetails from "screens/InventoryTabs/WeaponsScreen/WeaponsDetails"
-import { Sort, Sortable } from "screens/InventoryTabs/WeaponsScreen/WeaponsScreen.types"
+import {
+  WeaponSort,
+  WeaponSortableKey
+} from "screens/InventoryTabs/WeaponsScreen/WeaponsScreen.types"
 import { SearchParams } from "screens/ScreenParams"
 
 export default function WeaponsScreen() {
   const localParams = useLocalSearchParams<SearchParams<DrawerParams>>()
   const [selectedWeapon, setSelectedWeapon] = useState<Weapon | null>(null)
-  const [sort, setSort] = useState<Sort>({ type: "dbKey", isAsc: false })
+  const [sort, setSort] = useState<WeaponSort>({ type: "dbKey", isAsc: false })
 
   const char = useCharacter()
   const { weapons } = useInventory()
@@ -36,7 +39,7 @@ export default function WeaponsScreen() {
       params: { squadId: localParams.squadId, charId: localParams.charId, initCategory: "weapons" }
     })
 
-  const onPressWeaponHeader = (type: Sortable) => {
+  const onPressWeaponHeader = (type: WeaponSortableKey) => {
     setSort(prev => ({ type, isAsc: prev.type === type ? !prev.isAsc : true }))
   }
 

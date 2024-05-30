@@ -1,2 +1,2 @@
-export type Sortable = "equiped" | "name" | "damage" | "skill" | "ammo" | "dbKey"
-export type Sort = { type: Sortable; isAsc: boolean }
+export type WeaponSortableKey = "equiped" | "name" | "damage" | "skill" | "ammo" | "dbKey"
+export type WeaponSort = { type: WeaponSortableKey; isAsc: boolean }

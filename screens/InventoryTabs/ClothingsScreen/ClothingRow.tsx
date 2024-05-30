@@ -7,36 +7,77 @@ import { Clothing } from "lib/objects/data/clothings/clothings.types"
 import Toast from "react-native-toast-message"
 
 import CheckBox from "components/CheckBox/CheckBox"
+import Spacer from "components/Spacer"
 import Txt from "components/Txt"
+import Caret from "components/icons/Caret"
 import { useCharacter } from "contexts/CharacterContext"
 import colors from "styles/colors"
 
 import styles from "./ClothingRow.styles"
+import { ClothingSort, ClothingSortableKey } from "./ClothingsScreen.types"
 
-export function ListHeader() {
+export function ListHeader({
+  onPress,
+  sortState
+}: {
+  onPress: (type: ClothingSortableKey) => void
+  sortState: ClothingSort
+}) {
   return (
     <View style={[styles.row, styles.container, styles.header]}>
-      <View style={styles.equipedContainer}>
+      <TouchableOpacity
+        onPress={() => onPress("equiped")}
+        style={[styles.row, styles.equipedContainer]}
+      >
         <Txt>EQU</Txt>
-      </View>
-      <View style={styles.labelContainer}>
+        <Spacer x={3} />
+        <Caret type="equiped" sortState={sortState} />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => onPress("name")} style={[styles.row, styles.labelContainer]}>
         <Txt>OBJET</Txt>
-      </View>
-      <View style={styles.damageContainer}>
+        <Spacer x={3} />
+        <Caret type="name" sortState={sortState} />
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => onPress("physRes")}
+        style={[styles.row, styles.damageContainer]}
+      >
+        <Caret type="physRes" sortState={sortState} />
+        <Spacer x={2} />
         <Txt>PHY</Txt>
-      </View>
-      <View style={styles.damageContainer}>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => onPress("lasRes")}
+        style={[styles.row, styles.damageContainer]}
+      >
+        <Caret type="lasRes" sortState={sortState} />
+        <Spacer x={2} />
         <Txt>LAS</Txt>
-      </View>
-      <View style={styles.damageContainer}>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => onPress("fireRes")}
+        style={[styles.row, styles.damageContainer]}
+      >
+        <Caret type="fireRes" sortState={sortState} />
+        <Spacer x={2} />
         <Txt>FEU</Txt>
-      </View>
-      <View style={styles.damageContainer}>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => onPress("plaRes")}
+        style={[styles.row, styles.damageContainer]}
+      >
+        <Caret type="plaRes" sortState={sortState} />
+        <Spacer x={2} />
         <Txt>PLA</Txt>
-      </View>
-      <View style={styles.damageContainer}>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => onPress("malus")}
+        style={[styles.row, styles.damageContainer]}
+      >
+        <Caret type="malus" sortState={sortState} />
+        <Spacer x={2} />
         <Txt>MAL</Txt>
-      </View>
+      </TouchableOpacity>
       <View style={styles.deleteContainer} />
     </View>
   )

@@ -9,29 +9,22 @@ import Toast from "react-native-toast-message"
 import CheckBox from "components/CheckBox/CheckBox"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
+import Caret from "components/icons/Caret"
 import { useCharacter } from "contexts/CharacterContext"
-import { Sort, Sortable } from "screens/InventoryTabs/WeaponsScreen/WeaponsScreen.types"
+import {
+  WeaponSort,
+  WeaponSortableKey
+} from "screens/InventoryTabs/WeaponsScreen/WeaponsScreen.types"
 import colors from "styles/colors"
 
 import styles from "./WeaponRow.styles"
-
-function Caret({ type, sortState }: { type: Sortable; sortState: Sort }) {
-  const isVisible = sortState.type === type
-  return (
-    <AntDesign
-      name={sortState.isAsc ? "caretup" : "caretdown"}
-      size={6}
-      color={isVisible ? colors.secColor : "transparent"}
-    />
-  )
-}
 
 export function ListHeader({
   onPress,
   sortState
 }: {
-  onPress: (type: Sortable) => void
-  sortState: Sort
+  onPress: (type: WeaponSortableKey) => void
+  sortState: WeaponSort
 }) {
   return (
     <View style={[styles.row, styles.container, styles.header]}>
