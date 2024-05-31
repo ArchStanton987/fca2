@@ -1,3 +1,4 @@
+import getAbilitiesUseCases from "lib/character/abilities/abilities-use-cases"
 import getEffectsUseCases from "lib/character/effects/effects-use-cases"
 import getStatusUseCases from "lib/character/status/status-use-cases"
 import getEquipedObjectsUseCases from "lib/objects/equiped-objects-use-cases"
@@ -9,13 +10,15 @@ const equipedObjects = getEquipedObjectsUseCases()
 const inventory = getInventoryUseCases()
 const status = getStatusUseCases()
 const squad = getSquadUseCases()
+const abilities = getAbilitiesUseCases()
 
 const useCases = {
   effects,
   equipedObjects,
   inventory,
   status,
-  squad
+  squad,
+  abilities
 }
 
 export default useCases

@@ -3,10 +3,7 @@ import { useMemo, useState } from "react"
 import { Stack, useLocalSearchParams } from "expo-router"
 
 import { NativeStackNavigationOptions } from "@react-navigation/native-stack"
-import dbKeys from "db/db-keys"
 import Character, { DbChar } from "lib/character/Character"
-import { DbAbilities } from "lib/character/abilities/abilities.types"
-import { DbStatus } from "lib/character/status/status.types"
 import useCases from "lib/common/use-cases"
 import Inventory from "lib/objects/Inventory"
 import Toast from "react-native-toast-message"
@@ -15,15 +12,12 @@ import { DrawerParams } from "components/Drawer/Drawer.params"
 import { CharacterContext } from "contexts/CharacterContext"
 import { InventoryContext } from "contexts/InventoryContext"
 import { useSquad } from "contexts/SquadContext"
-import useDbSubscribe from "hooks/db/useDbSubscribe"
 import useRtdbSub from "hooks/db/useRtdbSub"
 import UpdatesProvider from "providers/UpdatesProvider"
 import LoadingScreen from "screens/LoadingScreen"
 import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
 import { getDDMMYYYY, getHHMM } from "utils/date"
-
-type DbRecord<T> = T | undefined
 
 const modalOptions: NativeStackNavigationOptions = {
   presentation: "modal",
@@ -41,13 +35,12 @@ export default function CharStack() {
 
   const [currDatetime, setCurrDatetime] = useState(squad.date.toJSON())
 
-  const dbCharUrl = dbKeys.char(charId)
   // use separate subscriptions to avoid unnecessary bandwidth usage
-  const abilities: DbRecord<DbAbilities> = useDbSubscribe(dbCharUrl.abilities)
+  const abilities = useRtdbSub(useCases.abilities.getAbilities(charId))
   const effects = useRtdbSub(useCases.effects.getAll(charId))
   const equipedObj = useRtdbSub(useCases.equipedObjects.getAll(charId))
   const inventory = useRtdbSub(useCases.inventory.getAll(charId))
-  const status: DbRecord<DbStatus> = useDbSubscribe(dbCharUrl.status.index)
+  const status = useRtdbSub(useCases.status.get(charId))
 
   const character = useMemo(() => {
     const dbCharData = { abilities, effects, equipedObj, status }

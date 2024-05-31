@@ -7,7 +7,14 @@ const dbKeys = {
   }),
   char: (charId: string) => ({
     index: `/v2/characters/${charId}`,
-    abilities: `/v2/characters/${charId}/abilities`,
+    abilities: {
+      index: `/v2/characters/${charId}/abilities`,
+      baseSPECIAL: `/v2/characters/${charId}/abilities/baseSPECIAL`,
+      knowledges: `/v2/characters/${charId}/abilities/knowledges`,
+      upSkills: `/v2/characters/${charId}/abilities/upSkills`,
+      perks: `/v2/characters/${charId}/abilities/perks`,
+      traits: `/v2/characters/${charId}/abilities/traits`
+    },
     knowledges: `/v2/characters/${charId}/abilities/knowledges`,
     baseSpecial: `/v2/characters/${charId}/abilities/baseSPECIAL`,
     effects: `/v2/characters/${charId}/effects`,
