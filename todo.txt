@@ -1,6 +1,11 @@
+TODO: fix update objects modal columns width (can't read searched items)
 TODO: add levelup
+  - change db model for perks (any perk can have a level)
+  - update perks
+  - add level up ui
 TODO: collectibles UI
 TODO: updates & versionning
+  - add standard-update
 
 
 
