@@ -63,6 +63,8 @@ export default class Character {
       equipedObjects: computed,
       //
       effectsRecord: computed
+      //
+      // progress: computed
     })
   }
 
@@ -200,4 +202,6 @@ export default class Character {
     })
     return effectsRecord
   }
+
+  // get progress() {}
 }
