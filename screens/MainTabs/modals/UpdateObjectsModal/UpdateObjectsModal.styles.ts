@@ -8,17 +8,17 @@ const styles = StyleSheet.create({
     flex: 1
   },
   categoriesSection: {
-    width: 160
+    width: 120
   },
   listSection: {
     flex: 1
   },
   searchSection: {
-    width: 280,
+    width: 200,
     height: 90
   },
   addSection: {
-    width: 280,
+    width: 200,
     flex: 1
   },
   iconsContainer: {
