@@ -4,12 +4,18 @@ export type DbEffect = { id: EffectId; startTs?: string; endTs?: string }
 
 export type DbEffects = Record<string, DbEffect>
 
+export type EffectType =
+  | "drug"
+  | "poison"
+  | "withdrawal"
+  | "cripled"
+  | "healthState"
+  | "radState"
+  | "other"
+
 export type EffectId =
   | "dirty"
   | "dirtyPlus"
-  | "tired"
-  | "exhausted"
-  | "unconscious"
   | "buffout"
   | "psycho"
   | "psycho_withdraw"
@@ -63,13 +69,13 @@ export type EffectId =
 
 export type EffectData = {
   id: EffectId
+  type: EffectType
   label: string
   symptoms: Symptom[]
   length: number | null
   description: string
   od: number | null
   nextEffectId: EffectId | null
-  isWithdrawal: boolean
 }
 
 export type Effect = {

@@ -27,7 +27,7 @@ function getSquadUseCases(db: keyof typeof getRepository = "rtdb") {
         promises.push(effectsUseCases.groupAdd(char, followingEffects))
 
         // TODO: add "types" for effects (poison, withdrawal, cripled, healthState, etc)
-        const hasPoison = Object.values(char.effectsRecord).some(el => el.id.startsWith("poison"))
+        const hasPoison = Object.values(char.effectsRecord).some(el => el.data.type === "poison")
         const isMissingHp = char.health.missingHp > 0
 
         // if character has poison or missing hp, his health might need to be updated

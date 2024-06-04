@@ -9,7 +9,8 @@ import { DbStatus } from "lib/character/status/status.types"
 export const getEffectLengthInMs = (char: Character, effect: EffectData) => {
   const isChemReliant = char.dbAbilities.traits?.includes("chemReliant")
   if (!effect.length) return null
-  const lengthInH = effect.isWithdrawal && isChemReliant ? effect.length * 0.5 : effect.length
+  const isWithdrawal = effect.type === "withdrawal"
+  const lengthInH = isWithdrawal && isChemReliant ? effect.length * 0.5 : effect.length
   return lengthInH * 60 * 60 * 1000
 }
 
