@@ -1,3 +1,12 @@
+import {
+  getHpGainPerLevel,
+  getInitKnowledgePoints,
+  getInitSkillsPoints,
+  getSkillPointsPerLevel,
+  getSpecLevelInterval
+} from "lib/character/progress/progress-utils"
+import { Progress } from "lib/character/progress/progress.types"
+import { getLevelAndThresholds } from "lib/character/status/status-calc"
 import { getRemainingTime } from "lib/common/utils/time-calc"
 import { DbEquipedObjects } from "lib/objects/data/objects.types"
 import weaponsMap from "lib/objects/data/weapons/weapons"
@@ -62,9 +71,9 @@ export default class Character {
       knowledges: computed,
       equipedObjects: computed,
       //
-      effectsRecord: computed
+      effectsRecord: computed,
       //
-      // progress: computed
+      progress: computed
     })
   }
 
@@ -203,5 +212,26 @@ export default class Character {
     return effectsRecord
   }
 
-  // get progress() {}
+  get progress(): Progress {
+    const { traits, knowledges } = this.dbAbilities
+    const { level } = getLevelAndThresholds(this.status.exp)
+
+    const initSkillPoints = getInitSkillsPoints()
+    const skillPointsPerLevel = getSkillPointsPerLevel(this.special.base, traits || [])
+    const unlockedSkillPoints = skillPointsPerLevel * level + initSkillPoints
+    const usedSkillsPoints = Object.values(this.skills.up).reduce((acc, curr) => curr + acc, 0)
+
+    const initKnowledgePoints = getInitKnowledgePoints(this.status.background)
+    const unlockedKnowledgePoints = initKnowledgePoints + level
+    const usedKnowledgePoints = Object.values(knowledges).reduce((acc, curr) => curr + acc, 0)
+
+    return {
+      exp: this.status.exp,
+      level: getLevelAndThresholds(this.status.exp).level,
+      hpGainPerLevel: getHpGainPerLevel(this.special.base),
+      specLevelInterval: getSpecLevelInterval(traits || []),
+      availableSkillPoints: unlockedSkillPoints - usedSkillsPoints,
+      availableKnowledgePoints: unlockedKnowledgePoints - usedKnowledgePoints
+    }
+  }
 }
