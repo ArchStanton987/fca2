@@ -1,21 +1,18 @@
 import React from "react"
-import { TouchableOpacity } from "react-native"
+import { TouchableOpacity, TouchableOpacityProps } from "react-native"
 
 import { Entypo } from "@expo/vector-icons"
 
 import colors from "styles/colors"
 
-export default function MinusIcon({
-  size = 45,
-  onPress,
-  color = colors.secColor
-}: {
+type MinusIconProps = TouchableOpacityProps & {
   size?: number
-  onPress: () => void
   color?: string
-}) {
+}
+
+export default function MinusIcon({ size = 45, color = colors.secColor, ...rest }: MinusIconProps) {
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity {...rest}>
       <Entypo name="circle-with-minus" size={size} color={color} />
     </TouchableOpacity>
   )

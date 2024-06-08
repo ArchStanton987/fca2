@@ -16,6 +16,7 @@ import { getModAttribute } from "../common/utils/char-calc"
 import clothingsMap from "../objects/data/clothings/clothings"
 import { DbAbilities } from "./abilities/abilities.types"
 import { KnowledgeId } from "./abilities/knowledges/knowledge-types"
+import knowledgeLevels from "./abilities/knowledges/knowledges-levels"
 import perksMap from "./abilities/perks/perks"
 import { secAttrArray } from "./abilities/sec-attr/sec-attr"
 import { SecAttrsValues } from "./abilities/sec-attr/sec-attr-types"
@@ -218,12 +219,14 @@ export default class Character {
 
     const initSkillPoints = getInitSkillsPoints()
     const skillPointsPerLevel = getSkillPointsPerLevel(this.special.base, traits || [])
-    const unlockedSkillPoints = skillPointsPerLevel * level + initSkillPoints
+    const unlockedSkillPoints = skillPointsPerLevel * (level - 1) + initSkillPoints
     const usedSkillsPoints = Object.values(this.skills.up).reduce((acc, curr) => curr + acc, 0)
-
     const initKnowledgePoints = getInitKnowledgePoints(this.status.background)
-    const unlockedKnowledgePoints = initKnowledgePoints + level
-    const usedKnowledgePoints = Object.values(knowledges).reduce((acc, curr) => curr + acc, 0)
+    const unlockedKnowledgePoints = initKnowledgePoints + (level - 1)
+    const usedKnowledgePoints = Object.values(knowledges).reduce((acc, curr) => {
+      const { cost } = knowledgeLevels.find(el => el.id === curr) || { cost: 0 }
+      return cost + acc
+    }, 0)
 
     return {
       exp: this.status.exp,

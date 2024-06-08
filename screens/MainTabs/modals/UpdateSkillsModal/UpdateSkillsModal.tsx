@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { View } from "react-native"
+import { TouchableOpacity, View } from "react-native"
 
 import { router } from "expo-router"
 
@@ -33,11 +33,23 @@ function Row({ label, skillId, values, onModSkill, canAdd, canRemove }: RowProps
       <Txt style={styles.label}>{label}</Txt>
       <Txt style={styles.baseValue}>{values.baseValue}</Txt>
       <View style={styles.modContainer}>
-        {canRemove ? <MinusIcon onPress={() => onModSkill("minus", skillId)} /> : <Spacer x={20} />}
+        {canRemove ? (
+          <TouchableOpacity onPress={() => onModSkill("minus", skillId)}>
+            <MinusIcon size={20} />
+          </TouchableOpacity>
+        ) : (
+          <Spacer x={20} />
+        )}
         <Spacer x={10} />
         <Txt style={styles.upValue}>{values.upValue}</Txt>
         <Spacer x={10} />
-        {canAdd ? <PlusIcon onPress={() => onModSkill("plus", skillId)} /> : <Spacer x={20} />}
+        {canAdd ? (
+          <TouchableOpacity onPress={() => onModSkill("plus", skillId)}>
+            <PlusIcon size={20} />
+          </TouchableOpacity>
+        ) : (
+          <Spacer x={20} />
+        )}
       </View>
       <Txt style={styles.totalValue}>{values.baseValue + values.upValue}</Txt>
     </View>
@@ -46,14 +58,16 @@ function Row({ label, skillId, values, onModSkill, canAdd, canRemove }: RowProps
 
 export default function UpdateSkillsModal() {
   const { skills, progress, charId } = useCharacter()
+  const { availableSkillPoints } = progress
   const { base, up } = skills
 
   const [prevUpSkills, setPrevUpSkills] = useState(up)
-  const unusedSkillPoints =
-    progress.availableSkillPoints - Object.values(prevUpSkills).reduce((acc, val) => acc + val, 0)
+  const usedSkillsPoints = Object.values(up).reduce((acc, val) => acc + val, 0)
+  const sumPrevUpSkills = Object.values(prevUpSkills).reduce((acc, val) => acc + val, 0)
+  const res = usedSkillsPoints + availableSkillPoints - sumPrevUpSkills
 
   const onModSkill = (modType: "plus" | "minus", skillId: SkillId) => {
-    if (unusedSkillPoints === 0 && modType === "plus") return
+    if (res === 0 && modType === "plus") return
     if (modType === "minus" && prevUpSkills[skillId] === up[skillId]) return
     setPrevUpSkills(prev => ({ ...prev, [skillId]: prev[skillId] + (modType === "plus" ? 1 : -1) }))
   }
@@ -63,16 +77,14 @@ export default function UpdateSkillsModal() {
 
   return (
     <ModalBody>
-      <Txt style={{ textAlign: "center" }}>
-        Points de compétence à répartir : {unusedSkillPoints}
-      </Txt>
+      <Txt style={{ textAlign: "center" }}>Points de compétence à répartir : {res}</Txt>
       <Spacer y={20} />
       <ScrollableSection title="COMPETENCES" style={{ flex: 1 }}>
         {Object.values(skillsMap).map(skill => {
           const baseValue = base[skill.id]
           const upValue = prevUpSkills[skill.id]
           const values = { baseValue, upValue }
-          const canAdd = unusedSkillPoints > 0
+          const canAdd = res > 0
           const canRemove = prevUpSkills[skill.id] > up[skill.id]
           return (
             <Row

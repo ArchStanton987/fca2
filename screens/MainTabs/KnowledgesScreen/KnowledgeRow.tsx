@@ -79,7 +79,7 @@ export default function KnowledgeRow({ knowledge }: KnowledgeRowProps) {
         keyExtractor={item => `${knowledge.id}-${item.id}`}
         renderItem={({ item }) => (
           <View style={styles.levelContainer}>
-            <CheckBox isChecked={item.id < knowledge.value} />
+            <CheckBox isChecked={item.id <= knowledge.value} />
           </View>
         )}
       />

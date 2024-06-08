@@ -48,7 +48,7 @@ export default function TabBar(props: TabBarProps) {
             onPress={() => router.push({ pathname, params: { charId, squadId } })}
             onLongPress={() => {
               if (!hasBadge) return
-              const path = `${charRoute}/${tabBarId}/${name}/update-${name}`
+              const path = `${charRoute}/update-${name}`
               router.push({ pathname: path, params: { charId, squadId } })
             }}
           >

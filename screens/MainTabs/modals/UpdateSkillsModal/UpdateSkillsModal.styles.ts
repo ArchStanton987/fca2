@@ -3,24 +3,27 @@ import { StyleSheet } from "react-native"
 const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: "row",
-    flex: 1
+    flex: 1,
+    paddingVertical: 8
   },
   label: {
     flex: 1
   },
   baseValue: {
-    width: 50,
+    width: 100,
     textAlign: "right"
   },
   modContainer: {
     flexDirection: "row",
-    width: 100
+    width: 200
   },
   upValue: {
-    width: 50
+    width: 50,
+    textAlign: "right"
   },
   totalValue: {
-    width: 50
+    width: 100,
+    textAlign: "right"
   }
 })
 
