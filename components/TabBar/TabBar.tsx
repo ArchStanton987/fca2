@@ -8,6 +8,7 @@ import { BottomTabBarProps } from "@react-navigation/bottom-tabs"
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import Txt from "components/Txt"
 import SmallLine from "components/draws/Line/Line"
+import PlusIcon from "components/icons/PlusIcon"
 import { charRoute } from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { SearchParams } from "screens/ScreenParams"
@@ -51,8 +52,10 @@ export default function TabBar(props: TabBarProps) {
               router.push({ pathname: path, params: { charId, squadId } })
             }}
           >
-            {hasBadge && <View style={styles.badge} />}
-            <Txt style={styles.label}>{options.title}</Txt>
+            <>
+              {hasBadge && <PlusIcon style={styles.badge} size={12} />}
+              <Txt style={styles.label}>{options.title}</Txt>
+            </>
           </TouchableHighlight>
         )
       })}

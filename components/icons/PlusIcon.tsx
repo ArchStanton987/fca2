@@ -1,21 +1,22 @@
 import React from "react"
-import { TouchableOpacity } from "react-native"
+import { TouchableOpacity, TouchableOpacityProps } from "react-native"
 
 import { Entypo } from "@expo/vector-icons"
 
 import colors from "styles/colors"
 
+type PlusIconProps = TouchableOpacityProps & {
+  size?: number
+  color?: string
+}
 export default function PlusIcon({
   size = 45,
   onPress,
-  color = colors.secColor
-}: {
-  size?: number
-  onPress: () => void
-  color?: string
-}) {
+  color = colors.secColor,
+  ...rest
+}: PlusIconProps) {
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity {...rest}>
       <Entypo name="circle-with-plus" size={size} color={color} />
     </TouchableOpacity>
   )

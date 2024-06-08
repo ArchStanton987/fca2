@@ -16,10 +16,9 @@ const styles = StyleSheet.create({
     color: colors.secColor
   },
   badge: {
-    height: 12,
-    width: 12,
-    backgroundColor: colors.secColor,
-    borderRadius: 12
+    position: "absolute",
+    top: 5,
+    right: 5
   },
   tabBarItem: {
     backgroundColor: colors.primColor,
