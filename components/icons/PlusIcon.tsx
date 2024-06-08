@@ -9,12 +9,7 @@ type PlusIconProps = TouchableOpacityProps & {
   size?: number
   color?: string
 }
-export default function PlusIcon({
-  size = 45,
-  onPress,
-  color = colors.secColor,
-  ...rest
-}: PlusIconProps) {
+export default function PlusIcon({ size = 45, color = colors.secColor, ...rest }: PlusIconProps) {
   return (
     <TouchableOpacity {...rest}>
       <Entypo name="circle-with-plus" size={size} color={color} />
