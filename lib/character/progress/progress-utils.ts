@@ -40,10 +40,11 @@ export const getGivenDamage = (traits: TraitId[]) => {
 export const getInitSkillsPoints = () => 60
 
 export const getInitKnowledgePoints = (background: DbStatus["background"]) => {
+  const humanStartKnowledgesCost = 2 // ("free" knowledges : smell, hear, see, strenght)
   if (background === "jackal") {
-    return 4
+    return 4 + humanStartKnowledgesCost
   }
-  return 3
+  return 3 + humanStartKnowledgesCost
 }
 
 export const getUsedKnowledgesPoints = (knowledges: Record<KnowledgeId, KnowledgeLevelValue>) => {

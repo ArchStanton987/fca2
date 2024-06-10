@@ -63,8 +63,8 @@ export default function UpdateSkillsModal() {
 
   const [newUpSkills, setNewUpskills] = useState(up)
 
-  const sumPrevUpSkills = Object.values(newUpSkills).reduce((acc, val) => acc + val, 0)
-  const toAssignCount = usedSkillsPoints + availableSkillPoints - sumPrevUpSkills
+  const assignedCount = Object.values(newUpSkills).reduce((acc, val) => acc + val, 0)
+  const toAssignCount = usedSkillsPoints + availableSkillPoints - assignedCount
 
   const onModSkill = (modType: "plus" | "minus", skillId: SkillId) => {
     if (toAssignCount === 0 && modType === "plus") return

@@ -3,7 +3,8 @@ import {
   getInitKnowledgePoints,
   getInitSkillsPoints,
   getSkillPointsPerLevel,
-  getSpecLevelInterval
+  getSpecLevelInterval,
+  getUsedKnowledgesPoints
 } from "lib/character/progress/progress-utils"
 import { Progress } from "lib/character/progress/progress.types"
 import { getLevelAndThresholds } from "lib/character/status/status-calc"
@@ -16,7 +17,6 @@ import { getModAttribute } from "../common/utils/char-calc"
 import clothingsMap from "../objects/data/clothings/clothings"
 import { DbAbilities } from "./abilities/abilities.types"
 import { KnowledgeId } from "./abilities/knowledges/knowledge-types"
-import knowledgeLevels from "./abilities/knowledges/knowledges-levels"
 import perksMap from "./abilities/perks/perks"
 import { secAttrArray } from "./abilities/sec-attr/sec-attr"
 import { SecAttrsValues } from "./abilities/sec-attr/sec-attr-types"
@@ -189,6 +189,10 @@ export default class Character {
       .sort((a, b) => b.value - a.value)
   }
 
+  get knowledgesRecord() {
+    return this.dbAbilities.knowledges
+  }
+
   get equipedObjects() {
     const weapons = Object.entries(this.dbEquipedObjects.weapons || {}).map(([dbKey, value]) => ({
       dbKey,
@@ -223,10 +227,7 @@ export default class Character {
     const usedSkillsPoints = Object.values(this.skills.up).reduce((acc, curr) => curr + acc, 0)
     const initKnowledgePoints = getInitKnowledgePoints(this.status.background)
     const unlockedKnowledgePoints = initKnowledgePoints + (level - 1)
-    const usedKnowledgePoints = Object.values(knowledges).reduce((acc, curr) => {
-      const { cost } = knowledgeLevels.find(el => el.id === curr) || { cost: 0 }
-      return cost + acc
-    }, 0)
+    const usedKnowledgePoints = getUsedKnowledgesPoints(knowledges)
 
     return {
       exp: this.status.exp,
@@ -235,6 +236,7 @@ export default class Character {
       specLevelInterval: getSpecLevelInterval(traits || []),
       usedSkillsPoints,
       availableSkillPoints: unlockedSkillPoints - usedSkillsPoints,
+      usedKnowledgePoints,
       availableKnowledgePoints: unlockedKnowledgePoints - usedKnowledgePoints
     }
   }

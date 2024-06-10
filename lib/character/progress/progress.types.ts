@@ -5,5 +5,6 @@ export type Progress = {
   specLevelInterval: number
   usedSkillsPoints: number
   availableSkillPoints: number
+  usedKnowledgePoints: number
   availableKnowledgePoints: number
 }
