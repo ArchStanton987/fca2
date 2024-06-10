@@ -58,34 +58,34 @@ function Row({ label, skillId, values, onModSkill, canAdd, canRemove }: RowProps
 
 export default function UpdateSkillsModal() {
   const { skills, progress, charId } = useCharacter()
-  const { availableSkillPoints } = progress
+  const { availableSkillPoints, usedSkillsPoints } = progress
   const { base, up } = skills
 
-  const [prevUpSkills, setPrevUpSkills] = useState(up)
-  const usedSkillsPoints = Object.values(up).reduce((acc, val) => acc + val, 0)
-  const sumPrevUpSkills = Object.values(prevUpSkills).reduce((acc, val) => acc + val, 0)
-  const res = usedSkillsPoints + availableSkillPoints - sumPrevUpSkills
+  const [newUpSkills, setNewUpskills] = useState(up)
+
+  const sumPrevUpSkills = Object.values(newUpSkills).reduce((acc, val) => acc + val, 0)
+  const toAssignCount = usedSkillsPoints + availableSkillPoints - sumPrevUpSkills
 
   const onModSkill = (modType: "plus" | "minus", skillId: SkillId) => {
-    if (res === 0 && modType === "plus") return
-    if (modType === "minus" && prevUpSkills[skillId] === up[skillId]) return
-    setPrevUpSkills(prev => ({ ...prev, [skillId]: prev[skillId] + (modType === "plus" ? 1 : -1) }))
+    if (toAssignCount === 0 && modType === "plus") return
+    if (modType === "minus" && newUpSkills[skillId] === up[skillId]) return
+    setNewUpskills(prev => ({ ...prev, [skillId]: prev[skillId] + (modType === "plus" ? 1 : -1) }))
   }
 
   const onCancel = () => router.dismiss(1)
-  const onConfirm = () => useCases.abilities.updateUpSkills(charId, prevUpSkills)
+  const onConfirm = () => useCases.abilities.updateUpSkills(charId, newUpSkills)
 
   return (
     <ModalBody>
-      <Txt style={{ textAlign: "center" }}>Points de compétence à répartir : {res}</Txt>
+      <Txt style={{ textAlign: "center" }}>Points de compétence à répartir : {toAssignCount}</Txt>
       <Spacer y={20} />
       <ScrollableSection title="COMPETENCES" style={{ flex: 1 }}>
         {Object.values(skillsMap).map(skill => {
           const baseValue = base[skill.id]
-          const upValue = prevUpSkills[skill.id]
+          const upValue = newUpSkills[skill.id]
           const values = { baseValue, upValue }
-          const canAdd = res > 0
-          const canRemove = prevUpSkills[skill.id] > up[skill.id]
+          const canAdd = toAssignCount > 0
+          const canRemove = newUpSkills[skill.id] > up[skill.id]
           return (
             <Row
               key={skill.id}

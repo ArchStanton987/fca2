@@ -3,6 +3,7 @@ export type Progress = {
   level: number
   hpGainPerLevel: number
   specLevelInterval: number
+  usedSkillsPoints: number
   availableSkillPoints: number
   availableKnowledgePoints: number
 }

@@ -233,6 +233,7 @@ export default class Character {
       level: getLevelAndThresholds(this.status.exp).level,
       hpGainPerLevel: getHpGainPerLevel(this.special.base),
       specLevelInterval: getSpecLevelInterval(traits || []),
+      usedSkillsPoints,
       availableSkillPoints: unlockedSkillPoints - usedSkillsPoints,
       availableKnowledgePoints: unlockedKnowledgePoints - usedKnowledgePoints
     }
