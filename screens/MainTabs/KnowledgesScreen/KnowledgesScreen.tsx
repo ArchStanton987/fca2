@@ -20,7 +20,7 @@ export default function KnowledgesScreen() {
           ListFooterComponent={ListFooter}
           data={knowledges}
           keyExtractor={item => item.id}
-          renderItem={({ item }) => <KnowledgeRow knowledge={item} />}
+          renderItem={({ item }) => <KnowledgeRow isEditable={false} knowledge={item} />}
         />
       </Section>
     </DrawerPage>

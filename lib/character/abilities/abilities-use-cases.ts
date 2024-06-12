@@ -1,5 +1,4 @@
 import { getRepository } from "lib/RepositoryBuilder"
-import Character from "lib/character/Character"
 import {
   KnowledgeId,
   KnowledgeLevelValue
@@ -15,16 +14,8 @@ function getAbilitiesUseCases(db: keyof typeof getRepository = "rtdb") {
     updateUpSkills: (charId: string, newUpSkills: SkillsValues) =>
       repository.updateUpSkills(charId, newUpSkills),
 
-    updateKnowledges: (
-      character: Character,
-      modKnowledges: { id: KnowledgeId; value: KnowledgeLevelValue }[]
-    ) => {
-      const newKnowledges = {} as Record<KnowledgeId, KnowledgeLevelValue>
-      modKnowledges.forEach(({ id, value }) => {
-        newKnowledges[id] += value
-      })
-      return repository.updateKnowledges(character.charId, newKnowledges)
-    }
+    updateKnowledges: (charId: string, newKnowledges: Record<KnowledgeId, KnowledgeLevelValue>) =>
+      repository.updateKnowledges(charId, newKnowledges)
   }
 }
 

@@ -3,6 +3,7 @@ import { View } from "react-native"
 
 import {
   KnowledgeId,
+  KnowledgeLevel,
   KnowledgeLevelValue
 } from "lib/character/abilities/knowledges/knowledge-types"
 import knowledgesMap from "lib/character/abilities/knowledges/knowledges"
@@ -63,23 +64,33 @@ export function ListHeader() {
 type KnowledgeRowProps = {
   knowledge: {
     id: KnowledgeId
-    value: KnowledgeLevelValue
+    value: KnowledgeLevelValue | 0
   }
+  isEditable: boolean
+  onPress?: (id: KnowledgeId, level: KnowledgeLevel) => void
 }
 
-export default function KnowledgeRow({ knowledge }: KnowledgeRowProps) {
+export default function KnowledgeRow({ knowledge, isEditable, onPress }: KnowledgeRowProps) {
+  const { id, value } = knowledge
   return (
     <View style={styles.container}>
       <View style={styles.labelContainer}>
-        <Txt>{knowledgesMap[knowledge.id].label}</Txt>
+        <Txt>{knowledgesMap[id].label}</Txt>
       </View>
       <List
         horizontal
         data={knowledgeLevels}
-        keyExtractor={item => `${knowledge.id}-${item.id}`}
+        keyExtractor={item => `${id}-${item.id}`}
         renderItem={({ item }) => (
           <View style={styles.levelContainer}>
-            <CheckBox isChecked={item.id <= knowledge.value} />
+            <CheckBox
+              disabled={!isEditable}
+              onPress={() => {
+                if (typeof onPress !== "function") return
+                onPress(id, item)
+              }}
+              isChecked={item.id <= value}
+            />
           </View>
         )}
       />
