@@ -1,19 +1,22 @@
 import React from "react"
-import { View } from "react-native"
+import { Image, View } from "react-native"
 
 import useCases from "lib/common/use-cases"
+import ammoMap from "lib/objects/data/ammo/ammo"
 
 import CheckBox from "components/CheckBox/CheckBox"
 import DrawerPage from "components/DrawerPage"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
+import colors from "styles/colors"
 
 export default function CombatScreen() {
   const character = useCharacter()
-  const { status, secAttr } = character
+  const { status, secAttr, equipedObjects } = character
   const { currAp } = status
   const maxAp = secAttr.curr.actionPoints
+  const weapons = equipedObjects.weapons
 
   const handleSetAp = async (i: number) => {
     const newValue = i < currAp ? i : i + 1
@@ -40,6 +43,78 @@ export default function CombatScreen() {
       >
         {apArr.map((ap, i) => (
           <CheckBox key={ap} isChecked={i < currAp} onPress={() => handleSetAp(i)} />
+        ))}
+      </View>
+
+      <View style={{ flexDirection: "row" }}>
+        {weapons.map(el => (
+          <View key={el.id} style={{ flex: 1 }}>
+            <Spacer y={10} />
+            <Txt>{el.data.label}</Txt>
+            <Spacer y={10} />
+            <View style={{ flexDirection: "row" }}>
+              <View
+                style={{
+                  padding: 10,
+                  borderWidth: 1,
+                  borderColor: colors.secColor
+                }}
+              >
+                <Image
+                  source={{ uri: el.data.img }}
+                  style={{ height: 50, width: 50 }}
+                  resizeMode="contain"
+                />
+              </View>
+              <Spacer x={10} />
+              <View>
+                <View style={{ flexDirection: "row" }}>
+                  <Txt>DEG</Txt>
+                  <Spacer x={10} />
+                  <Txt>{el.data.damageBasic}</Txt>
+                </View>
+                {el.data.damageBurst && (
+                  <View
+                    style={{
+                      flexDirection: "row"
+                    }}
+                  >
+                    <Txt style={{ color: colors.primColor }}>DEG</Txt>
+                    <Spacer x={10} />
+                    <Txt>{el.data.damageBurst}</Txt>
+                  </View>
+                )}
+                <View style={{ flexDirection: "row" }}>
+                  <Txt>COMP</Txt>
+                  <Spacer x={10} />
+                  <Txt>{}</Txt>
+                </View>
+                {el.data.range && (
+                  <View style={{ flexDirection: "row" }}>
+                    <Txt>POR</Txt>
+                    <Spacer x={10} />
+                    <Txt>{el.data.range}m</Txt>
+                  </View>
+                )}
+              </View>
+              <Spacer x={20} />
+              {el.data.ammoType && (
+                <View style={{ alignItems: "flex-end" }}>
+                  {/* <Txt style={{ fontSize: 20 }}>{fillZeros(magazine)}</Txt> */}
+                  <View
+                    style={{
+                      width: 30,
+                      height: 2,
+                      backgroundColor: colors.secColor
+                    }}
+                  />
+                  {/* <Txt style={{ fontSize: 20 }}>{fillZeros(totalAmmo)}</Txt> */}
+                  <Txt style={{ fontSize: 12 }}>{ammoMap[el.data.ammoType].label}</Txt>
+                </View>
+              )}
+            </View>
+            <Spacer y={20} />
+          </View>
         ))}
       </View>
     </DrawerPage>
