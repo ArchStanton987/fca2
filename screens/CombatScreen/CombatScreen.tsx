@@ -2,6 +2,7 @@ import React from "react"
 import { Image, View } from "react-native"
 
 import useCases from "lib/common/use-cases"
+import { fillZeros } from "lib/common/utils/number-utils"
 import ammoMap from "lib/objects/data/ammo/ammo"
 
 import CheckBox from "components/CheckBox/CheckBox"
@@ -9,14 +10,20 @@ import DrawerPage from "components/DrawerPage"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
+import { useInventory } from "contexts/InventoryContext"
 import colors from "styles/colors"
 
 export default function CombatScreen() {
   const character = useCharacter()
+  const inventory = useInventory()
   const { status, secAttr, equipedObjects } = character
+  const equWeapons = equipedObjects.weapons
   const { currAp } = status
   const maxAp = secAttr.curr.actionPoints
-  const weapons = equipedObjects.weapons
+  const weapons = equWeapons.map(eW => inventory.weaponsRecord[eW.dbKey])
+
+  // TODO: add AC in header
+  // TODO: add char curr range in header
 
   const handleSetAp = async (i: number) => {
     const newValue = i < currAp ? i : i + 1
@@ -87,7 +94,7 @@ export default function CombatScreen() {
                 <View style={{ flexDirection: "row" }}>
                   <Txt>COMP</Txt>
                   <Spacer x={10} />
-                  <Txt>{}</Txt>
+                  <Txt>{el.skill}</Txt>
                 </View>
                 {el.data.range && (
                   <View style={{ flexDirection: "row" }}>
@@ -100,7 +107,7 @@ export default function CombatScreen() {
               <Spacer x={20} />
               {el.data.ammoType && (
                 <View style={{ alignItems: "flex-end" }}>
-                  {/* <Txt style={{ fontSize: 20 }}>{fillZeros(magazine)}</Txt> */}
+                  <Txt style={{ fontSize: 20 }}>{fillZeros(el.ammo)}</Txt>
                   <View
                     style={{
                       width: 30,
@@ -108,7 +115,7 @@ export default function CombatScreen() {
                       backgroundColor: colors.secColor
                     }}
                   />
-                  {/* <Txt style={{ fontSize: 20 }}>{fillZeros(totalAmmo)}</Txt> */}
+                  <Txt style={{ fontSize: 20 }}>{fillZeros(el.ammo)}</Txt>
                   <Txt style={{ fontSize: 12 }}>{ammoMap[el.data.ammoType].label}</Txt>
                 </View>
               )}
