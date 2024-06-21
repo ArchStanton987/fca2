@@ -37,7 +37,7 @@ export const damageTypeMap: Record<DamageTypeId, DamageType> = {
   }
 }
 
-export type DbWeapon = { id: WeaponId }
+export type DbWeapon = { id: WeaponId; inMagazine?: number }
 
 export type WeaponData = {
   id: WeaponId

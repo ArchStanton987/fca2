@@ -1,9 +1,11 @@
 import { ReactElement } from "react"
 
+import { SecAttrId } from "lib/character/abilities/sec-attr/sec-attr-types"
 import { SpecialId } from "lib/character/abilities/special/special.types"
 
 import HeaderCaps from "components/Header/elements/HeaderCaps"
 import HeaderProgression from "components/Header/elements/HeaderProgression"
+import HeaderSecAttr from "components/Header/elements/HeaderSecAttr"
 import HeaderSpecialElement from "components/Header/elements/HeaderSpecialElement"
 
 import HeaderDate from "./elements/HeaderDate"
@@ -15,11 +17,14 @@ import HeaderSquadName from "./elements/HeaderSquadName"
 import HeaderTime from "./elements/HeaderTime"
 import HeaderWeight from "./elements/HeaderWeight"
 
+type HeaderSecAttrId = Extract<SecAttrId, "actionPoints" | "armorClass" | "range" | "critChance">
+
 export type HeaderElementId =
   | "date"
   | "time"
   | "progression"
   | SpecialId
+  | HeaderSecAttrId
   | "caps"
   | "squadName"
   | "home"
@@ -45,5 +50,9 @@ export const headerElements: Record<HeaderElementId, ReactElement> = {
   weight: <HeaderWeight key="weight" />,
   place: <HeaderPlace key="place" />,
   hp: <HeaderHp key="hp" />,
-  rads: <HeaderRads key="rads" />
+  rads: <HeaderRads key="rads" />,
+  actionPoints: <HeaderSecAttr key="actionPoints" secAttrId="actionPoints" />,
+  armorClass: <HeaderSecAttr key="armorClass" secAttrId="armorClass" />,
+  range: <HeaderSecAttr key="range" secAttrId="range" />,
+  critChance: <HeaderSecAttr key="critChance" secAttrId="critChance" />
 }

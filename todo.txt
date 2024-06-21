@@ -8,6 +8,11 @@ TODO: collectibles UI
 TODO: updates & versionning
   - add standard-update
 
+TODO: combat :
+- ammo management
+
+
+
 
 
 

@@ -22,9 +22,6 @@ export default function CombatScreen() {
   const maxAp = secAttr.curr.actionPoints
   const weapons = equWeapons.map(eW => inventory.weaponsRecord[eW.dbKey])
 
-  // TODO: add AC in header
-  // TODO: add char curr range in header
-
   const handleSetAp = async (i: number) => {
     const newValue = i < currAp ? i : i + 1
     await useCases.status.updateElement(character, "currAp", newValue)
