@@ -197,6 +197,7 @@ export default class Character {
     const weapons = Object.entries(this.dbEquipedObjects.weapons || {}).map(([dbKey, value]) => ({
       dbKey,
       data: weaponsMap[value.id],
+      inMagazine: value.inMagazine,
       ...value
     }))
     const clothings = Object.entries(this.dbEquipedObjects.clothings || {}).map(

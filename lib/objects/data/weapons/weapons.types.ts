@@ -70,6 +70,7 @@ export type Weapon = {
   isEquiped: boolean
   data: WeaponData
   ammo: number
+  inMagazine?: number
 }
 
 export type WeaponId =
