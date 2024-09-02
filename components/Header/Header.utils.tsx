@@ -17,7 +17,10 @@ import HeaderSquadName from "./elements/HeaderSquadName"
 import HeaderTime from "./elements/HeaderTime"
 import HeaderWeight from "./elements/HeaderWeight"
 
-type HeaderSecAttrId = Extract<SecAttrId, "actionPoints" | "armorClass" | "range" | "critChance">
+type HeaderSecAttrId = Extract<
+  SecAttrId,
+  "actionPoints" | "armorClass" | "range" | "critChance" | "meleeDamage"
+>
 
 export type HeaderElementId =
   | "date"
@@ -54,5 +57,6 @@ export const headerElements: Record<HeaderElementId, ReactElement> = {
   actionPoints: <HeaderSecAttr key="actionPoints" secAttrId="actionPoints" />,
   armorClass: <HeaderSecAttr key="armorClass" secAttrId="armorClass" />,
   range: <HeaderSecAttr key="range" secAttrId="range" />,
-  critChance: <HeaderSecAttr key="critChance" secAttrId="critChance" />
+  critChance: <HeaderSecAttr key="critChance" secAttrId="critChance" />,
+  meleeDamage: <HeaderSecAttr key="meleeDamage" secAttrId="meleeDamage" />
 }
