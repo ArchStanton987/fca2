@@ -11,11 +11,21 @@ export default function CombatLayout() {
       // eslint-disable-next-line react/no-unstable-nested-components
       tabBar={props => <TabBar tabBarId="main" {...props} />}
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
         // eslint-disable-next-line react/no-unstable-nested-components
         header: props => (
           <Header
-            headerElementsIds={["date", "time", "armorClass", "range", "progression", "rads", "hp"]}
+            headerElementsIds={[
+              "date",
+              "time",
+              "armorClass",
+              "critChance",
+              "meleeDamage",
+              "range",
+              "progression",
+              "rads",
+              "hp"
+            ]}
             {...props}
           />
         )
@@ -23,7 +33,7 @@ export default function CombatLayout() {
       sceneContainerStyle={{ backgroundColor: colors.primColor }}
     >
       <Tabs.Screen
-        name="combat"
+        name="recap"
         options={{ title: "Bagarre" }}
         initialParams={{ squadId, charId }}
       />

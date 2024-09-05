@@ -1,3 +1,5 @@
+TODO: magazine loads fully even if doesn't have enough ammo
+
 TODO: fix knowledge points calculations & display
 TODO: fix update objects modal columns width (can't read searched items)
 TODO: add levelup
