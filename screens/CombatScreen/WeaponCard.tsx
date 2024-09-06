@@ -1,9 +1,11 @@
 import React from "react"
 import { Image, Pressable, View } from "react-native"
 
+import secAttrMap from "lib/character/abilities/sec-attr/sec-attr"
 import useCases from "lib/common/use-cases"
 import { fillZeros } from "lib/common/utils/number-utils"
 import ammoMap from "lib/objects/data/ammo/ammo"
+import { getHasStrengthMalus } from "lib/objects/data/weapons/weapons-utils"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
 
 import Spacer from "components/Spacer"
@@ -18,6 +20,8 @@ type WeaponCardProps = { weapon: Weapon }
 
 export default function WeaponCard({ weapon }: WeaponCardProps) {
   const char = useCharacter()
+
+  const hasMalus = getHasStrengthMalus(weapon, char.special.curr)
 
   const load = () => {
     useCases.weapons.load(char, weapon)
@@ -56,15 +60,18 @@ export default function WeaponCard({ weapon }: WeaponCardProps) {
             </View>
           )}
           <View style={styles.row}>
-            <Txt style={styles.attr}>COMP</Txt>
+            <Txt style={[styles.attr, hasMalus && styles.malus]}>COMP</Txt>
             <Spacer x={10} />
-            <Txt>{weapon.skill}</Txt>
+            <Txt style={hasMalus && styles.malus}>{weapon.skill}</Txt>
           </View>
           {weapon.data.range && (
             <View style={styles.row}>
               <Txt style={styles.attr}>POR</Txt>
               <Spacer x={10} />
-              <Txt>{weapon.data.range}m</Txt>
+              <Txt>
+                {weapon.data.range}
+                {secAttrMap.range.unit}
+              </Txt>
             </View>
           )}
         </View>

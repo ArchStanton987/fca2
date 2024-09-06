@@ -1,4 +1,5 @@
 TODO: magazine loads fully even if doesn't have enough ammo
+TODO: check for min strength rule for weapons
 
 TODO: fix knowledge points calculations & display
 TODO: fix update objects modal columns width (can't read searched items)

@@ -1,3 +1,4 @@
+import { Special } from "lib/character/abilities/special/special.types"
 import { getModAttribute } from "lib/common/utils/char-calc"
 import ammoMap from "lib/objects/data/ammo/ammo"
 import { Ammo, AmmoType } from "lib/objects/data/ammo/ammo.types"
@@ -9,6 +10,7 @@ import miscObjectsMap from "lib/objects/data/misc-objects/misc-objects"
 import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
 import { DbEquipedObjects, DbInventory } from "lib/objects/data/objects.types"
 import weaponsMap from "lib/objects/data/weapons/weapons"
+import { getStrengthMalus } from "lib/objects/data/weapons/weapons-utils"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
 import { computed, makeObservable, observable } from "mobx"
 
@@ -23,6 +25,7 @@ type CharData = {
   dbAbilities: DbAbilities
   innateSymptoms: Symptom[]
   currSkills: SkillsValues
+  currSpecial: Special
   dbEquipedObjects: DbEquipedObjects
 }
 
@@ -71,14 +74,16 @@ export default class Inventory {
       const weaponKnowledges = weaponsMap[id].knowledges
       const { ammoType } = weaponsMap[id]
       const ammo = ammoType ? this.dbInventory.ammo?.[ammoType] || 0 : 0
-      const { innateSymptoms, currSkills, dbAbilities, dbEquipedObjects } = this.charData
+      const { innateSymptoms, currSkills, dbAbilities, dbEquipedObjects, currSpecial } =
+        this.charData
       const { knowledges, traits } = dbAbilities
       const knowledgesBonus = weaponKnowledges.reduce(
         (acc, curr: KnowledgeId) =>
           acc + (knowledges[curr] ?? 0) + getModAttribute(innateSymptoms, curr),
         0
       )
-      const skill = currSkills[weaponSkill] + knowledgesBonus
+      const skill =
+        currSkills[weaponSkill] + knowledgesBonus + getStrengthMalus(weaponsMap[id], currSpecial)
       const hasMrFast = traits?.includes("mrFast")
       let { basicApCost } = weaponsMap[id]
       basicApCost = basicApCost !== null && hasMrFast ? basicApCost - 1 : basicApCost

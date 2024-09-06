@@ -18,6 +18,9 @@ const styles = StyleSheet.create({
   },
   attr: {
     width: 30
+  },
+  malus: {
+    color: colors.yellow
   }
 })
 export default styles

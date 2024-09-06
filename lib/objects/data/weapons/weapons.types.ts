@@ -3,6 +3,8 @@ import { SkillId } from "lib/character/abilities/skills/skills.types"
 
 import { AmmoType } from "../ammo/ammo.types"
 
+export type WeaponUseType = "basic" | "burst" | "aim"
+
 export type DamageTypeId = "physical" | "laser" | "plasma" | "fire" | "other"
 type DamageType = {
   id: DamageTypeId
