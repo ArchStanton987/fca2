@@ -30,7 +30,7 @@ export const getHasStrengthMalus = (weapon: Weapon, currSpecial: Special) => {
 
 export const getStrengthMalus = (weapon: WeaponData, currSpecial: Special) => {
   if (weapon.minStrength === null) return 0
-  return Math.min(0, currSpecial.strength - (weapon.minStrength ?? 0)) * MALUS_PER_MISSING_STRENGTH
+  return Math.max(0, weapon.minStrength - currSpecial.strength) * MALUS_PER_MISSING_STRENGTH
 }
 
 export const getCanStrike = (weapon: Weapon, char: Character) => {

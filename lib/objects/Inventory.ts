@@ -84,8 +84,8 @@ export default class Inventory {
           acc + (knowledges[curr] ?? 0) + getModAttribute(innateSymptoms, curr),
         0
       )
-      const skill =
-        currSkills[weaponSkill] + knowledgesBonus + getStrengthMalus(weaponsMap[id], currSpecial)
+      const strengthMalus = getStrengthMalus(weaponsMap[id], currSpecial)
+      const skill = currSkills[weaponSkill] + knowledgesBonus - strengthMalus
       const hasMrFast = traits?.includes("mrFast")
       let { basicApCost } = weaponsMap[id]
       basicApCost = basicApCost !== null && hasMrFast ? basicApCost - 1 : basicApCost
