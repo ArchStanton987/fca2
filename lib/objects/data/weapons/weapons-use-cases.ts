@@ -8,6 +8,8 @@ import {
 } from "lib/objects/data/weapons/weapons-utils"
 import { Weapon, WeaponActionId } from "lib/objects/data/weapons/weapons.types"
 
+import { LOAD_AP_COST, UNLOAD_AP_COST } from "./weapons-const"
+
 const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
   const invRepository = getRepository[db].inventory
   const equObjRepository = getRepository[db].equipedObjects
@@ -22,7 +24,7 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
       const { charId } = char
       const { data, ammo, inMagazine = 0 } = weapon
       const { ammoType, magazine } = data
-      const apCost = apCostOverride || 3
+      const apCost = apCostOverride || LOAD_AP_COST
 
       // VALIDATIONS
       if (apCost > char.status.currAp) throw new Error("Not enough action points")
@@ -36,6 +38,7 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
       const toLoad = ammo >= missingInMag ? missingInMag : ammo
       const newInMag = inMagazine + toLoad
       const newAmmo = ammo - toLoad
+      const newAp = char.status.currAp - apCost
 
       // UPDATE DB
       const promises = []
@@ -49,7 +52,7 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
       const equObjPayload = { id: weapon.id, inMagazine: newInMag }
       promises.push(equObjRepository.update(charId, "weapons", weapon.dbKey, equObjPayload))
       // update action points
-      promises.push(statusRepository.updateElement(charId, "currAp", apCost))
+      promises.push(statusRepository.updateElement(charId, "currAp", newAp))
       return Promise.all(promises)
     },
 
@@ -61,7 +64,7 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
       const { charId } = char
       const { inMagazine = 0, data } = weapon
       const { ammoType } = data
-      const apCost = apCostOverride || 3
+      const apCost = apCostOverride || UNLOAD_AP_COST
       // VALIDATIONS
       if (ammoType === null) throw new Error("Weapon doesn't use ammo")
       if (inMagazine === 0) throw new Error("No ammo in magazine")
@@ -69,6 +72,7 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
       // GET NEW AMMO AND INMAGAZINE VALUES
       const newInMag = 0
       const newAmmo = weapon.ammo + inMagazine
+      const newAp = char.status.currAp - apCost
 
       // UPDATE DB
       const promises = []
@@ -82,7 +86,7 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
       const equObjPayload = { id: weapon.id, inMagazine: newInMag }
       promises.push(equObjRepository.update(charId, "weapons", weapon.dbKey, equObjPayload))
       // update action points
-      promises.push(statusRepository.updateElement(charId, "currAp", apCost))
+      promises.push(statusRepository.updateElement(charId, "currAp", newAp))
       return Promise.all(promises)
     },
 

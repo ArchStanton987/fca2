@@ -1,9 +1,4 @@
-TODO: check for strengh malus
-TODO: magazine loads fully even if doesn't have enough ammo
-TODO: check for min strength rule for weapons
-
 TODO: fix knowledge points calculations & display
-TODO: fix update objects modal columns width (can't read searched items)
 TODO: add levelup
   - change db model for perks (any perk can have a level)
   - update perks
@@ -12,9 +7,7 @@ TODO: collectibles UI
 TODO: updates & versionning
   - add standard-update
 
-TODO: combat :
-- ammo management
-
+TODO: sound
 
 
 
