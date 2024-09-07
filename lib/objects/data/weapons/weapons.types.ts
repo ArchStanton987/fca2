@@ -73,7 +73,7 @@ export type WeaponData = {
   frequency: number
   skill: SkillId
   knowledges: KnowledgeId[]
-  tags: string[]
+  tags: WeaponTagId[]
 }
 
 export type Weapon = {
@@ -223,3 +223,26 @@ export type WeaponId =
   | "t13mine"
   | "iemMine"
   | "t45SEMine"
+
+export type WeaponTagId =
+  | "arme légère"
+  | "arme à feu"
+  | "pistolet"
+  | "revolver"
+  | "pistolet mitrailleur"
+  | "spécial"
+  | "explosif"
+  | "arme moyenne"
+  | "fusil"
+  | "sniper"
+  | "fusil à pompe"
+  | "mitrailleuse"
+  | "fusil d'assault"
+  | "mitrailleuse lourde"
+  | "arme lourde"
+  | "minigun"
+  | "arme à énergie"
+  | "arme de corps à corps"
+  | "arme blanche"
+  | "arme de jet"
+  | "piège"

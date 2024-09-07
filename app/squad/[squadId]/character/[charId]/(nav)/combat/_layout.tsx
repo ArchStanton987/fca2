@@ -9,7 +9,7 @@ export default function CombatLayout() {
   return (
     <Tabs
       // eslint-disable-next-line react/no-unstable-nested-components
-      tabBar={props => <TabBar tabBarId="main" {...props} />}
+      tabBar={props => <TabBar tabBarId="combat" {...props} />}
       screenOptions={{
         headerShown: true,
         // eslint-disable-next-line react/no-unstable-nested-components

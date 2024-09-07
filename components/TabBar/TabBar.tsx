@@ -15,7 +15,7 @@ import { SearchParams } from "screens/ScreenParams"
 
 import styles from "./TabBar.styles"
 
-type TabBarId = "main" | "inventory"
+type TabBarId = "main" | "inventory" | "combat"
 type TabBarProps = BottomTabBarProps & {
   tabBarId: TabBarId
 }

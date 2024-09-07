@@ -1,3 +1,4 @@
+TODO: check for strengh malus
 TODO: magazine loads fully even if doesn't have enough ammo
 TODO: check for min strength rule for weapons
 
