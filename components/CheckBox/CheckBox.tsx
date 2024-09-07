@@ -1,7 +1,7 @@
 import React from "react"
 import { StyleProp, TouchableOpacity, TouchableOpacityProps, View, ViewStyle } from "react-native"
 
-import styles from "./CheckBox.styles"
+import getStyles from "./CheckBox.styles"
 
 type CheckBoxProps = TouchableOpacityProps & {
   containerStyle?: StyleProp<ViewStyle>
@@ -9,10 +9,21 @@ type CheckBoxProps = TouchableOpacityProps & {
   checkedStyle?: StyleProp<ViewStyle>
   size?: number
   isChecked?: boolean
+  color?: string
 }
 
 export default function CheckBox(props: CheckBoxProps) {
-  const { size = 18, containerStyle, style, checkedStyle, isChecked = false, ...rest } = props
+  const {
+    size = 18,
+    color,
+    containerStyle,
+    style,
+    checkedStyle,
+    isChecked = false,
+    ...rest
+  } = props
+
+  const styles = getStyles(color)
   return (
     <TouchableOpacity
       style={[styles.container, containerStyle, { width: size, height: size }]}
