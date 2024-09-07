@@ -1,5 +1,5 @@
-import React from "react"
-import { View } from "react-native"
+import React, { useState } from "react"
+import { ScrollView, View } from "react-native"
 
 import useCases from "lib/common/use-cases"
 
@@ -11,6 +11,7 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
+import colors from "styles/colors"
 
 import styles from "./CombatScreen.styles"
 import WeaponCard from "./WeaponCard"
@@ -24,8 +25,22 @@ export default function CombatScreen() {
   const maxAp = secAttr.curr.actionPoints
   const weapons = equWeapons.map(eW => inventory.weaponsRecord[eW.dbKey])
 
+  const [prevAp, setPrevAp] = useState(currAp)
+
+  const handleSetPrevAp = (apCost: number) => {
+    setPrevAp(apCost)
+  }
+
+  const getCheckboxColor = (i: number) => {
+    const hasPrevAp = i < prevAp
+    const hasCurrAp = i < currAp
+    if (hasCurrAp && !hasPrevAp) return colors.yellow
+    return colors.secColor
+  }
+
   const handleSetAp = async (i: number) => {
     const newValue = i < currAp ? i : i + 1
+    handleSetPrevAp(newValue)
     await useCases.status.updateElement(character, "currAp", newValue)
   }
 
@@ -36,7 +51,7 @@ export default function CombatScreen() {
 
   return (
     <DrawerPage>
-      <View style={{ flex: 1 }}>
+      <ScrollView style={{ flex: 1 }}>
         <Section>
           <Txt>
             Points d&apos;action : {currAp} / {maxAp}
@@ -45,22 +60,25 @@ export default function CombatScreen() {
 
           <View style={styles.checkboxContainer}>
             {apArr.map((ap, i) => (
-              <CheckBox size={22} key={ap} isChecked={i < currAp} onPress={() => handleSetAp(i)} />
+              <CheckBox
+                color={getCheckboxColor(i)}
+                size={22}
+                key={ap}
+                isChecked={i < currAp}
+                onPress={() => handleSetAp(i)}
+              />
             ))}
           </View>
         </Section>
 
         <Spacer y={20} />
-        <View style={{ flexDirection: "row" }}>
-          <List
-            data={weapons}
-            keyExtractor={item => item.dbKey}
-            horizontal
-            separator={<Spacer x={15} />}
-            renderItem={({ item }) => <WeaponCard weapon={item} />}
-          />
-        </View>
-      </View>
+        <List
+          data={weapons}
+          keyExtractor={item => item.dbKey}
+          separator={<Spacer y={15} />}
+          renderItem={({ item }) => <WeaponCard weapon={item} setPrevAp={handleSetPrevAp} />}
+        />
+      </ScrollView>
     </DrawerPage>
   )
 }

@@ -69,10 +69,12 @@ export default class Inventory {
   }
 
   get weapons(): Weapon[] {
-    return Object.entries(this.dbInventory.weapons || []).map(([dbKey, { id, inMagazine }]) => {
+    return Object.entries(this.dbInventory.weapons || []).map(([dbKey, dbWeapon]) => {
+      const { id } = dbWeapon
       const weaponSkill = weaponsMap[id].skill
       const weaponKnowledges = weaponsMap[id].knowledges
       const { ammoType } = weaponsMap[id]
+      const inMagazine = ammoType !== null ? dbWeapon.inMagazine || 0 : undefined
       const ammo = ammoType ? this.dbInventory.ammo?.[ammoType] || 0 : 0
       const { innateSymptoms, currSkills, dbAbilities, dbEquipedObjects, currSpecial } =
         this.charData

@@ -48,6 +48,16 @@ const fbEquipedObjectsRepository = {
   remove: async (charId: string, category: EquipableCategory, dbKey: EquipableObject["dbKey"]) => {
     const path = getItemPath(charId, category, dbKey)
     return removeCollectible(path)
+  },
+
+  update: async (
+    charId: string,
+    category: EquipableCategory,
+    dbKey: EquipableObject["dbKey"],
+    object: DbEquipableObject
+  ) => {
+    const path = getItemPath(charId, category, dbKey)
+    return updateValue(path, object)
   }
 }
 

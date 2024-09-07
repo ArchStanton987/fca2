@@ -5,6 +5,17 @@ import { AmmoType } from "../ammo/ammo.types"
 
 export type WeaponUseType = "basic" | "burst" | "aim"
 
+export type WeaponActionId = WeaponUseType | "load" | "unload"
+
+export type WeaponActionNameId =
+  | "strike"
+  | "strikeAim"
+  | "shoot"
+  | "shootBurst"
+  | "shootAim"
+  | "load"
+  | "unload"
+
 export type DamageTypeId = "physical" | "laser" | "plasma" | "fire" | "other"
 type DamageType = {
   id: DamageTypeId
