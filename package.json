@@ -1,7 +1,7 @@
 {
   "name": "fca2",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "App.tsx",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -11,14 +11,18 @@
     "build:preview": "eas build -p android --profile preview"
   },
   "dependencies": {
+    "@react-navigation/bottom-tabs": "^6.6.1",
     "@react-navigation/drawer": "^6.6.6",
+    "@react-navigation/native": "^6.1.18",
+    "@react-navigation/native-stack": "^6.11.0",
     "expo": "~51.0.31",
     "expo-constants": "~16.0.2",
+    "expo-haptics": "~13.0.1",
     "expo-image": "~1.12.15",
     "expo-linking": "~6.3.1",
-    "expo-router": "~3.5.23",
     "expo-screen-orientation": "~7.0.5",
     "expo-status-bar": "~1.12.1",
+    "expo-updates": "~0.25.24",
     "firebase": "^9.23.0",
     "mobx": "^6.12.0",
     "mobx-react-lite": "^4.0.5",
@@ -30,9 +34,7 @@
     "react-native-screens": "3.31.1",
     "react-native-svg": "15.2.0",
     "react-native-toast-message": "^2.2.0",
-    "react-native-web": "~0.19.10",
-    "expo-updates": "~0.25.24",
-    "expo-haptics": "~13.0.1"
+    "react-native-web": "~0.19.10"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
