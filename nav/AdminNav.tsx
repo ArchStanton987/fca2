@@ -1,13 +1,21 @@
 import React from "react"
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
+import { NativeStackScreenProps } from "@react-navigation/native-stack"
+import { RootStackParamList } from "Router"
 
 import TabBar from "components/TabBar/TabBar"
 import CombatScreen from "screens/CombatScreen/CombatScreen"
 
-const Tab = createBottomTabNavigator()
+export type CombatBottomTabParamList = {
+  Bagarre: { squadId: string; charId: string }
+}
 
-export default function AdminNav() {
+const Tab = createBottomTabNavigator<CombatBottomTabParamList>()
+
+type Props = NativeStackScreenProps<RootStackParamList, "Admin">
+
+export default function AdminNav(props: Props) {
   return (
     <Tab.Navigator
       initialRouteName="Bagarre"

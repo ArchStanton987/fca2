@@ -1,6 +1,7 @@
 import { View } from "react-native"
 
-import { useLocalSearchParams, useRouter } from "expo-router"
+import { NativeStackScreenProps } from "@react-navigation/native-stack"
+import { RootStackParamList } from "Router"
 
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
@@ -14,16 +15,18 @@ import { SearchParams } from "screens/ScreenParams"
 import dbKeys from "../../db/db-keys"
 import styles from "./CharacterSelectionScreen.styles"
 
-export default function CharacterSelectionScreen() {
-  const router = useRouter()
-  const { squadId } = useLocalSearchParams() as SearchParams<CharacterSelectionScreenParams>
+type Props = NativeStackScreenProps<RootStackParamList, "ChoixPerso">
+
+export default function CharacterSelectionScreen({ navigation, route }: Props) {
+  const { squadId } = route.params
   const squadMembers = useDbSubscribe(dbKeys.squad(squadId).members)
   const members = squadMembers
     ? Object.entries(squadMembers).map(([id, member]) => ({ ...member, id }))
     : []
 
   const toChar = (charId: string) => {
-    router.push({ pathname: routes.main.index, params: { charId, squadId } })
+    // router.push({ pathname: routes.main.index, params: { charId, squadId } })
+    navigation.push("Personnage", { screen: "Perso", params: { charId, squadId } })
   }
 
   return (

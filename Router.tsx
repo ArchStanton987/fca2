@@ -5,7 +5,14 @@ import CharNav from "nav/CharNav"
 import CharacterSelectionScreen from "screens/CharacterSelectionScreen/CharacterSelectionScreen"
 import SquadSelectionScreen from "screens/SquadSelectionScreen/SquadSelectionScreen"
 
-const MainStack = createNativeStackNavigator()
+export type RootStackParamList = {
+  Home: undefined
+  ChoixPerso: { squadId: string }
+  Personnage: { squadId: string; charId: string }
+  Admin: { squadId: string }
+}
+
+const MainStack = createNativeStackNavigator<RootStackParamList>()
 
 export default function Router() {
   return (
