@@ -1,8 +1,7 @@
 import React from "react"
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import { NativeStackScreenProps } from "@react-navigation/native-stack"
-import { CharStackParamList } from "nav/CharNav"
+import { CharBottomTabParamList, CharStackScreenProps } from "nav/nav.types"
 
 import TabBar from "components/TabBar/TabBar"
 import EffectsScreen from "screens/MainTabs/EffectsScreen/EffectsScreen"
@@ -12,20 +11,9 @@ import SecAttrScreen from "screens/MainTabs/SecAttrScreen/SecAttrScreen"
 import SkillsScreen from "screens/MainTabs/SkillsScreen/SkillsScreen"
 import SpecialScreen from "screens/MainTabs/SpecialScreen/SpecialScreen"
 
-export type CharBottomTabParamList = {
-  Résumé: { squadId: string; charId: string }
-  Effets: { squadId: string; charId: string }
-  "Attr. Prim.": { squadId: string; charId: string }
-  "Attr. Sec.": { squadId: string; charId: string }
-  Comp: { squadId: string; charId: string }
-  Conn: { squadId: string; charId: string }
-}
-
 const Tab = createBottomTabNavigator<CharBottomTabParamList>()
 
-type Props = NativeStackScreenProps<CharStackParamList, "Perso">
-
-export default function CharBottomTab(props: Props) {
+export default function CharBottomTab(props: CharStackScreenProps<"Perso">) {
   return (
     <Tab.Navigator
       initialRouteName="Résumé"

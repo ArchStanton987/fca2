@@ -1,7 +1,7 @@
 import { View } from "react-native"
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
-import { RootStackParamList } from "Router"
+import { RootStackScreenProps } from "nav/nav.types"
 
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
@@ -15,9 +15,10 @@ import { SearchParams } from "screens/ScreenParams"
 import dbKeys from "../../db/db-keys"
 import styles from "./CharacterSelectionScreen.styles"
 
-type Props = NativeStackScreenProps<RootStackParamList, "ChoixPerso">
-
-export default function CharacterSelectionScreen({ navigation, route }: Props) {
+export default function CharacterSelectionScreen({
+  navigation,
+  route
+}: RootStackScreenProps<"ChoixPerso">) {
   const { squadId } = route.params
   const squadMembers = useDbSubscribe(dbKeys.squad(squadId).members)
   const members = squadMembers

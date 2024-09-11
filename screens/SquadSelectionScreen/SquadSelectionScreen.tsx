@@ -1,9 +1,8 @@
 import { ScrollView } from "react-native"
 
-import { NativeStackScreenProps } from "@react-navigation/native-stack"
-import { RootStackParamList } from "Router"
 import useCases from "lib/common/use-cases"
 import { getVersion } from "lib/common/utils/expo-utils"
+import { RootStackScreenProps } from "nav/nav.types"
 
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
@@ -14,9 +13,7 @@ import { getDDMMYYYY } from "utils/date"
 
 import styles from "./SquadSelectionScreen.styles"
 
-type Props = NativeStackScreenProps<RootStackParamList, "Home">
-
-export default function SquadSelectionScreen({ navigation }: Props) {
+export default function SquadSelectionScreen({ navigation }: RootStackScreenProps<"Home">) {
   const squadsObj = useRtdbSub(useCases.squad.getAll())
   const squadsArray = squadsObj
     ? Object.entries(squadsObj).map(([id, squad]) => ({ ...squad, id }))

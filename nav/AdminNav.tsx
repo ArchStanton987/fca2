@@ -1,28 +1,21 @@
 import React from "react"
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import { NativeStackScreenProps } from "@react-navigation/native-stack"
-import { RootStackParamList } from "Router"
+import { AdminBottomTabParamList, RootStackScreenProps } from "nav/nav.types"
 
 import TabBar from "components/TabBar/TabBar"
-import CombatScreen from "screens/CombatScreen/CombatScreen"
+import DatetimeSelectionScreen from "screens/AdminTabs/DatetimeSelectionScreen/DatetimeSelectionScreen"
 
-export type CombatBottomTabParamList = {
-  Bagarre: { squadId: string; charId: string }
-}
+const Tab = createBottomTabNavigator<AdminBottomTabParamList>()
 
-const Tab = createBottomTabNavigator<CombatBottomTabParamList>()
-
-type Props = NativeStackScreenProps<RootStackParamList, "Admin">
-
-export default function AdminNav(props: Props) {
+export default function AdminNav(props: RootStackScreenProps<"Admin">) {
   return (
     <Tab.Navigator
-      initialRouteName="Bagarre"
+      initialRouteName="dateHeure"
       screenOptions={{ headerShown: false }}
       tabBar={props => <TabBar tabBarId="combat" {...props} />}
     >
-      <Tab.Screen name="Bagarre" component={CombatScreen} />
+      <Tab.Screen name="dateHeure" component={DatetimeSelectionScreen} />
     </Tab.Navigator>
   )
 }
