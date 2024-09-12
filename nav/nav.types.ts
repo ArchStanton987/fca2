@@ -5,13 +5,13 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack"
 export type RootStackParamList = {
   Home: undefined
   ChoixPerso: { squadId: string }
-  Personnage: { squadId: string; charId: string }
-  Admin: { squadId: string }
+  Personnage: NavigatorScreenParams<CharStackParamList>
+  Admin: NavigatorScreenParams<AdminBottomTabParamList>
 }
 export type CharStackParamList = {
-  Perso: NavigatorScreenParams<RootStackParamList>
-  Inventaire: NavigatorScreenParams<RootStackParamList>
-  Combat: NavigatorScreenParams<RootStackParamList>
+  Perso: NavigatorScreenParams<CharBottomTabParamList>
+  Inventaire: NavigatorScreenParams<InvBottomTabParamList>
+  Combat: NavigatorScreenParams<CombatBottomTabParamList>
 }
 
 export type AdminBottomTabParamList = {
@@ -48,10 +48,6 @@ export type InvBottomTabParamList = {
 export type CombatBottomTabParamList = {
   Statut: { squadId: string; charId: string }
 }
-// export type CharBottomTabScreenProps<T extends keyof CharBottomTabParamList> = BottomTabScreenProps<
-//   CharBottomTabParamList,
-//   T
-// >
 
 export type CharBottomTabScreenProps<T extends keyof CharBottomTabParamList> = CompositeScreenProps<
   CharStackScreenProps<"Perso">,

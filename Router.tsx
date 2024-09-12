@@ -6,15 +6,15 @@ import { RootStackParamList } from "nav/nav.types"
 import CharacterSelectionScreen from "screens/CharacterSelectionScreen/CharacterSelectionScreen"
 import SquadSelectionScreen from "screens/SquadSelectionScreen/SquadSelectionScreen"
 
-const MainStack = createNativeStackNavigator<RootStackParamList>()
+const RootStack = createNativeStackNavigator<RootStackParamList>()
 
 export default function Router() {
   return (
-    <MainStack.Navigator>
-      <MainStack.Screen name="Home" component={SquadSelectionScreen} />
-      <MainStack.Screen name="ChoixPerso" component={CharacterSelectionScreen} />
-      <MainStack.Screen name="Personnage" component={CharNav} />
-      <MainStack.Screen name="Admin" component={AdminNav} />
-    </MainStack.Navigator>
+    <RootStack.Navigator>
+      <RootStack.Screen name="Home" component={SquadSelectionScreen} />
+      <RootStack.Screen name="ChoixPerso" component={CharacterSelectionScreen} />
+      <RootStack.Screen name="Personnage" component={CharNav} />
+      <RootStack.Screen name="Admin" component={AdminNav} />
+    </RootStack.Navigator>
   )
 }

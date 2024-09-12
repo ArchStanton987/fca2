@@ -1,16 +1,12 @@
 import { View } from "react-native"
 
-import { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { RootStackScreenProps } from "nav/nav.types"
 
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import RevertColorsPressable from "components/wrappers/RevertColorsPressable/RevertColorsPressable"
 import WithItemSeparator from "components/wrappers/WithItemSeparator"
-import routes from "constants/routes"
 import useDbSubscribe from "hooks/db/useDbSubscribe"
-import { CharacterSelectionScreenParams } from "screens/CharacterSelectionScreen/CharacterSelectionScreen.params"
-import { SearchParams } from "screens/ScreenParams"
 
 import dbKeys from "../../db/db-keys"
 import styles from "./CharacterSelectionScreen.styles"
@@ -26,8 +22,10 @@ export default function CharacterSelectionScreen({
     : []
 
   const toChar = (charId: string) => {
-    // router.push({ pathname: routes.main.index, params: { charId, squadId } })
-    navigation.push("Personnage", { screen: "Perso", params: { charId, squadId } })
+    navigation.push("Personnage", {
+      screen: "Perso",
+      params: { screen: "Résumé", params: { charId, squadId } }
+    })
   }
 
   return (
