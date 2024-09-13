@@ -1,14 +1,14 @@
 import React from "react"
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import { AdminBottomTabParamList, RootStackScreenProps } from "nav/nav.types"
+import { AdminBottomTabParamList } from "nav/nav.types"
 
 import TabBar from "components/TabBar/TabBar"
 import DatetimeSelectionScreen from "screens/AdminTabs/DatetimeSelectionScreen/DatetimeSelectionScreen"
 
 const Tab = createBottomTabNavigator<AdminBottomTabParamList>()
 
-export default function AdminNav(props: RootStackScreenProps<"Admin">) {
+export default function AdminNav() {
   return (
     <Tab.Navigator
       initialRouteName="dateHeure"

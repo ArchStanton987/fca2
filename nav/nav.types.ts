@@ -18,16 +18,6 @@ export type AdminBottomTabParamList = {
   dateHeure: { squadId: string }
 }
 
-export type RootStackScreenProps<T extends keyof RootStackParamList> = NativeStackScreenProps<
-  RootStackParamList,
-  T
->
-
-export type CharStackScreenProps<T extends keyof CharStackParamList> = NativeStackScreenProps<
-  CharStackParamList,
-  T
->
-
 export type CharBottomTabParamList = {
   Résumé: { squadId: string; charId: string }
   Effets: { squadId: string; charId: string }
@@ -49,12 +39,33 @@ export type CombatBottomTabParamList = {
   Statut: { squadId: string; charId: string }
 }
 
-export type CharBottomTabScreenProps<T extends keyof CharBottomTabParamList> = CompositeScreenProps<
-  CharStackScreenProps<"Perso">,
-  RootStackScreenProps<"Personnage">
+export type RootStackScreenProps<T extends keyof RootStackParamList> = NativeStackScreenProps<
+  RootStackParamList,
+  T
 >
 
-export type RecapScreenProps = CompositeScreenProps<
-  CharBottomTabScreenProps<"Résumé">,
+export type CharStackScreenProps<T extends keyof CharStackParamList> = NativeStackScreenProps<
+  CharStackParamList,
+  T
+>
+
+export type AdminScreenProps<T extends keyof AdminBottomTabParamList> = CompositeScreenProps<
+  BottomTabScreenProps<AdminBottomTabParamList, T>,
+  RootStackScreenProps<"Admin">
+>
+
+export type CharBottomTabScreenProps<T extends keyof CharBottomTabParamList> = CompositeScreenProps<
+  BottomTabScreenProps<CharBottomTabParamList, T>,
   CompositeScreenProps<CharStackScreenProps<"Perso">, RootStackScreenProps<"Personnage">>
 >
+
+export type InvBottomTabScreenProps<T extends keyof InvBottomTabParamList> = CompositeScreenProps<
+  BottomTabScreenProps<InvBottomTabParamList, T>,
+  CompositeScreenProps<CharStackScreenProps<"Inventaire">, RootStackScreenProps<"Personnage">>
+>
+
+export type CombatBottomTabScreenProps<T extends keyof CombatBottomTabParamList> =
+  CompositeScreenProps<
+    BottomTabScreenProps<CombatBottomTabParamList, T>,
+    CompositeScreenProps<CharStackScreenProps<"Combat">, RootStackScreenProps<"Personnage">>
+  >

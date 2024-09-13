@@ -12,7 +12,7 @@ import WeaponsScreen from "screens/InventoryTabs/WeaponsScreen/WeaponsScreen"
 
 const Tab = createBottomTabNavigator<InvBottomTabParamList>()
 
-export default function InvBottomTab(props: CharStackScreenProps<"Inventaire">) {
+export default function InvBottomTab() {
   return (
     <Tab.Navigator
       initialRouteName="Armes"

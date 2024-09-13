@@ -13,7 +13,7 @@ import SpecialScreen from "screens/MainTabs/SpecialScreen/SpecialScreen"
 
 const Tab = createBottomTabNavigator<CharBottomTabParamList>()
 
-export default function CharBottomTab(props: CharStackScreenProps<"Perso">) {
+export default function CharBottomTab() {
   return (
     <Tab.Navigator
       initialRouteName="Résumé"

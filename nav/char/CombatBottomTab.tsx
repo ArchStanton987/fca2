@@ -1,14 +1,14 @@
 import React from "react"
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import { CharStackScreenProps, CombatBottomTabParamList } from "nav/nav.types"
+import { CombatBottomTabParamList } from "nav/nav.types"
 
 import TabBar from "components/TabBar/TabBar"
 import CombatScreen from "screens/CombatScreen/CombatScreen"
 
 const Tab = createBottomTabNavigator<CombatBottomTabParamList>()
 
-export default function CombatBottomTab(props: CharStackScreenProps<"Combat">) {
+export default function CombatBottomTab() {
   return (
     <Tab.Navigator
       initialRouteName="Statut"

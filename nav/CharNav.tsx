@@ -11,6 +11,8 @@ import Drawer from "components/Drawer/Drawer"
 const CharStack = createNativeStackNavigator<CharStackParamList>()
 
 export default function CharNav({ route }: RootStackScreenProps<"Personnage">) {
+  // @ts-ignore : can't generate apropriate type for route
+  const { squadId, charId } = route.params
   return (
     <View>
       <Drawer squadId={squadId} charId={charId} />

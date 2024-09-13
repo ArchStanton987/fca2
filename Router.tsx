@@ -10,7 +10,7 @@ const RootStack = createNativeStackNavigator<RootStackParamList>()
 
 export default function Router() {
   return (
-    <RootStack.Navigator>
+    <RootStack.Navigator initialRouteName="Home">
       <RootStack.Screen name="Home" component={SquadSelectionScreen} />
       <RootStack.Screen name="ChoixPerso" component={CharacterSelectionScreen} />
       <RootStack.Screen name="Personnage" component={CharNav} />
