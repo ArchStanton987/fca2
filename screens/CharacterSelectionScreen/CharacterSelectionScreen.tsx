@@ -22,9 +22,12 @@ export default function CharacterSelectionScreen({
     : []
 
   const toChar = (charId: string) => {
+    const params = { charId, squadId }
     navigation.push("Personnage", {
       screen: "Perso",
-      params: { screen: "Résumé", params: { charId, squadId } }
+      squadId,
+      charId,
+      params: { screen: "Résumé", params }
     })
   }
 

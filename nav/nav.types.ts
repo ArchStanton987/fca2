@@ -5,8 +5,8 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack"
 export type RootStackParamList = {
   Home: undefined
   ChoixPerso: { squadId: string }
-  Personnage: NavigatorScreenParams<CharStackParamList>
-  Admin: NavigatorScreenParams<AdminBottomTabParamList>
+  Personnage: NavigatorScreenParams<CharStackParamList> & { squadId: string; charId: string }
+  Admin: NavigatorScreenParams<AdminBottomTabParamList> & { squadId: string }
 }
 export type CharStackParamList = {
   Perso: NavigatorScreenParams<CharBottomTabParamList>
