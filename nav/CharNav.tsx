@@ -18,6 +18,15 @@ import { InventoryContext } from "contexts/InventoryContext"
 import useRtdbSub from "hooks/db/useRtdbSub"
 import UpdatesProvider from "providers/UpdatesProvider"
 import LoadingScreen from "screens/LoadingScreen"
+import EffectsConfirmationModal from "screens/MainTabs/modals/EffectsConfirmationModal/EffectsConfirmationModal"
+import UpdateEffectsModal from "screens/MainTabs/modals/EffectsConfirmationModal/UpdateEffectsModal"
+import UpdateHealthConfirmationModal from "screens/MainTabs/modals/UpdateHealthConfirmationModal/UpdateHealthConfirmationModal"
+import UpdateHealthModal from "screens/MainTabs/modals/UpdateHealthModal/UpdateHealthModal"
+import UpdateKnowledgesModal from "screens/MainTabs/modals/UpdateKnowledgesModal/UpdateKnowledgesModal"
+import UpdateObjectsConfirmationModal from "screens/MainTabs/modals/UpdateObjectsConfirmationModal/UpdateObjectsConfirmationModal"
+import UpdateObjectsModal from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal"
+import UpdateSkillsModal from "screens/MainTabs/modals/UpdateSkillsModal/UpdateSkillsModal"
+import UpdateStatusModal from "screens/MainTabs/modals/UpdateStatusModal/UpdateStatusModal"
 import { getDDMMYYYY, getHHMM } from "utils/date"
 
 const CharStack = createNativeStackNavigator<CharStackParamList>()
@@ -84,6 +93,26 @@ export default function CharNav({ route }: RootStackScreenProps<"Personnage">) {
               <CharStack.Screen name="Perso" component={CharBottomTab} />
               <CharStack.Screen name="Inventaire" component={InvBottomTab} />
               <CharStack.Screen name="Combat" component={CombatBottomTab} />
+              <CharStack.Group screenOptions={{ presentation: "modal" }}>
+                <CharStack.Screen name="UpdateEffects" component={UpdateEffectsModal} />
+                <CharStack.Screen
+                  name="UpdateEffectsConfirmation"
+                  component={EffectsConfirmationModal}
+                />
+                <CharStack.Screen name="UpdateHealth" component={UpdateHealthModal} />
+                <CharStack.Screen
+                  name="UpdateHealthConfirmation"
+                  component={UpdateHealthConfirmationModal}
+                />
+                <CharStack.Screen name="UpdateKnowledges" component={UpdateKnowledgesModal} />
+                <CharStack.Screen name="UpdateObjects" component={UpdateObjectsModal} />
+                <CharStack.Screen
+                  name="UpdateObjectsConfirmation"
+                  component={UpdateObjectsConfirmationModal}
+                />
+                <CharStack.Screen name="UpdateSkills" component={UpdateSkillsModal} />
+                <CharStack.Screen name="UpdateStatus" component={UpdateStatusModal} />
+              </CharStack.Group>
             </CharStack.Navigator>
           </View>
         </UpdatesProvider>

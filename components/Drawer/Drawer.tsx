@@ -1,12 +1,13 @@
 import { TouchableHighlight, TouchableOpacity, View } from "react-native"
 
-import { router, useSegments } from "expo-router"
+import { useNavigation, useRoute } from "@react-navigation/native"
+import { NativeStackNavigationProp } from "@react-navigation/native-stack"
+import { CharStackParamList, RootStackParamList } from "nav/nav.types"
 
 import List from "components/List"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import SmallLine from "components/draws/Line/Line"
-import { charRoute } from "constants/routes"
 
 import styles from "./Drawer.styles"
 
@@ -15,22 +16,22 @@ type DrawerProps = {
   squadId: string
 }
 
-const navElements = [
-  { path: "main", label: "Perso" },
-  { path: "inventory", label: "Inventaire" },
-  { path: "combat", label: "Combat" }
+const navElements: { path: keyof CharStackParamList; label: string }[] = [
+  { path: "Perso", label: "Perso" },
+  { path: "Inventaire", label: "Inventaire" },
+  { path: "Combat", label: "Combat" }
 ]
 
 export default function Drawer({ squadId, charId }: DrawerProps) {
-  const segments = useSegments()
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, "Personnage">>()
+  const { name } = useRoute()
 
-  const toHome = () => router.push("/")
+  const toHome = () => navigation.navigate("Home")
 
-  const toTabs = (path: string) =>
-    router.push({
-      pathname: `${charRoute}/${path}`,
-      params: { squadId, charId }
-    })
+  const toTabs = (path: keyof CharStackParamList) => {
+    const params = { squadId, charId }
+    navigation.push("Personnage", { screen: path, params })
+  }
 
   return (
     <View style={styles.drawerContainer}>
@@ -45,7 +46,7 @@ export default function Drawer({ squadId, charId }: DrawerProps) {
         data={navElements}
         keyExtractor={item => item.label}
         renderItem={({ item }) => {
-          const isSelected = segments.includes(item.path)
+          const isSelected = name === item.path
           return (
             <TouchableHighlight
               style={[styles.navButton, isSelected && styles.navButtonActive]}

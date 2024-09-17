@@ -12,6 +12,15 @@ export type CharStackParamList = {
   Perso: NavigatorScreenParams<CharBottomTabParamList>
   Inventaire: NavigatorScreenParams<InvBottomTabParamList>
   Combat: NavigatorScreenParams<CombatBottomTabParamList>
+  UpdateEffects: { squadId: string; charId: string }
+  UpdateEffectsConfirmation: { squadId: string; charId: string }
+  UpdateHealth: { squadId: string; charId: string }
+  UpdateHealthConfirmation: { squadId: string; charId: string }
+  UpdateKnowledges: { squadId: string; charId: string }
+  UpdateObjects: { squadId: string; charId: string }
+  UpdateObjectsConfirmation: { squadId: string; charId: string }
+  UpdateSkills: { squadId: string; charId: string }
+  UpdateStatus: { squadId: string; charId: string }
 }
 
 export type AdminBottomTabParamList = {
