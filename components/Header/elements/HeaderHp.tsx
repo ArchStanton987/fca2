@@ -1,27 +1,26 @@
 import { TouchableOpacity } from "react-native"
 
-import { router, useLocalSearchParams } from "expo-router"
+import { useNavigation } from "@react-navigation/native"
+import { RootStackNavigationProps } from "nav/nav.types"
 
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import ProgressionBar from "components/ProgressionBar/ProgressionBar"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
+import { useSquad } from "contexts/SquadContext"
 import { UpdateHealthModalParams } from "screens/MainTabs/modals/UpdateHealthModal/UpdateHealthModal.params"
-import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
 
 import HeaderElement from "../HeaderElement"
 
 export default function HeaderHp() {
-  const { squadId, charId } = useLocalSearchParams() as SearchParams<DrawerParams>
-  const { health } = useCharacter()
+  const navigation = useNavigation<RootStackNavigationProps<"Personnage">>()
+  const { squadId } = useSquad()
+  const { charId, health } = useCharacter()
 
   const onPress = () => {
-    const pathname = routes.modal.updateHealth
     const params: UpdateHealthModalParams = { charId, squadId, initElement: "rightTorsoHp" }
-    router.push({ pathname, params })
+    navigation.navigate("Personnage", { screen: "UpdateHealth", params })
   }
 
   const getColor = () => {

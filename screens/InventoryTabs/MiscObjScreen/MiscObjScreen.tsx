@@ -1,13 +1,11 @@
 import React, { useMemo, useState } from "react"
 import { FlatList, View } from "react-native"
 
-import { router, useLocalSearchParams } from "expo-router"
 
 import useCases from "lib/common/use-cases"
 import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
 
 import AddElement from "components/AddElement"
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
@@ -15,20 +13,21 @@ import routes from "constants/routes"
 import { useInventory } from "contexts/InventoryContext"
 import MiscObjDetails from "screens/InventoryTabs/MiscObjScreen/MiscObjDetails"
 import MiscObjRow, { ListHeader } from "screens/InventoryTabs/MiscObjScreen/MiscObjRow"
-import { SearchParams } from "screens/ScreenParams"
+import { useSquad } from "contexts/SquadContext"
+import { useCharacter } from "contexts/CharacterContext"
+import { useNavigation } from "@react-navigation/native"
 
 export default function MiscObjScreen() {
-  const { squadId, charId } = useLocalSearchParams() as SearchParams<DrawerParams>
+  const navigation = useNavigation()
+  const { squadId } = useSquad()
+  const { charId } = useCharacter()
   const [selectedItem, setSelectedItem] = useState<MiscObject | null>(null)
   const [isAscSort, setIsAscSort] = useState(true)
 
   const { groupedMiscObjects } = useInventory()
 
   const onPressAdd = () =>
-    router.push({
-      pathname: routes.modal.updateObjects,
-      params: { squadId, charId, initCategory: "miscObjects" }
-    })
+    navigation.navigate("UpdateObjects", params: { squadId, charId, initCategory: "miscObjects" })
 
   const onPressHeader = () => setIsAscSort(prev => !prev)
 

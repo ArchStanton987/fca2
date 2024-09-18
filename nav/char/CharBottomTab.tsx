@@ -1,7 +1,7 @@
 import React from "react"
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import { CharBottomTabParamList, CharStackScreenProps } from "nav/nav.types"
+import { CharBottomTabParamList } from "nav/nav.types"
 
 import Header from "components/Header/Header"
 import { HeaderElementId } from "components/Header/Header.utils"

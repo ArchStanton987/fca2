@@ -1,31 +1,29 @@
-import React from "react"
+import React, { useContext } from "react"
 import { TouchableHighlight, View } from "react-native"
-
-import { useLocalSearchParams, useRouter } from "expo-router"
 
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs"
 
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import Txt from "components/Txt"
 import SmallLine from "components/draws/Line/Line"
 import PlusIcon from "components/icons/PlusIcon"
-import { charRoute } from "constants/routes"
-import { useCharacter } from "contexts/CharacterContext"
-import { SearchParams } from "screens/ScreenParams"
+import { CharacterContext, useCharacter } from "contexts/CharacterContext"
+import { useSquad } from "contexts/SquadContext"
 
 import styles from "./TabBar.styles"
 
-type TabBarId = "main" | "inventory" | "combat"
+type TabBarId = "main" | "inventory" | "combat" | "admin"
 type TabBarProps = BottomTabBarProps & {
   tabBarId: TabBarId
 }
 
 export default function TabBar(props: TabBarProps) {
+  const { squadId } = useSquad()
+  //  we are not using dedicated hook on purpose, context might be called outside of a provider (admin)
+  const character = useContext(CharacterContext)
+  const charId = character?.charId
+  const navigation = props.navigation
   const { state, descriptors, tabBarId } = props
   const { routes } = state
-  const router = useRouter()
-  const localParams = useLocalSearchParams() as SearchParams<DrawerParams>
-  const { charId, squadId } = localParams
 
   const { progress } = useCharacter()
   const canAddSkill = progress.availableSkillPoints > 0
@@ -38,18 +36,17 @@ export default function TabBar(props: TabBarProps) {
       {routes.map(({ key, name }, index) => {
         const { options } = descriptors[key]
         const isFocused = state.index === index
-        const pathname = `${charRoute}/${tabBarId}/${name}`
         const hasBadge =
           (name === "skills" && canAddSkill) || (name === "knowledge" && canAddKnowledge)
         return (
           <TouchableHighlight
             key={key}
             style={[styles.tabBarItem, isFocused && styles.tabBarItemActive]}
-            onPress={() => router.push({ pathname, params: { charId, squadId } })}
+            onPress={() => navigation.navigate(name, { charId, squadId })}
             onLongPress={() => {
               if (!hasBadge) return
-              const path = `${charRoute}/update-${name}`
-              router.push({ pathname: path, params: { charId, squadId } })
+              const path = name === "knowledge" ? "UpdateKnowledges" : "UpdateSkills"
+              navigation.navigate(path, { charId, squadId })
             }}
           >
             <>

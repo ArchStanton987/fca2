@@ -1,6 +1,7 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs"
 import { CompositeScreenProps, NavigatorScreenParams } from "@react-navigation/native"
-import { NativeStackScreenProps } from "@react-navigation/native-stack"
+import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack"
+import { HealthStatusId } from "lib/character/health/health-types"
 
 export type RootStackParamList = {
   Home: undefined
@@ -14,7 +15,7 @@ export type CharStackParamList = {
   Combat: NavigatorScreenParams<CombatBottomTabParamList>
   UpdateEffects: { squadId: string; charId: string }
   UpdateEffectsConfirmation: { squadId: string; charId: string }
-  UpdateHealth: { squadId: string; charId: string }
+  UpdateHealth: { squadId: string; charId: string; initElement: HealthStatusId }
   UpdateHealthConfirmation: { squadId: string; charId: string }
   UpdateKnowledges: { squadId: string; charId: string }
   UpdateObjects: { squadId: string; charId: string }
@@ -52,11 +53,15 @@ export type RootStackScreenProps<T extends keyof RootStackParamList> = NativeSta
   RootStackParamList,
   T
 >
+export type RootStackNavigationProps<T extends keyof RootStackParamList> =
+  NativeStackNavigationProp<RootStackParamList, T>
 
 export type CharStackScreenProps<T extends keyof CharStackParamList> = NativeStackScreenProps<
   CharStackParamList,
   T
 >
+export type CharStackNavigationProps<T extends keyof CharStackParamList> =
+  NativeStackNavigationProp<CharStackParamList, T>
 
 export type AdminScreenProps<T extends keyof AdminBottomTabParamList> = CompositeScreenProps<
   BottomTabScreenProps<AdminBottomTabParamList, T>,
