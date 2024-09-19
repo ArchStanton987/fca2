@@ -1,10 +1,9 @@
 import React, { useState } from "react"
 import { TouchableOpacity, View } from "react-native"
 
-import { router, useLocalSearchParams } from "expo-router"
-
 import healthMap from "lib/character/health/health"
 import { HealthStatusId } from "lib/character/health/health-types"
+import { CharStackScreenProps } from "nav/nav.types"
 
 import AmountSelector from "components/AmountSelector"
 import List from "components/List"
@@ -16,17 +15,16 @@ import ViewSection from "components/ViewSection"
 import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import ModalBody from "components/wrappers/ModalBody"
-import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useUpdateHealth } from "contexts/UpdateHealthContext"
-import { UpdateHealthModalParams } from "screens/MainTabs/modals/UpdateHealthModal/UpdateHealthModal.params"
-import { SearchParams, fromLocalParams } from "screens/ScreenParams"
 
 import styles from "./UpdateHealthModal.styles"
 
-export default function UpdateHealthModal() {
-  const localParams = useLocalSearchParams() as SearchParams<UpdateHealthModalParams>
-  const { squadId, charId, initElement } = fromLocalParams(localParams)
+export default function UpdateHealthModal({
+  route,
+  navigation
+}: CharStackScreenProps<"UpdateHealth">) {
+  const { initElement } = route.params
 
   const character = useCharacter()
   const { status } = character
@@ -53,12 +51,11 @@ export default function UpdateHealthModal() {
     })
   }
 
-  const onPressConfirm = () =>
-    router.push({ pathname: routes.modal.updateHealthConfirmation, params: { charId, squadId } })
+  const onPressConfirm = () => navigation.push("UpdateHealthConfirmation")
 
   const onCancel = () => {
     dispatch({ type: "reset" })
-    router.back()
+    navigation.goBack()
   }
 
   return (

@@ -1,7 +1,11 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs"
 import { CompositeScreenProps, NavigatorScreenParams } from "@react-navigation/native"
 import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack"
+import { EffectId } from "lib/character/effects/effects.types"
 import { HealthStatusId } from "lib/character/health/health-types"
+import { DbInventory } from "lib/objects/data/objects.types"
+
+import { UpdatableStatusElement } from "screens/MainTabs/modals/UpdateStatusModal/UpdateStatusModal.types"
 
 export type RootStackParamList = {
   Home: undefined
@@ -13,15 +17,15 @@ export type CharStackParamList = {
   Perso: NavigatorScreenParams<CharBottomTabParamList>
   Inventaire: NavigatorScreenParams<InvBottomTabParamList>
   Combat: NavigatorScreenParams<CombatBottomTabParamList>
-  UpdateEffects: { squadId: string; charId: string }
-  UpdateEffectsConfirmation: { squadId: string; charId: string }
-  UpdateHealth: { squadId: string; charId: string; initElement: HealthStatusId }
-  UpdateHealthConfirmation: { squadId: string; charId: string }
-  UpdateKnowledges: { squadId: string; charId: string }
-  UpdateObjects: { squadId: string; charId: string }
-  UpdateObjectsConfirmation: { squadId: string; charId: string }
-  UpdateSkills: { squadId: string; charId: string }
-  UpdateStatus: { squadId: string; charId: string }
+  UpdateEffects: undefined
+  UpdateEffectsConfirmation: { effectsToAdd: EffectId[] }
+  UpdateHealth: { initElement: HealthStatusId }
+  UpdateHealthConfirmation: undefined
+  UpdateKnowledges: undefined
+  UpdateObjects: { initCategory: keyof DbInventory }
+  UpdateObjectsConfirmation: undefined
+  UpdateSkills: undefined
+  UpdateStatus: { initCategory: UpdatableStatusElement }
 }
 
 export type AdminBottomTabParamList = {

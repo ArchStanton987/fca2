@@ -1,10 +1,9 @@
 import { useMemo, useState } from "react"
 import { TouchableOpacity, TouchableOpacityProps, View } from "react-native"
 
-import { router, useLocalSearchParams } from "expo-router"
-
 import { AmmoType } from "lib/objects/data/ammo/ammo.types"
 import { DbInventory } from "lib/objects/data/objects.types"
+import { CharStackScreenProps } from "nav/nav.types"
 
 import AmountSelector from "components/AmountSelector"
 import List from "components/List"
@@ -17,12 +16,9 @@ import ViewSection from "components/ViewSection"
 import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import ModalBody from "components/wrappers/ModalBody"
-import routes from "constants/routes"
 import { useInventory } from "contexts/InventoryContext"
 import { useUpdateObjects } from "contexts/UpdateObjectsContext"
-import { UpdateObjectsModalParams } from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.params"
 import { categoriesMap } from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.utils"
-import { SearchParams, fromLocalParams, toLocalParams } from "screens/ScreenParams"
 
 import styles from "./UpdateObjectsModal.styles"
 
@@ -58,9 +54,11 @@ function ListItemHeader() {
   return <ListItemRow label="Obj" inv="Inv" mod="Mod" prev="Prev" />
 }
 
-export default function UpdateObjectsModal() {
-  const localParams = useLocalSearchParams() as SearchParams<UpdateObjectsModalParams>
-  const { squadId, charId, initCategory = "weapons" } = fromLocalParams(localParams)
+export default function UpdateObjectsModal({
+  route,
+  navigation
+}: CharStackScreenProps<"UpdateObjects">) {
+  const { initCategory = "weapons" } = route.params
   const [selectedCat, setSelectedCat] = useState<keyof DbInventory>(initCategory)
   const [selectedItem, setSelectedItem] = useState<SelectedItem>(null)
   const [selectedAmount, setSelectedAmount] = useState<number>(1)
@@ -87,14 +85,11 @@ export default function UpdateObjectsModal() {
     setSelectedCat(category)
   }
 
-  const onPressNext = () => {
-    const params = toLocalParams({ squadId, charId })
-    router.push({ pathname: routes.modal.updateObjectsConfirmation, params })
-  }
+  const onPressNext = () => navigation.push("UpdateObjectsConfirmation")
 
   const onPressCancel = () => {
     dispatch({ type: "reset" })
-    router.back()
+    navigation.goBack()
   }
 
   const getInInv = (id: string) => {

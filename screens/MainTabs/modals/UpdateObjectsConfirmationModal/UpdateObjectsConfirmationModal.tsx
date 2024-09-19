@@ -1,8 +1,7 @@
 import { StyleSheet, View } from "react-native"
 
-import { router } from "expo-router"
-
 import useCases from "lib/common/use-cases"
+import { CharStackScreenProps } from "nav/nav.types"
 
 import ModalCta from "components/ModalCta/ModalCta"
 import ScrollableSection from "components/ScrollableSection"
@@ -33,7 +32,9 @@ const styles = StyleSheet.create({
   }
 })
 
-export default function UpdateObjectsConfirmationModal() {
+export default function UpdateObjectsConfirmationModal({
+  navigation
+}: CharStackScreenProps<"UpdateObjectsConfirmation">) {
   const { state, dispatch } = useUpdateObjects()
   const character = useCharacter()
   const inventory = useInventory()
@@ -51,7 +52,7 @@ export default function UpdateObjectsConfirmationModal() {
   const onPressConfirm = async () => {
     await useCases.inventory.exchange(character, state, inventory)
     dispatch({ type: "reset" })
-    router.dismiss(2)
+    navigation.popToTop()
   }
 
   return (

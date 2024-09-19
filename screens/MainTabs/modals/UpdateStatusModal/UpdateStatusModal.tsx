@@ -1,9 +1,8 @@
 import React, { useState } from "react"
 import { TouchableOpacity, View } from "react-native"
 
-import { router, useLocalSearchParams } from "expo-router"
-
 import useCases from "lib/common/use-cases"
+import { CharStackScreenProps } from "nav/nav.types"
 
 import AmountSelector from "components/AmountSelector"
 import List from "components/List"
@@ -16,20 +15,20 @@ import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import ModalBody from "components/wrappers/ModalBody"
 import { useCharacter } from "contexts/CharacterContext"
-import { UpdateStatusModalParams } from "screens/MainTabs/modals/UpdateStatusModal/UpdateStatusModal.params"
 import {
   UpdatableStatusElement,
   UpdateStatusState
 } from "screens/MainTabs/modals/UpdateStatusModal/UpdateStatusModal.types"
-import { SearchParams, fromLocalParams } from "screens/ScreenParams"
 
 import styles from "./UpdateStatusModal.styles"
 
 const defaultState = { exp: { count: 0, initValue: 0 } }
 
-export default function UpdateStatusModal() {
-  const localParams = useLocalSearchParams() as SearchParams<UpdateStatusModalParams>
-  const { initCategory } = fromLocalParams(localParams)
+export default function UpdateStatusModal({
+  route,
+  navigation
+}: CharStackScreenProps<"UpdateStatus">) {
+  const { initCategory = "exp" } = route.params
 
   const [updateState, setUpdateState] = useState<UpdateStatusState>(defaultState)
   const [selectedItem, setSelectedItem] = useState<UpdatableStatusElement | null>(initCategory)
@@ -50,7 +49,7 @@ export default function UpdateStatusModal() {
 
   const onPressConfirm = async () => {
     await useCases.status.updateElement(character, "exp", newValue)
-    router.back()
+    navigation.goBack()
   }
 
   return (

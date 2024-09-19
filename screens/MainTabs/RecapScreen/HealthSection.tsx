@@ -1,12 +1,9 @@
 import React from "react"
 import { ActivityIndicator, ScrollView } from "react-native"
 
-import { useLocalSearchParams } from "expo-router"
-
 import effectsMap from "lib/character/effects/effects"
 import { observer } from "mobx-react-lite"
 
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import List from "components/List"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
@@ -14,11 +11,10 @@ import Txt from "components/Txt"
 import HealthFigure from "components/draws/HealthFigure/HealthFigure"
 import { useCharacter } from "contexts/CharacterContext"
 import { useSquad } from "contexts/SquadContext"
-import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
 
 function HealthSection() {
-  const { charId } = useLocalSearchParams() as SearchParams<DrawerParams>
+  const { charId } = useCharacter()
   const { membersRecord } = useSquad()
   const { firstname = "", lastname = "" } = membersRecord[charId]
   const name = lastname.length > 0 ? `${firstname} ${lastname.toUpperCase()}` : firstname

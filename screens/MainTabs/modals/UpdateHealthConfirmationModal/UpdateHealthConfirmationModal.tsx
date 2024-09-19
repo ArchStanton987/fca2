@@ -1,9 +1,8 @@
 import React from "react"
 import { View } from "react-native"
 
-import { router } from "expo-router"
-
 import useCases from "lib/common/use-cases"
+import { CharStackScreenProps } from "nav/nav.types"
 
 import ModalCta from "components/ModalCta/ModalCta"
 import ScrollableSection from "components/ScrollableSection"
@@ -13,7 +12,9 @@ import ModalBody from "components/wrappers/ModalBody"
 import { useCharacter } from "contexts/CharacterContext"
 import { useUpdateHealth } from "contexts/UpdateHealthContext"
 
-export default function UpdateHealthConfirmationModal() {
+export default function UpdateHealthConfirmationModal({
+  navigation
+}: CharStackScreenProps<"UpdateHealthConfirmation">) {
   const character = useCharacter()
 
   const { state, dispatch } = useUpdateHealth()
@@ -25,7 +26,7 @@ export default function UpdateHealthConfirmationModal() {
   const onPressConfirm = async () => {
     await useCases.status.groupMod(character, state)
     dispatch({ type: "reset" })
-    router.dismiss(2)
+    navigation.popToTop()
   }
   return (
     <ModalBody>

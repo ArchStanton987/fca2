@@ -1,12 +1,10 @@
 import { useState } from "react"
 import { TouchableOpacity, View } from "react-native"
 
-import { router, useLocalSearchParams } from "expo-router"
-
 import effectsMap from "lib/character/effects/effects"
 import { EffectId } from "lib/character/effects/effects.types"
+import { CharStackScreenProps } from "nav/nav.types"
 
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import List from "components/List"
 import ModalCta from "components/ModalCta/ModalCta"
 import ScrollableSection from "components/ScrollableSection"
@@ -17,16 +15,12 @@ import ViewSection from "components/ViewSection"
 import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import ModalBody from "components/wrappers/ModalBody"
-import routes from "constants/routes"
-import { SearchParams, fromLocalParams } from "screens/ScreenParams"
 
 import styles from "./UpdateEffectsModal.styles"
 
 const effects = Object.values(effectsMap)
 
-export default function UpdateEffectsModal() {
-  const localParams = useLocalSearchParams() as SearchParams<DrawerParams>
-  const { squadId, charId } = fromLocalParams(localParams)
+export default function UpdateEffectsModal({ navigation }: CharStackScreenProps<"UpdateEffects">) {
   const [searchValue, setSearchValue] = useState("")
   const [selectedEffectId, setSelectedEffectId] = useState<EffectId | null>(null)
   const [effectsToAdd, setEffectsToAdd] = useState<EffectId[]>([])
@@ -49,10 +43,7 @@ export default function UpdateEffectsModal() {
 
   const onPressConfirm = () => {
     if (effectsToAdd.length === 0) return
-    router.push({
-      pathname: `${routes.modal.updateEffectsConfirmation}`,
-      params: { charId, squadId, effectsToAdd }
-    })
+    navigation.push("UpdateEffectsConfirmation", { effectsToAdd })
   }
 
   const visibleEffects =
