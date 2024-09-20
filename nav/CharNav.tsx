@@ -94,24 +94,24 @@ export default function CharNav({ route }: RootStackScreenProps<"Personnage">) {
               <CharStack.Screen name="Inventaire" component={InvBottomTab} />
               <CharStack.Screen name="Combat" component={CombatBottomTab} />
               <CharStack.Group screenOptions={{ presentation: "modal" }}>
-                <CharStack.Screen name="UpdateEffects" component={UpdateEffectsModal} />
                 <CharStack.Screen
                   name="UpdateEffectsConfirmation"
                   component={EffectsConfirmationModal}
                 />
-                <CharStack.Screen name="UpdateHealth" component={UpdateHealthModal} />
                 <CharStack.Screen
                   name="UpdateHealthConfirmation"
                   component={UpdateHealthConfirmationModal}
                 />
-                <CharStack.Screen name="UpdateKnowledges" component={UpdateKnowledgesModal} />
-                <CharStack.Screen name="UpdateObjects" component={UpdateObjectsModal} />
                 <CharStack.Screen
                   name="UpdateObjectsConfirmation"
                   component={UpdateObjectsConfirmationModal}
                 />
+                <CharStack.Screen name="UpdateEffects" component={UpdateEffectsModal} />
+                <CharStack.Screen name="UpdateObjects" component={UpdateObjectsModal} />
                 <CharStack.Screen name="UpdateSkills" component={UpdateSkillsModal} />
                 <CharStack.Screen name="UpdateStatus" component={UpdateStatusModal} />
+                <CharStack.Screen name="UpdateHealth" component={UpdateHealthModal} />
+                <CharStack.Screen name="UpdateKnowledges" component={UpdateKnowledgesModal} />
               </CharStack.Group>
             </CharStack.Navigator>
           </View>

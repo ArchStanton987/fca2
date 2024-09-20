@@ -1,31 +1,25 @@
 import React, { useState } from "react"
 import { FlatList, ScrollView, View } from "react-native"
 
-import { router, useLocalSearchParams } from "expo-router"
-
 import { Effect } from "lib/character/effects/effects.types"
 import useCases from "lib/common/use-cases"
+import { CharBottomTabScreenProps } from "nav/nav.types"
 
 import AddElement from "components/AddElement"
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import EffectRow, { EffectHeader } from "screens/MainTabs/EffectsScreen/EffectRow"
-import { SearchParams } from "screens/ScreenParams"
 
-export default function EffectsScreen() {
-  const { squadId, charId } = useLocalSearchParams<SearchParams<DrawerParams>>()
+export default function EffectsScreen({ navigation }: CharBottomTabScreenProps<"Effets">) {
   const [selectedId, setSelectedId] = useState<Effect["id"] | null>(null)
 
   const character = useCharacter()
   const { effects } = character
 
-  const onPressAdd = () =>
-    router.push({ pathname: routes.modal.updateEffects, params: { squadId, charId } })
+  const onPressAdd = () => navigation.push("UpdateEffects")
 
   const onPressDelete = (effect: Effect) => {
     if (!effect.dbKey) return

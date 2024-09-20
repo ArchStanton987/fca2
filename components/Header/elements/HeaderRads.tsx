@@ -1,22 +1,19 @@
 import { TouchableOpacity } from "react-native"
 
-import { router } from "expo-router"
-
+import { useNavigation } from "@react-navigation/native"
 import { radStates } from "lib/character/health/health"
+import { CharBottomTabScreenProps } from "nav/nav.types"
 
 import HeaderElement from "components/Header/HeaderElement"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import RadsIcon from "components/icons/RadsIcon"
-import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
-import { useSquad } from "contexts/SquadContext"
-import { UpdateHealthModalParams } from "screens/MainTabs/modals/UpdateHealthModal/UpdateHealthModal.params"
 import colors from "styles/colors"
 
 export default function HeaderRads() {
-  const { squadId } = useSquad()
-  const { health, charId } = useCharacter()
+  const navigation = useNavigation<CharBottomTabScreenProps<"Résumé">["navigation"]>()
+  const { health } = useCharacter()
 
   const getColor = () => {
     const radState = radStates.find(state => health.rads >= state.threshold)
@@ -25,9 +22,7 @@ export default function HeaderRads() {
   }
 
   const onPress = () => {
-    const pathname = routes.modal.updateHealth
-    const params: UpdateHealthModalParams = { squadId, charId, initElement: "rads" }
-    router.push({ pathname, params })
+    navigation.push("UpdateHealth", { initElement: "rads" })
   }
 
   return (

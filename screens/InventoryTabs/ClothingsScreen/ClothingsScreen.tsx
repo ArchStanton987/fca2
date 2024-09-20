@@ -1,39 +1,26 @@
 import React, { useMemo, useState } from "react"
 import { FlatList, View } from "react-native"
 
-import { router, useLocalSearchParams } from "expo-router"
-
 import { Clothing } from "lib/objects/data/clothings/clothings.types"
+import { InvBottomTabScreenProps } from "nav/nav.types"
 
 import AddElement from "components/AddElement"
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
-import routes from "constants/routes"
 import { useInventory } from "contexts/InventoryContext"
 import ClothingRow, { ListHeader } from "screens/InventoryTabs/ClothingsScreen/ClothingRow"
 import ClothingsDetails from "screens/InventoryTabs/ClothingsScreen/ClothingsDetails"
-import { SearchParams } from "screens/ScreenParams"
 
 import { ClothingSort, ClothingSortableKey } from "./ClothingsScreen.types"
 
-export default function ClothingsScreen() {
-  const localParams = useLocalSearchParams<SearchParams<DrawerParams>>()
+export default function ClothingsScreen({ navigation }: InvBottomTabScreenProps<"Protections">) {
   const [selectedCloth, setSelectedCloth] = useState<Clothing | null>(null)
   const [sort, setSort] = useState<ClothingSort>({ type: "dbKey", isAsc: false })
 
   const { clothings } = useInventory()
 
-  const onPressAdd = () =>
-    router.push({
-      pathname: routes.modal.updateObjects,
-      params: {
-        squadId: localParams.squadId,
-        charId: localParams.charId,
-        initCategory: "clothings"
-      }
-    })
+  const onPressAdd = () => navigation.push("UpdateObjects", { initCategory: "clothings" })
 
   const onPressClothingHeader = (type: ClothingSortableKey) => {
     setSort(prev => ({ type, isAsc: prev.type === type ? !prev.isAsc : true }))

@@ -33,7 +33,7 @@ export type AdminBottomTabParamList = {
 }
 
 export type CharBottomTabParamList = {
-  Résumé: { squadId: string; charId: string }
+  Résumé: undefined
   Effets: { squadId: string; charId: string }
   "Attr. Prim.": { squadId: string; charId: string }
   "Attr. Sec.": { squadId: string; charId: string }
@@ -42,7 +42,7 @@ export type CharBottomTabParamList = {
 }
 
 export type InvBottomTabParamList = {
-  Armes: { squadId: string; charId: string }
+  Armes: undefined
   Protections: { squadId: string; charId: string }
   Consommables: { squadId: string; charId: string }
   Divers: { squadId: string; charId: string }

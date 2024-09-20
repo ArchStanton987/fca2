@@ -1,13 +1,12 @@
 import { useState } from "react"
 import { Alert } from "react-native"
 
-import { router } from "expo-router"
-
 import { KnowledgeId, KnowledgeLevel } from "lib/character/abilities/knowledges/knowledge-types"
 import knowledgesMap from "lib/character/abilities/knowledges/knowledges"
 import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-levels"
 import { getUsedKnowledgesPoints } from "lib/character/progress/progress-utils"
 import useCases from "lib/common/use-cases"
+import { CharStackScreenProps } from "nav/nav.types"
 
 import ModalCta from "components/ModalCta/ModalCta"
 import ScrollableSection from "components/ScrollableSection"
@@ -17,7 +16,9 @@ import ModalBody from "components/wrappers/ModalBody"
 import { useCharacter } from "contexts/CharacterContext"
 import KnowledgeRow from "screens/MainTabs/KnowledgesScreen/KnowledgeRow"
 
-export default function UpdateKnowledgesModal() {
+export default function UpdateKnowledgesModal({
+  navigation
+}: CharStackScreenProps<"UpdateKnowledges">) {
   const { progress, knowledgesRecord, charId } = useCharacter()
   const { availableKnowledgePoints, usedKnowledgePoints } = progress
 
@@ -47,7 +48,7 @@ export default function UpdateKnowledgesModal() {
     setNewKnowledges(prev => ({ ...prev, [id]: level }))
   }
 
-  const onCancel = () => router.dismiss(1)
+  const onCancel = () => navigation.goBack()
   const onConfirm = () => {
     Alert.prompt("Confirmation", "Voulez-vous vraiment valider ces modifications ?", [
       { text: "Annuler", style: "cancel" },
@@ -55,7 +56,7 @@ export default function UpdateKnowledgesModal() {
         text: "Confirmer",
         onPress: async () => {
           await useCases.abilities.updateKnowledges(charId, newKnowledges)
-          router.dismiss(1)
+          navigation.goBack()
         }
       }
     ])

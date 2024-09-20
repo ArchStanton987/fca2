@@ -1,11 +1,10 @@
 import { useState } from "react"
 import { TouchableOpacity, View } from "react-native"
 
-import { router } from "expo-router"
-
 import skillsMap from "lib/character/abilities/skills/skills"
 import { SkillId } from "lib/character/abilities/skills/skills.types"
 import useCases from "lib/common/use-cases"
+import { CharStackScreenProps } from "nav/nav.types"
 
 import ModalCta from "components/ModalCta/ModalCta"
 import ScrollableSection from "components/ScrollableSection"
@@ -56,7 +55,7 @@ function Row({ label, skillId, values, onModSkill, canAdd, canRemove }: RowProps
   )
 }
 
-export default function UpdateSkillsModal() {
+export default function UpdateSkillsModal({ navigation }: CharStackScreenProps<"UpdateSkills">) {
   const { skills, progress, charId } = useCharacter()
   const { availableSkillPoints, usedSkillsPoints } = progress
   const { base, up } = skills
@@ -72,7 +71,7 @@ export default function UpdateSkillsModal() {
     setNewUpskills(prev => ({ ...prev, [skillId]: prev[skillId] + (modType === "plus" ? 1 : -1) }))
   }
 
-  const onCancel = () => router.dismiss(1)
+  const onCancel = () => navigation.goBack()
   const onConfirm = () => useCases.abilities.updateUpSkills(charId, newUpSkills)
 
   return (

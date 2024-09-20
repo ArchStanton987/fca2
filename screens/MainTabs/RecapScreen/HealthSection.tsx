@@ -3,6 +3,7 @@ import { ActivityIndicator, ScrollView } from "react-native"
 
 import effectsMap from "lib/character/effects/effects"
 import { observer } from "mobx-react-lite"
+import { CharBottomTabScreenProps } from "nav/nav.types"
 
 import List from "components/List"
 import Section from "components/Section"
@@ -13,7 +14,7 @@ import { useCharacter } from "contexts/CharacterContext"
 import { useSquad } from "contexts/SquadContext"
 import colors from "styles/colors"
 
-function HealthSection() {
+function HealthSection({ navigation, route }: CharBottomTabScreenProps<"Résumé">) {
   const { charId } = useCharacter()
   const { membersRecord } = useSquad()
   const { firstname = "", lastname = "" } = membersRecord[charId]
@@ -26,7 +27,7 @@ function HealthSection() {
       <Section style={{ alignItems: "center", paddingHorizontal: 10 }}>
         <Txt>{name.toUpperCase()}</Txt>
         <Spacer y={15} />
-        <HealthFigure />
+        <HealthFigure navigation={navigation} route={route} />
         <Spacer y={15} />
       </Section>
       <Spacer y={5} />

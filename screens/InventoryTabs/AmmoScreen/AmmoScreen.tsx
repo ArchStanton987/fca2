@@ -1,38 +1,25 @@
 import React, { useMemo, useState } from "react"
 import { FlatList, View } from "react-native"
 
-import { router, useLocalSearchParams } from "expo-router"
-
 import { Ammo } from "lib/objects/data/ammo/ammo.types"
+import { InvBottomTabScreenProps } from "nav/nav.types"
 
 import AddElement from "components/AddElement"
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
-import routes from "constants/routes"
 import { useInventory } from "contexts/InventoryContext"
 import AmmoRow, { ListHeader } from "screens/InventoryTabs/AmmoScreen/AmmoRow"
-import { SearchParams } from "screens/ScreenParams"
 
 import { AmmoSort, AmmoSortableKey } from "./AmmoScreen.types"
 
-export default function AmmoScreen() {
-  const localParams = useLocalSearchParams<SearchParams<DrawerParams>>()
+export default function AmmoScreen({ navigation }: InvBottomTabScreenProps<"Munitions">) {
   const [selectedAmmo, setSelectedAmmo] = useState<Ammo | null>(null)
   const [sort, setSort] = useState<AmmoSort>({ type: "name", isAsc: false })
 
   const { ammo } = useInventory()
 
-  const onPressAdd = () =>
-    router.push({
-      pathname: routes.modal.updateObjects,
-      params: {
-        squadId: localParams.squadId,
-        charId: localParams.charId,
-        initCategory: "ammo"
-      }
-    })
+  const onPressAdd = () => navigation.push("UpdateObjects", { initCategory: "ammo" })
 
   const onPressHeader = (type: AmmoSortableKey) => {
     setSort(prev => ({ type, isAsc: prev.type === type ? !prev.isAsc : true }))

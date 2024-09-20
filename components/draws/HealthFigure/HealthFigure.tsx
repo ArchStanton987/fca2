@@ -1,35 +1,26 @@
 import React from "react"
 import { Image, TouchableOpacity, View } from "react-native"
 
-import { router } from "expo-router"
-
 import { limbsMap } from "lib/character/health/health"
 import { HealthStatusId } from "lib/character/health/health-types"
+import { CharBottomTabScreenProps } from "nav/nav.types"
 
 import pipboy from "assets/images/pipboy.png"
 import ProgressionBar from "components/ProgressionBar/ProgressionBar"
 import Spacer from "components/Spacer"
-import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
-import { useSquad } from "contexts/SquadContext"
 import colors from "styles/colors"
 
 import styles from "./HealthFigure.styles"
 
-const smallBarProps = {
-  height: 5,
-  width: 30
-}
+const smallBarProps = { height: 5, width: 30 }
 
-export default function HealthFigure() {
-  const { squadId } = useSquad()
-  const { health, charId } = useCharacter()
+export default function HealthFigure({ navigation }: CharBottomTabScreenProps<"Résumé">) {
+  const { health } = useCharacter()
   const { limbsHp } = health
 
   const onPressElement = (element: HealthStatusId) => {
-    const pathname = routes.modal.updateHealth
-    const params = { initElement: element, charId, squadId }
-    router.push({ pathname, params })
+    navigation.push("UpdateHealth", { initElement: element })
   }
 
   const getProgressionBarColor = (value: number, maxValue: number) => {

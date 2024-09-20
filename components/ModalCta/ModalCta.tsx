@@ -1,6 +1,6 @@
 import { View } from "react-native"
 
-import { router } from "expo-router"
+import { useNavigation } from "@react-navigation/native"
 
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
@@ -14,10 +14,17 @@ type ModalCtaProps = {
   onPressConfirm: () => void
 }
 
-export default function ModalCta({
-  onPressConfirm,
-  onPressCancel = () => router.back()
-}: ModalCtaProps) {
+export default function ModalCta({ onPressConfirm, onPressCancel }: ModalCtaProps) {
+  const navigation = useNavigation()
+
+  const cancel = () => {
+    if (onPressCancel) {
+      onPressCancel()
+    } else {
+      navigation.goBack()
+    }
+  }
+
   return (
     <View style={styles.ctaContainer}>
       <View style={styles.horizLine} />
@@ -25,7 +32,7 @@ export default function ModalCta({
         style={[styles.cta, styles.ctaSec]}
         initAnimColor={colors.primColor}
         endAnimColor={colors.secColor}
-        onPress={onPressCancel}
+        onPress={cancel}
       >
         <Txt style={styles.ctaTextSec}>ANNULER</Txt>
       </RevertColorsPressable>

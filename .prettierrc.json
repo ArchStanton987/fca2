@@ -13,7 +13,6 @@
   "endOfLine": "auto",
   "importOrder": [
     "^(react|react-native|react-native-paper)$",
-    "expo-router",
     "<THIRD_PARTY_MODULES>",
     "^(api|app|assets|components|containers|contexts|constants|lang|hooks|models|navigation|providers|screens|styles|utils)/.*",
     "^[./]",

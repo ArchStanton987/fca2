@@ -1,17 +1,14 @@
 import React, { useMemo, useState } from "react"
 import { FlatList, View } from "react-native"
 
-import { router, useLocalSearchParams } from "expo-router"
-
 import { getDamageEst } from "lib/common/utils/dice-calc"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
+import { InvBottomTabScreenProps } from "nav/nav.types"
 
 import AddElement from "components/AddElement"
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
-import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import WeaponRow, { ListHeader } from "screens/InventoryTabs/WeaponsScreen/WeaponRow"
@@ -20,10 +17,8 @@ import {
   WeaponSort,
   WeaponSortableKey
 } from "screens/InventoryTabs/WeaponsScreen/WeaponsScreen.types"
-import { SearchParams } from "screens/ScreenParams"
 
-export default function WeaponsScreen() {
-  const localParams = useLocalSearchParams<SearchParams<DrawerParams>>()
+export default function WeaponsScreen({ navigation }: InvBottomTabScreenProps<"Armes">) {
   const [selectedWeapon, setSelectedWeapon] = useState<Weapon | null>(null)
   const [sort, setSort] = useState<WeaponSort>({ type: "dbKey", isAsc: false })
 
@@ -33,11 +28,7 @@ export default function WeaponsScreen() {
   const toggleSelect = (weapon: Weapon) =>
     setSelectedWeapon(prev => (prev?.dbKey === weapon.dbKey ? null : weapon))
 
-  const onPressAdd = () =>
-    router.push({
-      pathname: routes.modal.updateObjects,
-      params: { squadId: localParams.squadId, charId: localParams.charId, initCategory: "weapons" }
-    })
+  const onPressAdd = () => navigation.push("UpdateObjects", { initCategory: "weapons" })
 
   const onPressWeaponHeader = (type: WeaponSortableKey) => {
     setSort(prev => ({ type, isAsc: prev.type === type ? !prev.isAsc : true }))
