@@ -1,33 +1,27 @@
 import React, { useMemo, useState } from "react"
 import { FlatList, View } from "react-native"
 
-
 import useCases from "lib/common/use-cases"
 import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
+import { InvBottomTabScreenProps } from "nav/nav.types"
 
 import AddElement from "components/AddElement"
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
-import routes from "constants/routes"
+import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import MiscObjDetails from "screens/InventoryTabs/MiscObjScreen/MiscObjDetails"
 import MiscObjRow, { ListHeader } from "screens/InventoryTabs/MiscObjScreen/MiscObjRow"
-import { useSquad } from "contexts/SquadContext"
-import { useCharacter } from "contexts/CharacterContext"
-import { useNavigation } from "@react-navigation/native"
 
-export default function MiscObjScreen() {
-  const navigation = useNavigation()
-  const { squadId } = useSquad()
+export default function MiscObjScreen({ navigation }: InvBottomTabScreenProps<"Divers">) {
   const { charId } = useCharacter()
   const [selectedItem, setSelectedItem] = useState<MiscObject | null>(null)
   const [isAscSort, setIsAscSort] = useState(true)
 
   const { groupedMiscObjects } = useInventory()
 
-  const onPressAdd = () =>
-    navigation.navigate("UpdateObjects", params: { squadId, charId, initCategory: "miscObjects" })
+  const onPressAdd = () => navigation.navigate("UpdateObjects", { initCategory: "miscObjects" })
 
   const onPressHeader = () => setIsAscSort(prev => !prev)
 
