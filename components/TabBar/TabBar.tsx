@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import { TouchableHighlight, View } from "react-native"
 
 import { useLocalSearchParams, useRouter } from "expo-router"
@@ -10,7 +10,7 @@ import Txt from "components/Txt"
 import SmallLine from "components/draws/Line/Line"
 import PlusIcon from "components/icons/PlusIcon"
 import { charRoute } from "constants/routes"
-import { useCharacter } from "contexts/CharacterContext"
+import { CharacterContext } from "contexts/CharacterContext"
 import { SearchParams } from "screens/ScreenParams"
 
 import styles from "./TabBar.styles"
@@ -27,7 +27,8 @@ export default function TabBar(props: TabBarProps) {
   const localParams = useLocalSearchParams() as SearchParams<DrawerParams>
   const { charId, squadId } = localParams
 
-  const { progress } = useCharacter()
+  const character = useContext(CharacterContext)
+  const progress = character?.progress || { availableSkillPoints: 0, availableKnowledgePoints: 0 }
   const canAddSkill = progress.availableSkillPoints > 0
   const canAddKnowledge = progress.availableKnowledgePoints > 0
   return (

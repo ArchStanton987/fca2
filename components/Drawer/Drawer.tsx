@@ -7,13 +7,10 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import SmallLine from "components/draws/Line/Line"
 import { charRoute } from "constants/routes"
+import { useCharacter } from "contexts/CharacterContext"
+import { useSquad } from "contexts/SquadContext"
 
 import styles from "./Drawer.styles"
-
-type DrawerProps = {
-  charId: string
-  squadId: string
-}
 
 const navElements = [
   { path: "main", label: "Perso" },
@@ -21,7 +18,9 @@ const navElements = [
   { path: "combat", label: "Combat" }
 ]
 
-export default function Drawer({ squadId, charId }: DrawerProps) {
+export default function Drawer() {
+  const { squadId } = useSquad()
+  const { charId } = useCharacter()
   const segments = useSegments()
 
   const toHome = () => router.push("/")
