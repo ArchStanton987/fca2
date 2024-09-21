@@ -24,13 +24,16 @@ const navElements: { path: keyof CharStackParamList; label: string }[] = [
 
 export default function Drawer({ squadId, charId }: DrawerProps) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, "Personnage">>()
-  const { name } = useRoute()
+  const route = useRoute()
+  console.log(route)
+  const { name } = route
 
   const toHome = () => navigation.navigate("Home")
 
   const toTabs = (path: keyof CharStackParamList) => {
     const params = { squadId, charId }
-    navigation.push("Personnage", { screen: path, params })
+    console.log("path", path)
+    navigation.navigate("Personnage", { screen: path, params })
   }
 
   return (

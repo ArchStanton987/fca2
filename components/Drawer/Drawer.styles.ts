@@ -6,10 +6,12 @@ import typos from "styles/typos"
 
 const styles = StyleSheet.create({
   drawerContainer: {
-    top: layout.headerHeight + 10,
+    top: layout.headerHeight + 20,
     width: layout.drawerWidth,
     height: layout.drawerHeight,
     position: "absolute",
+    left: 10,
+    zIndex: 1,
     backgroundColor: colors.primColor,
     borderWidth: 0,
     borderTopWidth: 1,

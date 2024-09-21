@@ -19,3 +19,5 @@ notes/
 .metro-health-check*
 
 .env*
+
+json.json

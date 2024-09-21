@@ -6,7 +6,7 @@ import { BottomTabBarProps } from "@react-navigation/bottom-tabs"
 import Txt from "components/Txt"
 import SmallLine from "components/draws/Line/Line"
 import PlusIcon from "components/icons/PlusIcon"
-import { CharacterContext, useCharacter } from "contexts/CharacterContext"
+import { CharacterContext } from "contexts/CharacterContext"
 import { useSquad } from "contexts/SquadContext"
 
 import styles from "./TabBar.styles"
@@ -16,17 +16,15 @@ type TabBarProps = BottomTabBarProps & {
   tabBarId: TabBarId
 }
 
-export default function TabBar(props: TabBarProps) {
+export default function TabBar({ state, descriptors, tabBarId, navigation }: TabBarProps) {
   const { squadId } = useSquad()
   //  we are not using dedicated hook on purpose, context might be called outside of a provider (admin)
   const character = useContext(CharacterContext)
   const charId = character?.charId
-  const navigation = props.navigation
-  const { state, descriptors, tabBarId } = props
   const { routes } = state
 
-  const { progress } = useCharacter()
-  const canAddSkill = progress.availableSkillPoints > 0
+  const progress = character?.progress || { availableSkillPoints: 0, availableKnowledgePoints: 0 }
+  const canAddSkill = progress?.availableSkillPoints > 0
   const canAddKnowledge = progress.availableKnowledgePoints > 0
   return (
     <View style={styles.container}>

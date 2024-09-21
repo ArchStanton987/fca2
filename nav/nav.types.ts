@@ -29,7 +29,7 @@ export type CharStackParamList = {
 }
 
 export type AdminBottomTabParamList = {
-  dateHeure: { squadId: string }
+  Datetime: { squadId: string }
 }
 
 export type CharBottomTabParamList = {

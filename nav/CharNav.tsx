@@ -15,6 +15,7 @@ import Toast from "react-native-toast-message"
 import Drawer from "components/Drawer/Drawer"
 import { CharacterContext } from "contexts/CharacterContext"
 import { InventoryContext } from "contexts/InventoryContext"
+import { SquadContext } from "contexts/SquadContext"
 import useRtdbSub from "hooks/db/useRtdbSub"
 import UpdatesProvider from "providers/UpdatesProvider"
 import LoadingScreen from "screens/LoadingScreen"
@@ -27,6 +28,7 @@ import UpdateObjectsConfirmationModal from "screens/MainTabs/modals/UpdateObject
 import UpdateObjectsModal from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal"
 import UpdateSkillsModal from "screens/MainTabs/modals/UpdateSkillsModal/UpdateSkillsModal"
 import UpdateStatusModal from "screens/MainTabs/modals/UpdateStatusModal/UpdateStatusModal"
+import colors from "styles/colors"
 import { getDDMMYYYY, getHHMM } from "utils/date"
 
 const CharStack = createNativeStackNavigator<CharStackParamList>()
@@ -40,7 +42,7 @@ export default function CharNav({ route }: RootStackScreenProps<"Personnage">) {
     return new Squad(dbSquad, squadId)
   }, [dbSquad, squadId])
 
-  const initDatetime = squad?.date.toJSON() ?? new Date().toJSON()
+  const initDatetime = squad?.date.toJSON()
   const [currDatetime, setCurrDatetime] = useState(initDatetime)
 
   // use separate subscriptions to avoid unnecessary bandwidth usage
@@ -72,7 +74,7 @@ export default function CharNav({ route }: RootStackScreenProps<"Personnage">) {
 
   if (!character || !charInventory || !squad) return <LoadingScreen />
 
-  if (squad.date.toJSON() !== currDatetime) {
+  if (typeof currDatetime === "string" && squad.date.toJSON() !== currDatetime) {
     setCurrDatetime(squad.date.toJSON())
     const newDate = getDDMMYYYY(squad.date)
     const newHour = getHHMM(squad.date)
@@ -84,39 +86,46 @@ export default function CharNav({ route }: RootStackScreenProps<"Personnage">) {
   }
 
   return (
-    <CharacterContext.Provider value={character}>
-      <InventoryContext.Provider value={charInventory}>
-        <UpdatesProvider>
-          <View>
-            <Drawer squadId={squadId} charId={charId} />
-            <CharStack.Navigator>
-              <CharStack.Screen name="Perso" component={CharBottomTab} />
-              <CharStack.Screen name="Inventaire" component={InvBottomTab} />
-              <CharStack.Screen name="Combat" component={CombatBottomTab} />
-              <CharStack.Group screenOptions={{ presentation: "modal" }}>
-                <CharStack.Screen
-                  name="UpdateEffectsConfirmation"
-                  component={EffectsConfirmationModal}
-                />
-                <CharStack.Screen
-                  name="UpdateHealthConfirmation"
-                  component={UpdateHealthConfirmationModal}
-                />
-                <CharStack.Screen
-                  name="UpdateObjectsConfirmation"
-                  component={UpdateObjectsConfirmationModal}
-                />
-                <CharStack.Screen name="UpdateEffects" component={UpdateEffectsModal} />
-                <CharStack.Screen name="UpdateObjects" component={UpdateObjectsModal} />
-                <CharStack.Screen name="UpdateSkills" component={UpdateSkillsModal} />
-                <CharStack.Screen name="UpdateStatus" component={UpdateStatusModal} />
-                <CharStack.Screen name="UpdateHealth" component={UpdateHealthModal} />
-                <CharStack.Screen name="UpdateKnowledges" component={UpdateKnowledgesModal} />
-              </CharStack.Group>
-            </CharStack.Navigator>
-          </View>
-        </UpdatesProvider>
-      </InventoryContext.Provider>
-    </CharacterContext.Provider>
+    <SquadContext.Provider value={squad}>
+      <CharacterContext.Provider value={character}>
+        <InventoryContext.Provider value={charInventory}>
+          <UpdatesProvider>
+            <View style={{ flexDirection: "row", flex: 1 }}>
+              <Drawer squadId={squadId} charId={charId} />
+              <CharStack.Navigator
+                screenOptions={{
+                  headerShown: false,
+                  contentStyle: { backgroundColor: colors.primColor, padding: 10 }
+                }}
+              >
+                <CharStack.Screen name="Perso" component={CharBottomTab} />
+                <CharStack.Screen name="Inventaire" component={InvBottomTab} />
+                <CharStack.Screen name="Combat" component={CombatBottomTab} />
+                <CharStack.Group screenOptions={{ presentation: "modal" }}>
+                  <CharStack.Screen
+                    name="UpdateEffectsConfirmation"
+                    component={EffectsConfirmationModal}
+                  />
+                  <CharStack.Screen
+                    name="UpdateHealthConfirmation"
+                    component={UpdateHealthConfirmationModal}
+                  />
+                  <CharStack.Screen
+                    name="UpdateObjectsConfirmation"
+                    component={UpdateObjectsConfirmationModal}
+                  />
+                  <CharStack.Screen name="UpdateEffects" component={UpdateEffectsModal} />
+                  <CharStack.Screen name="UpdateObjects" component={UpdateObjectsModal} />
+                  <CharStack.Screen name="UpdateSkills" component={UpdateSkillsModal} />
+                  <CharStack.Screen name="UpdateStatus" component={UpdateStatusModal} />
+                  <CharStack.Screen name="UpdateHealth" component={UpdateHealthModal} />
+                  <CharStack.Screen name="UpdateKnowledges" component={UpdateKnowledgesModal} />
+                </CharStack.Group>
+              </CharStack.Navigator>
+            </View>
+          </UpdatesProvider>
+        </InventoryContext.Provider>
+      </CharacterContext.Provider>
+    </SquadContext.Provider>
   )
 }

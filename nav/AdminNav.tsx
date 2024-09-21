@@ -5,6 +5,7 @@ import Squad from "lib/character/Squad"
 import useCases from "lib/common/use-cases"
 import { AdminBottomTabParamList, RootStackScreenProps } from "nav/nav.types"
 
+import Header from "components/Header/Header"
 import TabBar from "components/TabBar/TabBar"
 import { AdminContext } from "contexts/AdminContext"
 import { SquadContext, useSquad } from "contexts/SquadContext"
@@ -12,6 +13,7 @@ import useGetSquadCharacters from "hooks/db/useGetSquadCharacters"
 import useRtdbSub from "hooks/db/useRtdbSub"
 import DatetimeSelectionScreen from "screens/AdminTabs/DatetimeSelectionScreen/DatetimeSelectionScreen"
 import LoadingScreen from "screens/LoadingScreen"
+import colors from "styles/colors"
 
 const Tab = createBottomTabNavigator<AdminBottomTabParamList>()
 
@@ -33,8 +35,8 @@ function AdminContextProvider({ children }: { children: React.ReactNode }) {
   return <AdminContext.Provider value={context}>{children}</AdminContext.Provider>
 }
 
-export default function AdminNav(props: RootStackScreenProps<"Admin">) {
-  const { squadId } = props.route.params
+export default function AdminNav({ route }: RootStackScreenProps<"Admin">) {
+  const { squadId } = route.params
   const dbSquad = useRtdbSub(useCases.squad.get(squadId))
 
   const squad = useMemo(() => {
@@ -48,11 +50,22 @@ export default function AdminNav(props: RootStackScreenProps<"Admin">) {
     <SquadContext.Provider value={squad}>
       <AdminContextProvider>
         <Tab.Navigator
-          initialRouteName="dateHeure"
-          screenOptions={{ headerShown: false }}
+          initialRouteName="Datetime"
+          screenOptions={{
+            // eslint-disable-next-line react/no-unstable-nested-components
+            header: props => (
+              <Header headerElementsIds={["date", "time", "squadName", "home"]} {...props} />
+            )
+          }}
+          sceneContainerStyle={{ backgroundColor: colors.primColor }}
+          // eslint-disable-next-line react/no-unstable-nested-components
           tabBar={props => <TabBar tabBarId="admin" {...props} />}
         >
-          <Tab.Screen name="dateHeure" component={DatetimeSelectionScreen} />
+          <Tab.Screen
+            name="Datetime"
+            options={{ title: "Datetime" }}
+            component={DatetimeSelectionScreen}
+          />
         </Tab.Navigator>
       </AdminContextProvider>
     </SquadContext.Provider>

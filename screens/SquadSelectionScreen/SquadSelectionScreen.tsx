@@ -22,7 +22,7 @@ export default function SquadSelectionScreen({ navigation }: RootStackScreenProp
   const toSquad = (squadId: string) => navigation.push("ChoixPerso", { squadId })
 
   const onLongPress = (squadId: string) =>
-    navigation.push("Admin", { screen: "dateHeure", squadId, params: { squadId } })
+    navigation.push("Admin", { screen: "Datetime", squadId, params: { squadId } })
 
   return (
     <ScrollView style={styles.container}>

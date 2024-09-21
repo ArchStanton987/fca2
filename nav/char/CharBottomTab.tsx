@@ -33,6 +33,7 @@ export default function CharBottomTab() {
       initialRouteName="Résumé"
       screenOptions={{
         tabBarHideOnKeyboard: true,
+        // eslint-disable-next-line react/no-unstable-nested-components
         header: props => (
           <Header
             headerElementsIds={[...datetime, "progression", ...special, "rads", "hp"]}
@@ -45,6 +46,7 @@ export default function CharBottomTab() {
           borderBottomWidth: 0
         }
       }}
+      // eslint-disable-next-line react/no-unstable-nested-components
       tabBar={props => <TabBar tabBarId="main" {...props} />}
       sceneContainerStyle={{ backgroundColor: colors.primColor }}
     >
