@@ -2,7 +2,6 @@ import React, { useState } from "react"
 import { Image, TouchableOpacity, View } from "react-native"
 
 import AntDesign from "@expo/vector-icons/AntDesign"
-import * as Haptics from "expo-haptics"
 import secAttrMap from "lib/character/abilities/sec-attr/sec-attr"
 import useCases from "lib/common/use-cases"
 import {
@@ -10,66 +9,22 @@ import {
   getAvailableWeaponActions,
   getHasStrengthMalus
 } from "lib/objects/data/weapons/weapons-utils"
-import { Weapon, WeaponActionId, WeaponTagId } from "lib/objects/data/weapons/weapons.types"
+import { Weapon } from "lib/objects/data/weapons/weapons.types"
 
+import unarmedImg from "assets/images/unarmed.png"
 import List from "components/List"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import SmallLine from "components/draws/Line/Line"
 import { useCharacter } from "contexts/CharacterContext"
 import colors from "styles/colors"
+import { getHapticSequence } from "utils/haptics"
 
 import AmmoIndicator from "./AmmoIndicator"
 import styles from "./WeaponCard.styles"
 import { WeaponAction, weaponActionMap } from "./WeaponCard.utils"
 
 type WeaponCardProps = { weapon: Weapon; setPrevAp: (apCost: number) => void }
-
-const getBurstInterval = (weapon: Weapon) => {
-  const burstTags = [
-    { tagId: "pistolet mitrailleur", delay: 150 },
-    { tagId: "fusil à pompe", delay: 600 },
-    { tagId: "mitrailleuse", delay: 200 },
-    { tagId: "fusil d'assault", delay: 200 },
-    { tagId: "mitrailleuse lourde", delay: 250 },
-    { tagId: "minigun", delay: 30 }
-  ]
-  const defaultDelay = 200
-  const weaponTags = weapon.data.tags
-  const delay = burstTags.find(tag => weaponTags.includes(tag.tagId as WeaponTagId))?.delay
-  return delay || defaultDelay
-}
-
-const basicHaptic = async () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
-const burstHaptic = async (weapon: Weapon) => {
-  const delay = getBurstInterval(weapon)
-  const shots = weapon.data.ammoPerBurst || 3
-  const t = new Array(shots)
-  for (let i = 0; i < shots; i += 1) {
-    t[i] = setTimeout(() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy), i * delay)
-  }
-  // cleanup
-  return () => t.forEach(clearTimeout)
-}
-const loadHaptic = async () => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
-const unloadHaptic = async () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft)
-
-const getHapticSequence = async (actionId: WeaponActionId, weapon: Weapon) => {
-  switch (actionId) {
-    case "basic":
-      return basicHaptic()
-    case "aim":
-      return basicHaptic()
-    case "burst":
-      return burstHaptic(weapon)
-    case "load":
-      return loadHaptic()
-    case "unload":
-      return unloadHaptic()
-    default:
-      return null
-  }
-}
 
 export default function WeaponCard({ weapon, setPrevAp }: WeaponCardProps) {
   const char = useCharacter()
@@ -120,7 +75,7 @@ export default function WeaponCard({ weapon, setPrevAp }: WeaponCardProps) {
         <View style={styles.row}>
           <View style={styles.imgContainer}>
             <Image
-              source={{ uri: weapon.data.img }}
+              source={weapon.id === "unarmed" ? unarmedImg : { uri: weapon.data.img }}
               style={{ height: 50, width: 50 }}
               resizeMode="contain"
             />

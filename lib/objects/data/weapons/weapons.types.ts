@@ -53,7 +53,7 @@ export const damageTypeMap: Record<DamageTypeId, DamageType> = {
 export type DbWeapon = { id: WeaponId; inMagazine?: number }
 
 export type WeaponData = {
-  id: WeaponId
+  id: WeaponId | "unarmed"
   label: string
   img: string
   damageType: DamageTypeId
@@ -77,7 +77,7 @@ export type WeaponData = {
 }
 
 export type Weapon = {
-  id: WeaponId
+  id: WeaponId | "unarmed"
   dbKey: string
   skill: number
   isEquiped: boolean

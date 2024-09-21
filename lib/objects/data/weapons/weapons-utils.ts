@@ -12,6 +12,8 @@ import {
   WeaponData
 } from "lib/objects/data/weapons/weapons.types"
 
+import { unarmed, unarmedData } from "./unarmed"
+
 export const getApCost = (weapon: Weapon, char: Character, actionId: WeaponActionId) => {
   const apCosts = {
     basic: weapon.data.basicApCost,
@@ -103,3 +105,9 @@ const actionsMap: {
 
 export const getAvailableWeaponActions = (weapon: Weapon, char: Character) =>
   actionsMap.filter(({ fn }) => fn(weapon, char)).map(({ key }) => key)
+
+export const getUnarmed = (character: Character): Weapon => ({
+  ...unarmed,
+  data: { ...unarmedData },
+  skill: character.skills.curr.unarmed
+})

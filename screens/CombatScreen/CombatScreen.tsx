@@ -1,7 +1,8 @@
-import React, { useState } from "react"
+import React, { memo, useState } from "react"
 import { ScrollView, View } from "react-native"
 
 import useCases from "lib/common/use-cases"
+import { getUnarmed } from "lib/objects/data/weapons/weapons-utils"
 
 import CheckBox from "components/CheckBox/CheckBox"
 import DrawerPage from "components/DrawerPage"
@@ -16,7 +17,7 @@ import colors from "styles/colors"
 import styles from "./CombatScreen.styles"
 import WeaponCard from "./WeaponCard"
 
-export default function CombatScreen() {
+function CombatScreen() {
   const character = useCharacter()
   const inventory = useInventory()
   const { status, secAttr, equipedObjects } = character
@@ -72,13 +73,19 @@ export default function CombatScreen() {
         </Section>
 
         <Spacer y={20} />
-        <List
-          data={weapons}
-          keyExtractor={item => item.dbKey}
-          separator={<Spacer y={15} />}
-          renderItem={({ item }) => <WeaponCard weapon={item} setPrevAp={handleSetPrevAp} />}
-        />
+        {weapons.length > 0 ? (
+          <List
+            data={weapons}
+            keyExtractor={item => item.dbKey}
+            separator={<Spacer y={15} />}
+            renderItem={({ item }) => <WeaponCard weapon={item} setPrevAp={handleSetPrevAp} />}
+          />
+        ) : (
+          <WeaponCard weapon={getUnarmed(character)} setPrevAp={handleSetPrevAp} />
+        )}
       </ScrollView>
     </DrawerPage>
   )
 }
+
+export default memo(CombatScreen)
