@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import React, { memo, useMemo, useState } from "react"
 import { FlatList, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
@@ -22,7 +22,7 @@ import {
 } from "screens/InventoryTabs/WeaponsScreen/WeaponsScreen.types"
 import { SearchParams } from "screens/ScreenParams"
 
-export default function WeaponsScreen() {
+function WeaponsScreen() {
   const localParams = useLocalSearchParams<SearchParams<DrawerParams>>()
   const [selectedWeapon, setSelectedWeapon] = useState<Weapon | null>(null)
   const [sort, setSort] = useState<WeaponSort>({ type: "dbKey", isAsc: false })
@@ -86,3 +86,5 @@ export default function WeaponsScreen() {
     </DrawerPage>
   )
 }
+
+export default memo(WeaponsScreen)

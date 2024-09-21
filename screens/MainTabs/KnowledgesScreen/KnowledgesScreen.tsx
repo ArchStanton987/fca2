@@ -1,3 +1,4 @@
+import { memo } from "react"
 import { FlatList } from "react-native"
 
 import DrawerPage from "components/DrawerPage"
@@ -8,7 +9,7 @@ import KnowledgeRow, {
   ListHeader
 } from "screens/MainTabs/KnowledgesScreen/KnowledgeRow"
 
-export default function KnowledgesScreen() {
+function KnowledgesScreen() {
   const { knowledges } = useCharacter()
 
   return (
@@ -26,3 +27,5 @@ export default function KnowledgesScreen() {
     </DrawerPage>
   )
 }
+
+export default memo(KnowledgesScreen)

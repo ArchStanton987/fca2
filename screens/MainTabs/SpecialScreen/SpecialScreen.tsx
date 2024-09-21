@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { memo, useState } from "react"
 import { FlatList, ScrollView } from "react-native"
 
 import specialMap, { specialArray } from "lib/character/abilities/special/special"
@@ -11,7 +11,7 @@ import Txt from "components/Txt"
 import AttributeRow, { AttributeHeader } from "components/tables/Attributes/AttributeRow"
 import { useCharacter } from "contexts/CharacterContext"
 
-export default function SpecialScreen() {
+function SpecialScreen() {
   const [selectedId, setSelectedId] = useState<SpecialId | null>(null)
 
   const { special } = useCharacter()
@@ -51,3 +51,5 @@ export default function SpecialScreen() {
     </DrawerPage>
   )
 }
+
+export default memo(SpecialScreen)

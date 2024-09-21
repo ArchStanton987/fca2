@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { memo, useState } from "react"
 import { FlatList, ScrollView, View } from "react-native"
 
 import { router } from "expo-router"
@@ -16,7 +16,7 @@ import { useCharacter } from "contexts/CharacterContext"
 import { useSquad } from "contexts/SquadContext"
 import EffectRow, { EffectHeader } from "screens/MainTabs/EffectsScreen/EffectRow"
 
-export default function EffectsScreen() {
+function EffectsScreen() {
   const { squadId } = useSquad()
   const { effects, charId } = useCharacter()
 
@@ -73,3 +73,5 @@ export default function EffectsScreen() {
     </DrawerPage>
   )
 }
+
+export default memo(EffectsScreen)

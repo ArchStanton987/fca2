@@ -1,3 +1,4 @@
+import { memo } from "react"
 import { FlatList } from "react-native"
 
 import secAttrMap from "lib/character/abilities/sec-attr/sec-attr"
@@ -9,7 +10,7 @@ import { useCharacter } from "contexts/CharacterContext"
 
 const secAttrArray = Object.values(secAttrMap)
 
-export default function SecAttrScreen() {
+function SecAttrScreen() {
   const { secAttr } = useCharacter()
   const { base, mod, curr } = secAttr
 
@@ -38,3 +39,5 @@ export default function SecAttrScreen() {
     </DrawerPage>
   )
 }
+
+export default memo(SecAttrScreen)

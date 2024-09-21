@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { memo, useState } from "react"
 import { View } from "react-native"
 
 import useCases from "lib/common/use-cases"
@@ -24,7 +24,7 @@ type Timespan = "MIN" | "HOUR" | "DAY"
 const timespans: Timespan[] = ["MIN", "HOUR", "DAY"]
 const selectors = [1, 5, 20, 60]
 
-export default function DatetimeSelectionScreen() {
+function DatetimeSelectionScreen() {
   const squad = useSquad()
   const { characters } = useAdmin()
 
@@ -139,3 +139,5 @@ export default function DatetimeSelectionScreen() {
     </>
   )
 }
+
+export default memo(DatetimeSelectionScreen)

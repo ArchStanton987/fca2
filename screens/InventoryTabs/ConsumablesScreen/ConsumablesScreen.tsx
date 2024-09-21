@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import React, { memo, useMemo, useState } from "react"
 import { FlatList, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
@@ -18,7 +18,7 @@ import ConsumableDetails from "screens/InventoryTabs/ConsumablesScreen/Consumabl
 import ConsumableRow, { ListHeader } from "screens/InventoryTabs/ConsumablesScreen/ConsumableRow"
 import { SearchParams } from "screens/ScreenParams"
 
-export default function ConsumablesScreen() {
+function ConsumablesScreen() {
   const localParams = useLocalSearchParams<SearchParams<DrawerParams>>()
   const [selectedItem, setSelectedItem] = useState<Consumable["dbKey"] | null>(null)
   const [isAscSort, setIsAscSort] = useState(true)
@@ -83,3 +83,5 @@ export default function ConsumablesScreen() {
     </DrawerPage>
   )
 }
+
+export default memo(ConsumablesScreen)

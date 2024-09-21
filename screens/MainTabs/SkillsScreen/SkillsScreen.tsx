@@ -1,4 +1,4 @@
-import React from "react"
+import React, { memo } from "react"
 import { FlatList } from "react-native"
 
 import skillsMap from "lib/character/abilities/skills/skills"
@@ -10,7 +10,7 @@ import { useCharacter } from "contexts/CharacterContext"
 
 const skillsArray = Object.values(skillsMap)
 
-export default function SkillsScreen() {
+function SkillsScreen() {
   const { skills } = useCharacter()
   const { base, up, mod, curr } = skills
 
@@ -35,3 +35,5 @@ export default function SkillsScreen() {
     </DrawerPage>
   )
 }
+
+export default memo(SkillsScreen)

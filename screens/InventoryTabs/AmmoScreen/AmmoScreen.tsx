@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import React, { memo, useMemo, useState } from "react"
 import { FlatList, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
@@ -17,7 +17,7 @@ import { SearchParams } from "screens/ScreenParams"
 
 import { AmmoSort, AmmoSortableKey } from "./AmmoScreen.types"
 
-export default function AmmoScreen() {
+function AmmoScreen() {
   const localParams = useLocalSearchParams<SearchParams<DrawerParams>>()
   const [selectedAmmo, setSelectedAmmo] = useState<Ammo | null>(null)
   const [sort, setSort] = useState<AmmoSort>({ type: "name", isAsc: false })
@@ -77,3 +77,5 @@ export default function AmmoScreen() {
     </DrawerPage>
   )
 }
+
+export default memo(AmmoScreen)

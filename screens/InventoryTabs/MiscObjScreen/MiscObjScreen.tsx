@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import React, { memo, useMemo, useState } from "react"
 import { FlatList, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
@@ -17,7 +17,7 @@ import MiscObjDetails from "screens/InventoryTabs/MiscObjScreen/MiscObjDetails"
 import MiscObjRow, { ListHeader } from "screens/InventoryTabs/MiscObjScreen/MiscObjRow"
 import { SearchParams } from "screens/ScreenParams"
 
-export default function MiscObjScreen() {
+function MiscObjScreen() {
   const { squadId, charId } = useLocalSearchParams() as SearchParams<DrawerParams>
   const [selectedItem, setSelectedItem] = useState<MiscObject | null>(null)
   const [isAscSort, setIsAscSort] = useState(true)
@@ -72,3 +72,5 @@ export default function MiscObjScreen() {
     </DrawerPage>
   )
 }
+
+export default memo(MiscObjScreen)

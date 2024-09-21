@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import React, { memo, useMemo, useState } from "react"
 import { FlatList, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
@@ -18,7 +18,7 @@ import { SearchParams } from "screens/ScreenParams"
 
 import { ClothingSort, ClothingSortableKey } from "./ClothingsScreen.types"
 
-export default function ClothingsScreen() {
+function ClothingsScreen() {
   const localParams = useLocalSearchParams<SearchParams<DrawerParams>>()
   const [selectedCloth, setSelectedCloth] = useState<Clothing | null>(null)
   const [sort, setSort] = useState<ClothingSort>({ type: "dbKey", isAsc: false })
@@ -86,3 +86,5 @@ export default function ClothingsScreen() {
     </DrawerPage>
   )
 }
+
+export default memo(ClothingsScreen)
