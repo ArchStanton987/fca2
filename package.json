@@ -8,7 +8,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "ts:check": "tsc",
-    "build:preview": "eas build -p android --profile preview"
+    "build:preview": "eas build -p android --profile preview",
+    "update:preview": "eas update --channel preview"
   },
   "dependencies": {
     "@react-navigation/drawer": "^6.6.6",
