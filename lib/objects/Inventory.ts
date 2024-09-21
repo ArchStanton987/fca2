@@ -1,3 +1,4 @@
+import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-levels"
 import { Special } from "lib/character/abilities/special/special.types"
 import { getModAttribute } from "lib/common/utils/char-calc"
 import ammoMap from "lib/objects/data/ammo/ammo"
@@ -79,11 +80,12 @@ export default class Inventory {
       const { innateSymptoms, currSkills, dbAbilities, dbEquipedObjects, currSpecial } =
         this.charData
       const { knowledges, traits } = dbAbilities
-      const knowledgesBonus = weaponKnowledges.reduce(
-        (acc, curr: KnowledgeId) =>
-          acc + (knowledges[curr] ?? 0) + getModAttribute(innateSymptoms, curr),
-        0
-      )
+      const knowledgesBonus = weaponKnowledges.reduce((acc, curr: KnowledgeId) => {
+        const knowledgeLevel = knowledges[curr]
+        const knowledgeBonus = knowledgeLevels.find(el => el.id === knowledgeLevel)?.bonus || 0
+        const innateBonus = getModAttribute(innateSymptoms, curr)
+        return acc + knowledgeBonus + innateBonus
+      }, 0)
       const strengthMalus = getStrengthMalus(weaponsMap[id], currSpecial)
       const skill = currSkills[weaponSkill] + knowledgesBonus - strengthMalus
       const hasMrFast = traits?.includes("mrFast")
