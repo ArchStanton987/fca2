@@ -93,6 +93,7 @@ export default function CharStack() {
             <Stack.Screen name="(modal)/update-status" options={modalOptions} />
             <Stack.Screen name="(modal)/update-health" options={modalOptions} />
             <Stack.Screen name="(modal)/update-skills" options={modalOptions} />
+            <Stack.Screen name="(modal)/update-skills-confirmation" options={modalOptions} />
             <Stack.Screen name="(modal)/update-knowledges" options={modalOptions} />
           </Stack>
         </UpdatesProvider>

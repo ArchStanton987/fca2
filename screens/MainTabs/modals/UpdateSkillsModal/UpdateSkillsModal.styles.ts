@@ -1,8 +1,11 @@
 import { StyleSheet } from "react-native"
 
+import colors from "styles/colors"
+
 const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: "row",
+    alignItems: "center",
     flex: 1,
     paddingVertical: 8
   },
@@ -15,15 +18,27 @@ const styles = StyleSheet.create({
   },
   modContainer: {
     flexDirection: "row",
+    alignItems: "center",
     width: 200
   },
   upValue: {
     width: 50,
-    textAlign: "right"
+    textAlign: "center"
+  },
+  newUpValue: {
+    width: 70,
+    textAlign: "center",
+    fontSize: 18,
+    color: colors.orange
   },
   totalValue: {
-    width: 100,
-    textAlign: "right"
+    textAlign: "right",
+    fontSize: 18,
+    padding: 3
+  },
+  totalValueSec: {
+    backgroundColor: colors.secColor,
+    color: colors.primColor
   }
 })
 
