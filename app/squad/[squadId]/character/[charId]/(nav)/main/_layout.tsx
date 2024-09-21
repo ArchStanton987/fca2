@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unstable-nested-components */
 import { useLocalSearchParams } from "expo-router"
 import { Tabs } from "expo-router/tabs"
 
@@ -17,21 +16,16 @@ const special: HeaderElementId[] = [
   "luck"
 ]
 const datetime: HeaderElementId[] = ["date", "time"]
+const headerElementsIds: HeaderElementId[] = [...datetime, "progression", ...special, "rads", "hp"]
 
 export default function CharLayout() {
   const { squadId, charId } = useLocalSearchParams<{ squadId: string; charId: string }>()
   return (
     <Tabs
-      // eslint-disable-next-line react/no-unstable-nested-components
       tabBar={props => <TabBar tabBarId="main" {...props} />}
       screenOptions={{
         tabBarHideOnKeyboard: true,
-        header: props => (
-          <Header
-            headerElementsIds={[...datetime, "progression", ...special, "rads", "hp"]}
-            {...props}
-          />
-        ),
+        header: () => <Header headerElementsIds={headerElementsIds} />,
         headerStyle: {
           backgroundColor: colors.primColor,
           height: 40,

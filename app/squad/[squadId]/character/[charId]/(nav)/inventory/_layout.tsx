@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unstable-nested-components */
 import { useLocalSearchParams } from "expo-router"
 import { Tabs } from "expo-router/tabs"
 
@@ -10,17 +9,16 @@ import colors from "styles/colors"
 const datetime: HeaderElementId[] = ["date", "time"]
 const carry: HeaderElementId[] = ["weight", "place"]
 
+const headerElementsIds: HeaderElementId[] = [...datetime, "progression", ...carry, "caps"]
+
 export default function InventoryLayout() {
   const { squadId, charId } = useLocalSearchParams<{ squadId: string; charId: string }>()
   return (
     <Tabs
-      // eslint-disable-next-line react/no-unstable-nested-components
       tabBar={props => <TabBar tabBarId="inventory" {...props} />}
       screenOptions={{
         tabBarHideOnKeyboard: true,
-        header: props => (
-          <Header headerElementsIds={[...datetime, "progression", ...carry, "caps"]} {...props} />
-        ),
+        header: () => <Header headerElementsIds={headerElementsIds} />,
         headerStyle: {
           backgroundColor: colors.primColor,
           height: 40,
