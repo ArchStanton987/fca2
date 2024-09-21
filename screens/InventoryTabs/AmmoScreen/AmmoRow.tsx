@@ -1,12 +1,17 @@
 import React from "react"
 import { Pressable, PressableProps, TouchableOpacity, View } from "react-native"
 
+import { router } from "expo-router"
+
 import { AntDesign } from "@expo/vector-icons"
 import { Ammo } from "lib/objects/data/ammo/ammo.types"
 
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import Caret from "components/icons/Caret"
+import routes from "constants/routes"
+import { useCharacter } from "contexts/CharacterContext"
+import { useSquad } from "contexts/SquadContext"
 import colors from "styles/colors"
 
 import styles from "./AmmoRow.styles"
@@ -42,6 +47,16 @@ type AmmoRowProps = PressableProps & {
 }
 
 export default function AmmoRow({ ammo, isSelected, ...rest }: AmmoRowProps) {
+  const { squadId } = useSquad()
+  const { charId } = useCharacter()
+
+  const onPressDel = () => {
+    router.push({
+      pathname: routes.modal.updateObjects,
+      params: { squadId, charId, initCategory: "ammo" }
+    })
+  }
+
   return (
     <Pressable style={[styles.row, styles.container, isSelected && styles.selected]} {...rest}>
       <View style={styles.labelContainer}>
@@ -50,9 +65,9 @@ export default function AmmoRow({ ammo, isSelected, ...rest }: AmmoRowProps) {
       <View style={styles.quantityContainer}>
         <Txt>{ammo.amount}</Txt>
       </View>
-      <View style={styles.deleteContainer}>
+      <TouchableOpacity style={styles.deleteContainer} onPress={onPressDel}>
         {isSelected && <AntDesign name="delete" size={17} color={colors.secColor} />}
-      </View>
+      </TouchableOpacity>
     </Pressable>
   )
 }
