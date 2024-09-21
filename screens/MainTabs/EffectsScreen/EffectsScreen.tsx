@@ -1,36 +1,37 @@
 import React, { useState } from "react"
 import { FlatList, ScrollView, View } from "react-native"
 
-import { router, useLocalSearchParams } from "expo-router"
+import { router } from "expo-router"
 
 import { Effect } from "lib/character/effects/effects.types"
 import useCases from "lib/common/use-cases"
 
 import AddElement from "components/AddElement"
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
+import { useSquad } from "contexts/SquadContext"
 import EffectRow, { EffectHeader } from "screens/MainTabs/EffectsScreen/EffectRow"
-import { SearchParams } from "screens/ScreenParams"
 
 export default function EffectsScreen() {
-  const { squadId, charId } = useLocalSearchParams<SearchParams<DrawerParams>>()
+  const { squadId } = useSquad()
+  const { effects, charId } = useCharacter()
+
   const [selectedId, setSelectedId] = useState<Effect["id"] | null>(null)
 
-  const character = useCharacter()
-  const { effects } = character
-
   const onPressAdd = () =>
-    router.push({ pathname: routes.modal.updateEffects, params: { squadId, charId } })
+    router.push({
+      pathname: routes.modal.updateEffects,
+      params: { squadId, charId }
+    })
 
   const onPressDelete = (effect: Effect) => {
     if (!effect.dbKey) return
     setSelectedId(null)
-    useCases.effects.remove(character.charId, effect)
+    useCases.effects.remove(charId, effect)
   }
 
   const selectedEffect = effects.find(effect => effect.id === selectedId)

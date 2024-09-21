@@ -31,6 +31,21 @@ export default function TabBar(props: TabBarProps) {
   const progress = character?.progress || { availableSkillPoints: 0, availableKnowledgePoints: 0 }
   const canAddSkill = progress.availableSkillPoints > 0
   const canAddKnowledge = progress.availableKnowledgePoints > 0
+
+  const onPress = (pathname: string) => {
+    requestAnimationFrame(() => {
+      router.push({ pathname, params: { charId, squadId } })
+    })
+  }
+
+  const onLongPress = (hasBadge: boolean, name: string) => {
+    if (!hasBadge) return
+    const path = `${charRoute}/update-${name}`
+    requestAnimationFrame(() => {
+      router.push({ pathname: path, params: { charId, squadId } })
+    })
+  }
+
   return (
     <View style={styles.container}>
       <SmallLine top left style={{ top: 4 }} />
@@ -46,12 +61,8 @@ export default function TabBar(props: TabBarProps) {
           <TouchableHighlight
             key={key}
             style={[styles.tabBarItem, isFocused && styles.tabBarItemActive]}
-            onPress={() => router.push({ pathname, params: { charId, squadId } })}
-            onLongPress={() => {
-              if (!hasBadge) return
-              const path = `${charRoute}/update-${name}`
-              router.push({ pathname: path, params: { charId, squadId } })
-            }}
+            onPress={() => onPress(pathname)}
+            onLongPress={() => onLongPress(hasBadge, name)}
           >
             <>
               {hasBadge && <PlusIcon style={styles.badge} size={12} />}
