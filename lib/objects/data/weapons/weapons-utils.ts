@@ -46,6 +46,7 @@ export const getCanStrikeAim = (weapon: Weapon, char: Character) => {
   if (weapon.data.ammoType !== null) return false
   if (weapon.data.damageBasic === null) return false
   if (weapon.data.specialApCost === null) return false
+  if (char.dbAbilities.traits?.includes("mrFast")) return false
   return char.status.currAp >= weapon.data.specialApCost
 }
 
@@ -71,6 +72,7 @@ export const getCanShootAim = (weapon: Weapon, char: Character) => {
   if (weapon.data.ammoPerShot === null) return false
   if (weapon.inMagazine === undefined) return false
   if (weapon.inMagazine < weapon.data.ammoPerShot) return false
+  if (char.dbAbilities.traits?.includes("mrFast")) return false
   return char.status.currAp >= weapon.data.specialApCost
 }
 
