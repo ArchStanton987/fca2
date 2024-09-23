@@ -56,7 +56,7 @@ export default function TabBar(props: TabBarProps) {
         const isFocused = state.index === index
         const pathname = `${charRoute}/${tabBarId}/${name}`
         const hasBadge =
-          (name === "skills" && canAddSkill) || (name === "knowledge" && canAddKnowledge)
+          (name === "skills" && canAddSkill) || (name === "knowledges" && canAddKnowledge)
         return (
           <TouchableHighlight
             key={key}
