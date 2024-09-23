@@ -3,7 +3,8 @@ import { Trait, TraitId } from "./traits.types"
 const traitsMap: Record<TraitId, Trait> = {
   heavy: {
     id: "heavy",
-    description: "",
+    description:
+      "Vous êtes particulièrement fort, mais vous n'êtes pas le plus dynamique en combat.",
     label: "Brute",
     symptoms: [
       { id: "actionPoints", operation: "add", value: -3 },
@@ -12,7 +13,8 @@ const traitsMap: Record<TraitId, Trait> = {
   },
   carnage: {
     id: "carnage",
-    description: "",
+    description:
+      "Vous avez une aptitude naturelle à infliger des dégâts. Le problème, c'est que vous en prenez aussi beaucoup.",
     label: "Carnage",
     symptoms: [
       { id: "damageGiven", operation: "mult", value: 2 },
@@ -21,7 +23,8 @@ const traitsMap: Record<TraitId, Trait> = {
   },
   strongHand: {
     id: "strongHand",
-    description: "",
+    description:
+      "Vous êtes clairement plus à l'aise lorsque vous maniez une arme à une main. Quand vous devez utiliser les deux, c'est une autre histoire.",
     label: "Main dominante",
     symptoms: [
       { id: "kOneHandedWeapons", operation: "add", value: 15 },
@@ -30,7 +33,8 @@ const traitsMap: Record<TraitId, Trait> = {
   },
   chemReliant: {
     id: "chemReliant",
-    description: "",
+    description:
+      "Vous avez une probabilité plus élevée de devenir accro aux drogues, mais vous supportez mieux les effets négatifs de ces dernières.",
     label: "Junkie",
     symptoms: [
       // { id: "addictChance", operation: "add", value: 50 },
@@ -123,7 +127,8 @@ const traitsMap: Record<TraitId, Trait> = {
   },
   fastMetabolism: {
     id: "fastMetabolism",
-    description: "",
+    description:
+      "Votre organisme se soigne très rapidement, mais vous êtes plus sensible aux radiations et aux poisons.",
     label: "Métabolisme rapide",
     symptoms: [
       { id: "poisResist", operation: "abs", value: 0 },
@@ -133,7 +138,8 @@ const traitsMap: Record<TraitId, Trait> = {
   },
   finesse: {
     id: "finesse",
-    description: "",
+    description:
+      "Votre chance d'effectuer un coup critique est augmentée, mais vous infligez moins de dégâts.",
     label: "Finesse",
     symptoms: [
       { id: "critChance", operation: "add", value: 20 },
@@ -142,7 +148,8 @@ const traitsMap: Record<TraitId, Trait> = {
   },
   smallFrame: {
     id: "smallFrame",
-    description: "",
+    description:
+      "Vous êtes plus agile, mais vous ne pouvez pas transporter autant d'objets que les autres.",
     label: "Petite nature",
     symptoms: [{ id: "agility", operation: "add", value: 1 }]
   },

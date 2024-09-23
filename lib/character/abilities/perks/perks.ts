@@ -12,15 +12,15 @@ const perksMap: Record<PerkId, Perk> = {
   falconEye: {
     id: "falconEye",
     label: "Oeil de faucon",
-    description: "",
+    description: "Vous portée de vue est augmentée de 50%.",
     availabilityLevel: 3,
     levelCount: 1,
     symptoms: [{ id: "range", operation: "mult", value: 1.5 }]
   },
   physEducation: {
-    id: "concentration",
+    id: "physEducation",
     label: "Education physique",
-    description: "",
+    description: "Votre compétence 'physique' est augmentée de 15 points.",
     availabilityLevel: 3,
     levelCount: 1,
     symptoms: [{ id: "physical", operation: "add", value: 15 }]
@@ -28,9 +28,9 @@ const perksMap: Record<PerkId, Perk> = {
   moreCrits: {
     id: "moreCrits",
     label: "Plus de critiques",
-    description: "",
+    description: "Votre chance d'effectuer un coup critique est augmentée de 5%.",
     availabilityLevel: 3,
-    levelCount: 1,
+    levelCount: 3,
     symptoms: [{ id: "critChance", operation: "add", value: 5 }]
   }
 }
