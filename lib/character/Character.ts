@@ -1,3 +1,5 @@
+import { Perk, PerkId } from "lib/character/abilities/perks/perks.types"
+import { Trait, TraitId } from "lib/character/abilities/traits/traits.types"
 import {
   getHpGainPerLevel,
   getInitKnowledgePoints,
@@ -74,7 +76,12 @@ export default class Character {
       //
       effectsRecord: computed,
       //
-      progress: computed
+      progress: computed,
+      //
+      traits: computed,
+      traitsRecord: computed,
+      perks: computed,
+      perksRecord: computed
     })
   }
 
@@ -240,5 +247,31 @@ export default class Character {
       usedKnowledgePoints,
       availableKnowledgePoints: unlockedKnowledgePoints - usedKnowledgePoints
     }
+  }
+
+  get traits(): Trait[] {
+    const { traits } = this.dbAbilities
+    return traits?.map(traitId => traitsMap[traitId]) || []
+  }
+
+  get traitsRecord(): Record<TraitId, Trait> {
+    const traitsRecord = {} as Record<TraitId, Trait>
+    this.traits.forEach(trait => {
+      traitsRecord[trait.id] = { ...trait }
+    })
+    return traitsRecord
+  }
+
+  get perks() {
+    const { perks } = this.dbAbilities
+    return perks?.map(perkId => perksMap[perkId]) || []
+  }
+
+  get perksRecord() {
+    const perksRecord = {} as Record<PerkId, Perk>
+    this.perks.forEach(perk => {
+      perksRecord[perk.id] = { ...perk }
+    })
+    return perksRecord
   }
 }

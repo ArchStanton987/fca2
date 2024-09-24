@@ -24,7 +24,7 @@ const traitsMap: Record<TraitId, Trait> = {
   strongHand: {
     id: "strongHand",
     description:
-      "Vous êtes clairement plus à l'aise lorsque vous maniez une arme à une main. Quand vous devez utiliser les deux, c'est une autre histoire.",
+      "Vous êtes très habile avec votre main dominante, en revanche les choses se compliquent dès que vous devez utiliser votre autre main.",
     label: "Main dominante",
     symptoms: [
       { id: "kOneHandedWeapons", operation: "add", value: 15 },

@@ -17,7 +17,8 @@ const routes = {
     special: `${main}/special`,
     secAttr: `${main}/secAttr`,
     skills: `${main}/skills`,
-    knowledges: `${main}/knowledges`
+    knowledges: `${main}/knowledges`,
+    perks: `${main}/perks`
   },
   inventory: {
     weapons: `${inventory}/weapons`,

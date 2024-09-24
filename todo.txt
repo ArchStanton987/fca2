@@ -1,3 +1,6 @@
+perks & traits
+=> get perk LVL, calculate bonus for appropriate level. (in description ??)
+
 TODO: fix knowledge points calculations & display
 TODO: add levelup
   - change db model for perks (any perk can have a level)
