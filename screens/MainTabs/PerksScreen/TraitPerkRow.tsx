@@ -8,7 +8,7 @@ import { Symptom } from "lib/character/effects/symptoms.type"
 import Txt from "components/Txt"
 import colors from "styles/colors"
 
-type TraitRowProps = {
+type TraitPerkRowProps = {
   trait: Trait | Perk
   onPress: (trait: Trait | Perk) => void
   isSelected: boolean
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   }
 })
 
-export default function TraitRow({ trait, onPress, isSelected }: TraitRowProps) {
+export default function TraiPerktRow({ trait, onPress, isSelected }: TraitPerkRowProps) {
   return (
     <TouchableOpacity
       onPress={() => onPress(trait)}

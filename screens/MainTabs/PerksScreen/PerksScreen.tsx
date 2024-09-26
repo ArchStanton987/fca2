@@ -1,5 +1,5 @@
 import React, { memo, useState } from "react"
-import { FlatList, ScrollView, TouchableOpacity, View, ViewBase } from "react-native"
+import { FlatList, ScrollView, View } from "react-native"
 
 import { Perk } from "lib/character/abilities/perks/perks.types"
 import { Trait } from "lib/character/abilities/traits/traits.types"
