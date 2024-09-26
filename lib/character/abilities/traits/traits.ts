@@ -152,10 +152,10 @@ const traitsMap: Record<TraitId, Trait> = {
       "Vous êtes plus agile, mais vous ne pouvez pas transporter autant d'objets que les autres.",
     label: "Petite nature",
     symptoms: [
-      { id: "agility", operation: "add", value: 1 },
-      { id: "normalCarryWeight", operation: "mult", value: 0.8 },
-      { id: "tempCarryWeight", operation: "mult", value: 0.7 },
-      { id: "maxCarryWeight", operation: "mult", value: 0.6 }
+      { id: "agility", operation: "add", value: 1 }
+      // { id: "normalCarryWeight", operation: "mult", value: 0.8 },
+      // { id: "tempCarryWeight", operation: "mult", value: 0.7 },
+      // { id: "maxCarryWeight", operation: "mult", value: 0.6 }
     ]
   },
   lunatic: {

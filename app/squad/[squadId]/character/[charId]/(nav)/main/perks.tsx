@@ -1,5 +1,5 @@
-import PerksScreen from "screens/MainTabs/PerksScreen/PerksScreen"
+// import PerksScreen from "screens/MainTabs/PerksScreen/PerksScreen"
 
-export default function PerksPage() {
-  return <PerksScreen />
-}
+// export default function PerksPage() {
+//   return <PerksScreen />
+// }
