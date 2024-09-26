@@ -67,7 +67,7 @@ const traitsMap: Record<TraitId, Trait> = {
   },
   bruiser: {
     id: "bruiser",
-    description: "",
+    description: "Vous êtes capable de frapper fort, mais vos attaques manquent de finesse. ",
     label: "Main lourde",
     symptoms: [
       { id: "critChance", operation: "add", value: -10 },
@@ -151,7 +151,12 @@ const traitsMap: Record<TraitId, Trait> = {
     description:
       "Vous êtes plus agile, mais vous ne pouvez pas transporter autant d'objets que les autres.",
     label: "Petite nature",
-    symptoms: [{ id: "agility", operation: "add", value: 1 }]
+    symptoms: [
+      { id: "agility", operation: "add", value: 1 },
+      { id: "normalCarryWeight", operation: "mult", value: 0.8 },
+      { id: "tempCarryWeight", operation: "mult", value: 0.7 },
+      { id: "maxCarryWeight", operation: "mult", value: 0.6 }
+    ]
   },
   lunatic: {
     id: "lunatic",

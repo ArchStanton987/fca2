@@ -66,7 +66,7 @@ export default function TraiPerktRow({ trait, onPress, isSelected }: TraitPerkRo
       <View style={styles.symptoms}>
         {trait.symptoms.map(symptom => (
           <Txt key={symptom.id} style={styles.symptom}>
-            {changeableAttributesMap[symptom.id].short}:{getSymptomDisplayValue(symptom)}
+            {changeableAttributesMap[symptom.id].short}: {getSymptomDisplayValue(symptom)}
           </Txt>
         ))}
       </View>
