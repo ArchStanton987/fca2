@@ -1,3 +1,5 @@
+import knowledgesMap from "lib/character/abilities/knowledges/knowledges"
+
 import { ConsumableData, ConsumableId } from "./consumables.types"
 
 const consumablesMap: Record<ConsumableId, ConsumableData> = {
@@ -161,6 +163,38 @@ const consumablesMap: Record<ConsumableId, ConsumableData> = {
     tags: ["kit"],
     knowledges: ["kMedicine"],
     skillId: "aid",
+    maxUsage: 10
+  },
+  mecaLockpickKit: {
+    id: "mecaLockpickKit",
+    label: "Kit de crochetage mécanique",
+    effectId: null,
+    challengeLabel: `+20% ${knowledgesMap.kMecanicLocks.short}`,
+    od: false,
+    addict: false,
+    value: 200,
+    place: 1,
+    weight: 0.5,
+    description: `Un kit de crochetage mécanique contenant des outils spécifiques pour ouvrir des serrures mécaniques. Requis : ${knowledgesMap.kMecanicLocks.label} réussi (bonus de +20%).`,
+    tags: ["kit"],
+    knowledges: ["kMecanicLocks"],
+    skillId: "manipulation",
+    maxUsage: 10
+  },
+  electroLockpickKit: {
+    id: "electroLockpickKit",
+    label: "Kit de crochetage électronique",
+    effectId: null,
+    challengeLabel: `+20% ${knowledgesMap.kElectronicLocks.short}`,
+    od: false,
+    addict: false,
+    value: 400,
+    place: 1,
+    weight: 0.5,
+    description: `Un kit de crochetage électronique contenant des outils spécifiques pour ouvrir des serrures électroniques. Requis : ${knowledgesMap.kElectronicLocks.label} réussi (bonus de +20%).`,
+    tags: ["kit"],
+    knowledges: ["kElectronicLocks"],
+    skillId: "manipulation",
     maxUsage: 10
   },
   antidote: {

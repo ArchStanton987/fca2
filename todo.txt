@@ -1,5 +1,7 @@
+TODO: check lockpick kit prices, place & weight
+
 perks & traits
-=> get perk LVL, calculate bonus for appropriate level. (in description ??)
+=> get perk LVL, calculate bonus for apkpropriate level. (in description ??)
 
 TODO: fix knowledge points calculations & display
 TODO: add levelup

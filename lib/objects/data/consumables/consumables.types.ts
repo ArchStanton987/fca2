@@ -42,6 +42,8 @@ export type ConsumableId =
   | "pharmaKit"
   | "medecineKit"
   | "interventionKit"
+  | "mecaLockpickKit"
+  | "electroLockpickKit"
   | "antidote"
   | "radX"
   | "radAway"
