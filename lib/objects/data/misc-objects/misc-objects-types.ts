@@ -22,6 +22,7 @@ export type MiscObjectId =
   | "alarmClock"
   | "bottomSculpture"
   | "tape"
+  | "nukieNukaCola"
 
 export type DbMiscObject = { id: MiscObjectId }
 

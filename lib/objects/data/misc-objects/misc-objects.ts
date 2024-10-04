@@ -204,6 +204,16 @@ const miscObjectsMap: Record<MiscObjectId, MiscObjectData> = {
     place: 0.1,
     symptoms: [],
     weight: 0
+  },
+  nukieNukaCola: {
+    id: "nukieNukaCola",
+    label: "Nioukie",
+    description:
+      "Une sorte de jouet / peluche pour enfant, représentant une mascotte Nuka Cola humanoïde. Il y a des boutons qui font du bruit et de la lumière.",
+    value: 100,
+    place: 1.5,
+    symptoms: [],
+    weight: 0.5
   }
 }
 
