@@ -1,4 +1,5 @@
 import knowledgesMap from "lib/character/abilities/knowledges/knowledges"
+import skillsMap from "lib/character/abilities/skills/skills"
 
 import { ConsumableData, ConsumableId } from "./consumables.types"
 
@@ -167,7 +168,7 @@ const consumablesMap: Record<ConsumableId, ConsumableData> = {
   },
   mecaLockpickKit: {
     id: "mecaLockpickKit",
-    label: "Kit de crochetage mécanique",
+    label: "Kit de serrurier",
     effectId: null,
     challengeLabel: `+20% ${knowledgesMap.kMecanicLocks.short}`,
     od: false,
@@ -176,6 +177,22 @@ const consumablesMap: Record<ConsumableId, ConsumableData> = {
     place: 1,
     weight: 0.5,
     description: `Un kit de crochetage mécanique contenant des outils spécifiques pour ouvrir des serrures mécaniques. Requis : ${knowledgesMap.kMecanicLocks.label} réussi (bonus de +20%).`,
+    tags: ["kit"],
+    knowledges: ["kMecanicLocks"],
+    skillId: "manipulation",
+    maxUsage: 10
+  },
+  superMecaLockpickKit: {
+    id: "superMecaLockpickKit",
+    label: "Super kit de serrurier",
+    effectId: null,
+    challengeLabel: `+50% ${knowledgesMap.kMecanicLocks.short}`,
+    od: false,
+    addict: false,
+    value: 500,
+    place: 1,
+    weight: 0.5,
+    description: `Un kit de crochetage mécanique contenant des outils spécifiques pour ouvrir des serrures mécaniques. Requis : ${knowledgesMap.kMecanicLocks.label} réussi (bonus de +50%).`,
     tags: ["kit"],
     knowledges: ["kMecanicLocks"],
     skillId: "manipulation",
@@ -196,6 +213,38 @@ const consumablesMap: Record<ConsumableId, ConsumableData> = {
     knowledges: ["kElectronicLocks"],
     skillId: "manipulation",
     maxUsage: 10
+  },
+  superElectroLockpickKit: {
+    id: "superElectroLockpickKit",
+    label: "Super kit de crochetage électronique",
+    effectId: null,
+    challengeLabel: `+50% ${knowledgesMap.kElectronicLocks.short}`,
+    od: false,
+    addict: false,
+    value: 900,
+    place: 1,
+    weight: 0.5,
+    description: `Un kit de crochetage électronique contenant des outils spécifiques pour ouvrir des serrures électroniques. Requis : ${knowledgesMap.kElectronicLocks.label} réussi (bonus de +20%).`,
+    tags: ["kit"],
+    knowledges: ["kElectronicLocks"],
+    skillId: "manipulation",
+    maxUsage: 10
+  },
+  toolbox: {
+    id: "toolbox",
+    label: "Boîte à outils",
+    effectId: null,
+    challengeLabel: `+10% ${knowledgesMap.kRepair.short}`,
+    od: false,
+    addict: false,
+    value: 90,
+    place: 4,
+    weight: 5,
+    description: `Une boîte à outils contenant des outils de base pour réparer des objets. Requis : ${knowledgesMap.kRepair.label} réussi (bonus de +10%).`,
+    tags: ["kit"],
+    knowledges: ["kRepair"],
+    skillId: "manipulation",
+    maxUsage: 15
   },
   antidote: {
     id: "antidote",
@@ -463,6 +512,20 @@ const consumablesMap: Record<ConsumableId, ConsumableData> = {
     description: `Un spiritueux préparé avec... C'est pas précisé. Certains y trouvent un goût de fourmi de feu, mais pour ça il faut déjà en connaître le goût.`,
     tags: ["drugs"],
     maxUsage: 3
+  },
+  stealthboy: {
+    id: "stealthboy",
+    label: "Stealth-Boy",
+    effectId: null,
+    challengeLabel: `+50% ${skillsMap.stealth.short}`,
+    od: false,
+    addict: false,
+    value: 1000,
+    place: 1,
+    weight: 1,
+    description: `Un appareil de camouflage personnel qui rend son porteur pratiquement invisible. Attention, l'effet est limité à environ une minute.`,
+    tags: ["drugs"],
+    maxUsage: 1
   }
 }
 
