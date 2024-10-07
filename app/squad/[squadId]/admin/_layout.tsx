@@ -15,12 +15,12 @@ import colors from "styles/colors"
 const headerElementsIds: HeaderElementId[] = ["date", "time", "squadName", "home"]
 
 export default function AdminLayout() {
-  const { date, members } = useSquad()
+  const squad = useSquad()
+  const { members } = squad
   // TODO: fix useGetSquadCharacters loop when dependencies are registered, insure stable ref of params
   const squadMembersIds = useMemo(() => members.map(member => member.id), [members])
-  const jsonDate = date.toJSON()
-  const squadDate = useMemo(() => jsonDate, [jsonDate])
-  const characters = useGetSquadCharacters(squadMembersIds || [], squadDate)
+  const currSquad = useMemo(() => squad, [squad])
+  const characters = useGetSquadCharacters(squadMembersIds || [], currSquad)
 
   const context = useMemo(() => {
     if (!characters) return null

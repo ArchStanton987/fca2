@@ -1,4 +1,9 @@
-TODO: check lockpick kit prices, place & weight
+
+TODO: KEEP OPENEND
+TODO: fix application des traits (apply mod, innate symptoms)
+TODO: création objets on the fly
+TODO: app icon
+
 
 perks & traits
 => get perk LVL, calculate bonus for apkpropriate level. (in description ??)

@@ -17,6 +17,7 @@ import { computed, makeObservable, observable } from "mobx"
 
 import { getModAttribute } from "../common/utils/char-calc"
 import clothingsMap from "../objects/data/clothings/clothings"
+import Squad from "./Squad"
 import { DbAbilities } from "./abilities/abilities.types"
 import { KnowledgeId } from "./abilities/knowledges/knowledge-types"
 import perksMap from "./abilities/perks/perks"
@@ -48,20 +49,23 @@ export default class Character {
   dbEquipedObjects: DbEquipedObjects
   status: DbStatus
   date: Date
+  squadId: Squad["squadId"]
 
-  constructor(obj: DbChar, date: Date, charId: string) {
+  constructor(obj: DbChar, squad: Squad, charId: string) {
     this.charId = charId
     this.dbAbilities = obj.abilities
     this.dbEffects = obj.effects || {}
     this.dbEquipedObjects = obj.equipedObj || {}
     this.status = obj.status
-    this.date = date
+    this.squadId = squad.squadId
+    this.date = squad.date
 
     makeObservable(this, {
       dbAbilities: observable,
       dbEffects: observable,
       dbEquipedObjects: observable,
       status: observable,
+      squadId: observable,
       date: observable,
       //
       innateSymptoms: computed,

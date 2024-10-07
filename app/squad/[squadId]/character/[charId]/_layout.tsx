@@ -46,7 +46,7 @@ export default function CharStack() {
     const dbCharData = { abilities, effects, equipedObj, status }
     if (Object.values(dbCharData).some(data => data === undefined)) return null
     if (!squad) return null
-    return new Character(dbCharData as DbChar, squad.date, charId)
+    return new Character(dbCharData as DbChar, squad, charId)
   }, [squad, charId, abilities, effects, equipedObj, status])
 
   const charInventory = useMemo(() => {

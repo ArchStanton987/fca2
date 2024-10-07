@@ -19,7 +19,7 @@ function getStatusUseCases(db: keyof typeof getRepository = "rtdb") {
     ) => {
       const newStatus = { ...character.status, [field]: data }
       onStatusUpdate(character, newStatus, db)
-      return repository.updateElement(character.charId, field, data)
+      return repository.updateElement(character, field, data)
     },
     groupUpdate: (character: Character, data: Partial<UpdatableDbStatus>) => {
       const updates = {} as Partial<UpdatableDbStatus>
@@ -28,7 +28,7 @@ function getStatusUseCases(db: keyof typeof getRepository = "rtdb") {
       })
       const newStatus = { ...character.status, ...updates }
       onStatusUpdate(character, newStatus, db)
-      return repository.groupUpdate(character.charId, updates)
+      return repository.groupUpdate(character, updates)
     },
 
     groupMod: (character: Character, updateHealthState: HealthUpdateState) => {
@@ -40,7 +40,7 @@ function getStatusUseCases(db: keyof typeof getRepository = "rtdb") {
       })
       const newStatus = { ...character.status, ...updates }
       onStatusUpdate(character, newStatus, db)
-      return repository.groupUpdate(character.charId, updates)
+      return repository.groupUpdate(character, updates)
     }
   }
 }
