@@ -4,6 +4,7 @@ import { Platform } from "react-native"
 import { Slot } from "expo-router"
 
 import { useFonts } from "expo-font"
+import { useKeepAwake } from "expo-keep-awake"
 import * as ScreenOrientation from "expo-screen-orientation"
 import { StatusBar } from "expo-status-bar"
 import { toastConfig } from "lib/common/ui/toast"
@@ -30,6 +31,8 @@ export default function RootLayout() {
       lockOrientation()
     }
   }, [])
+
+  useKeepAwake()
 
   if (!fontsLoaded) {
     return <LoadingScreen />
