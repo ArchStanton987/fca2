@@ -33,7 +33,8 @@
     "react-native-toast-message": "^2.2.0",
     "react-native-web": "~0.19.10",
     "expo-updates": "~0.25.24",
-    "expo-haptics": "~13.0.1"
+    "expo-haptics": "~13.0.1",
+    "expo-keep-awake": "~13.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
