@@ -1,12 +1,5 @@
-import { Symptom } from "lib/character/effects/symptoms.type"
-
 export type MiscObjectId =
   | "brahmin"
-  // | "militaryBelt"
-  // | "holster"
-  // | "purse"
-  // | "backpack"
-  // | "militaryBackpack"
   | "ballgag"
   | "condomBox"
   | "sardinesCan"
@@ -33,7 +26,6 @@ export type MiscObjectData = {
   value: number | "?"
   place: number
   weight: number
-  symptoms: Symptom[]
 }
 
 export type MiscObject = {
