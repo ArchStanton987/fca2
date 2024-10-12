@@ -11,8 +11,6 @@ TODO: add levelup
   - update perks
   - add level up ui
 TODO: collectibles UI
-TODO: updates & versionning
-  - add standard-update
 
 TODO: sound
 
