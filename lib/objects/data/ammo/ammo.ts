@@ -136,8 +136,8 @@ const ammoMap: Record<AmmoType, AmmoData> = {
   shell60mm: {
     id: "shell60mm",
     label: "Obus 60mm",
-    place: 0.06,
-    weight: 0.06
+    place: 2,
+    weight: 2
   },
   special: {
     id: "special",
