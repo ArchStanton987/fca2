@@ -3,7 +3,7 @@
     "name": "fca2",
     "slug": "fca2",
     "scheme": "fca2",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "orientation": "landscape",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -19,14 +19,16 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "buildNumber": "2.0.0"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#021000"
       },
-      "package": "com.archstanton987.fca2"
+      "package": "com.archstanton987.fca2",
+      "versionCode": 510020000
     },
     "androidStatusBar": {
       "hidden": true
