@@ -1,7 +1,5 @@
-TODO: stockage ammo bdd
 TODO: fix application des traits (apply mod, innate symptoms)
 TODO: création objets on the fly
-TODO: app icon
 
 
 perks & traits page
