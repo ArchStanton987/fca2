@@ -15,12 +15,19 @@ export const applyMod = (initValue: number, symptom: Symptom) => {
 }
 
 // TODO: include init value
-export const getModAttribute = (symptoms: Symptom[], key: ChangeableAttribute) => {
+export const getModAttribute = (
+  symptoms: Symptom[],
+  key: ChangeableAttribute,
+  initValue: number = 0
+) => {
   const mods = symptoms.reduce((acc, symptom) => {
-    if (symptom.id === key) {
-      return applyMod(acc, symptom)
+    if (symptom.id !== key) return acc
+    let newAcc = acc
+    const { level = 1 } = symptom
+    for (let i = 1; i <= level; i += 1) {
+      newAcc = applyMod(newAcc, symptom)
     }
-    return acc
-  }, 0)
+    return newAcc
+  }, initValue)
   return mods
 }

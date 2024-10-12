@@ -154,9 +154,9 @@ export default class Character {
       curr: Special
     }
     specialArray.forEach(({ id }) => {
-      result.base[id] = this.dbAbilities.baseSPECIAL[id] + getModAttribute(this.innateSymptoms, id)
-      result.mod[id] = getModAttribute(this.symptoms, id)
-      result.curr[id] = result.base[id] + result.mod[id]
+      result.base[id] = getModAttribute(this.innateSymptoms, id, this.dbAbilities.baseSPECIAL[id])
+      result.curr[id] = getModAttribute(this.symptoms, id, result.base[id])
+      result.mod[id] = result.curr[id] - result.base[id]
     })
     return result
   }
@@ -168,8 +168,9 @@ export default class Character {
       curr: SecAttrsValues
     }
     secAttrArray.forEach(({ id, calc }) => {
-      result.base[id] = calc(this.special.base) + getModAttribute(this.innateSymptoms, id)
-      result.curr[id] = calc(this.special.curr) + getModAttribute(this.symptoms, id)
+      result.base[id] = getModAttribute(this.innateSymptoms, id, calc(this.special.base))
+      const currWithInnate = getModAttribute(this.innateSymptoms, id, calc(this.special.curr))
+      result.curr[id] = getModAttribute(this.symptoms, id, currWithInnate)
       result.mod[id] = result.curr[id] - result.base[id]
     })
     return result
@@ -183,12 +184,11 @@ export default class Character {
       curr: SkillsValues
     }
     Object.values(skillsMap).forEach(({ id, calc }) => {
-      result.base[id] = calc(this.special.base) + getModAttribute(this.innateSymptoms, id)
+      result.base[id] = getModAttribute(this.innateSymptoms, id, calc(this.special.base))
       result.up[id] = this.dbAbilities.upSkills[id]
-      result.curr[id] = Math.max(
-        calc(this.special.curr) + getModAttribute(this.symptoms, id) + result.up[id],
-        1
-      )
+      const currWithInnate = getModAttribute(this.innateSymptoms, id, calc(this.special.curr))
+      const calcCurr = getModAttribute(this.symptoms, id, currWithInnate)
+      result.curr[id] = Math.max(calcCurr + result.up[id], 1)
       result.mod[id] = result.curr[id] - result.base[id] - result.up[id]
     })
     return result
