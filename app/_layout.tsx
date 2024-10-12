@@ -1,7 +1,7 @@
 import { useEffect } from "react"
-import { Platform } from "react-native"
+import { Platform, View } from "react-native"
 
-import { Slot } from "expo-router"
+import { Slot, SplashScreen } from "expo-router"
 
 import { useFonts } from "expo-font"
 import { useKeepAwake } from "expo-keep-awake"
@@ -12,10 +12,13 @@ import Toast from "react-native-toast-message"
 
 import fonts from "assets/fonts"
 import LoadingScreen from "screens/LoadingScreen"
+import colors from "styles/colors"
 
 import AuthContainer from "../providers/AuthProvider"
 
 let didInit = false
+
+SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts(fonts)
@@ -32,6 +35,14 @@ export default function RootLayout() {
     }
   }, [])
 
+  useEffect(() => {
+    if (fontsLoaded) {
+      setTimeout(() => {
+        SplashScreen.hideAsync()
+      })
+    }
+  }, [fontsLoaded])
+
   useKeepAwake()
 
   if (!fontsLoaded) {
@@ -39,10 +50,12 @@ export default function RootLayout() {
   }
 
   return (
-    <AuthContainer>
-      <StatusBar hidden />
-      <Slot />
-      <Toast config={toastConfig} />
-    </AuthContainer>
+    <View style={{ flex: 1, backgroundColor: colors.primColor }}>
+      <AuthContainer>
+        <StatusBar hidden />
+        <Slot />
+        <Toast config={toastConfig} />
+      </AuthContainer>
+    </View>
   )
 }
