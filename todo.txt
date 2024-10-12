@@ -1,11 +1,10 @@
-
-TODO: KEEP OPENEND
+TODO: stockage ammo bdd
 TODO: fix application des traits (apply mod, innate symptoms)
 TODO: création objets on the fly
 TODO: app icon
 
 
-perks & traits
+perks & traits page
 => get perk LVL, calculate bonus for apkpropriate level. (in description ??)
 
 TODO: fix knowledge points calculations & display
