@@ -1,4 +1,6 @@
 /* eslint-disable import/prefer-default-export */
+import { Platform } from "react-native"
+
 import * as Haptics from "expo-haptics"
 import { Weapon, WeaponActionId, WeaponTagId } from "lib/objects/data/weapons/weapons.types"
 
@@ -32,6 +34,7 @@ const loadHaptic = async () => Haptics.notificationAsync(Haptics.NotificationFee
 const unloadHaptic = async () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft)
 
 export const getHapticSequence = async (actionId: WeaponActionId, weapon: Weapon) => {
+  if (Platform.OS === "web") return null
   switch (actionId) {
     case "basic":
       return basicHaptic()
