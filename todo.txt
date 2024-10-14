@@ -1,4 +1,4 @@
-TODO: fix application des traits (apply mod, innate symptoms)
+TODO: weapon action : lancer
 TODO: création objets on the fly
 
 
