@@ -111,7 +111,10 @@ export default function UpdateObjectsModal() {
     const list = Object.values(data).map(({ id, label }) => ({ id, label }))
     if (!categoriesMap[selectedCat]?.hasSearch) return list
     return searchInput.length > 2
-      ? list.filter(el => el.label.toLowerCase().includes(searchInput.toLowerCase()))
+      ? list.filter(el => {
+          if (selectedCat === "weapons" && el.id === "unarmed") return false
+          return el.label.toLowerCase().includes(searchInput.toLowerCase())
+        })
       : []
   }, [selectedCat, searchInput])
 
