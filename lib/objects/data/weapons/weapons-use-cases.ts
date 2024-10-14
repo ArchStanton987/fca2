@@ -52,7 +52,7 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
       const equObjPayload = { id: weapon.id, inMagazine: newInMag }
       promises.push(equObjRepository.update(charId, "weapons", weapon.dbKey, equObjPayload))
       // update action points
-      promises.push(statusRepository.updateElement(charId, "currAp", newAp))
+      promises.push(statusRepository.updateElement(char, "currAp", newAp))
       return Promise.all(promises)
     },
 
@@ -86,7 +86,7 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
       const equObjPayload = { id: weapon.id, inMagazine: newInMag }
       promises.push(equObjRepository.update(charId, "weapons", weapon.dbKey, equObjPayload))
       // update action points
-      promises.push(statusRepository.updateElement(charId, "currAp", newAp))
+      promises.push(statusRepository.updateElement(char, "currAp", newAp))
       return Promise.all(promises)
     },
 
@@ -131,7 +131,7 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
       }
       // REMOVE AP
       const charRepository = getRepository[db].status
-      promises.push(charRepository.updateElement(charId, "currAp", status.currAp - apCost))
+      promises.push(charRepository.updateElement(char, "currAp", status.currAp - apCost))
       return Promise.all(promises)
     }
   }
