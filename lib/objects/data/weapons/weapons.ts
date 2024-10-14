@@ -1953,7 +1953,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 50,
     frequency: 5,
     skill: "unarmed",
-    knowledges: ["kUnarmed"],
+    knowledges: [],
     tags: ["arme de corps à corps"]
   },
   brassKnuckles: {
@@ -1976,7 +1976,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 60,
     frequency: 5,
     skill: "unarmed",
-    knowledges: ["kUnarmed"],
+    knowledges: ["kBluntWeapons"],
     tags: ["arme de corps à corps"]
   },
   spikedKnuckles: {
@@ -1999,7 +1999,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 75,
     frequency: 4,
     skill: "unarmed",
-    knowledges: ["kUnarmed"],
+    knowledges: ["kPiercWeapons"],
     tags: ["arme de corps à corps"]
   },
   sappers: {
@@ -2022,7 +2022,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 90,
     frequency: 4,
     skill: "unarmed",
-    knowledges: ["kUnarmed"],
+    knowledges: ["kBluntWeapons"],
     tags: ["arme de corps à corps"]
   },
   lacerator: {
@@ -2045,7 +2045,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 200,
     frequency: 4,
     skill: "unarmed",
-    knowledges: ["kUnarmed"],
+    knowledges: ["kBladedWeapons"],
     tags: ["arme de corps à corps"]
   },
   maceGlove: {
@@ -2068,7 +2068,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 400,
     frequency: 4,
     skill: "unarmed",
-    knowledges: ["kUnarmed"],
+    knowledges: ["kBluntWeapons"],
     tags: ["arme de corps à corps"]
   },
   razorClaws: {
@@ -2091,7 +2091,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 2000,
     frequency: 3,
     skill: "unarmed",
-    knowledges: ["kUnarmed"],
+    knowledges: ["kPiercWeapons"],
     tags: ["arme de corps à corps"]
   },
   powerFist: {
@@ -2114,7 +2114,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 4000,
     frequency: 1,
     skill: "unarmed",
-    knowledges: ["kUnarmed", "kEnergyWeapons"],
+    knowledges: ["kBluntWeapons", "kEnergyWeapons"],
     tags: ["arme de corps à corps", "arme à énergie"]
   },
   megaPowerFist: {
@@ -2137,7 +2137,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 8000,
     frequency: 1,
     skill: "unarmed",
-    knowledges: ["kUnarmed", "kEnergyWeapons"],
+    knowledges: ["kBluntWeapons", "kEnergyWeapons"],
     tags: ["arme de corps à corps", "arme à énergie"]
   },
   cattleStick: {

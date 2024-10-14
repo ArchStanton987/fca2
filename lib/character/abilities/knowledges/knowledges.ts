@@ -3,7 +3,10 @@ import { Knowledge, KnowledgeId } from "./knowledge-types"
 const knowledgesMap: Record<KnowledgeId, Knowledge> = {
   kBladedWeapons: { id: "kBladedWeapons", label: "Armes tranchantes", short: "ArmTr" },
   kBluntWeapons: { id: "kBluntWeapons", label: "Armes contond.", short: "ArmCont" },
+  kPiercWeapons: { id: "kPiercWeapons", label: "Armes perfor.", short: "ArmPerfo" },
+  // TODO: LEGACY: to delete (used by vault 18 characters)
   kUnarmed: { id: "kUnarmed", label: "Corps à corps", short: "CAC" },
+  kBareHands: { id: "kBareHands", label: "Mains nues", short: "MNues" },
   kEnergyWeapons: { id: "kEnergyWeapons", short: "ArmEner", label: "Armes à énerg." },
   kOneHandedWeapons: { id: "kOneHandedWeapons", short: "Arm1M", label: "Armes à 1 main" },
   kTwoHandedWeapons: { id: "kTwoHandedWeapons", short: "Arm2M", label: "Armes à 2 mains" },
@@ -17,7 +20,7 @@ const knowledgesMap: Record<KnowledgeId, Knowledge> = {
   kBarter: { id: "kBarter", short: "Troc", label: "Troc" },
   kSee: { id: "kSee", short: "Vue", label: "Vue" },
   kIntimidate: { id: "kIntimidate", short: "Inti°", label: "Intimidation" },
-  kDisguise: { id: "kDisguise", short: "Deguist", label: "Deguisement" },
+  kDisguise: { id: "kDisguise", short: "DeguisT", label: "Deguisement" },
   kElectronics: { id: "kElectronics", short: "Electro", label: "Electronique" },
   kFirstAid: { id: "kFirstAid", short: "Seco", label: "Secourisme" },
   kMedicine: { id: "kMedicine", short: "Medic", label: "Médecine" },

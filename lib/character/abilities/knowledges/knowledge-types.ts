@@ -18,7 +18,9 @@ export type Knowledge = {
 export type KnowledgeId =
   | "kBladedWeapons"
   | "kBluntWeapons"
+  | "kPiercWeapons"
   | "kUnarmed"
+  | "kBareHands"
   | "kEnergyWeapons"
   | "kOneHandedWeapons"
   | "kTwoHandedWeapons"
