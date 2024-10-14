@@ -53,7 +53,7 @@ export const damageTypeMap: Record<DamageTypeId, DamageType> = {
 export type DbWeapon = { id: WeaponId; inMagazine?: number }
 
 export type WeaponData = {
-  id: WeaponId | "unarmed"
+  id: WeaponId
   label: string
   img: string
   damageType: DamageTypeId
@@ -66,7 +66,7 @@ export type WeaponData = {
   ammoPerBurst: number | null
   basicApCost: number | null
   specialApCost: number | null
-  minStrength: number | null
+  minStrength: number
   place: number
   weight: number
   value: number
@@ -77,7 +77,7 @@ export type WeaponData = {
 }
 
 export type Weapon = {
-  id: WeaponId | "unarmed"
+  id: WeaponId
   dbKey: string
   skill: number
   isEquiped: boolean
@@ -87,6 +87,7 @@ export type Weapon = {
 }
 
 export type WeaponId =
+  | "unarmed"
   | "10mm"
   | "p220"
   | "mauserHSI"
