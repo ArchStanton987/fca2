@@ -88,11 +88,14 @@ export default class Inventory {
       }, 0)
       const strengthMalus = getStrengthMalus(weaponsMap[id], currSpecial)
       const skill = currSkills[weaponSkill] + knowledgesBonus - strengthMalus
+      let { basicApCost, specialApCost } = weaponsMap[id]
       const hasMrFast = traits?.includes("mrFast")
-      let { basicApCost } = weaponsMap[id]
-      basicApCost = basicApCost !== null && hasMrFast ? basicApCost - 1 : basicApCost
+      if (hasMrFast) {
+        specialApCost = null
+        basicApCost = basicApCost !== null ? basicApCost - 1 : null
+      }
       const isEquiped = dbEquipedObjects?.weapons?.[dbKey] !== undefined
-      const data = { ...weaponsMap[id], basicApCost }
+      const data = { ...weaponsMap[id], basicApCost, specialApCost }
       return { inMagazine, data, dbKey, id, skill, basicApCost, isEquiped, ammo }
     })
   }
