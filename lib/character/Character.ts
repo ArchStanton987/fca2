@@ -13,6 +13,8 @@ import { getLevelAndThresholds } from "lib/character/status/status-calc"
 import { getRemainingTime } from "lib/common/utils/time-calc"
 import { DbEquipedObjects } from "lib/objects/data/objects.types"
 import weaponsMap from "lib/objects/data/weapons/weapons"
+import { dbToWeapon } from "lib/objects/data/weapons/weapons.mappers"
+import { Weapon } from "lib/objects/data/weapons/weapons.types"
 import { computed, makeObservable, observable } from "mobx"
 
 import { getModAttribute } from "../common/utils/char-calc"
@@ -85,7 +87,9 @@ export default class Character {
       traits: computed,
       traitsRecord: computed,
       perks: computed,
-      perksRecord: computed
+      perksRecord: computed,
+      //
+      unarmed: computed
     })
   }
 
@@ -277,5 +281,16 @@ export default class Character {
       perksRecord[perk.id] = { ...perk }
     })
     return perksRecord
+  }
+
+  get unarmed(): Weapon {
+    const charData = {
+      dbAbilities: this.dbAbilities,
+      innateSymptoms: this.innateSymptoms,
+      currSkills: this.skills.curr,
+      currSpecial: this.special.curr,
+      dbEquipedObjects: this.dbEquipedObjects
+    }
+    return dbToWeapon(["unarmed", { id: "unarmed" }], charData, undefined)
   }
 }

@@ -1,18 +1,7 @@
 import Character from "lib/character/Character"
 import { Special } from "lib/character/abilities/special/special.types"
-import {
-  LOAD_AP_COST,
-  MALUS_PER_MISSING_STRENGTH,
-  UNLOAD_AP_COST
-} from "lib/objects/data/weapons/weapons-const"
-import {
-  Weapon,
-  WeaponActionId,
-  WeaponActionNameId,
-  WeaponData
-} from "lib/objects/data/weapons/weapons.types"
-
-import { unarmed, unarmedData } from "./unarmed"
+import { LOAD_AP_COST, UNLOAD_AP_COST } from "lib/objects/data/weapons/weapons-const"
+import { Weapon, WeaponActionId, WeaponActionNameId } from "lib/objects/data/weapons/weapons.types"
 
 export const getApCost = (weapon: Weapon, char: Character, actionId: WeaponActionId) => {
   const apCosts = {
@@ -28,11 +17,6 @@ export const getApCost = (weapon: Weapon, char: Character, actionId: WeaponActio
 export const getHasStrengthMalus = (weapon: Weapon, currSpecial: Special) => {
   if (weapon.data.minStrength === null) return false
   return currSpecial.strength < weapon.data.minStrength
-}
-
-export const getStrengthMalus = (weapon: WeaponData, currSpecial: Special) => {
-  if (weapon.minStrength === null) return 0
-  return Math.max(0, weapon.minStrength - currSpecial.strength) * MALUS_PER_MISSING_STRENGTH
 }
 
 export const getCanStrike = (weapon: Weapon, char: Character) => {
@@ -107,9 +91,3 @@ const actionsMap: {
 
 export const getAvailableWeaponActions = (weapon: Weapon, char: Character) =>
   actionsMap.filter(({ fn }) => fn(weapon, char)).map(({ key }) => key)
-
-export const getUnarmed = (character: Character): Weapon => ({
-  ...unarmed,
-  data: { ...unarmedData },
-  skill: character.skills.curr.unarmed
-})

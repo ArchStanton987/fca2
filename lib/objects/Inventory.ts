@@ -1,6 +1,4 @@
-import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-levels"
 import { Special } from "lib/character/abilities/special/special.types"
-import { getModAttribute } from "lib/common/utils/char-calc"
 import ammoMap from "lib/objects/data/ammo/ammo"
 import { Ammo, AmmoType } from "lib/objects/data/ammo/ammo.types"
 import clothingsMap from "lib/objects/data/clothings/clothings"
@@ -10,17 +8,15 @@ import { Consumable, ConsumableId } from "lib/objects/data/consumables/consumabl
 import miscObjectsMap from "lib/objects/data/misc-objects/misc-objects"
 import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
 import { DbEquipedObjects, DbInventory } from "lib/objects/data/objects.types"
-import weaponsMap from "lib/objects/data/weapons/weapons"
-import { getStrengthMalus } from "lib/objects/data/weapons/weapons-utils"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
 import { computed, makeObservable, observable } from "mobx"
 
 import { filterUnique } from "utils/array-utils"
 
 import { DbAbilities } from "../character/abilities/abilities.types"
-import { KnowledgeId } from "../character/abilities/knowledges/knowledge-types"
 import { SkillsValues } from "../character/abilities/skills/skills.types"
 import { Symptom } from "../character/effects/symptoms.type"
+import { dbToWeapon } from "./data/weapons/weapons.mappers"
 
 type CharData = {
   dbAbilities: DbAbilities
@@ -70,34 +66,9 @@ export default class Inventory {
   }
 
   get weapons(): Weapon[] {
-    return Object.entries(this.dbInventory.weapons || []).map(([dbKey, dbWeapon]) => {
-      const { id } = dbWeapon
-      const weaponSkill = weaponsMap[id].skill
-      const weaponKnowledges = weaponsMap[id].knowledges
-      const { ammoType } = weaponsMap[id]
-      const inMagazine = ammoType !== null ? dbWeapon.inMagazine || 0 : undefined
-      const ammo = ammoType ? this.dbInventory.ammo?.[ammoType] || 0 : 0
-      const { innateSymptoms, currSkills, dbAbilities, dbEquipedObjects, currSpecial } =
-        this.charData
-      const { knowledges, traits } = dbAbilities
-      const knowledgesBonus = weaponKnowledges.reduce((acc, curr: KnowledgeId) => {
-        const knowledgeLevel = knowledges[curr]
-        const knowledgeBonus = knowledgeLevels.find(el => el.id === knowledgeLevel)?.bonus || 0
-        const innateBonus = getModAttribute(innateSymptoms, curr)
-        return acc + knowledgeBonus + innateBonus
-      }, 0)
-      const strengthMalus = getStrengthMalus(weaponsMap[id], currSpecial)
-      const skill = currSkills[weaponSkill] + knowledgesBonus - strengthMalus
-      let { basicApCost, specialApCost } = weaponsMap[id]
-      const hasMrFast = traits?.includes("mrFast")
-      if (hasMrFast) {
-        specialApCost = null
-        basicApCost = basicApCost !== null ? basicApCost - 1 : null
-      }
-      const isEquiped = dbEquipedObjects?.weapons?.[dbKey] !== undefined
-      const data = { ...weaponsMap[id], basicApCost, specialApCost }
-      return { inMagazine, data, dbKey, id, skill, basicApCost, isEquiped, ammo }
-    })
+    return Object.entries(this.dbInventory.weapons || {}).map(entry =>
+      dbToWeapon(entry, this.charData, this.dbInventory.ammo)
+    )
   }
 
   get clothings(): Clothing[] {

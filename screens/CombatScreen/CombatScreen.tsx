@@ -2,7 +2,6 @@ import React, { memo, useState } from "react"
 import { ScrollView, View } from "react-native"
 
 import useCases from "lib/common/use-cases"
-import { getUnarmed } from "lib/objects/data/weapons/weapons-utils"
 
 import CheckBox from "components/CheckBox/CheckBox"
 import DrawerPage from "components/DrawerPage"
@@ -81,7 +80,7 @@ function CombatScreen() {
             renderItem={({ item }) => <WeaponCard weapon={item} setPrevAp={handleSetPrevAp} />}
           />
         ) : (
-          <WeaponCard weapon={getUnarmed(character)} setPrevAp={handleSetPrevAp} />
+          <WeaponCard weapon={character.unarmed} setPrevAp={handleSetPrevAp} />
         )}
       </ScrollView>
     </DrawerPage>
