@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.1.1](https://github.com/ArchStanton987/fca2/compare/v2.1.0...v2.1.1) (2024-10-18)
+
+
+### Features
+
+* **ui:** :sparkles: add perks & traits page ([a7d9e4f](https://github.com/ArchStanton987/fca2/commit/a7d9e4f5910d978c75f2dd189f6319cf0562d0b4))
+
 ## [2.1.0](https://github.com/ArchStanton987/fca2/compare/v2.0.1...v2.1.0) (2024-10-18)
 
 
