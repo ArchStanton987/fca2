@@ -9,8 +9,8 @@ const skillsMap: Record<SkillId, Skill> = {
     calc: (SPECIAL: Special) => 2 * SPECIAL.strength + 2 * SPECIAL.agility + 10 + SPECIAL.endurance,
     armorMalus: []
   },
-  lightMedWeapons: {
-    id: "lightMedWeapons",
+  smallGuns: {
+    id: "smallGuns",
     label: "Armes lég/moy",
     short: "ArmLég",
     calc: (SPECIAL: Special) => 2 * SPECIAL.agility + 2 * SPECIAL.perception + 5,

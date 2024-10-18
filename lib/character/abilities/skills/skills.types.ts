@@ -3,7 +3,7 @@ import { Special } from "../special/special.types"
 
 export type SkillId =
   | "melee"
-  | "lightMedWeapons"
+  | "smallGuns"
   | "bigGuns"
   | "unarmed"
   | "barter"

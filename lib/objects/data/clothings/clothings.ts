@@ -162,7 +162,7 @@ const clothingsMap: Record<ClothingId, ClothingData> = {
     weight: 0.5,
     value: 150,
     symptoms: [
-      { id: "lightMedWeapons", operation: "add", value: 10 },
+      { id: "smallGuns", operation: "add", value: 10 },
       { id: "survival", operation: "add", value: 10 }
     ]
   },

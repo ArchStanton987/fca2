@@ -92,7 +92,7 @@ const effectsMap: Record<EffectId, EffectData> = {
     label: "Essoufflé",
     symptoms: [
       { id: "melee", operation: "add", value: -10 },
-      { id: "lightMedWeapons", operation: "add", value: -10 },
+      { id: "smallGuns", operation: "add", value: -10 },
       { id: "bigGuns", operation: "add", value: -10 },
       { id: "unarmed", operation: "add", value: -10 },
       { id: "barter", operation: "add", value: -10 },
@@ -120,7 +120,7 @@ const effectsMap: Record<EffectId, EffectData> = {
     label: "Epuisé",
     symptoms: [
       { id: "melee", operation: "add", value: -30 },
-      { id: "lightMedWeapons", operation: "add", value: -30 },
+      { id: "smallGuns", operation: "add", value: -30 },
       { id: "bigGuns", operation: "add", value: -30 },
       { id: "unarmed", operation: "add", value: -30 },
       { id: "barter", operation: "add", value: -30 },
@@ -148,7 +148,7 @@ const effectsMap: Record<EffectId, EffectData> = {
     label: "Inconscient",
     symptoms: [
       { id: "melee", operation: "add", value: -200 },
-      { id: "lightMedWeapons", operation: "add", value: -200 },
+      { id: "smallGuns", operation: "add", value: -200 },
       { id: "bigGuns", operation: "add", value: -200 },
       { id: "unarmed", operation: "add", value: -200 },
       { id: "barter", operation: "add", value: -200 },
@@ -176,7 +176,7 @@ const effectsMap: Record<EffectId, EffectData> = {
     label: "Mort",
     symptoms: [
       { id: "melee", operation: "add", value: -200 },
-      { id: "lightMedWeapons", operation: "add", value: -200 },
+      { id: "smallGuns", operation: "add", value: -200 },
       { id: "bigGuns", operation: "add", value: -200 },
       { id: "unarmed", operation: "add", value: -200 },
       { id: "barter", operation: "add", value: -200 },
@@ -204,7 +204,7 @@ const effectsMap: Record<EffectId, EffectData> = {
     label: "Vaporisé",
     symptoms: [
       { id: "melee", operation: "add", value: -200 },
-      { id: "lightMedWeapons", operation: "add", value: -200 },
+      { id: "smallGuns", operation: "add", value: -200 },
       { id: "bigGuns", operation: "add", value: -200 },
       { id: "unarmed", operation: "add", value: -200 },
       { id: "barter", operation: "add", value: -200 },
@@ -232,7 +232,7 @@ const effectsMap: Record<EffectId, EffectData> = {
     label: "Irradié (niv1)",
     symptoms: [
       { id: "melee", operation: "add", value: -5 },
-      { id: "lightMedWeapons", operation: "add", value: -5 },
+      { id: "smallGuns", operation: "add", value: -5 },
       { id: "bigGuns", operation: "add", value: -5 },
       { id: "unarmed", operation: "add", value: -5 },
       { id: "barter", operation: "add", value: -5 },
@@ -259,7 +259,7 @@ const effectsMap: Record<EffectId, EffectData> = {
     label: "Irradié (niv2)",
     symptoms: [
       { id: "melee", operation: "add", value: -10 },
-      { id: "lightMedWeapons", operation: "add", value: -10 },
+      { id: "smallGuns", operation: "add", value: -10 },
       { id: "bigGuns", operation: "add", value: -10 },
       { id: "unarmed", operation: "add", value: -10 },
       { id: "barter", operation: "add", value: -10 },
@@ -287,7 +287,7 @@ const effectsMap: Record<EffectId, EffectData> = {
     label: "Irradié (niv3)",
     symptoms: [
       { id: "melee", operation: "add", value: -15 },
-      { id: "lightMedWeapons", operation: "add", value: -15 },
+      { id: "smallGuns", operation: "add", value: -15 },
       { id: "bigGuns", operation: "add", value: -15 },
       { id: "unarmed", operation: "add", value: -15 },
       { id: "barter", operation: "add", value: -15 },
@@ -315,7 +315,7 @@ const effectsMap: Record<EffectId, EffectData> = {
     label: "Irradié (niv4)",
     symptoms: [
       { id: "melee", operation: "add", value: -30 },
-      { id: "lightMedWeapons", operation: "add", value: -30 },
+      { id: "smallGuns", operation: "add", value: -30 },
       { id: "bigGuns", operation: "add", value: -30 },
       { id: "unarmed", operation: "add", value: -30 },
       { id: "barter", operation: "add", value: -30 },
@@ -343,7 +343,7 @@ const effectsMap: Record<EffectId, EffectData> = {
     label: "Irradié (niv5)",
     symptoms: [
       { id: "melee", operation: "add", value: -50 },
-      { id: "lightMedWeapons", operation: "add", value: -50 },
+      { id: "smallGuns", operation: "add", value: -50 },
       { id: "bigGuns", operation: "add", value: -50 },
       { id: "unarmed", operation: "add", value: -50 },
       { id: "barter", operation: "add", value: -50 },
@@ -371,7 +371,7 @@ const effectsMap: Record<EffectId, EffectData> = {
     label: "Irradié (niv6)",
     symptoms: [
       { id: "melee", operation: "add", value: -200 },
-      { id: "lightMedWeapons", operation: "add", value: -200 },
+      { id: "smallGuns", operation: "add", value: -200 },
       { id: "bigGuns", operation: "add", value: -200 },
       { id: "unarmed", operation: "add", value: -200 },
       { id: "barter", operation: "add", value: -200 },

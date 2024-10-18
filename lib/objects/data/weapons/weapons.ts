@@ -43,7 +43,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 1,
     value: 450,
     frequency: 5,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms", "kOneHandedWeapons"],
     tags: ["arme légère", "arme à feu", "pistolet"]
   },
@@ -66,7 +66,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 1,
     value: 300,
     frequency: 5,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms", "kOneHandedWeapons"],
     tags: ["arme légère", "arme à feu", "pistolet"]
   },
@@ -89,7 +89,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 1.5,
     value: 700,
     frequency: 2,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms", "kOneHandedWeapons"],
     tags: ["arme légère", "arme à feu", "pistolet"]
   },
@@ -112,7 +112,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 1,
     value: 600,
     frequency: 5,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms", "kOneHandedWeapons"],
     tags: ["arme légère", "arme à feu", "pistolet"]
   },
@@ -135,7 +135,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 1,
     value: 800,
     frequency: 5,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms", "kOneHandedWeapons"],
     tags: ["arme légère", "arme à feu", "pistolet"]
   },
@@ -158,7 +158,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 1,
     value: 1000,
     frequency: 3,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms", "kOneHandedWeapons"],
     tags: ["arme légère", "arme à feu", "pistolet"]
   },
@@ -181,7 +181,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 1.5,
     value: 1700,
     frequency: 2,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms", "kOneHandedWeapons"],
     tags: ["arme légère", "arme à feu", "pistolet"]
   },
@@ -204,7 +204,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 2,
     value: 2500,
     frequency: 1,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms", "kOneHandedWeapons"],
     tags: ["arme légère", "arme à feu", "pistolet"]
   },
@@ -227,7 +227,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 1,
     value: 3500,
     frequency: 1,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms", "kOneHandedWeapons"],
     tags: ["arme légère", "arme à feu", "pistolet"]
   },
@@ -250,7 +250,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 1,
     value: 1500,
     frequency: 4,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms", "kOneHandedWeapons"],
     tags: ["arme légère", "arme à feu", "revolver"]
   },
@@ -273,7 +273,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 1,
     value: 2000,
     frequency: 3,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms", "kOneHandedWeapons"],
     tags: ["arme légère", "arme à feu", "revolver"]
   },
@@ -296,7 +296,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 1,
     value: 2300,
     frequency: 3,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms", "kOneHandedWeapons"],
     tags: ["arme légère", "arme à feu", "revolver"]
   },
@@ -319,7 +319,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 2,
     value: 4500,
     frequency: 3,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms"],
     tags: ["arme légère", "arme à feu", "pistolet mitrailleur"]
   },
@@ -342,7 +342,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 3,
     value: 5000,
     frequency: 3,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms", "kOneHandedWeapons"],
     tags: ["arme légère", "arme à feu", "pistolet mitrailleur"]
   },
@@ -365,7 +365,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 2,
     value: 5300,
     frequency: 2,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms", "kOneHandedWeapons"],
     tags: ["arme légère", "arme à feu", "pistolet mitrailleur"]
   },
@@ -388,7 +388,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 4,
     value: 6000,
     frequency: 2,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms", "kOneHandedWeapons"],
     tags: ["arme légère", "arme à feu", "pistolet mitrailleur"]
   },
@@ -411,7 +411,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 3,
     value: 6500,
     frequency: 1,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms", "kTwoHandedWeapons"],
     tags: ["arme légère", "arme à feu", "pistolet mitrailleur"]
   },
@@ -434,7 +434,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 0.5,
     value: 20000,
     frequency: 0,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kOneHandedWeapons"],
     tags: ["arme légère", "pistolet", "spécial"]
   },
@@ -457,7 +457,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 1,
     value: 3500,
     frequency: 3,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kOneHandedWeapons"],
     tags: ["arme légère", "pistolet", "spécial"]
   },
@@ -480,7 +480,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 1,
     value: 4500,
     frequency: 2,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms", "kOneHandedWeapons"],
     tags: ["arme légère", "arme à feu", "pistolet", "explosif"]
   },
@@ -503,7 +503,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 0.5,
     value: 150,
     frequency: 3,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kOneHandedWeapons"],
     tags: ["arme légère", "pistolet", "spécial"]
   },
@@ -526,7 +526,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 0.5,
     value: 2500,
     frequency: 2,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kOneHandedWeapons"],
     tags: ["arme légère", "pistolet", "spécial"]
   },
@@ -549,7 +549,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 3.5,
     value: 3000,
     frequency: 5,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "fusil"]
   },
@@ -572,7 +572,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 4.5,
     value: 4000,
     frequency: 5,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "fusil"]
   },
@@ -595,7 +595,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 7,
     value: 4200,
     frequency: 4,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "sniper", "fusil"]
   },
@@ -618,7 +618,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 8,
     value: 4700,
     frequency: 3,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "sniper", "fusil"]
   },
@@ -641,7 +641,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 6,
     value: 6000,
     frequency: 2,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "fusil", "sniper"]
   },
@@ -664,7 +664,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 3,
     value: 30000,
     frequency: 1,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons"],
     tags: ["arme moyenne", "fusil", "spécial"]
   },
@@ -687,7 +687,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 3,
     value: 300,
     frequency: 5,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms", "kTwoHandedWeapons"],
     tags: ["arme légère", "arme à feu", "fusil"]
   },
@@ -710,7 +710,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 3,
     value: 500,
     frequency: 5,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms", "kTwoHandedWeapons"],
     tags: ["arme légère", "arme à feu", "fusil"]
   },
@@ -733,7 +733,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 2.5,
     value: 750,
     frequency: 5,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms", "kOneHandedWeapons"],
     tags: ["arme légère", "arme à feu"]
   },
@@ -756,7 +756,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 4,
     value: 2500,
     frequency: 5,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "fusil"]
   },
@@ -779,7 +779,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 3,
     value: 2700,
     frequency: 5,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms", "kOneHandedWeapons"],
     tags: ["arme légère", "arme à feu", "fusil à pompe"]
   },
@@ -802,7 +802,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 3,
     value: 2700,
     frequency: 4,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "fusil à pompe"]
   },
@@ -825,7 +825,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 3.5,
     value: 1800,
     frequency: 4,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "fusil à pompe"]
   },
@@ -848,7 +848,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 4,
     value: 3500,
     frequency: 3,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "fusil à pompe"]
   },
@@ -871,7 +871,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 4,
     value: 5000,
     frequency: 3,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "fusil à pompe"]
   },
@@ -894,7 +894,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 4,
     value: 6500,
     frequency: 2,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "fusil à pompe"]
   },
@@ -917,7 +917,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 4.5,
     value: 8000,
     frequency: 1,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "fusil à pompe"]
   },
@@ -940,7 +940,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 3,
     value: 2300,
     frequency: 4,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "mitrailleuse"]
   },
@@ -963,7 +963,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 3,
     value: 2800,
     frequency: 3,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "mitrailleuse"]
   },
@@ -986,7 +986,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 3,
     value: 2500,
     frequency: 3,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "mitrailleuse"]
   },
@@ -1009,7 +1009,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 4.5,
     value: 3300,
     frequency: 4,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "mitrailleuse"]
   },
@@ -1032,7 +1032,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 2.5,
     value: 5500,
     frequency: 4,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "mitrailleuse"]
   },
@@ -1055,7 +1055,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 3,
     value: 5000,
     frequency: 4,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "mitrailleuse"]
   },
@@ -1078,7 +1078,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 3,
     value: 5200,
     frequency: 2,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "mitrailleuse"]
   },
@@ -1101,7 +1101,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 5,
     value: 8500,
     frequency: 2,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "mitrailleuse"]
   },
@@ -1124,7 +1124,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 3.5,
     value: 4200,
     frequency: 3,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "fusil d'assault"]
   },
@@ -1147,7 +1147,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 4.5,
     value: 5000,
     frequency: 2,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "fusil d'assault"]
   },
@@ -1170,7 +1170,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 4,
     value: 5700,
     frequency: 2,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "fusil d'assault"]
   },
@@ -1193,7 +1193,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 3.5,
     value: 4000,
     frequency: 2,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "fusil d'assault"]
   },
@@ -1216,7 +1216,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 4,
     value: 7000,
     frequency: 2,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "sniper"]
   },
@@ -1239,7 +1239,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 5,
     value: 5700,
     frequency: 3,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "fusil d'assault"]
   },
@@ -1262,7 +1262,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 4.5,
     value: 6000,
     frequency: 3,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "fusil d'assault"]
   },
@@ -1285,7 +1285,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 4,
     value: 6000,
     frequency: 1,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "fusil d'assault"]
   },
@@ -1308,7 +1308,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 4,
     value: 6500,
     frequency: 1,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "fusil d'assault"]
   },
@@ -1331,7 +1331,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 4,
     value: 6900,
     frequency: 1,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "fusil d'assault"]
   },
@@ -1354,7 +1354,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 2,
     value: 6500,
     frequency: 1,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kFirearms"],
     tags: ["arme moyenne", "arme à feu", "explosif", "spécial"]
   },
@@ -1630,7 +1630,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 0.5,
     value: 100000,
     frequency: 1,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kEnergyWeapons"],
     tags: ["arme légère", "pistolet", "arme à énergie"]
   },
@@ -1653,7 +1653,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 0.5,
     value: 6000,
     frequency: 2,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kEnergyWeapons", "kOneHandedWeapons"],
     tags: ["arme légère", "pistolet", "arme à énergie"]
   },
@@ -1676,7 +1676,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 0.5,
     value: 7000,
     frequency: 2,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kEnergyWeapons", "kOneHandedWeapons"],
     tags: ["arme légère", "pistolet", "arme à énergie"]
   },
@@ -1699,7 +1699,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 1,
     value: 3500,
     frequency: 2,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kEnergyWeapons", "kOneHandedWeapons"],
     tags: ["arme légère", "pistolet", "arme à énergie"]
   },
@@ -1722,7 +1722,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 1,
     value: 4750,
     frequency: 2,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms", "kEnergyWeapons", "kOneHandedWeapons"],
     tags: ["arme légère", "arme à feu", "arme à énergie"]
   },
@@ -1745,7 +1745,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 2,
     value: 10000,
     frequency: 1,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kEnergyWeapons"],
     tags: ["arme moyenne", "spécial", "arme à énergie"]
   },
@@ -1768,7 +1768,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 1,
     value: 12500,
     frequency: 1,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kFirearms", "kEnergyWeapons", "kOneHandedWeapons"],
     tags: ["arme légère", "arme à feu", "arme à énergie"]
   },
@@ -1791,7 +1791,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 5,
     value: 16000,
     frequency: 1,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kEnergyWeapons"],
     tags: ["arme moyenne", "fusil", "arme à énergie"]
   },
@@ -1814,7 +1814,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 6,
     value: 18000,
     frequency: 1,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kEnergyWeapons"],
     tags: ["arme moyenne", "fusil", "arme à énergie"]
   },
@@ -1837,7 +1837,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 3.5,
     value: 25000,
     frequency: 1,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kEnergyWeapons"],
     tags: ["arme moyenne", "fusil", "arme à énergie"]
   },
@@ -1860,7 +1860,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 3.5,
     value: 45000,
     frequency: 1,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kEnergyWeapons"],
     tags: ["arme moyenne", "fusil", "arme à énergie"]
   },
@@ -1883,7 +1883,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 5,
     value: 9000,
     frequency: 2,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kEnergyWeapons"],
     tags: ["sniper", "arme moyenne", "fusil", "arme à énergie"]
   },
@@ -2642,7 +2642,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 2,
     value: 300,
     frequency: 4,
-    skill: "lightMedWeapons",
+    skill: "smallGuns",
     knowledges: ["kTwoHandedWeapons", "kThrowingWeapons"],
     tags: ["arme moyenne", "arme de jet"]
   },
