@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/ArchStanton987/fca2/compare/v2.0.1...v2.1.0) (2024-10-18)
+
+
+### Features
+
+* **combat:** :sparkles: handle weapon action name depending of weapon type ([922b7a2](https://github.com/ArchStanton987/fca2/commit/922b7a2c99c62df6fcf9affd9d20246a9c7111ba))
+* **combat:** :sparkles: unarmed skill takes char abilities into account ([136bfa8](https://github.com/ArchStanton987/fca2/commit/136bfa8159c7d98cbae653448e9422fc5fdf9468))
+* **engine:** :sparkles: add new unarmed knowledges ([3fc2a5a](https://github.com/ArchStanton987/fca2/commit/3fc2a5a7a583c3b78ca7bcbaf2f86aca302fd6f0))
+* **engine:** :sparkles: add unarmed as a weapon ([7462147](https://github.com/ArchStanton987/fca2/commit/7462147eecc1e90e43fffa7d1488b04374aa0607))
+
+
+### Bug Fixes
+
+* **combat:** :bug: fix type error on ap update ([4dde4e5](https://github.com/ArchStanton987/fca2/commit/4dde4e54323f1ce502bea3732d0d33c3b6a70e5b))
+* **engine:** :bug: fix calculations errors with character abilities ([a414507](https://github.com/ArchStanton987/fca2/commit/a414507eed4550b964ec87035442268572792235))
+* **ui:** :adhesive_bandage: remove white flicker on app load ([41aeb0e](https://github.com/ArchStanton987/fca2/commit/41aeb0e97aec648fc7cfff3470900933df2aa308))
+* **ui:** :bug: block haptics when platform is web ([7b10b5c](https://github.com/ArchStanton987/fca2/commit/7b10b5c98ea130eddfc1cf82e10b4d5a78b3c8d3))
+
 ### [2.0.1](https://github.com/ArchStanton987/fca2/compare/v2.0.0...v2.0.1) (2024-10-12)
 
 ## 2.0.0 (2024-10-12)
