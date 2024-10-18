@@ -6,7 +6,7 @@ import typos from "styles/typos"
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    justifyContent: "space-evenly",
+    justifyContent: "space-around",
     backgroundColor: colors.primColor,
     borderTopWidth: 0,
     height: 40
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     borderColor: colors.primColor,
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: 12,
     justifyContent: "center"
   },
   tabBarItemActive: {

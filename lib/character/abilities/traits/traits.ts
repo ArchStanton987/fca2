@@ -67,7 +67,8 @@ const traitsMap: Record<TraitId, Trait> = {
   },
   bruiser: {
     id: "bruiser",
-    description: "Vous êtes capable de frapper fort, mais vos attaques manquent de finesse. ",
+    description:
+      "Vous êtes capable de frapper fort, mais vos attaques manquent de finesse. Vos dégâts de mélés sont augmentés, mais vous avez moins de chances de réaliser un coup critique.",
     label: "Main lourde",
     symptoms: [
       { id: "critChance", operation: "add", value: -10 },
@@ -76,7 +77,8 @@ const traitsMap: Record<TraitId, Trait> = {
   },
   mrFast: {
     id: "mrFast",
-    description: "",
+    description:
+      "On canarde !!! Et si jamais il faut viser... Mince, fallait le dire avant ! Utiliser une arme vous coûte 1 PA en moins, mais vous êtes incapable de viser.",
     label: "M.Rapide",
     symptoms: []
   },

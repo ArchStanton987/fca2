@@ -64,8 +64,6 @@ export default function WeaponCard({ weapon, setPrevAp }: WeaponCardProps) {
 
   const actions = getAvailableWeaponActions(weapon, char)
 
-  console.log(actions)
-
   return (
     <View style={{ flexDirection: "row" }}>
       <View style={styles.cardContainer}>
