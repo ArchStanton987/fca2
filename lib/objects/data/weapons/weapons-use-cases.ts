@@ -1,11 +1,6 @@
 import { getRepository } from "lib/RepositoryBuilder"
 import Character from "lib/character/Character"
-import {
-  getApCost,
-  getCanShoot,
-  getCanShootAim,
-  getCanShootBurst
-} from "lib/objects/data/weapons/weapons-utils"
+import { getApCost } from "lib/objects/data/weapons/weapons-utils"
 import { Weapon, WeaponActionId } from "lib/objects/data/weapons/weapons.types"
 
 import { LOAD_AP_COST, UNLOAD_AP_COST } from "./weapons-const"
@@ -110,14 +105,9 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
       // HANDLE FIREARM
       const isFirearm = ammoType !== null
       if (isFirearm) {
-        // FIREARM VALIDATIONS
-        if (actionId === "basic" && !getCanShoot(weapon, char)) throw new Error("Can't shoot")
-        if (actionId === "aim" && !getCanShootAim(weapon, char)) throw new Error("Can't aim")
-        if (actionId === "burst" && !getCanShootBurst(weapon, char)) throw new Error("Can't burst")
-
         // GET NEW INMAGAZINE VALUES
         const isBasicAmmoUse = actionId === "basic" || actionId === "aim"
-        const ammoToRemove = (isBasicAmmoUse ? ammoPerShot : ammoPerBurst) || 0
+        const ammoToRemove = (isBasicAmmoUse ? ammoPerShot : ammoPerBurst) ?? 0
         const newInMag = inMagazine - ammoToRemove
 
         // UPDATE DB

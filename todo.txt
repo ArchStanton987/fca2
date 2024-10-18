@@ -1,4 +1,4 @@
-TODO: weapon action : lancer
+TODO: remove trap / thrown weapon after usage
 TODO: création objets on the fly
 
 

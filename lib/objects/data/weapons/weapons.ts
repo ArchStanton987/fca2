@@ -3033,7 +3033,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 1,
     value: 150,
     frequency: 4,
-    skill: "trap",
+    skill: "throw",
     knowledges: [],
     tags: ["piège", "explosif"]
   },
