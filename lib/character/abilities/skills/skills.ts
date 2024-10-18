@@ -2,8 +2,8 @@ import { Special } from "../special/special.types"
 import { Skill, SkillId } from "./skills.types"
 
 const skillsMap: Record<SkillId, Skill> = {
-  blunt: {
-    id: "blunt",
+  melee: {
+    id: "melee",
     label: "Armes blanches",
     short: "ArmBla",
     calc: (SPECIAL: Special) => 2 * SPECIAL.strength + 2 * SPECIAL.agility + 10 + SPECIAL.endurance,
@@ -16,8 +16,8 @@ const skillsMap: Record<SkillId, Skill> = {
     calc: (SPECIAL: Special) => 2 * SPECIAL.agility + 2 * SPECIAL.perception + 5,
     armorMalus: []
   },
-  heavyWeapons: {
-    id: "heavyWeapons",
+  bigGuns: {
+    id: "bigGuns",
     label: "Armes lourdes",
     short: "ArmLou",
     calc: (SPECIAL: Special) => 2 * SPECIAL.strength + SPECIAL.endurance + 5,

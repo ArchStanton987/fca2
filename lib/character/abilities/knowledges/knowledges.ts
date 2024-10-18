@@ -11,6 +11,7 @@ const knowledgesMap: Record<KnowledgeId, Knowledge> = {
   kOneHandedWeapons: { id: "kOneHandedWeapons", short: "Arm1M", label: "Armes à 1 main" },
   kTwoHandedWeapons: { id: "kTwoHandedWeapons", short: "Arm2M", label: "Armes à 2 mains" },
   kFirearms: { id: "kFirearms", short: "ArmFeu", label: "Armes à feu" },
+  // TODO: consider deleting, too general (differentiate between grenades, explosives, primitive devices (boomerang, javelin, etc.), etc.)
   kThrowingWeapons: { id: "kThrowingWeapons", short: "ArmLan", label: "Armes de lancer" },
   kStunt: { id: "kStunt", short: "Acrob", label: "Acrobatie" },
   kRunning: { id: "kRunning", short: "Cour", label: "Course" },

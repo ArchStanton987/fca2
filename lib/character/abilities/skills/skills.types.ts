@@ -2,9 +2,9 @@ import { BodyPart } from "../../health/health-types"
 import { Special } from "../special/special.types"
 
 export type SkillId =
-  | "blunt"
+  | "melee"
   | "lightMedWeapons"
-  | "heavyWeapons"
+  | "bigGuns"
   | "unarmed"
   | "barter"
   | "speech"
