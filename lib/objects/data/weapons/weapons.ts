@@ -21,8 +21,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 0,
     frequency: 5,
     skill: "unarmed",
+    isTwoHanded: false,
     knowledges: ["kBareHands"],
-    tags: ["arme de corps à corps"]
+    tags: ["mains nues"]
   },
   "10mm": {
     id: "10mm",
@@ -44,7 +45,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 450,
     frequency: 5,
     skill: "smallGuns",
-    knowledges: ["kFirearms", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kPistol"],
     tags: ["arme légère", "arme à feu", "pistolet"]
   },
   p220: {
@@ -67,7 +69,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 300,
     frequency: 5,
     skill: "smallGuns",
-    knowledges: ["kFirearms", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kPistol"],
     tags: ["arme légère", "arme à feu", "pistolet"]
   },
   mauserHSI: {
@@ -90,7 +93,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 700,
     frequency: 2,
     skill: "smallGuns",
-    knowledges: ["kFirearms", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kPistol"],
     tags: ["arme légère", "arme à feu", "pistolet"]
   },
   berettaM92FS: {
@@ -113,7 +117,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 600,
     frequency: 5,
     skill: "smallGuns",
-    knowledges: ["kFirearms", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kPistol"],
     tags: ["arme légère", "arme à feu", "pistolet"]
   },
   browningHP: {
@@ -136,7 +141,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 800,
     frequency: 5,
     skill: "smallGuns",
-    knowledges: ["kFirearms", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kPistol"],
     tags: ["arme légère", "arme à feu", "pistolet"]
   },
   colt45: {
@@ -159,7 +165,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 1000,
     frequency: 3,
     skill: "smallGuns",
-    knowledges: ["kFirearms", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kPistol"],
     tags: ["arme légère", "arme à feu", "pistolet"]
   },
   desertEagle: {
@@ -182,7 +189,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 1700,
     frequency: 2,
     skill: "smallGuns",
-    knowledges: ["kFirearms", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kPistol"],
     tags: ["arme légère", "arme à feu", "pistolet"]
   },
   sigSauer338: {
@@ -205,7 +213,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 2500,
     frequency: 1,
     skill: "smallGuns",
-    knowledges: ["kFirearms", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kPistol"],
     tags: ["arme légère", "arme à feu", "pistolet"]
   },
   "223Auto": {
@@ -228,7 +237,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 3500,
     frequency: 1,
     skill: "smallGuns",
-    knowledges: ["kFirearms", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kPistol"],
     tags: ["arme légère", "arme à feu", "pistolet"]
   },
   "44Magnum": {
@@ -251,7 +261,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 1500,
     frequency: 4,
     skill: "smallGuns",
-    knowledges: ["kFirearms", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kRevolver"],
     tags: ["arme légère", "arme à feu", "revolver"]
   },
   revolverCasul: {
@@ -274,7 +285,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 2000,
     frequency: 3,
     skill: "smallGuns",
-    knowledges: ["kFirearms", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kRevolver"],
     tags: ["arme légère", "arme à feu", "revolver"]
   },
   smithWessonM29: {
@@ -297,7 +309,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 2300,
     frequency: 3,
     skill: "smallGuns",
-    knowledges: ["kFirearms", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kRevolver"],
     tags: ["arme légère", "arme à feu", "revolver"]
   },
   skorpion: {
@@ -320,7 +333,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 4500,
     frequency: 3,
     skill: "smallGuns",
-    knowledges: ["kFirearms"],
+    isTwoHanded: false,
+    knowledges: ["kSmg"],
     tags: ["arme légère", "arme à feu", "pistolet mitrailleur"]
   },
   walterMpl: {
@@ -343,7 +357,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 5000,
     frequency: 3,
     skill: "smallGuns",
-    knowledges: ["kFirearms", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kSmg"],
     tags: ["arme légère", "arme à feu", "pistolet mitrailleur"]
   },
   HKMP9: {
@@ -366,7 +381,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 5300,
     frequency: 2,
     skill: "smallGuns",
-    knowledges: ["kFirearms", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kSmg"],
     tags: ["arme légère", "arme à feu", "pistolet mitrailleur"]
   },
   uzi: {
@@ -389,7 +405,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 6000,
     frequency: 2,
     skill: "smallGuns",
-    knowledges: ["kFirearms", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kSmg"],
     tags: ["arme légère", "arme à feu", "pistolet mitrailleur"]
   },
   p90: {
@@ -412,7 +429,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 6500,
     frequency: 1,
     skill: "smallGuns",
-    knowledges: ["kFirearms", "kTwoHandedWeapons"],
+    isTwoHanded: true,
+    knowledges: ["kSmg"],
     tags: ["arme légère", "arme à feu", "pistolet mitrailleur"]
   },
   pkk12: {
@@ -435,7 +453,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 20000,
     frequency: 0,
     skill: "smallGuns",
-    knowledges: ["kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kPistol"],
     tags: ["arme légère", "pistolet", "spécial"]
   },
   acidPistol: {
@@ -458,7 +477,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 3500,
     frequency: 3,
     skill: "smallGuns",
-    knowledges: ["kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kPistol"],
     tags: ["arme légère", "pistolet", "spécial"]
   },
   grenadePistol: {
@@ -481,7 +501,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 4500,
     frequency: 2,
     skill: "smallGuns",
-    knowledges: ["kFirearms", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kPistol"],
     tags: ["arme légère", "arme à feu", "pistolet", "explosif"]
   },
   seryngePistol: {
@@ -504,7 +525,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 150,
     frequency: 3,
     skill: "smallGuns",
-    knowledges: ["kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kPistol"],
     tags: ["arme légère", "pistolet", "spécial"]
   },
   incendiaryPistol: {
@@ -527,7 +549,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 2500,
     frequency: 2,
     skill: "smallGuns",
-    knowledges: ["kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kPistol"],
     tags: ["arme légère", "pistolet", "spécial"]
   },
   coltRangemaster: {
@@ -550,7 +573,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 3000,
     frequency: 5,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kRifle"],
     tags: ["arme moyenne", "arme à feu", "fusil"]
   },
   garandM1: {
@@ -573,7 +597,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 4000,
     frequency: 5,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kRifle"],
     tags: ["arme moyenne", "arme à feu", "fusil"]
   },
   dks50: {
@@ -596,7 +621,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 4200,
     frequency: 4,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kSniper"],
     tags: ["arme moyenne", "arme à feu", "sniper", "fusil"]
   },
   dks70: {
@@ -619,7 +645,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 4700,
     frequency: 3,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kSniper"],
     tags: ["arme moyenne", "arme à feu", "sniper", "fusil"]
   },
   dragunov: {
@@ -642,7 +669,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 6000,
     frequency: 2,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kSniper"],
     tags: ["arme moyenne", "arme à feu", "fusil", "sniper"]
   },
   gaussM72: {
@@ -665,7 +693,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 30000,
     frequency: 1,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons"],
+    isTwoHanded: true,
+    knowledges: ["kRifle"],
     tags: ["arme moyenne", "fusil", "spécial"]
   },
   redRyderLEBB: {
@@ -688,7 +717,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 300,
     frequency: 5,
     skill: "smallGuns",
-    knowledges: ["kFirearms", "kTwoHandedWeapons"],
+    isTwoHanded: true,
+    knowledges: ["kRifle"],
     tags: ["arme légère", "arme à feu", "fusil"]
   },
   redRyderSEBB: {
@@ -711,7 +741,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 500,
     frequency: 5,
     skill: "smallGuns",
-    knowledges: ["kFirearms", "kTwoHandedWeapons"],
+    isTwoHanded: true,
+    knowledges: ["kRifle"],
     tags: ["arme légère", "arme à feu", "fusil"]
   },
   tromblon: {
@@ -734,8 +765,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 750,
     frequency: 5,
     skill: "smallGuns",
-    knowledges: ["kFirearms", "kOneHandedWeapons"],
-    tags: ["arme légère", "arme à feu"]
+    isTwoHanded: false,
+    knowledges: ["kPistol"],
+    tags: ["arme légère", "arme à feu", "pistolet"]
   },
   winchester1895: {
     id: "winchester1895",
@@ -757,7 +789,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 2500,
     frequency: 5,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kRifle"],
     tags: ["arme moyenne", "arme à feu", "fusil"]
   },
   sawedShotgun: {
@@ -780,7 +813,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 2700,
     frequency: 5,
     skill: "smallGuns",
-    knowledges: ["kFirearms", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kShotgun"],
     tags: ["arme légère", "arme à feu", "fusil à pompe"]
   },
   berettaSilverhawk: {
@@ -803,7 +837,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 2700,
     frequency: 4,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kShotgun"],
     tags: ["arme moyenne", "arme à feu", "fusil à pompe"]
   },
   "12gRiffle": {
@@ -826,7 +861,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 1800,
     frequency: 4,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kShotgun"],
     tags: ["arme moyenne", "arme à feu", "fusil à pompe"]
   },
   fmNeostead: {
@@ -849,7 +885,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 3500,
     frequency: 3,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kShotgun"],
     tags: ["arme moyenne", "arme à feu", "fusil à pompe"]
   },
   winchesterCityKiller: {
@@ -872,7 +909,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 5000,
     frequency: 3,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kShotgun"],
     tags: ["arme moyenne", "arme à feu", "fusil à pompe"]
   },
   hkCaws: {
@@ -895,7 +933,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 6500,
     frequency: 2,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kShotgun"],
     tags: ["arme moyenne", "arme à feu", "fusil à pompe"]
   },
   pancor: {
@@ -918,7 +957,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 8000,
     frequency: 1,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kShotgun"],
     tags: ["arme moyenne", "arme à feu", "fusil à pompe"]
   },
   calicoM950: {
@@ -941,8 +981,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 2300,
     frequency: 4,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
-    tags: ["arme moyenne", "arme à feu", "mitrailleuse"]
+    isTwoHanded: true,
+    knowledges: ["kSmg"],
+    tags: ["arme moyenne", "arme à feu", "pistolet mitrailleur"]
   },
   calicoLiberty100: {
     id: "calicoLiberty100",
@@ -964,8 +1005,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 2800,
     frequency: 3,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
-    tags: ["arme moyenne", "arme à feu", "mitrailleuse"]
+    isTwoHanded: true,
+    knowledges: ["kSmg"],
+    tags: ["arme moyenne", "arme à feu", "pistolet mitrailleur"]
   },
   rugerAC556f: {
     id: "rugerAC556f",
@@ -987,8 +1029,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 2500,
     frequency: 3,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
-    tags: ["arme moyenne", "arme à feu", "mitrailleuse"]
+    isTwoHanded: true,
+    knowledges: ["kSmg"],
+    tags: ["arme moyenne", "arme à feu", "pistolet mitrailleur"]
   },
   mp38: {
     id: "mp38",
@@ -1010,8 +1053,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 3300,
     frequency: 4,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
-    tags: ["arme moyenne", "arme à feu", "mitrailleuse"]
+    isTwoHanded: true,
+    knowledges: ["kSmg"],
+    tags: ["arme moyenne", "arme à feu", "pistolet mitrailleur"]
   },
   mp5: {
     id: "mp5",
@@ -1033,8 +1077,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 5500,
     frequency: 4,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
-    tags: ["arme moyenne", "arme à feu", "mitrailleuse"]
+    isTwoHanded: true,
+    knowledges: ["kSmg"],
+    tags: ["arme moyenne", "arme à feu", "pistolet mitrailleur"]
   },
   greaseGun: {
     id: "greaseGun",
@@ -1056,8 +1101,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 5000,
     frequency: 4,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
-    tags: ["arme moyenne", "arme à feu", "mitrailleuse"]
+    isTwoHanded: true,
+    knowledges: ["kSmg"],
+    tags: ["arme moyenne", "arme à feu", "pistolet mitrailleur"]
   },
   sten: {
     id: "sten",
@@ -1079,8 +1125,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 5200,
     frequency: 2,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
-    tags: ["arme moyenne", "arme à feu", "mitrailleuse"]
+    isTwoHanded: true,
+    knowledges: ["kSmg"],
+    tags: ["arme moyenne", "arme à feu", "pistolet mitrailleur"]
   },
   thomsonM1928: {
     id: "thomsonM1928",
@@ -1102,8 +1149,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 8500,
     frequency: 2,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
-    tags: ["arme moyenne", "arme à feu", "mitrailleuse"]
+    isTwoHanded: true,
+    knowledges: ["kSmg"],
+    tags: ["arme moyenne", "arme à feu", "pistolet mitrailleur"]
   },
   m16A1: {
     id: "m16A1",
@@ -1125,7 +1173,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 4200,
     frequency: 3,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kAssaultRifle"],
     tags: ["arme moyenne", "arme à feu", "fusil d'assault"]
   },
   ak47: {
@@ -1148,7 +1197,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 5000,
     frequency: 2,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kAssaultRifle"],
     tags: ["arme moyenne", "arme à feu", "fusil d'assault"]
   },
   famasG2: {
@@ -1171,7 +1221,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 5700,
     frequency: 2,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kAssaultRifle"],
     tags: ["arme moyenne", "arme à feu", "fusil d'assault"]
   },
   ak112: {
@@ -1194,7 +1245,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 4000,
     frequency: 2,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kAssaultRifle"],
     tags: ["arme moyenne", "arme à feu", "fusil d'assault"]
   },
   enfieldXL: {
@@ -1217,7 +1269,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 7000,
     frequency: 2,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kSniper"],
     tags: ["arme moyenne", "arme à feu", "sniper"]
   },
   garandM14: {
@@ -1240,7 +1293,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 5700,
     frequency: 3,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kAssaultRifle"],
     tags: ["arme moyenne", "arme à feu", "fusil d'assault"]
   },
   fnFAL: {
@@ -1263,7 +1317,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 6000,
     frequency: 3,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kAssaultRifle"],
     tags: ["arme moyenne", "arme à feu", "fusil d'assault"]
   },
   steyrAug: {
@@ -1286,7 +1341,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 6000,
     frequency: 1,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kAssaultRifle"],
     tags: ["arme moyenne", "arme à feu", "fusil d'assault"]
   },
   g36K: {
@@ -1309,7 +1365,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 6500,
     frequency: 1,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kAssaultRifle"],
     tags: ["arme moyenne", "arme à feu", "fusil d'assault"]
   },
   l85A1: {
@@ -1332,7 +1389,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 6900,
     frequency: 1,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kAssaultRifle"],
     tags: ["arme moyenne", "arme à feu", "fusil d'assault"]
   },
   m79: {
@@ -1355,7 +1413,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 6500,
     frequency: 1,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kExplosives"],
     tags: ["arme moyenne", "arme à feu", "explosif", "spécial"]
   },
   bren: {
@@ -1378,7 +1437,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 7000,
     frequency: 2,
     skill: "bigGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kMg"],
     tags: ["arme lourde", "arme à feu", "mitrailleuse lourde"]
   },
   lewisMkII: {
@@ -1401,7 +1461,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 7000,
     frequency: 2,
     skill: "bigGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kMg"],
     tags: ["arme lourde", "arme à feu", "mitrailleuse lourde"]
   },
   m60: {
@@ -1424,7 +1485,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 8500,
     frequency: 2,
     skill: "bigGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kMg"],
     tags: ["arme lourde", "arme à feu", "mitrailleuse lourde"]
   },
   m249: {
@@ -1447,7 +1509,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 8500,
     frequency: 2,
     skill: "bigGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kMg"],
     tags: ["arme lourde", "arme à feu", "mitrailleuse lourde"]
   },
   browningM2: {
@@ -1470,7 +1533,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 13000,
     frequency: 1,
     skill: "bigGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kMg"],
     tags: ["arme lourde", "arme à feu", "mitrailleuse lourde"]
   },
   CZ4000: {
@@ -1493,7 +1557,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 8500,
     frequency: 2,
     skill: "bigGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kMg"],
     tags: ["arme lourde", "arme à feu", "minigun"]
   },
   avenger: {
@@ -1516,7 +1581,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 9500,
     frequency: 2,
     skill: "bigGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kMg"],
     tags: ["arme lourde", "arme à feu", "minigun"]
   },
   vindicator: {
@@ -1539,7 +1605,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 11000,
     frequency: 1,
     skill: "bigGuns",
-    knowledges: ["kTwoHandedWeapons", "kFirearms"],
+    isTwoHanded: true,
+    knowledges: ["kMg"],
     tags: ["arme lourde", "arme à feu", "minigun"]
   },
   gaussMinigun: {
@@ -1562,7 +1629,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 50000,
     frequency: 1,
     skill: "bigGuns",
-    knowledges: ["kTwoHandedWeapons"],
+    isTwoHanded: true,
+    knowledges: ["kMg"],
     tags: ["arme lourde", "spécial", "minigun"]
   },
   bazooka: {
@@ -1585,7 +1653,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 12000,
     frequency: 2,
     skill: "bigGuns",
-    knowledges: ["kTwoHandedWeapons"],
+    isTwoHanded: true,
+    knowledges: ["kExplosives"],
     tags: ["arme lourde", "spécial", "explosif"]
   },
   m224: {
@@ -1608,7 +1677,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 10000,
     frequency: 2,
     skill: "bigGuns",
-    knowledges: ["kTwoHandedWeapons"],
+    isTwoHanded: true,
+    knowledges: ["kExplosives"],
     tags: ["arme lourde", "spécial", "explosif"]
   },
   alienBlaster: {
@@ -1631,7 +1701,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 100000,
     frequency: 1,
     skill: "smallGuns",
-    knowledges: ["kEnergyWeapons"],
+    isTwoHanded: false,
+    knowledges: [],
     tags: ["arme légère", "pistolet", "arme à énergie"]
   },
   glock86Plasma: {
@@ -1654,7 +1725,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 6000,
     frequency: 2,
     skill: "smallGuns",
-    knowledges: ["kEnergyWeapons", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kEnergyWeapons"],
     tags: ["arme légère", "pistolet", "arme à énergie"]
   },
   glock96Plasma: {
@@ -1677,7 +1749,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 7000,
     frequency: 2,
     skill: "smallGuns",
-    knowledges: ["kEnergyWeapons", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kEnergyWeapons"],
     tags: ["arme légère", "pistolet", "arme à énergie"]
   },
   wattz1000: {
@@ -1700,7 +1773,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 3500,
     frequency: 2,
     skill: "smallGuns",
-    knowledges: ["kEnergyWeapons", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kEnergyWeapons"],
     tags: ["arme légère", "pistolet", "arme à énergie"]
   },
   wattz1600: {
@@ -1723,7 +1797,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 4750,
     frequency: 2,
     skill: "smallGuns",
-    knowledges: ["kFirearms", "kEnergyWeapons", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kEnergyWeapons"],
     tags: ["arme légère", "arme à feu", "arme à énergie"]
   },
   solarScorcher: {
@@ -1746,7 +1821,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 10000,
     frequency: 1,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kEnergyWeapons"],
+    isTwoHanded: true,
+    knowledges: ["kEnergyWeapons"],
     tags: ["arme moyenne", "spécial", "arme à énergie"]
   },
   yk32: {
@@ -1769,7 +1845,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 12500,
     frequency: 1,
     skill: "smallGuns",
-    knowledges: ["kFirearms", "kEnergyWeapons", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kEnergyWeapons"],
     tags: ["arme légère", "arme à feu", "arme à énergie"]
   },
   p94: {
@@ -1792,7 +1869,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 16000,
     frequency: 1,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kEnergyWeapons"],
+    isTwoHanded: true,
+    knowledges: ["kEnergyWeapons"],
     tags: ["arme moyenne", "fusil", "arme à énergie"]
   },
   p96: {
@@ -1815,12 +1893,13 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 18000,
     frequency: 1,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kEnergyWeapons"],
+    isTwoHanded: true,
+    knowledges: ["kEnergyWeapons"],
     tags: ["arme moyenne", "fusil", "arme à énergie"]
   },
   iemRiffle: {
     id: "iemRiffle",
-    label: "Prototype de  IEM",
+    label: "Prototype de fusil IEM",
     img: "https://vignette.wikia.nocookie.net/fallout/images/c/c7/Tactics_pulse_rifle_prototype.png/revision/latest?cb=20130110004605",
     damageType: "other",
     damageBasic: "6D6+40",
@@ -1838,7 +1917,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 25000,
     frequency: 1,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kEnergyWeapons"],
+    isTwoHanded: true,
+    knowledges: ["kEnergyWeapons"],
     tags: ["arme moyenne", "fusil", "arme à énergie"]
   },
   iemYK42B: {
@@ -1861,7 +1941,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 45000,
     frequency: 1,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kEnergyWeapons"],
+    isTwoHanded: true,
+    knowledges: ["kEnergyWeapons"],
     tags: ["arme moyenne", "fusil", "arme à énergie"]
   },
   wattz2000: {
@@ -1884,7 +1965,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 9000,
     frequency: 2,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kEnergyWeapons"],
+    isTwoHanded: true,
+    knowledges: ["kEnergyWeapons", "kSniper"],
     tags: ["sniper", "arme moyenne", "fusil", "arme à énergie"]
   },
   gatlingLaser: {
@@ -1907,7 +1989,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 14000,
     frequency: 1,
     skill: "bigGuns",
-    knowledges: ["kTwoHandedWeapons", "kEnergyWeapons"],
+    isTwoHanded: true,
+    knowledges: ["kEnergyWeapons", "kMg"],
     tags: ["arme lourde", "minigun", "arme à énergie"]
   },
   flamer450: {
@@ -1930,7 +2013,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 6000,
     frequency: 2,
     skill: "bigGuns",
-    knowledges: ["kTwoHandedWeapons"],
+    isTwoHanded: true,
+    knowledges: [],
     tags: ["arme lourde", "spécial"]
   },
   flamer450MKII: {
@@ -1953,7 +2037,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 7500,
     frequency: 1,
     skill: "bigGuns",
-    knowledges: ["kTwoHandedWeapons"],
+    isTwoHanded: true,
+    knowledges: [],
     tags: ["arme lourde", "spécial"]
   },
   bowingGloves: {
@@ -1975,9 +2060,10 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 0.5,
     value: 50,
     frequency: 5,
+    isTwoHanded: false,
     skill: "unarmed",
     knowledges: [],
-    tags: ["arme de corps à corps"]
+    tags: ["arme de mélée"]
   },
   brassKnuckles: {
     id: "brassKnuckles",
@@ -1998,9 +2084,10 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 0.1,
     value: 60,
     frequency: 5,
+    isTwoHanded: false,
     skill: "unarmed",
     knowledges: ["kBluntWeapons"],
-    tags: ["arme de corps à corps"]
+    tags: ["arme de mélée"]
   },
   spikedKnuckles: {
     id: "spikedKnuckles",
@@ -2021,9 +2108,10 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 0.2,
     value: 75,
     frequency: 4,
+    isTwoHanded: false,
     skill: "unarmed",
     knowledges: ["kPiercWeapons"],
-    tags: ["arme de corps à corps"]
+    tags: ["arme de mélée"]
   },
   sappers: {
     id: "sappers",
@@ -2044,9 +2132,10 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 0.5,
     value: 90,
     frequency: 4,
+    isTwoHanded: false,
     skill: "unarmed",
     knowledges: ["kBluntWeapons"],
-    tags: ["arme de corps à corps"]
+    tags: ["arme de mélée"]
   },
   lacerator: {
     id: "lacerator",
@@ -2067,9 +2156,10 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 1,
     value: 200,
     frequency: 4,
+    isTwoHanded: false,
     skill: "unarmed",
     knowledges: ["kBladedWeapons"],
-    tags: ["arme de corps à corps"]
+    tags: ["arme de mélée"]
   },
   maceGlove: {
     id: "maceGlove",
@@ -2090,9 +2180,10 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 1,
     value: 400,
     frequency: 4,
+    isTwoHanded: false,
     skill: "unarmed",
     knowledges: ["kBluntWeapons"],
-    tags: ["arme de corps à corps"]
+    tags: ["arme de mélée"]
   },
   razorClaws: {
     id: "razorClaws",
@@ -2113,9 +2204,10 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 0.5,
     value: 2000,
     frequency: 3,
+    isTwoHanded: false,
     skill: "unarmed",
     knowledges: ["kPiercWeapons"],
-    tags: ["arme de corps à corps"]
+    tags: ["arme de mélée"]
   },
   powerFist: {
     id: "powerFist",
@@ -2136,9 +2228,10 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 1,
     value: 4000,
     frequency: 1,
+    isTwoHanded: false,
     skill: "unarmed",
     knowledges: ["kBluntWeapons", "kEnergyWeapons"],
-    tags: ["arme de corps à corps", "arme à énergie"]
+    tags: ["arme de mélée", "arme à énergie"]
   },
   megaPowerFist: {
     id: "megaPowerFist",
@@ -2159,9 +2252,10 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     weight: 1,
     value: 8000,
     frequency: 1,
+    isTwoHanded: false,
     skill: "unarmed",
     knowledges: ["kBluntWeapons", "kEnergyWeapons"],
-    tags: ["arme de corps à corps", "arme à énergie"]
+    tags: ["arme de mélée", "arme à énergie"]
   },
   cattleStick: {
     id: "cattleStick",
@@ -2183,12 +2277,13 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 100,
     frequency: 4,
     skill: "melee",
-    knowledges: ["kTwoHandedWeapons", "kEnergyWeapons", "kBluntWeapons"],
-    tags: ["arme moyenne", "arme blanche", "arme à énergie"]
+    isTwoHanded: true,
+    knowledges: ["kEnergyWeapons", "kBluntWeapons"],
+    tags: ["arme moyenne", "arme de mélée", "arme à énergie"]
   },
   sharpenedPole: {
     id: "sharpenedPole",
-    label: "Bâton",
+    label: "Bâton pointu",
     img: "https://vignette.wikia.nocookie.net/fallout/images/6/6b/Tactics_sharpened_pole.png/revision/latest?cb=20130110134752",
     damageType: "physical",
     damageBasic: "1D6+DM+3",
@@ -2206,8 +2301,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 20,
     frequency: 5,
     skill: "melee",
-    knowledges: ["kTwoHandedWeapons", "kBladedWeapons"],
-    tags: ["arme moyenne", "arme blanche"]
+    isTwoHanded: true,
+    knowledges: ["kPiercWeapons"],
+    tags: ["arme moyenne", "arme de mélée"]
   },
   scalpel: {
     id: "scalpel",
@@ -2229,8 +2325,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 25,
     frequency: 5,
     skill: "melee",
-    knowledges: ["kBladedWeapons", "kOneHandedWeapons"],
-    tags: ["arme légère", "arme blanche"]
+    isTwoHanded: false,
+    knowledges: ["kBladedWeapons"],
+    tags: ["arme légère", "arme de mélée"]
   },
   club: {
     id: "club",
@@ -2252,8 +2349,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 75,
     frequency: 5,
     skill: "melee",
-    knowledges: ["kTwoHandedWeapons", "kBluntWeapons"],
-    tags: ["arme moyenne", "arme blanche"]
+    isTwoHanded: true,
+    knowledges: ["kBluntWeapons"],
+    tags: ["arme moyenne", "arme de mélée"]
   },
   baseball: {
     id: "baseball",
@@ -2275,8 +2373,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 50,
     frequency: 5,
     skill: "melee",
-    knowledges: ["kTwoHandedWeapons", "kBluntWeapons"],
-    tags: ["arme moyenne", "arme blanche"]
+    isTwoHanded: true,
+    knowledges: ["kBluntWeapons"],
+    tags: ["arme moyenne", "arme de mélée"]
   },
   spear: {
     id: "spear",
@@ -2298,8 +2397,33 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 20,
     frequency: 4,
     skill: "melee",
-    knowledges: ["kTwoHandedWeapons", "kBladedWeapons"],
-    tags: ["arme moyenne", "arme blanche"]
+    isTwoHanded: true,
+    knowledges: ["kPiercWeapons"],
+    tags: ["arme moyenne", "arme de mélée"]
+  },
+  javelin: {
+    id: "javelin",
+    label: "Javelot",
+    img: "https://vignette.wikia.nocookie.net/fallout/images/f/f2/Tactics_spear.png/revision/latest?cb=20130110135401",
+    damageType: "physical",
+    damageBasic: "2D6+DM",
+    damageBurst: null,
+    ammoType: null,
+    range: null,
+    magazine: null,
+    ammoPerShot: null,
+    ammoPerBurst: null,
+    basicApCost: 4,
+    specialApCost: 6,
+    minStrength: 4,
+    place: 3,
+    weight: 3,
+    value: 20,
+    frequency: 4,
+    skill: "throw",
+    isTwoHanded: false,
+    knowledges: ["kPiercWeapons"],
+    tags: ["arme moyenne", "arme de jet"]
   },
   wrench: {
     id: "wrench",
@@ -2321,8 +2445,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 50,
     frequency: 5,
     skill: "melee",
-    knowledges: ["kTwoHandedWeapons", "kBluntWeapons"],
-    tags: ["arme lourde", "arme blanche"]
+    isTwoHanded: true,
+    knowledges: ["kBluntWeapons"],
+    tags: ["arme lourde", "arme de mélée"]
   },
   crowbar: {
     id: "crowbar",
@@ -2344,8 +2469,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 45,
     frequency: 5,
     skill: "melee",
-    knowledges: ["kTwoHandedWeapons", "kBluntWeapons"],
-    tags: ["arme moyenne", "arme blanche"]
+    isTwoHanded: true,
+    knowledges: ["kBluntWeapons"],
+    tags: ["arme moyenne", "arme de mélée"]
   },
   knife: {
     id: "knife",
@@ -2367,8 +2493,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 60,
     frequency: 5,
     skill: "melee",
-    knowledges: ["kBladedWeapons", "kOneHandedWeapons"],
-    tags: ["arme légère", "arme blanche"]
+    isTwoHanded: false,
+    knowledges: ["kBladedWeapons"],
+    tags: ["arme légère", "arme de mélée"]
   },
   combatKnife: {
     id: "combatKnife",
@@ -2390,8 +2517,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 120,
     frequency: 4,
     skill: "melee",
-    knowledges: ["kBladedWeapons", "kOneHandedWeapons"],
-    tags: ["arme légère", "arme blanche"]
+    isTwoHanded: false,
+    knowledges: ["kBladedWeapons"],
+    tags: ["arme légère", "arme de mélée"]
   },
   cleaver: {
     id: "cleaver",
@@ -2413,8 +2541,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 80,
     frequency: 5,
     skill: "melee",
-    knowledges: ["kBladedWeapons", "kOneHandedWeapons"],
-    tags: ["arme légère", "arme blanche"]
+    isTwoHanded: false,
+    knowledges: ["kBladedWeapons"],
+    tags: ["arme légère", "arme de mélée"]
   },
   sword: {
     id: "sword",
@@ -2436,8 +2565,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 400,
     frequency: 3,
     skill: "melee",
-    knowledges: ["kBladedWeapons", "kOneHandedWeapons"],
-    tags: ["arme moyenne", "arme blanche"]
+    isTwoHanded: false,
+    knowledges: ["kBladedWeapons"],
+    tags: ["arme moyenne", "arme de mélée"]
   },
   hammer: {
     id: "hammer",
@@ -2459,8 +2589,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 200,
     frequency: 5,
     skill: "melee",
-    knowledges: ["kBluntWeapons", "kOneHandedWeapons"],
-    tags: ["arme légère", "arme blanche"]
+    isTwoHanded: false,
+    knowledges: ["kBluntWeapons"],
+    tags: ["arme légère", "arme de mélée"]
   },
   machete: {
     id: "machete",
@@ -2482,8 +2613,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 130,
     frequency: 3,
     skill: "melee",
-    knowledges: ["kBladedWeapons", "kOneHandedWeapons"],
-    tags: ["arme moyenne", "arme blanche"]
+    isTwoHanded: false,
+    knowledges: ["kBladedWeapons"],
+    tags: ["arme moyenne", "arme de mélée"]
   },
   wakizachi: {
     id: "wakizachi",
@@ -2505,8 +2637,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 950,
     frequency: 2,
     skill: "melee",
-    knowledges: ["kBladedWeapons", "kOneHandedWeapons"],
-    tags: ["arme moyenne", "arme blanche"]
+    isTwoHanded: false,
+    knowledges: ["kBladedWeapons"],
+    tags: ["arme moyenne", "arme de mélée"]
   },
   ripper: {
     id: "ripper",
@@ -2528,8 +2661,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 1500,
     frequency: 1,
     skill: "melee",
-    knowledges: ["kTwoHandedWeapons", "kBladedWeapons"],
-    tags: ["arme moyenne", "arme blanche"]
+    isTwoHanded: true,
+    knowledges: ["kBladedWeapons"],
+    tags: ["arme moyenne", "arme de mélée"]
   },
   chainsaw: {
     id: "chainsaw",
@@ -2551,8 +2685,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 900,
     frequency: 2,
     skill: "melee",
-    knowledges: ["kTwoHandedWeapons", "kBladedWeapons"],
-    tags: ["arme moyenne", "arme blanche", "spécial"]
+    isTwoHanded: true,
+    knowledges: ["kBladedWeapons"],
+    tags: ["arme moyenne", "arme de mélée", "spécial"]
   },
   electricHammer: {
     id: "electricHammer",
@@ -2574,8 +2709,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 2500,
     frequency: 2,
     skill: "melee",
-    knowledges: ["kTwoHandedWeapons", "kEnergyWeapons", "kBluntWeapons"],
-    tags: ["arme lourde", "arme blanche", "arme à énergie"]
+    isTwoHanded: true,
+    knowledges: ["kEnergyWeapons", "kBluntWeapons"],
+    tags: ["arme lourde", "arme de mélée", "arme à énergie"]
   },
   sldgeHammer: {
     id: "sldgeHammer",
@@ -2597,8 +2733,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 1000,
     frequency: 4,
     skill: "melee",
-    knowledges: ["kTwoHandedWeapons", "kBluntWeapons"],
-    tags: ["arme lourde", "arme blanche"]
+    isTwoHanded: true,
+    knowledges: ["kBluntWeapons"],
+    tags: ["arme lourde", "arme de mélée"]
   },
   superSledge: {
     id: "superSledge",
@@ -2620,8 +2757,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 3500,
     frequency: 1,
     skill: "melee",
-    knowledges: ["kTwoHandedWeapons", "kEnergyWeapons", "kBluntWeapons"],
-    tags: ["arme lourde", "arme blanche", "arme à énergie"]
+    isTwoHanded: true,
+    knowledges: ["kEnergyWeapons", "kBluntWeapons"],
+    tags: ["arme lourde", "arme de mélée", "arme à énergie"]
   },
   crossbow: {
     id: "crossbow",
@@ -2643,8 +2781,9 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 300,
     frequency: 4,
     skill: "smallGuns",
-    knowledges: ["kTwoHandedWeapons", "kThrowingWeapons"],
-    tags: ["arme moyenne", "arme de jet"]
+    isTwoHanded: true,
+    knowledges: ["kPiercWeapons"],
+    tags: ["arme moyenne", "arme perforante"]
   },
   boomerang: {
     id: "boomerang",
@@ -2666,7 +2805,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 50,
     frequency: 3,
     skill: "throw",
-    knowledges: ["kThrowingWeapons", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kBladedWeapons"],
     tags: ["arme légère", "arme de jet"]
   },
   molotof: {
@@ -2689,7 +2829,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 75,
     frequency: 5,
     skill: "throw",
-    knowledges: ["kThrowingWeapons", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: [],
     tags: ["arme de jet", "spécial"]
   },
   dart: {
@@ -2712,7 +2853,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 10,
     frequency: 5,
     skill: "throw",
-    knowledges: ["kThrowingWeapons", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kPiercWeapons"],
     tags: ["arme de jet"]
   },
   throwingKnife: {
@@ -2735,7 +2877,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 50,
     frequency: 5,
     skill: "throw",
-    knowledges: ["kThrowingWeapons", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kPiercWeapons"],
     tags: ["arme de jet"]
   },
   shuriken: {
@@ -2758,7 +2901,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 100,
     frequency: 4,
     skill: "throw",
-    knowledges: ["kThrowingWeapons", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kPiercWeapons"],
     tags: ["arme de jet"]
   },
   fantasyBall: {
@@ -2781,7 +2925,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 700,
     frequency: 2,
     skill: "throw",
-    knowledges: ["kThrowingWeapons", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kPiercWeapons"],
     tags: ["arme de jet", "spécial"]
   },
   flashGrenade: {
@@ -2804,7 +2949,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 250,
     frequency: 3,
     skill: "throw",
-    knowledges: ["kThrowingWeapons", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kExplosives"],
     tags: ["arme de jet", "spécial"]
   },
   fragGrenade: {
@@ -2827,7 +2973,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 300,
     frequency: 4,
     skill: "throw",
-    knowledges: ["kThrowingWeapons", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kExplosives"],
     tags: ["arme de jet", "explosif"]
   },
   incendiaryGenade: {
@@ -2850,7 +2997,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 500,
     frequency: 2,
     skill: "throw",
-    knowledges: ["kThrowingWeapons", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kExplosives"],
     tags: ["arme de jet", "spécial"]
   },
   acidGenade: {
@@ -2873,7 +3021,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 1500,
     frequency: 1,
     skill: "throw",
-    knowledges: ["kThrowingWeapons", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kExplosives"],
     tags: ["arme de jet", "spécial"]
   },
   iemGrenade: {
@@ -2896,7 +3045,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 1200,
     frequency: 2,
     skill: "throw",
-    knowledges: ["kThrowingWeapons", "kEnergyWeapons", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kEnergyWeapons"],
     tags: ["spécial", "arme de jet"]
   },
   plasmaGrenade: {
@@ -2919,7 +3069,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 1000,
     frequency: 2,
     skill: "throw",
-    knowledges: ["kThrowingWeapons", "kEnergyWeapons", "kOneHandedWeapons"],
+    isTwoHanded: false,
+    knowledges: ["kEnergyWeapons"],
     tags: ["arme de jet", "arme à énergie"]
   },
   puffer: {
@@ -2942,6 +3093,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 50,
     frequency: 4,
     skill: "trap",
+    isTwoHanded: true,
     knowledges: [],
     tags: ["piège", "spécial"]
   },
@@ -2965,7 +3117,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 80,
     frequency: 3,
     skill: "trap",
-    knowledges: [],
+    isTwoHanded: true,
+    knowledges: ["kExplosives"],
     tags: ["piège", "explosif"]
   },
   plastic: {
@@ -2988,7 +3141,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 200,
     frequency: 2,
     skill: "trap",
-    knowledges: [],
+    isTwoHanded: true,
+    knowledges: ["kExplosives"],
     tags: ["piège", "explosif"]
   },
   claymore: {
@@ -3011,7 +3165,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 300,
     frequency: 2,
     skill: "trap",
-    knowledges: [],
+    isTwoHanded: true,
+    knowledges: ["kExplosives"],
     tags: ["piège", "explosif"]
   },
   dynamite: {
@@ -3034,7 +3189,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 150,
     frequency: 4,
     skill: "throw",
-    knowledges: [],
+    isTwoHanded: true,
+    knowledges: ["kExplosives"],
     tags: ["piège", "explosif"]
   },
   explosiveTrap: {
@@ -3057,7 +3213,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 250,
     frequency: 3,
     skill: "trap",
-    knowledges: [],
+    isTwoHanded: true,
+    knowledges: ["kExplosives"],
     tags: ["piège", "explosif"]
   },
   acidMineT86: {
@@ -3080,7 +3237,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 500,
     frequency: 2,
     skill: "trap",
-    knowledges: [],
+    isTwoHanded: true,
+    knowledges: ["kExplosives"],
     tags: ["piège", "spécial"]
   },
   t13mine: {
@@ -3103,7 +3261,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 250,
     frequency: 2,
     skill: "trap",
-    knowledges: [],
+    isTwoHanded: true,
+    knowledges: ["kExplosives"],
     tags: ["piège", "explosif"]
   },
   iemMine: {
@@ -3126,6 +3285,7 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 1500,
     frequency: 2,
     skill: "trap",
+    isTwoHanded: true,
     knowledges: ["kEnergyWeapons"],
     tags: ["piège", "arme à énergie"]
   },
@@ -3149,7 +3309,8 @@ const weaponsMap: Record<WeaponId, WeaponData> = {
     value: 400,
     frequency: 2,
     skill: "trap",
-    knowledges: [],
+    isTwoHanded: true,
+    knowledges: ["kExplosives"],
     tags: ["piège", "explosif"]
   }
 }

@@ -65,6 +65,7 @@ export type WeaponData = {
   skill: SkillId
   knowledges: KnowledgeId[]
   tags: WeaponTagId[]
+  isTwoHanded: boolean
 }
 
 export type Weapon = {
@@ -178,6 +179,7 @@ export type WeaponId =
   | "club"
   | "baseball"
   | "spear"
+  | "javelin"
   | "wrench"
   | "crowbar"
   | "knife"
@@ -217,24 +219,27 @@ export type WeaponId =
   | "t45SEMine"
 
 export type WeaponTagId =
-  | "arme légère"
+  | "mains nues"
+  | "arme de mélée"
+  | "arme de jet"
+  | "arme à distance"
+  | "piège"
+  | "arme perforante"
+  | "arme tranchante"
+  | "arme contondante"
   | "arme à feu"
+  | "arme à énergie"
+  | "explosif"
+  | "spécial"
+  | "arme légère"
+  | "arme moyenne"
+  | "arme lourde"
   | "pistolet"
   | "revolver"
   | "pistolet mitrailleur"
-  | "spécial"
-  | "explosif"
-  | "arme moyenne"
   | "fusil"
   | "sniper"
   | "fusil à pompe"
-  | "mitrailleuse"
   | "fusil d'assault"
   | "mitrailleuse lourde"
-  | "arme lourde"
   | "minigun"
-  | "arme à énergie"
-  | "arme de corps à corps"
-  | "arme blanche"
-  | "arme de jet"
-  | "piège"

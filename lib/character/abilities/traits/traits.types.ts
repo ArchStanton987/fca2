@@ -3,7 +3,7 @@ import { Symptom } from "../../effects/symptoms.type"
 export type TraitId =
   | "heavy"
   | "carnage"
-  | "strongHand"
+  | "lateralized"
   | "chemReliant"
   | "berserk"
   | "glowingOne"
@@ -27,5 +27,6 @@ export type Trait = {
   id: TraitId
   description: string
   label: string
-  symptoms: Symptom[]
+  symptoms: Readonly<Symptom[]>
+  consts?: { [key: string]: number | null }
 }

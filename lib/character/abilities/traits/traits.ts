@@ -1,11 +1,11 @@
 import { Trait, TraitId } from "./traits.types"
 
-const traitsMap: Record<TraitId, Trait> = {
+const traitsMap = {
   heavy: {
     id: "heavy",
     description:
       "Vous êtes particulièrement fort, mais vous n'êtes pas le plus dynamique en combat.",
-    label: "Brute",
+    label: "Lourdaud",
     symptoms: [
       { id: "actionPoints", operation: "add", value: -3 },
       { id: "strength", operation: "add", value: 2 }
@@ -21,15 +21,15 @@ const traitsMap: Record<TraitId, Trait> = {
       { id: "damageResist", operation: "mult", value: 0.5 }
     ]
   },
-  strongHand: {
-    id: "strongHand",
+  lateralized: {
+    id: "lateralized",
     description:
       "Vous êtes très habile avec votre main dominante, en revanche les choses se compliquent dès que vous devez utiliser votre autre main.",
     label: "Main dominante",
     symptoms: [
-      { id: "kOneHandedWeapons", operation: "add", value: 15 },
-      { id: "kTwoHandedWeapons", operation: "add", value: -15 }
-    ]
+      // handled in weapons mappers
+    ],
+    consts: { TWO_HANDED_WEAPONS_MOD: -15, ONE_HANDED_WEAPONS_MOD: 15 }
   },
   chemReliant: {
     id: "chemReliant",
@@ -69,7 +69,7 @@ const traitsMap: Record<TraitId, Trait> = {
     id: "bruiser",
     description:
       "Vous êtes capable de frapper fort, mais vos attaques manquent de finesse. Vos dégâts de mélés sont augmentés, mais vous avez moins de chances de réaliser un coup critique.",
-    label: "Main lourde",
+    label: "Gros bourrin",
     symptoms: [
       { id: "critChance", operation: "add", value: -10 },
       { id: "meleeDamage", operation: "add", value: 4 }
@@ -80,7 +80,10 @@ const traitsMap: Record<TraitId, Trait> = {
     description:
       "On canarde !!! Et si jamais il faut viser... Mince, fallait le dire avant ! Utiliser une arme vous coûte 1 PA en moins, mais vous êtes incapable de viser.",
     label: "M.Rapide",
-    symptoms: []
+    symptoms: [
+      // handled in weapons mappers
+    ],
+    consts: { BASIC_AP_COST_MOD: -1, SPECIAL_AP_COST_VALUE: null }
   },
   jinxed: {
     id: "jinxed",
@@ -153,6 +156,7 @@ const traitsMap: Record<TraitId, Trait> = {
     description:
       "Vous êtes plus agile, mais vous ne pouvez pas transporter autant d'objets que les autres.",
     label: "Petite nature",
+    pouet: "pouet",
     symptoms: [
       { id: "agility", operation: "add", value: 1 },
       { id: "normalCarryWeight", operation: "mult", value: 0.8 },
@@ -166,6 +170,11 @@ const traitsMap: Record<TraitId, Trait> = {
     label: "Lunatique",
     symptoms: []
   }
-}
+} as const
+
+// TODO: is there a more apropriate way ?
+type Test<T extends Record<TraitId, Trait>> = T
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type AllTraits = Test<typeof traitsMap>
 
 export default traitsMap
