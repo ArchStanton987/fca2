@@ -9,10 +9,23 @@ export type KnowledgeLevel = {
   cost: number
 }
 
+export type KnowledgeCategory =
+  | "weaponType"
+  | "meleeCombat"
+  | "athletics"
+  | "sensorial"
+  | "social"
+  | "medical"
+  | "technical"
+  | "stealth"
+  | "outdoorsman"
+
 export type Knowledge = {
+  category: KnowledgeCategory
   id: KnowledgeId
   short: string
   label: string
+  isDeprecated?: boolean
 }
 
 export type KnowledgeId =

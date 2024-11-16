@@ -2,7 +2,7 @@ import dbKeys from "db/db-keys"
 import { DbAbilities } from "lib/character/abilities/abilities.types"
 import { getRtdbSub } from "lib/common/utils/rtdb-utils"
 
-import { updateValue } from "api/api-rtdb"
+import { groupUpdateValue, updateValue } from "api/api-rtdb"
 
 const getContainerPath = (charId: string) => dbKeys.char(charId).abilities.index
 const getCategoryPath = (charId: string, category: keyof DbAbilities) =>
@@ -22,7 +22,11 @@ const fbAbilitiesRepository = {
 
   updateKnowledges: (charId: string, newKnowledges: DbAbilities["knowledges"]) => {
     const path = getCategoryPath(charId, "knowledges")
-    return updateValue(path, newKnowledges)
+    const updates = Object.entries(newKnowledges).map(([k, v]) => ({
+      url: `${path}/${k}`,
+      data: v
+    }))
+    return groupUpdateValue(updates)
   }
 }
 

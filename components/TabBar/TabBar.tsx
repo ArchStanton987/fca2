@@ -14,6 +14,7 @@ import { CharacterContext } from "contexts/CharacterContext"
 import { SearchParams } from "screens/ScreenParams"
 
 import styles from "./TabBar.styles"
+import { defaultProgress, getUpdatePathname } from "./TabBar.utils"
 
 type TabBarId = "main" | "inventory" | "combat"
 type TabBarProps = BottomTabBarProps & {
@@ -27,10 +28,12 @@ export default function TabBar(props: TabBarProps) {
   const localParams = useLocalSearchParams() as SearchParams<DrawerParams>
   const { charId, squadId } = localParams
 
+  // useContext(CharacterContext) is prefered to useCharacter(), as TabBar can be used out of CharacterContext scope (ex: admin)
   const character = useContext(CharacterContext)
-  const progress = character?.progress || { availableSkillPoints: 0, availableKnowledgePoints: 0 }
-  const canAddSkill = progress.availableSkillPoints > 0
-  const canAddKnowledge = progress.availableKnowledgePoints > 0
+  const progress = character?.progress || defaultProgress
+  const { availableFreeKnowledgePoints, availableKnowledgePoints, availableSkillPoints } = progress
+  const canAddSkill = availableSkillPoints > 0
+  const canAddKnowledge = availableKnowledgePoints > 0 || availableFreeKnowledgePoints > 0
 
   const onPress = (pathname: string) => {
     requestAnimationFrame(() => {
@@ -40,10 +43,8 @@ export default function TabBar(props: TabBarProps) {
 
   const onLongPress = (hasBadge: boolean, name: string) => {
     if (!hasBadge) return
-    const path = `${charRoute}/update-${name}`
-    requestAnimationFrame(() => {
-      router.push({ pathname: path, params: { charId, squadId } })
-    })
+    const pathname = getUpdatePathname(name, progress)
+    router.push({ pathname, params: { charId, squadId } })
   }
 
   return (

@@ -7,4 +7,5 @@ export type Progress = {
   availableSkillPoints: number
   usedKnowledgePoints: number
   availableKnowledgePoints: number
+  availableFreeKnowledgePoints: number
 }

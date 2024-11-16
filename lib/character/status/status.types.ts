@@ -1,9 +1,11 @@
 import { HealthStatusId } from "../health/health-types"
 
+export type RaceId = "human"
+export type BackgroundId = "jackal" | "vaultDweller"
 export type StatusId = "background" | "currAp" | "exp" | "level" | "rads" | HealthStatusId
 
 export type DbStatus = {
-  background: string
+  background: BackgroundId
   currAp: number
   exp: number
   level: number

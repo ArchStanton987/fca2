@@ -4,6 +4,7 @@ import {
   getHpGainPerLevel,
   getInitKnowledgePoints,
   getInitSkillsPoints,
+  getRemainingFreeKnowledgesCost,
   getSkillPointsPerLevel,
   getSpecLevelInterval,
   getUsedKnowledgesPoints
@@ -235,15 +236,17 @@ export default class Character {
 
   get progress(): Progress {
     const { traits, knowledges } = this.dbAbilities
-    const { level } = getLevelAndThresholds(this.status.exp)
+    const { background, exp } = this.status
+    const { level } = getLevelAndThresholds(exp)
 
     const initSkillPoints = getInitSkillsPoints()
     const skillPointsPerLevel = getSkillPointsPerLevel(this.special.base, traits || [])
     const unlockedSkillPoints = skillPointsPerLevel * (level - 1) + initSkillPoints
     const usedSkillsPoints = Object.values(this.skills.up).reduce((acc, curr) => curr + acc, 0)
-    const initKnowledgePoints = getInitKnowledgePoints(this.status.background)
+    const initKnowledgePoints = getInitKnowledgePoints()
     const unlockedKnowledgePoints = initKnowledgePoints + (level - 1)
-    const usedKnowledgePoints = getUsedKnowledgesPoints(knowledges)
+    const usedKnowledgePoints = getUsedKnowledgesPoints(knowledges, background)
+    const availableFreeKnowledgePoints = getRemainingFreeKnowledgesCost(knowledges, background)
 
     return {
       exp: this.status.exp,
@@ -253,7 +256,8 @@ export default class Character {
       usedSkillsPoints,
       availableSkillPoints: unlockedSkillPoints - usedSkillsPoints,
       usedKnowledgePoints,
-      availableKnowledgePoints: unlockedKnowledgePoints - usedKnowledgePoints
+      availableKnowledgePoints: unlockedKnowledgePoints - usedKnowledgePoints,
+      availableFreeKnowledgePoints
     }
   }
 

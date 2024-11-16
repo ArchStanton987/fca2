@@ -7,7 +7,10 @@ import {
   KnowledgeLevelValue
 } from "lib/character/abilities/knowledges/knowledge-types"
 import { knowledgesByCategory } from "lib/character/abilities/knowledges/knowledges"
-import { knowledgesCategoryLabel } from "lib/character/abilities/knowledges/knowledges-const"
+import {
+  BACKGROUND_INIT_AVAILABLE_KNOWLEDGES_CATEGORIES,
+  knowledgesCategoryLabel
+} from "lib/character/abilities/knowledges/knowledges-const"
 
 import ModalCta from "components/ModalCta/ModalCta"
 import Spacer from "components/Spacer"
@@ -20,17 +23,22 @@ import colors from "styles/colors"
 import UpdateKnowledgeRow, { ListHeader } from "./UpdateKnowledgeRow"
 import useUpdateKnowledges from "./useUpdateKnowledges"
 
-export default function UpdateKnowledgesModal() {
-  const { progress, knowledgesRecord, charId, squadId, status } = useCharacter()
+export default function UpdateFreeKnowledgesModal() {
+  const { charId, squadId, progress, knowledgesRecord, status } = useCharacter()
+  const { availableFreeKnowledgePoints } = progress
+
+  const freeCategories = BACKGROUND_INIT_AVAILABLE_KNOWLEDGES_CATEGORIES[status.background]
+  const freeCategoriesIds = freeCategories.map(cat => cat.id)
+  const sectionListData = knowledgesByCategory.filter(cat => freeCategoriesIds.includes(cat.title))
 
   const kParams = {
     initKnowledgesRecord: knowledgesRecord,
-    initAvailablePoints: progress.availableKnowledgePoints,
-    charBackground: status.background
+    initAvailablePoints: availableFreeKnowledgePoints
   }
   const [newKnowledges, onModKnowledge, remainingPoints] = useUpdateKnowledges(kParams)
 
   const onCancel = () => router.dismiss(1)
+
   const handleNext = () => {
     const modifiedKnowledges = {} as Record<KnowledgeId, KnowledgeLevelValue>
     Object.entries(newKnowledges).forEach(([k, value]) => {
@@ -50,12 +58,15 @@ export default function UpdateKnowledgesModal() {
   return (
     <ModalBody>
       <Txt style={{ textAlign: "center" }}>
-        Points de connaissances à répartir : {remainingPoints}
+        Grâce à vos origines, vous avez des points de connaissances gratuits à répartir.
+      </Txt>
+      <Txt style={{ textAlign: "center" }}>
+        Points de connaissances gratuits à répartir : {remainingPoints}
       </Txt>
       <Spacer y={20} />
       <ListHeader />
       <SectionList
-        sections={knowledgesByCategory}
+        sections={sectionListData}
         stickySectionHeadersEnabled
         renderSectionHeader={({ section }) => (
           <View style={{ backgroundColor: colors.terColor }}>
@@ -64,18 +75,15 @@ export default function UpdateKnowledgesModal() {
             </Txt>
           </View>
         )}
-        renderItem={({ item }) => {
-          const currValue = newKnowledges[item.id] ?? 0
-          return (
-            <UpdateKnowledgeRow
-              id={item.id}
-              initValue={knowledgesRecord[item.id]}
-              currValue={currValue}
-              availablePoints={remainingPoints}
-              onPress={onModKnowledge}
-            />
-          )
-        }}
+        renderItem={({ item }) => (
+          <UpdateKnowledgeRow
+            id={item.id}
+            initValue={knowledgesRecord[item.id]}
+            currValue={newKnowledges[item.id] ?? 0}
+            availablePoints={remainingPoints}
+            onPress={onModKnowledge}
+          />
+        )}
       />
 
       <ModalCta onPressCancel={onCancel} onPressConfirm={handleNext} />
