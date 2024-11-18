@@ -9,16 +9,22 @@ import { DrawerParams } from "components/Drawer/Drawer.params"
 import Txt from "components/Txt"
 import SmallLine from "components/draws/Line/Line"
 import PlusIcon from "components/icons/PlusIcon"
-import { charRoute } from "constants/routes"
+import allRoutes, { charRoute } from "constants/routes"
 import { CharacterContext } from "contexts/CharacterContext"
-import { SearchParams } from "screens/ScreenParams"
+import { UpdateKnowledgesModalParams } from "screens/MainTabs/modals/UpdateKnowledgesModal/UpdateKnowledgesModal.params"
+import { SearchParams, toLocalParams } from "screens/ScreenParams"
 
 import styles from "./TabBar.styles"
-import { defaultProgress, getUpdatePathname } from "./TabBar.utils"
 
 type TabBarId = "main" | "inventory" | "combat"
 type TabBarProps = BottomTabBarProps & {
   tabBarId: TabBarId
+}
+
+const defaultProgress = {
+  availableSkillPoints: 0,
+  availableKnowledgePoints: 0,
+  availableFreeKnowledgePoints: 0
 }
 
 export default function TabBar(props: TabBarProps) {
@@ -43,8 +49,17 @@ export default function TabBar(props: TabBarProps) {
 
   const onLongPress = (hasBadge: boolean, name: string) => {
     if (!hasBadge) return
-    const pathname = getUpdatePathname(name, progress)
-    router.push({ pathname, params: { charId, squadId } })
+    const isSkills = name === "skills"
+    if (isSkills) {
+      router.push({ pathname: allRoutes.modal.updateSkills, params: { charId, squadId } })
+    } else {
+      const params: UpdateKnowledgesModalParams = {
+        charId,
+        squadId,
+        isFreeKnowledges: availableFreeKnowledgePoints > 0
+      }
+      router.push({ pathname: allRoutes.modal.updateKnowledges, params: toLocalParams(params) })
+    }
   }
 
   return (

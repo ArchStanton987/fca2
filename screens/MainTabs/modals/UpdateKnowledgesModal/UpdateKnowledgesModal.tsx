@@ -1,13 +1,16 @@
 import { SectionList, View } from "react-native"
 
-import { router } from "expo-router"
+import { router, useLocalSearchParams } from "expo-router"
 
 import {
   KnowledgeId,
   KnowledgeLevelValue
 } from "lib/character/abilities/knowledges/knowledge-types"
 import { knowledgesByCategory } from "lib/character/abilities/knowledges/knowledges"
-import { knowledgesCategoryLabel } from "lib/character/abilities/knowledges/knowledges-const"
+import {
+  BACKGROUND_INIT_AVAILABLE_KNOWLEDGES_CATEGORIES,
+  knowledgesCategoryLabel
+} from "lib/character/abilities/knowledges/knowledges-const"
 
 import ModalCta from "components/ModalCta/ModalCta"
 import Spacer from "components/Spacer"
@@ -21,12 +24,22 @@ import UpdateKnowledgeRow, { ListHeader } from "./UpdateKnowledgeRow"
 import useUpdateKnowledges from "./useUpdateKnowledges"
 
 export default function UpdateKnowledgesModal() {
+  const screenParams = useLocalSearchParams<{ isFreeKnowledges: string }>()
+  const isFreeKnowledges = screenParams.isFreeKnowledges === "true"
+
   const { progress, knowledgesRecord, charId, squadId, status } = useCharacter()
+  const { availableFreeKnowledgePoints, availableKnowledgePoints } = progress
+
+  const freeCategories = BACKGROUND_INIT_AVAILABLE_KNOWLEDGES_CATEGORIES[status.background]
+  const freeCategoriesIds = freeCategories.map(cat => cat.id)
+  const freeCategoriesKnowledges = knowledgesByCategory.filter(cat =>
+    freeCategoriesIds.includes(cat.title)
+  )
+  const sectionList = isFreeKnowledges ? freeCategoriesKnowledges : knowledgesByCategory
 
   const kParams = {
     initKnowledgesRecord: knowledgesRecord,
-    initAvailablePoints: progress.availableKnowledgePoints,
-    charBackground: status.background
+    initAvailablePoints: isFreeKnowledges ? availableFreeKnowledgePoints : availableKnowledgePoints
   }
   const [newKnowledges, onModKnowledge, remainingPoints] = useUpdateKnowledges(kParams)
 
@@ -49,13 +62,18 @@ export default function UpdateKnowledgesModal() {
 
   return (
     <ModalBody>
+      {isFreeKnowledges ? (
+        <Txt style={{ textAlign: "center" }}>
+          Grâce à vos origines, vous avez des points de connaissances gratuits à répartir.
+        </Txt>
+      ) : null}
       <Txt style={{ textAlign: "center" }}>
-        Points de connaissances à répartir : {remainingPoints}
+        Points de connaissances {isFreeKnowledges ? "gratuits" : ""} à répartir : {remainingPoints}
       </Txt>
       <Spacer y={20} />
       <ListHeader />
       <SectionList
-        sections={knowledgesByCategory}
+        sections={sectionList}
         stickySectionHeadersEnabled
         renderSectionHeader={({ section }) => (
           <View style={{ backgroundColor: colors.terColor }}>

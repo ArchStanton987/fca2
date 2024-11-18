@@ -39,9 +39,8 @@ const routes = {
     updateObjects: `${modal}/update-objects`,
     updateObjectsConfirmation: `${modal}/update-objects-confirmation`,
     updateKnowledges: `${modal}/update-knowledges`,
-    updateFreeKnowledges: `${modal}/update-free-knowledges`,
     updateKnowledgesConfirmation: `${modal}/update-knowledges-confirmation`
   }
-}
+} as const
 
 export default routes
