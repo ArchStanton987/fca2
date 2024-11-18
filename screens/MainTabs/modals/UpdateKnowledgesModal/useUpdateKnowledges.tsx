@@ -6,33 +6,21 @@ import {
   KnowledgeLevelValue
 } from "lib/character/abilities/knowledges/knowledge-types"
 import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-levels"
-import {
-  getRawUsedKnowledgePoints,
-  getUsedKnowledgesPoints
-} from "lib/character/progress/progress-utils"
-import { BackgroundId } from "lib/character/status/status.types"
+import { getAssignedRawKPoints } from "lib/character/progress/progress-utils"
 
 type Params = {
   initKnowledgesRecord: Record<KnowledgeId, KnowledgeLevelValue>
   initAvailablePoints: number
-  charBackground?: BackgroundId
 }
 
 export default function useUpdateKnowledges(params: Params) {
-  const { initKnowledgesRecord, initAvailablePoints, charBackground } = params
+  const { initKnowledgesRecord, initAvailablePoints } = params
 
   const [newKnowledges, setNewKnowledges] = useState(initKnowledgesRecord)
 
-  let initUsedPoints
-  let currUsedPoints
+  const initUsedPoints = getAssignedRawKPoints(initKnowledgesRecord)
+  const currUsedPoints = getAssignedRawKPoints(newKnowledges)
 
-  if (charBackground) {
-    initUsedPoints = getUsedKnowledgesPoints(initKnowledgesRecord, charBackground)
-    currUsedPoints = getUsedKnowledgesPoints(newKnowledges, charBackground)
-  } else {
-    initUsedPoints = getRawUsedKnowledgePoints(initKnowledgesRecord)
-    currUsedPoints = getRawUsedKnowledgePoints(newKnowledges)
-  }
   const remainingPoints = initAvailablePoints + initUsedPoints - currUsedPoints
 
   const onModKnowledge = (id: KnowledgeId, newLevel: KnowledgeLevel) => {

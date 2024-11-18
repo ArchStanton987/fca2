@@ -48,54 +48,49 @@ export const getRawUsedKnowledgePoints = (knowledges: Record<KnowledgeId, Knowle
   }, 0)
 }
 
-export const getUsedKnowledgesPoints = (
+export const getAssignedFreeRaceKPoints = (
   knowledges: Record<KnowledgeId, KnowledgeLevelValue>,
-  background: BackgroundId,
   race: RaceId = "human"
 ) => {
-  const rawUsedKnowledgePoints = getRawUsedKnowledgePoints(knowledges)
-
-  // calculate free knowledges due to character race
-  let raceInitKnowledgesCost = 0
   const freeKnowledges = RACE_INIT_KNOWLEDGES[race]
-  freeKnowledges.forEach(k => {
-    if (!knowledges[k.id]) return
+  return freeKnowledges.reduce((acc, k) => {
+    if (!knowledges[k.id]) return acc
     const level = knowledgeLevels.find(lvl => lvl.id === k.levelId)
-    if (!level) return
-    raceInitKnowledgesCost += level.cost
-  })
-
-  // calculate free knowledges due to character background
-  let backgroundInitKnowledgesCost = 0
-  const freeCategories = BACKGROUND_INIT_AVAILABLE_KNOWLEDGES_CATEGORIES[background]
-  const knowledgesIds = Object.keys(knowledges) as KnowledgeId[]
-  const knowledgesCategories = knowledgesIds.map(kId => knowledgesMap[kId].category)
-  const freeCategory = freeCategories.find(cat => knowledgesCategories.includes(cat.id))
-  if (freeCategory) {
-    const level = knowledgeLevels.find(lvl => lvl.cost === freeCategory.levelId)
-    if (level) {
-      backgroundInitKnowledgesCost = level.cost
-    }
-  }
-
-  // return the total used knowledge points
-  return rawUsedKnowledgePoints - raceInitKnowledgesCost - backgroundInitKnowledgesCost
+    if (!level) return acc
+    return acc + level.cost
+  }, 0)
 }
 
-export const getRemainingFreeKnowledgesCost = (
+export const getAssignedRawKPoints = (knowledges: Record<KnowledgeId, KnowledgeLevelValue>) =>
+  Object.values(knowledges).reduce((acc, curr) => {
+    const level = knowledgeLevels.find(el => el.id === curr)
+    if (!level) return acc
+    return acc + level.cost
+  }, 0)
+
+export const getRemainingFreeKPoints = (
   knowledges: Record<KnowledgeId, KnowledgeLevelValue>,
-  background: BackgroundId
+  background: BackgroundId,
+  raceId: RaceId = "human"
 ) => {
   const freeCategories = BACKGROUND_INIT_AVAILABLE_KNOWLEDGES_CATEGORIES[background]
-  const knowledgesEntries = Object.entries(knowledges)
-  const usedInFreeCategories = knowledgesEntries.reduce((acc, [kId, kLvl]) => {
-    const currFreeCategory = freeCategories.find(
-      cat => knowledgesMap[kId as KnowledgeId].category === cat.id
-    )
-    if (!currFreeCategory) return acc
-    const usedCost = knowledgeLevels.find(lvl => lvl.id === kLvl)?.cost ?? 0
-    return acc + usedCost
+  const freeCatIds = freeCategories.map(cat => cat.id)
+  const freeLvl = Math.max(...freeCategories.map(c => c.levelId as number), 0)
+  if (freeLvl === 0) return 0
+  const spentLvlInFreeCat = Object.entries(knowledges).reduce((acc, [kId, kLvl]) => {
+    const id = kId as KnowledgeId
+    if (!freeCatIds.includes(knowledgesMap[id].category)) return acc
+
+    const spentLvl = knowledgeLevels.find(lvl => lvl.id === kLvl)?.id ?? 0
+    if (spentLvl === 0) return acc
+
+    const freeRaceKnowledges = RACE_INIT_KNOWLEDGES[raceId]
+    const freeRaceLvl = freeRaceKnowledges.find(k => k.id === id)?.levelId ?? 0
+
+    const backgroundSpendLvl = spentLvl - freeRaceLvl
+    return acc + backgroundSpendLvl
   }, 0)
-  const freeAvailable = Math.min(...freeCategories.map(cat => cat.levelId as number))
-  return Math.max(0, freeAvailable - usedInFreeCategories)
+
+  const freeLvlRemaining = Math.max(0, freeLvl - spentLvlInFreeCat)
+  return knowledgeLevels.find(lvl => lvl.id === freeLvlRemaining)?.cost ?? 0
 }

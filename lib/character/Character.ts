@@ -1,13 +1,14 @@
 import { Perk, PerkId } from "lib/character/abilities/perks/perks.types"
 import { Trait, TraitId } from "lib/character/abilities/traits/traits.types"
 import {
+  getAssignedFreeRaceKPoints,
+  getAssignedRawKPoints,
   getHpGainPerLevel,
   getInitKnowledgePoints,
   getInitSkillsPoints,
-  getRemainingFreeKnowledgesCost,
+  getRemainingFreeKPoints,
   getSkillPointsPerLevel,
-  getSpecLevelInterval,
-  getUsedKnowledgesPoints
+  getSpecLevelInterval
 } from "lib/character/progress/progress-utils"
 import { Progress } from "lib/character/progress/progress.types"
 import { getLevelAndThresholds } from "lib/character/status/status-calc"
@@ -243,10 +244,12 @@ export default class Character {
     const skillPointsPerLevel = getSkillPointsPerLevel(this.special.base, traits || [])
     const unlockedSkillPoints = skillPointsPerLevel * (level - 1) + initSkillPoints
     const usedSkillsPoints = Object.values(this.skills.up).reduce((acc, curr) => curr + acc, 0)
-    const initKnowledgePoints = getInitKnowledgePoints()
-    const unlockedKnowledgePoints = initKnowledgePoints + (level - 1)
-    const usedKnowledgePoints = getUsedKnowledgesPoints(knowledges, background)
-    const availableFreeKnowledgePoints = getRemainingFreeKnowledgesCost(knowledges, background)
+    const initKPoints = getInitKnowledgePoints()
+    const unlockedKnowledgePoints = initKPoints + (level - 1)
+    const rawKpointsAssigned = getAssignedRawKPoints(knowledges)
+    const freeRaceKPointsAssigned = getAssignedFreeRaceKPoints(knowledges, "human")
+    const usedKnowledgePoints = rawKpointsAssigned - freeRaceKPointsAssigned
+    const availableFreeKnowledgePoints = getRemainingFreeKPoints(knowledges, background)
 
     return {
       exp: this.status.exp,
