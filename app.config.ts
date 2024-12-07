@@ -13,14 +13,9 @@ const getAppName = () => {
   return "Fallout Companion App"
 }
 
-const getSlug = () => {
-  if (IS_DEV) return "fca2-dev"
-  return "fca2"
-}
-
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: getAppName(),
-  slug: getSlug(),
-  android: { package: getUniqueIdentifier() }
+  android: { package: getUniqueIdentifier() },
+  slug: "fca2"
 })
