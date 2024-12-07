@@ -9,12 +9,12 @@
     "userInterfaceStyle": "light",
     "backgroundColor": "#021000",
     "primaryColor": "#021000",
-    "privacy": "hidden",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#021000"
     },
+    "newArchEnabled": true,
     "assetBundlePatterns": [
       "**/*"
     ],
