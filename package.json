@@ -8,9 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "ts:check": "tsc",
-    "release:major": "npx standard-version --release-as major",
-    "release:minor": "npx standard-version --release-as minor",
-    "release:patch": "npx standard-version --release-as patch",
+    "build:dev": "eas build -p android --profile development",
     "build:preview": "eas build -p android --profile preview",
     "update:preview": "eas update --channel preview"
   },
