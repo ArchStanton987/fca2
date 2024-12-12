@@ -23,10 +23,8 @@ export default function InventoryLayout() {
           backgroundColor: colors.primColor,
           height: 40,
           borderBottomWidth: 0
-        }
-      }}
-      sceneContainerStyle={{
-        backgroundColor: colors.primColor
+        },
+        sceneStyle: { backgroundColor: colors.primColor }
       }}
     >
       <Tabs.Screen

@@ -29,9 +29,9 @@ export default function CombatLayout() {
           backgroundColor: colors.primColor,
           height: 40,
           borderBottomWidth: 0
-        }
+        },
+        sceneStyle: { backgroundColor: colors.primColor }
       }}
-      sceneContainerStyle={{ backgroundColor: colors.primColor }}
     >
       <Tabs.Screen
         name="recap"

@@ -37,9 +37,9 @@ export default function AdminLayout() {
           screenOptions={{
             tabBarHideOnKeyboard: true,
             header: () => <Header headerElementsIds={headerElementsIds} />,
-            headerStyle: { backgroundColor: colors.primColor, borderBottomWidth: 0 }
+            headerStyle: { backgroundColor: colors.primColor, borderBottomWidth: 0 },
+            sceneStyle: { backgroundColor: colors.primColor }
           }}
-          sceneContainerStyle={{ backgroundColor: colors.primColor }}
         >
           <Tabs.Screen name="datetime" options={{ title: "Horloge" }} />
         </Tabs>

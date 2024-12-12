@@ -30,9 +30,9 @@ export default function CharLayout() {
           backgroundColor: colors.primColor,
           height: 40,
           borderBottomWidth: 0
-        }
+        },
+        sceneStyle: { backgroundColor: colors.primColor }
       }}
-      sceneContainerStyle={{ backgroundColor: colors.primColor }}
     >
       <Tabs.Screen name="recap" options={{ title: "Résumé" }} initialParams={{ squadId, charId }} />
       <Tabs.Screen name="effects" options={{ title: "Effets" }} />
@@ -41,7 +41,6 @@ export default function CharLayout() {
       <Tabs.Screen name="skills" options={{ title: "Compétences" }} />
       <Tabs.Screen name="knowledges" options={{ title: "Connaissances" }} />
       <Tabs.Screen name="perks" options={{ title: "Traits" }} />
-      {/* <Tabs.Screen name="perks" options={{ title: "Traits" }} /> */}
     </Tabs>
   )
 }
