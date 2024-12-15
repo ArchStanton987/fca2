@@ -8,7 +8,6 @@ import DrawerPage from "components/DrawerPage"
 import List from "components/List"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
-import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import colors from "styles/colors"
@@ -49,15 +48,12 @@ function CombatScreen() {
     apArr.push(`pa${i}`)
   }
 
+  const visibleWeapons = weapons.length > 0 ? weapons : [character.unarmed]
+
   return (
     <DrawerPage>
-      <ScrollView style={{ flex: 1 }}>
-        <Section>
-          <Txt>
-            Points d&apos;action : {currAp} / {maxAp}
-          </Txt>
-          <Spacer y={20} />
-
+      <View style={{ flex: 1 }}>
+        <Section title={`Points d'action : ${currAp} / ${maxAp}`}>
           <View style={styles.checkboxContainer}>
             {apArr.map((ap, i) => (
               <CheckBox
@@ -69,20 +65,20 @@ function CombatScreen() {
               />
             ))}
           </View>
+          <Spacer y={5} />
         </Section>
 
-        <Spacer y={20} />
-        {weapons.length > 0 ? (
+        <ScrollView style={{ borderColor: colors.secColor, borderBottomWidth: 1 }}>
+          <Spacer y={15} />
+
           <List
-            data={weapons}
+            data={visibleWeapons}
             keyExtractor={item => item.dbKey}
             separator={<Spacer y={15} />}
             renderItem={({ item }) => <WeaponCard weapon={item} setPrevAp={handleSetPrevAp} />}
           />
-        ) : (
-          <WeaponCard weapon={character.unarmed} setPrevAp={handleSetPrevAp} />
-        )}
-      </ScrollView>
+        </ScrollView>
+      </View>
     </DrawerPage>
   )
 }

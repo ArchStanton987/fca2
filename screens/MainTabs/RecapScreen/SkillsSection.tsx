@@ -1,9 +1,10 @@
 import React from "react"
-import { ActivityIndicator, FlatList, View } from "react-native"
+import { ActivityIndicator, View } from "react-native"
 
 import skillsMap from "lib/character/abilities/skills/skills"
 
-import Section from "components/Section"
+import List from "components/List"
+import ScrollSection from "components/Section/ScrollSection"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import colors from "styles/colors"
@@ -11,15 +12,6 @@ import colors from "styles/colors"
 import styles from "./RecapScreen.styles"
 
 const skillsArray = Object.values(skillsMap)
-
-function ListHeader() {
-  return (
-    <View style={styles.skillHeader}>
-      <Txt>COMPETENCE</Txt>
-      <Txt>SCORE</Txt>
-    </View>
-  )
-}
 
 function EmptyComponent() {
   return (
@@ -33,13 +25,11 @@ export default function SkillsSection() {
   const character = useCharacter()
   const currSkills = character.skills.curr
   return (
-    <Section style={{ width: 160 }}>
-      <FlatList
+    <ScrollSection style={{ width: 160 }} title="compétences">
+      <List
         data={skillsArray}
         keyExtractor={item => item.id}
         ListEmptyComponent={EmptyComponent}
-        ListHeaderComponent={ListHeader}
-        stickyHeaderIndices={[0]}
         renderItem={({ item }) => (
           <View style={styles.skillRow}>
             <Txt>{skillsMap[item.id].label}</Txt>
@@ -47,6 +37,6 @@ export default function SkillsSection() {
           </View>
         )}
       />
-    </Section>
+    </ScrollSection>
   )
 }

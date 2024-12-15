@@ -5,7 +5,6 @@ TODO: création objets on the fly
 perks & traits page
 => get perk LVL, calculate bonus for apkpropriate level. (in description ??)
 
-TODO: fix knowledge points calculations & display
 TODO: add levelup
   - change db model for perks (any perk can have a level)
   - update perks

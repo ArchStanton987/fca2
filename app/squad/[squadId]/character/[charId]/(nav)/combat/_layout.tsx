@@ -1,43 +1,20 @@
-import { Tabs, useLocalSearchParams } from "expo-router"
+import { View } from "react-native"
 
-import Header from "components/Header/Header"
-import { HeaderElementId } from "components/Header/Header.utils"
-import TabBar from "components/TabBar/TabBar"
-import colors from "styles/colors"
+import { Slot } from "expo-router"
 
-const headerElementsIds: HeaderElementId[] = [
-  "date",
-  "time",
-  "armorClass",
-  "critChance",
-  "meleeDamage",
-  "range",
-  "progression",
-  "rads",
-  "hp"
-]
+import Drawer from "components/Drawer/Drawer"
+import Spacer from "components/Spacer"
+import styles from "styles/DrawerLayout.styles"
+import layout from "styles/layout"
+
+const navElements = [{ path: "recap", label: "Bagarre" }]
 
 export default function CombatLayout() {
-  const { squadId, charId } = useLocalSearchParams<{ squadId: string; charId: string }>()
   return (
-    <Tabs
-      tabBar={props => <TabBar tabBarId="combat" {...props} />}
-      screenOptions={{
-        tabBarHideOnKeyboard: true,
-        header: () => <Header headerElementsIds={headerElementsIds} />,
-        headerStyle: {
-          backgroundColor: colors.primColor,
-          height: 40,
-          borderBottomWidth: 0
-        },
-        sceneStyle: { backgroundColor: colors.primColor }
-      }}
-    >
-      <Tabs.Screen
-        name="recap"
-        options={{ title: "Bagarre" }}
-        initialParams={{ squadId, charId }}
-      />
-    </Tabs>
+    <View style={styles.drawerLayout}>
+      <Drawer sectionId="combat" navElements={navElements} />
+      <Spacer x={layout.globalPadding} />
+      <Slot />
+    </View>
   )
 }

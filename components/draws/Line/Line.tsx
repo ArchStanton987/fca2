@@ -7,10 +7,11 @@ type SmallLineProps = ViewProps & {
   left?: boolean
   right?: boolean
   bottom?: boolean
+  color?: string
 }
 
 export default function SmallLine(props: SmallLineProps) {
-  const { top, left, right, bottom, style, ...rest } = props
+  const { top, left, right, bottom, style, color, ...rest } = props
   return (
     <View
       style={[
@@ -19,6 +20,7 @@ export default function SmallLine(props: SmallLineProps) {
         left && styles.left,
         right && styles.right,
         bottom && styles.bottom,
+        color && { backgroundColor: color },
         style
       ]}
       {...rest}

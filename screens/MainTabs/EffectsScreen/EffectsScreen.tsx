@@ -1,20 +1,48 @@
 import React, { memo, useState } from "react"
-import { FlatList, ScrollView, View } from "react-native"
+import { View } from "react-native"
 
 import { router } from "expo-router"
 
 import { Effect } from "lib/character/effects/effects.types"
 import useCases from "lib/common/use-cases"
 
-import AddElement from "components/AddElement"
 import DrawerPage from "components/DrawerPage"
+import List from "components/List"
 import Section from "components/Section"
+import ScrollSection from "components/Section/ScrollSection"
+import { ComposedTitleProps } from "components/Section/Section.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
+import PlusIcon from "components/icons/PlusIcon"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useSquad } from "contexts/SquadContext"
-import EffectRow, { EffectHeader } from "screens/MainTabs/EffectsScreen/EffectRow"
+import EffectRow from "screens/MainTabs/EffectsScreen/EffectRow"
+import layout from "styles/layout"
+
+const title: ComposedTitleProps = [
+  { title: "effet", containerStyle: { flex: 1 } },
+  {
+    title: "sympt",
+    titlePosition: "left",
+    containerStyle: { width: 80 },
+    lineStyle: { minWidth: 0 },
+    spacerWidth: 5
+  },
+  {
+    title: "reste",
+    containerStyle: { width: 70 },
+    titlePosition: "right",
+    lineStyle: { minWidth: 0 },
+    spacerWidth: 5
+  },
+  {
+    title: "",
+    containerStyle: { width: 37 },
+    lineStyle: { width: 0, minWidth: 0 },
+    spacerWidth: 0
+  }
+]
 
 function EffectsScreen() {
   const { squadId } = useSquad()
@@ -38,11 +66,10 @@ function EffectsScreen() {
 
   return (
     <DrawerPage>
-      <Section style={{ flex: 1 }}>
-        <FlatList
+      <ScrollSection style={{ flex: 1 }} title={title}>
+        <List
           data={effects}
           keyExtractor={item => item.dbKey || item.id}
-          ListHeaderComponent={EffectHeader}
           renderItem={({ item }) => {
             const isSelected = item.id === selectedId
             return (
@@ -55,19 +82,21 @@ function EffectsScreen() {
             )
           }}
         />
-      </Section>
-      <Spacer x={10} />
-      <View style={{ width: 200 }}>
-        <Section style={{ width: 200, flex: 1 }}>
-          <Txt>DESCRIPTION</Txt>
-          <Spacer y={10} />
-          <ScrollView>
-            <Txt>{!!selectedEffect && selectedEffect.data.description}</Txt>
-            <Spacer y={10} />
-          </ScrollView>
-        </Section>
-        <Section style={{ width: 200 }}>
-          <AddElement title="AJOUTER UN EFFET" onPressAdd={onPressAdd} />
+      </ScrollSection>
+
+      <Spacer x={layout.globalPadding} />
+
+      <View style={{ width: 180 }}>
+        <ScrollSection title="description" style={{ flex: 1 }}>
+          <Txt>{!!selectedEffect && selectedEffect.data.description}</Txt>
+        </ScrollSection>
+
+        <Spacer y={layout.globalPadding} />
+
+        <Section title="ajouter">
+          <View style={{ alignItems: "center" }}>
+            <PlusIcon onPress={onPressAdd} />
+          </View>
         </Section>
       </View>
     </DrawerPage>

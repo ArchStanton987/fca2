@@ -1,15 +1,16 @@
 import React from "react"
-import { Pressable, PressableProps, TouchableOpacity, View } from "react-native"
+import { PressableProps, TouchableOpacity, View } from "react-native"
 
-import { AntDesign } from "@expo/vector-icons"
 import { changeableAttributesMap } from "lib/character/effects/changeable-attr"
 import effectsMap from "lib/character/effects/effects"
 import { Consumable } from "lib/objects/data/consumables/consumables.types"
 
+import DeleteInput from "components/DeleteInput"
+import ListLabel from "components/ListLabel"
+import Selectable from "components/Selectable"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import Caret from "components/icons/Caret"
-import colors from "styles/colors"
 
 import styles from "./ConsumableRow.styles"
 
@@ -33,6 +34,7 @@ type ConsumableRowProps = PressableProps & {
   charConsumable: Consumable
   count: number
   isSelected: boolean
+  onPress: () => void
   onDelete: (item: Consumable) => void
 }
 
@@ -41,19 +43,15 @@ export default function ConsumableRow({
   count,
   isSelected,
   onDelete,
+  onPress,
   ...rest
 }: ConsumableRowProps) {
   const { label, effectId, challengeLabel } = charConsumable.data
   const symptoms = effectId ? effectsMap[effectId].symptoms : []
   const countAppend = count > 1 ? ` (${count})` : ""
   return (
-    <Pressable style={[styles.row, styles.container, isSelected && styles.selected]} {...rest}>
-      <View style={styles.labelContainer}>
-        <Txt>
-          {label}
-          {countAppend}
-        </Txt>
-      </View>
+    <Selectable isSelected={isSelected} onPress={onPress} {...rest}>
+      <ListLabel label={`${label}${countAppend}`} style={{ alignSelf: "flex-start" }} />
       <View style={styles.effectContainer}>
         {symptoms
           ? symptoms.map(({ id, value }) => {
@@ -65,9 +63,7 @@ export default function ConsumableRow({
           : "-"}
         {challengeLabel && <Txt>{challengeLabel}</Txt>}
       </View>
-      <TouchableOpacity style={styles.deleteContainer} onPress={() => onDelete(charConsumable)}>
-        {isSelected && <AntDesign name="delete" size={17} color={colors.secColor} />}
-      </TouchableOpacity>
-    </Pressable>
+      <DeleteInput isSelected={isSelected} onPress={() => onDelete(charConsumable)} />
+    </Selectable>
   )
 }

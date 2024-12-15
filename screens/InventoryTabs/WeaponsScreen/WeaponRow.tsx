@@ -1,90 +1,29 @@
 import React from "react"
-import { Pressable, PressableProps, TouchableOpacity, View } from "react-native"
+import { PressableProps, View } from "react-native"
 
-import { AntDesign } from "@expo/vector-icons"
 import useCases from "lib/common/use-cases"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
 import Toast from "react-native-toast-message"
 
-import CheckBox from "components/CheckBox/CheckBox"
+import DeleteInput from "components/DeleteInput"
+import EquipInput from "components/EquipInput"
+import ListLabel from "components/ListLabel"
+import ListScoreLabel from "components/ListScoreLabel"
+import Selectable from "components/Selectable"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import Caret from "components/icons/Caret"
 import { useCharacter } from "contexts/CharacterContext"
-import {
-  WeaponSort,
-  WeaponSortableKey
-} from "screens/InventoryTabs/WeaponsScreen/WeaponsScreen.types"
-import colors from "styles/colors"
-
-import styles from "./WeaponRow.styles"
-
-export function ListHeader({
-  onPress,
-  sortState
-}: {
-  onPress: (type: WeaponSortableKey) => void
-  sortState: WeaponSort
-}) {
-  const { type, isAsc } = sortState
-  return (
-    <View style={[styles.row, styles.container, styles.header]}>
-      <TouchableOpacity
-        onPress={() => onPress("equiped")}
-        style={[styles.listHeader, styles.equipedContainer]}
-      >
-        <Txt>EQU</Txt>
-        <Spacer x={3} />
-        <Caret isVisible={type === "equiped"} direction={isAsc ? "up" : "down"} />
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => onPress("name")}
-        style={[styles.listHeader, styles.labelContainer]}
-      >
-        <Txt>NOM</Txt>
-        <Spacer x={3} />
-        <Caret isVisible={type === "name"} direction={isAsc ? "up" : "down"} />
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => onPress("damage")}
-        style={[styles.listHeader, styles.damageContainer]}
-      >
-        <Txt>DEG</Txt>
-        <Spacer x={3} />
-        <Caret isVisible={type === "damage"} direction={isAsc ? "up" : "down"} />
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => onPress("skill")}
-        style={[styles.listHeader, styles.skillContainer]}
-      >
-        <Caret isVisible={type === "skill"} direction={isAsc ? "up" : "down"} />
-        <Spacer x={3} />
-        <Txt>COMP</Txt>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => onPress("ammo")}
-        style={[styles.listHeader, styles.ammoContainer]}
-      >
-        <Caret isVisible={type === "ammo"} direction={isAsc ? "up" : "down"} />
-        <Spacer x={3} />
-        <Txt>MUN</Txt>
-      </TouchableOpacity>
-      <View style={styles.deleteContainer}>
-        <Txt> </Txt>
-      </View>
-    </View>
-  )
-}
 
 type WeaponRowProps = PressableProps & {
   weapon: Weapon
   isSelected: boolean
+  onPress: () => void
 }
 
-export default function WeaponRow({ weapon, isSelected, ...rest }: WeaponRowProps) {
+export default function WeaponRow({ weapon, isSelected, onPress, ...rest }: WeaponRowProps) {
   const character = useCharacter()
   const { isEquiped, skill, ammo, data } = weapon
-  const { label, damageBasic, damageBurst } = data
+  const { label, damageBasic, damageBurst, ammoType } = data
 
   const handleEquip = async () => {
     try {
@@ -97,33 +36,24 @@ export default function WeaponRow({ weapon, isSelected, ...rest }: WeaponRowProp
   }
 
   return (
-    <Pressable style={[styles.row, styles.container, isSelected && styles.selected]} {...rest}>
-      <View style={styles.equipedContainer}>
-        <CheckBox
-          isChecked={isEquiped}
-          containerStyle={{ backgroundColor: isSelected ? colors.terColor : colors.primColor }}
-          onPress={handleEquip}
-        />
-      </View>
-      <View style={styles.labelContainer}>
-        <Txt>{label}</Txt>
-      </View>
-      <View style={styles.damageContainer}>
+    <Selectable isSelected={isSelected} onPress={onPress} {...rest}>
+      <EquipInput isChecked={isEquiped} isParentSelected={isSelected} onPress={handleEquip} />
+      <Spacer x={10} />
+      <ListLabel label={label} />
+      <Spacer x={5} />
+      <View style={{ width: 75 }}>
         <Txt>{damageBasic ?? "-"}</Txt>
         <Txt>{damageBurst ?? "-"}</Txt>
       </View>
-      <View style={styles.skillContainer}>
-        <Txt>{skill}</Txt>
-      </View>
-      <View style={styles.ammoContainer}>
-        <Txt>{ammo || "-"}</Txt>
-      </View>
-      <TouchableOpacity
-        style={styles.deleteContainer}
+      <Spacer x={5} />
+      <ListScoreLabel score={skill} />
+      <Spacer x={5} />
+      <ListScoreLabel score={ammoType ? ammo : "-"} />
+      <Spacer x={5} />
+      <DeleteInput
+        isSelected={isSelected}
         onPress={() => useCases.inventory.throw(character.charId, weapon)}
-      >
-        {isSelected && <AntDesign name="delete" size={17} color={colors.secColor} />}
-      </TouchableOpacity>
-    </Pressable>
+      />
+    </Selectable>
   )
 }

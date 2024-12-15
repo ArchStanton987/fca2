@@ -2,14 +2,34 @@ import { View } from "react-native"
 
 import { observer } from "mobx-react-lite"
 
+import List from "components/List"
 import Section from "components/Section"
+import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
+import layout from "styles/layout"
 
 import { getPlaceColor, getWeightColor } from "./EquipedObjSection.utils"
 import styles from "./RecapScreen.styles"
+
+function WeaponsListHeader() {
+  return (
+    <>
+      <Txt>ARMES :</Txt>
+      <Spacer y={5} />
+    </>
+  )
+}
+function ClothingsListHeader() {
+  return (
+    <>
+      <Txt>ARMURES :</Txt>
+      <Spacer y={5} />
+    </>
+  )
+}
 
 function EquipedObjSection() {
   const character = useCharacter()
@@ -21,7 +41,7 @@ function EquipedObjSection() {
 
   return (
     <View style={{ flex: 1 }}>
-      <Section style={{ paddingHorizontal: 10 }}>
+      <Section title="charge">
         <View style={styles.equObjRow}>
           <Txt style={{ color: getWeightColor(currWeight, secAttr.curr) }}>POIDS: {currWeight}</Txt>
           <Txt>{`(${normalCarryWeight}/${tempCarryWeight}/${maxCarryWeight})`}</Txt>
@@ -32,24 +52,36 @@ function EquipedObjSection() {
           <Txt>/{maxPlace || "-"}</Txt>
         </View>
       </Section>
-      <Spacer y={10} />
-      <Section style={{ paddingHorizontal: 10, flex: 1 }}>
-        <Txt>ARMES EQUIPES</Txt>
-        <Spacer y={10} />
-        {weapons.map(weapon => (
-          <View key={weapon.dbKey} style={styles.equObjRow}>
-            <Txt>- {weapon.data.label}</Txt>
-          </View>
-        ))}
-        <Spacer y={10} />
-        <Txt>ARMURES EQUIPES</Txt>
-        <Spacer y={10} />
-        {clothings.map(cloth => (
-          <View key={cloth.dbKey} style={styles.equObjRow}>
-            <Txt>- {cloth.data.label}</Txt>
-          </View>
-        ))}
-      </Section>
+
+      <Spacer y={layout.globalPadding} />
+
+      <ScrollSection title="équipement" style={{ flex: 1 }}>
+        {weapons.length > 0 ? (
+          <List
+            data={weapons}
+            ListHeaderComponent={WeaponsListHeader}
+            keyExtractor={item => item.dbKey}
+            renderItem={({ item }) => (
+              <View style={styles.equObjRow}>
+                <Txt>- {item.data.label}</Txt>
+              </View>
+            )}
+          />
+        ) : null}
+
+        {clothings.length > 0 ? (
+          <List
+            data={clothings}
+            ListHeaderComponent={ClothingsListHeader}
+            keyExtractor={item => item.dbKey}
+            renderItem={({ item }) => (
+              <View style={styles.equObjRow}>
+                <Txt>- {item.data.label}</Txt>
+              </View>
+            )}
+          />
+        ) : null}
+      </ScrollSection>
     </View>
   )
 }

@@ -1,22 +1,46 @@
 import React, { memo, useMemo, useState } from "react"
-import { FlatList, View } from "react-native"
+import { View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
 import { Clothing } from "lib/objects/data/clothings/clothings.types"
 
-import AddElement from "components/AddElement"
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import DrawerPage from "components/DrawerPage"
+import List from "components/List"
 import Section from "components/Section"
+import ScrollSection from "components/Section/ScrollSection"
+import { ComposedTitleProps } from "components/Section/Section.types"
 import Spacer from "components/Spacer"
+import PlusIcon from "components/icons/PlusIcon"
 import routes from "constants/routes"
 import { useInventory } from "contexts/InventoryContext"
-import ClothingRow, { ListHeader } from "screens/InventoryTabs/ClothingsScreen/ClothingRow"
+import ClothingRow from "screens/InventoryTabs/ClothingsScreen/ClothingRow"
 import ClothingsDetails from "screens/InventoryTabs/ClothingsScreen/ClothingsDetails"
 import { SearchParams } from "screens/ScreenParams"
+import layout from "styles/layout"
 
 import { ClothingSort, ClothingSortableKey } from "./ClothingsScreen.types"
+
+const damageProp = { containerStyle: { width: 37 }, lineStyle: { minWidth: 0 }, spacerWidth: 5 }
+
+const getTitle = (cb: (str: ClothingSortableKey) => void): ComposedTitleProps => [
+  {
+    title: "equ",
+    onPress: () => cb("equiped"),
+    containerStyle: { width: 45 },
+    lineStyle: { minWidth: 5 },
+    titlePosition: "left",
+    spacerWidth: 5
+  },
+  { title: "objet", onPress: () => cb("name"), containerStyle: { flex: 1 } },
+  { title: "phy", onPress: () => cb("physRes"), ...damageProp },
+  { title: "las", onPress: () => cb("lasRes"), ...damageProp },
+  { title: "feu", onPress: () => cb("fireRes"), ...damageProp },
+  { title: "pla", onPress: () => cb("plaRes"), ...damageProp },
+  { title: "mal", onPress: () => cb("malus"), ...damageProp },
+  { title: "", containerStyle: { width: 32 }, lineStyle: { minWidth: 0 }, spacerWidth: 0 }
+]
 
 function ClothingsScreen() {
   const localParams = useLocalSearchParams<SearchParams<DrawerParams>>()
@@ -38,6 +62,7 @@ function ClothingsScreen() {
   const onPressClothingHeader = (type: ClothingSortableKey) => {
     setSort(prev => ({ type, isAsc: prev.type === type ? !prev.isAsc : true }))
   }
+  const title = getTitle(onPressClothingHeader)
 
   const sortedClothings = useMemo(() => {
     const sortFn = (a: Clothing, b: Clothing) => {
@@ -59,12 +84,10 @@ function ClothingsScreen() {
 
   return (
     <DrawerPage>
-      <Section style={{ flex: 1 }}>
-        <FlatList
+      <ScrollSection style={{ flex: 1 }} contentContainerStyle={{ paddingRight: 0 }} title={title}>
+        <List
           data={sortedClothings}
           keyExtractor={item => item.dbKey}
-          ListHeaderComponent={<ListHeader sortState={sort} onPress={onPressClothingHeader} />}
-          stickyHeaderIndices={[0]}
           renderItem={({ item }) => (
             <ClothingRow
               clothing={item}
@@ -73,14 +96,18 @@ function ClothingsScreen() {
             />
           )}
         />
-      </Section>
-      <Spacer x={10} />
-      <View style={{ width: 120 }}>
-        <Section style={{ width: 120, flex: 1 }}>
+      </ScrollSection>
+
+      <Spacer x={layout.globalPadding} />
+
+      <View style={{ width: 130 }}>
+        <Section style={{ flex: 1 }} title="détails">
           <ClothingsDetails charClothing={selectedCloth} />
         </Section>
-        <Section style={{ width: 120 }}>
-          <AddElement title="AJOUTER" onPressAdd={onPressAdd} />
+        <Section title="ajouter">
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+            <PlusIcon onPress={onPressAdd} />
+          </View>
         </Section>
       </View>
     </DrawerPage>

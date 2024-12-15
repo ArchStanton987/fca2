@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native"
 
 import colors from "styles/colors"
+import layout from "styles/layout"
 
 const styles = StyleSheet.create({
   bar: {
@@ -10,7 +11,7 @@ const styles = StyleSheet.create({
   },
   top: {
     top: 0,
-    height: 16,
+    height: layout.smallLineHeight,
     width: 1
   },
   right: {
@@ -21,7 +22,7 @@ const styles = StyleSheet.create({
   },
   bottom: {
     bottom: 0,
-    height: 16,
+    height: layout.smallLineHeight,
     width: 1
   }
 })

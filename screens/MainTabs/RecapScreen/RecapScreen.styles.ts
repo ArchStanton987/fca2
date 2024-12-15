@@ -6,8 +6,7 @@ const styles = StyleSheet.create({
   skillRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 5,
-    paddingHorizontal: 10
+    paddingVertical: 5
   },
   skillHeader: {
     backgroundColor: colors.primColor,

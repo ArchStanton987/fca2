@@ -1,21 +1,29 @@
 import React, { memo, useMemo, useState } from "react"
-import { FlatList, View } from "react-native"
+import { View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
 import useCases from "lib/common/use-cases"
 import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
 
-import AddElement from "components/AddElement"
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import DrawerPage from "components/DrawerPage"
+import List from "components/List"
 import Section from "components/Section"
+import ScrollSection from "components/Section/ScrollSection"
+import { ComposedTitleProps } from "components/Section/Section.types"
 import Spacer from "components/Spacer"
+import PlusIcon from "components/icons/PlusIcon"
 import routes from "constants/routes"
 import { useInventory } from "contexts/InventoryContext"
 import MiscObjDetails from "screens/InventoryTabs/MiscObjScreen/MiscObjDetails"
-import MiscObjRow, { ListHeader } from "screens/InventoryTabs/MiscObjScreen/MiscObjRow"
+import MiscObjRow from "screens/InventoryTabs/MiscObjScreen/MiscObjRow"
 import { SearchParams } from "screens/ScreenParams"
+import layout from "styles/layout"
+
+const getTitle = (cb: (str: string) => void): ComposedTitleProps => [
+  { title: "objet", onPress: () => cb("label"), containerStyle: { flex: 1 } }
+]
 
 function MiscObjScreen() {
   const { squadId, charId } = useLocalSearchParams() as SearchParams<DrawerParams>
@@ -31,6 +39,7 @@ function MiscObjScreen() {
     })
 
   const onPressHeader = () => setIsAscSort(prev => !prev)
+  const title = getTitle(onPressHeader)
 
   const sortedMiscObjects = useMemo(() => {
     const sortFn = (a: MiscObject, b: MiscObject) => {
@@ -43,12 +52,10 @@ function MiscObjScreen() {
 
   return (
     <DrawerPage>
-      <Section style={{ flex: 1 }}>
-        <FlatList
+      <ScrollSection style={{ flex: 1 }} title={title}>
+        <List
           data={sortedMiscObjects}
           keyExtractor={item => item.id}
-          ListHeaderComponent={<ListHeader onPress={onPressHeader} isAsc={isAscSort} />}
-          stickyHeaderIndices={[0]}
           renderItem={({ item }) => (
             <MiscObjRow
               objId={item.id}
@@ -59,14 +66,19 @@ function MiscObjScreen() {
             />
           )}
         />
-      </Section>
-      <Spacer x={10} />
+      </ScrollSection>
+      <Spacer x={layout.globalPadding} />
       <View style={{ width: 180 }}>
-        <Section style={{ width: 180, flex: 1 }}>
+        <ScrollSection style={{ flex: 1 }} title="description">
           <MiscObjDetails miscObj={selectedItem} />
-        </Section>
-        <Section style={{ width: 180 }}>
-          <AddElement title="AJOUTER" onPressAdd={onPressAdd} />
+        </ScrollSection>
+
+        <Spacer y={layout.globalPadding} />
+
+        <Section title="ajouter">
+          <View style={{ alignItems: "center" }}>
+            <PlusIcon onPress={onPressAdd} />
+          </View>
         </Section>
       </View>
     </DrawerPage>

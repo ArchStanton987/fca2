@@ -1,26 +1,64 @@
 import React, { memo, useMemo, useState } from "react"
-import { FlatList, View } from "react-native"
+import { View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
 import { getDamageEst } from "lib/common/utils/dice-calc"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
 
-import AddElement from "components/AddElement"
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import DrawerPage from "components/DrawerPage"
+import List from "components/List"
 import Section from "components/Section"
+import ScrollSection from "components/Section/ScrollSection"
+import { ComposedTitleProps } from "components/Section/Section.types"
 import Spacer from "components/Spacer"
+import PlusIcon from "components/icons/PlusIcon"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
-import WeaponRow, { ListHeader } from "screens/InventoryTabs/WeaponsScreen/WeaponRow"
+import WeaponRow from "screens/InventoryTabs/WeaponsScreen/WeaponRow"
 import WeaponsDetails from "screens/InventoryTabs/WeaponsScreen/WeaponsDetails"
 import {
   WeaponSort,
   WeaponSortableKey
 } from "screens/InventoryTabs/WeaponsScreen/WeaponsScreen.types"
 import { SearchParams } from "screens/ScreenParams"
+import layout from "styles/layout"
+
+const getTitle = (cb: (str: WeaponSortableKey) => void): ComposedTitleProps => [
+  {
+    title: "equ",
+    onPress: () => cb("equiped"),
+    containerStyle: { width: 45 },
+    lineStyle: { minWidth: 5 },
+    titlePosition: "left",
+    spacerWidth: 5
+  },
+  { title: "arme", onPress: () => cb("name"), containerStyle: { flex: 1 } },
+  {
+    title: "dég",
+    onPress: () => cb("damage"),
+    containerStyle: { width: 85 },
+    lineStyle: { minWidth: 0 },
+    titlePosition: "left"
+  },
+  {
+    title: "comp",
+    onPress: () => cb("skill"),
+    containerStyle: { width: 37 },
+    lineStyle: { minWidth: 0 },
+    spacerWidth: 5
+  },
+  {
+    title: "mun",
+    onPress: () => cb("ammo"),
+    containerStyle: { width: 40 },
+    lineStyle: { minWidth: 0 },
+    spacerWidth: 5
+  },
+  { title: "", containerStyle: { width: 32 }, lineStyle: { minWidth: 0 }, spacerWidth: 0 }
+]
 
 function WeaponsScreen() {
   const localParams = useLocalSearchParams<SearchParams<DrawerParams>>()
@@ -42,6 +80,7 @@ function WeaponsScreen() {
   const onPressWeaponHeader = (type: WeaponSortableKey) => {
     setSort(prev => ({ type, isAsc: prev.type === type ? !prev.isAsc : true }))
   }
+  const title = getTitle(onPressWeaponHeader)
 
   const sortedWeapons = useMemo(() => {
     const sortFn = (a: Weapon, b: Weapon) => {
@@ -59,12 +98,10 @@ function WeaponsScreen() {
 
   return (
     <DrawerPage>
-      <Section style={{ flex: 1 }}>
-        <FlatList
+      <ScrollSection style={{ flex: 1 }} contentContainerStyle={{ paddingRight: 0 }} title={title}>
+        <List
           data={sortedWeapons}
           keyExtractor={item => item.dbKey}
-          ListHeaderComponent={<ListHeader onPress={onPressWeaponHeader} sortState={sort} />}
-          stickyHeaderIndices={[0]}
           renderItem={({ item }) => (
             <WeaponRow
               weapon={item}
@@ -73,14 +110,21 @@ function WeaponsScreen() {
             />
           )}
         />
-      </Section>
-      <Spacer x={10} />
+      </ScrollSection>
+
+      <Spacer x={layout.globalPadding} />
+
       <View style={{ width: 130 }}>
-        <Section style={{ width: 130, flex: 1 }}>
+        <ScrollSection style={{ flex: 1 }} title="détails">
           <WeaponsDetails charWeapon={selectedWeapon} />
-        </Section>
-        <Section style={{ width: 130 }}>
-          <AddElement title="AJOUTER" onPressAdd={onPressAdd} />
+        </ScrollSection>
+
+        <Spacer y={layout.globalPadding} />
+
+        <Section title="ajouter">
+          <View style={{ alignItems: "center" }}>
+            <PlusIcon onPress={onPressAdd} />
+          </View>
         </Section>
       </View>
     </DrawerPage>

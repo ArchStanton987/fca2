@@ -1,26 +1,12 @@
 import { StyleSheet } from "react-native"
 
-import colors from "styles/colors"
-
 const styles = StyleSheet.create({
-  row: {
-    flexDirection: "row",
-    alignItems: "center"
-  },
-  container: {
-    backgroundColor: colors.primColor,
-    paddingVertical: 5,
-    paddingHorizontal: 10
-  },
-  selected: {
-    backgroundColor: colors.terColor
-  },
   equipedContainer: {
-    width: 30
+    width: 25
   },
   labelContainer: {
-    alignSelf: "flex-start",
-    justifyContent: "center",
+    flexDirection: "row",
+    justifyContent: "flex-start",
     flex: 1
   },
   damageContainer: {
@@ -29,7 +15,8 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end"
   },
   deleteContainer: {
-    width: 40,
+    width: 25,
+    height: 25,
     justifyContent: "center",
     alignItems: "flex-end"
   },

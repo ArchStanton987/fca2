@@ -14,9 +14,10 @@ import { Weapon, WeaponActionId } from "lib/objects/data/weapons/weapons.types"
 
 import unarmedImg from "assets/images/unarmed.png"
 import List from "components/List"
+import Section from "components/Section"
+import { ComposedTitleProps } from "components/Section/Section.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import SmallLine from "components/draws/Line/Line"
 import { useCharacter } from "contexts/CharacterContext"
 import colors from "styles/colors"
 import { getHapticSequence } from "utils/haptics"
@@ -25,6 +26,11 @@ import AmmoIndicator from "./AmmoIndicator"
 import styles from "./WeaponCard.styles"
 
 type WeaponCardProps = { weapon: Weapon; setPrevAp: (apCost: number) => void }
+
+const getTitle = (str: string): ComposedTitleProps => [
+  { title: str, containerStyle: { flex: 1 } },
+  { title: "action(s) disponible(s)", containerStyle: { flex: 1 } }
+]
 
 export default function WeaponCard({ weapon, setPrevAp }: WeaponCardProps) {
   const char = useCharacter()
@@ -65,94 +71,92 @@ export default function WeaponCard({ weapon, setPrevAp }: WeaponCardProps) {
   const actions = getAvailableWeaponActions(weapon, char)
 
   return (
-    <View style={{ flexDirection: "row" }}>
-      <View style={styles.cardContainer}>
-        <View style={styles.horizBar} />
-        <SmallLine top right />
-        <Spacer y={10} />
-        <Txt style={{ paddingRight: 10 }}>{weapon.data.label}</Txt>
-        <Spacer y={10} />
-        <View style={styles.row}>
-          <View style={styles.imgContainer}>
-            <Image
-              source={weapon.id === "unarmed" ? unarmedImg : { uri: weapon.data.img }}
-              style={{ height: 50, width: 50 }}
-              resizeMode="contain"
-            />
-          </View>
-          <Spacer x={10} />
-          <View style={{ flex: 1 }}>
-            <View style={styles.row}>
-              <Txt style={styles.attr}>DEG</Txt>
-              <Spacer x={10} />
-              <Txt>{weapon.data.damageBasic}</Txt>
+    <Section title={getTitle(weapon.data.label)}>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View style={styles.cardContainer}>
+          <View style={styles.row}>
+            <View style={styles.imgContainer}>
+              <Image
+                source={weapon.id === "unarmed" ? unarmedImg : { uri: weapon.data.img }}
+                style={{ height: 50, width: 50 }}
+                resizeMode="contain"
+              />
             </View>
-            {weapon.data.damageBurst && (
+            <Spacer x={10} />
+            <View style={{ flex: 1 }}>
               <View style={styles.row}>
-                <Txt style={[styles.attr, { color: colors.primColor }]}>DEG</Txt>
+                <Txt style={styles.attr}>DEG</Txt>
                 <Spacer x={10} />
-                <Txt>{weapon.data.damageBurst}</Txt>
+                <Txt>{weapon.data.damageBasic}</Txt>
               </View>
-            )}
-            <View style={styles.row}>
-              <Txt style={[styles.attr, hasMalus && styles.malus]}>COMP</Txt>
-              <Spacer x={10} />
-              <Txt style={hasMalus && styles.malus}>{weapon.skill}</Txt>
+              {weapon.data.damageBurst && (
+                <View style={styles.row}>
+                  <Txt style={[styles.attr, { color: colors.primColor }]}>DEG</Txt>
+                  <Spacer x={10} />
+                  <Txt>{weapon.data.damageBurst}</Txt>
+                </View>
+              )}
+              <View style={styles.row}>
+                <Txt style={[styles.attr, hasMalus && styles.malus]}>COMP</Txt>
+                <Spacer x={10} />
+                <Txt style={hasMalus && styles.malus}>{weapon.skill}</Txt>
+              </View>
+              {weapon.data.range && (
+                <View style={styles.row}>
+                  <Txt style={styles.attr}>POR</Txt>
+                  <Spacer x={10} />
+                  <Txt>
+                    {weapon.data.range}
+                    {secAttrMap.range.unit}
+                  </Txt>
+                </View>
+              )}
             </View>
-            {weapon.data.range && (
-              <View style={styles.row}>
-                <Txt style={styles.attr}>POR</Txt>
-                <Spacer x={10} />
-                <Txt>
-                  {weapon.data.range}
-                  {secAttrMap.range.unit}
-                </Txt>
-              </View>
-            )}
+            <Spacer x={20} />
+            <AmmoIndicator weapon={weapon} />
+            <Spacer x={5} />
           </View>
-          <Spacer x={20} />
-          <AmmoIndicator weapon={weapon} />
-          <Spacer x={5} />
         </View>
+
+        <Spacer x={20} />
+
+        <View style={styles.actionsContainer}>
+          <List
+            data={actions}
+            keyExtractor={item => item}
+            separator={<Spacer y={10} />}
+            renderItem={({ item }) => {
+              const isSelected = selectedAction === item
+              return (
+                <TouchableOpacity
+                  onPress={() => selectAction(item)}
+                  style={[styles.actionButton, isSelected && styles.selected]}
+                >
+                  <Txt style={[styles.actionButtonText, isSelected && styles.txtSelected]}>
+                    {getWeaponActionLabel(weapon, item)}
+                  </Txt>
+                </TouchableOpacity>
+              )
+            }}
+          />
+        </View>
+
+        <Spacer x={20} />
+
+        <TouchableOpacity
+          disabled={selectedAction === null}
+          style={styles.playContainer}
+          onPress={() => doAction()}
+        >
+          <AntDesign
+            name="playcircleo"
+            size={70}
+            color={selectedAction === null ? "transparent" : colors.secColor}
+          />
+        </TouchableOpacity>
+        <Spacer x={20} />
       </View>
-
-      <Spacer x={20} />
-
-      <View style={styles.actionsContainer}>
-        <List
-          data={actions}
-          keyExtractor={item => item}
-          separator={<Spacer y={10} />}
-          renderItem={({ item }) => {
-            const isSelected = selectedAction === item
-            return (
-              <TouchableOpacity
-                onPress={() => selectAction(item)}
-                style={[styles.actionButton, isSelected && styles.selected]}
-              >
-                <Txt style={[styles.actionButtonText, isSelected && styles.txtSelected]}>
-                  {getWeaponActionLabel(weapon, item)}
-                </Txt>
-              </TouchableOpacity>
-            )
-          }}
-        />
-      </View>
-
-      <Spacer x={20} />
-
-      <TouchableOpacity
-        disabled={selectedAction === null}
-        style={styles.playContainer}
-        onPress={() => doAction()}
-      >
-        <AntDesign
-          name="playcircleo"
-          size={70}
-          color={selectedAction === null ? "transparent" : colors.secColor}
-        />
-      </TouchableOpacity>
-      <Spacer x={20} />
-    </View>
+      <Spacer y={10} />
+    </Section>
   )
 }

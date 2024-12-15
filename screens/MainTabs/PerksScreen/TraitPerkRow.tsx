@@ -36,9 +36,7 @@ const getSymptomDisplayValue = (symptom: Symptom) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    backgroundColor: colors.primColor,
-    paddingVertical: 5,
-    paddingHorizontal: 10
+    padding: 5
   },
   selected: {
     backgroundColor: colors.terColor

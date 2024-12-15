@@ -14,6 +14,14 @@ import colors from "styles/colors"
 
 const headerElementsIds: HeaderElementId[] = ["date", "time", "squadName", "home"]
 
+function HeaderDatetime() {
+  return <Header headerElementsIds={headerElementsIds} />
+}
+
+function TabBarComponent(props: any) {
+  return <TabBar tabbarLabel="Admin" {...props} />
+}
+
 export default function AdminLayout() {
   const squad = useSquad()
   const { members } = squad
@@ -33,10 +41,10 @@ export default function AdminLayout() {
     <AdminContext.Provider value={context}>
       <View style={{ padding: 10, flex: 1 }}>
         <Tabs
-          tabBar={props => <TabBar tabBarId="main" {...props} />}
+          tabBar={TabBarComponent}
           screenOptions={{
             tabBarHideOnKeyboard: true,
-            header: () => <Header headerElementsIds={headerElementsIds} />,
+            header: HeaderDatetime,
             headerStyle: { backgroundColor: colors.primColor, borderBottomWidth: 0 },
             sceneStyle: { backgroundColor: colors.primColor }
           }}

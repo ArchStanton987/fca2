@@ -1,8 +1,11 @@
-import { Pressable, View } from "react-native"
+import { View } from "react-native"
 
+import List from "components/List"
+import ListLabel from "components/ListLabel"
+import Selectable from "components/Selectable"
+import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-
-import styles from "./AttributeRow.styles"
+import layout from "styles/layout"
 
 type RowProps = {
   label: string
@@ -13,66 +16,46 @@ type RowProps = {
     currValue: number | string
   }
   isSelected?: boolean
-  onPress?: () => void
-  isHeader?: boolean
+  onPress: () => void
   unit?: string
 }
 
 export default function AttributeRow(props: RowProps) {
-  const { label, values, isSelected = false, onPress, isHeader = false, unit } = props
+  const { label, values, isSelected = false, onPress, unit } = props
   return (
-    <Pressable
-      style={[styles.row, isSelected && styles.rowSelected, isHeader && styles.listHeader]}
-      onPress={onPress}
-    >
-      <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
-        <Txt>{label}</Txt>
-      </View>
-      {Object.entries(values).map(([key, value]) => {
-        let preprend = ""
-        const cpyValue = typeof value === "string" ? parseInt(value, 10) : value
-        if (key === "modValue") {
-          preprend = cpyValue > 0 ? "+" : ""
-        }
-        return (
-          <View key={`${label}-${key}`} style={styles.attributeRow}>
-            <Txt>
-              {preprend}
-              {value}
-              {unit}
-            </Txt>
-          </View>
-        )
-      })}
-    </Pressable>
-  )
-}
-
-export function AttributeHeader() {
-  return (
-    <AttributeRow
-      isHeader
-      label="ATTRIBUT"
-      values={{
-        baseValue: "BASE",
-        modValue: "MOD",
-        currValue: "TOT"
-      }}
-    />
-  )
-}
-
-export function SkillsHeader() {
-  return (
-    <AttributeRow
-      isHeader
-      label="ATTRIBUT"
-      values={{
-        baseValue: "BASE",
-        upValue: "UP",
-        modValue: "MOD",
-        currValue: "TOT"
-      }}
-    />
+    <Selectable isSelected={isSelected} onPress={onPress}>
+      <ListLabel label={label} />
+      <List
+        data={Object.entries(values)}
+        keyExtractor={item => item[0]}
+        horizontal
+        separator={<Spacer x={layout.smallLineHeight} />}
+        renderItem={({ item }) => {
+          const [key, value] = item
+          let preprend = ""
+          const cpyValue = typeof value === "string" ? parseInt(value, 10) : value
+          if (key === "modValue") {
+            preprend = cpyValue > 0 ? "+" : ""
+          }
+          return (
+            <View
+              key={`${label}-${key}`}
+              style={{
+                width: 45,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              <Txt>
+                {preprend}
+                {value}
+                {unit}
+              </Txt>
+            </View>
+          )
+        }}
+      />
+    </Selectable>
   )
 }

@@ -23,9 +23,8 @@ export function ListFooter() {
 export function ListHeader() {
   return (
     <View>
-      <View style={styles.container}>
+      <View style={[styles.container, { paddingTop: 0 }]}>
         <View style={styles.labelContainer}>
-          <Txt>CONNAISSANCE</Txt>
           <Spacer fullspace />
           <Txt>BONUS</Txt>
         </View>
@@ -56,7 +55,6 @@ export function ListHeader() {
           )}
         />
       </View>
-      <Spacer y={5} />
     </View>
   )
 }

@@ -1,15 +1,18 @@
 import React, { memo, useState } from "react"
-import { FlatList, ScrollView, View } from "react-native"
+import { ScrollView, View } from "react-native"
 
 import { Perk } from "lib/character/abilities/perks/perks.types"
 import { Trait } from "lib/character/abilities/traits/traits.types"
 
 import DrawerPage from "components/DrawerPage"
+import List from "components/List"
 import Section from "components/Section"
+import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import TraitPerkRow from "screens/MainTabs/PerksScreen/TraitPerkRow"
+import layout from "styles/layout"
 
 function PerksScreen() {
   const { traits, perks } = useCharacter()
@@ -22,30 +25,28 @@ function PerksScreen() {
 
   return (
     <DrawerPage>
-      <Section style={{ flex: 1 }}>
-        {/* TRAITS */}
-        {traits.length > 0 ? (
-          <>
-            <Txt>TRAITS</Txt>
-            <Spacer y={10} />
-            {traits.map(trait => (
-              <TraitPerkRow
-                key={trait.id}
-                trait={trait}
-                onPress={onPressElement}
-                isSelected={selectedElement?.id === trait.id}
-              />
-            ))}
-            <Spacer y={20} />
-          </>
-        ) : null}
+      <View style={{ flex: 1 }}>
+        <Section title="traits" style={{ minHeight: 80 }}>
+          {traits.length > 0 ? (
+            <List
+              data={traits}
+              keyExtractor={item => item.id}
+              renderItem={({ item }) => (
+                <TraitPerkRow
+                  trait={item}
+                  onPress={() => onPressElement(item)}
+                  isSelected={item.id === selectedElement?.id}
+                />
+              )}
+            />
+          ) : null}
+        </Section>
 
-        {/* PERKS */}
-        {perks.length > 0 ? (
-          <>
-            <Txt>PERKS</Txt>
-            <Spacer y={10} />
-            <FlatList
+        <Spacer y={layout.globalPadding} />
+
+        <ScrollSection style={{ flex: 1, minHeight: 80 }} title="specs">
+          {perks.length > 0 ? (
+            <List
               data={perks}
               keyExtractor={item => item.id}
               renderItem={({ item }) => {
@@ -54,25 +55,21 @@ function PerksScreen() {
                   <TraitPerkRow
                     isSelected={isSelected}
                     trait={item}
-                    onPress={() => setSelectedElement(item)}
+                    onPress={() => onPressElement(item)}
                   />
                 )
               }}
             />
-          </>
-        ) : null}
-      </Section>
-      <Spacer x={10} />
-      <View style={{ width: 200 }}>
-        <Section style={{ width: 200 }}>
-          <Txt>DESCRIPTION</Txt>
-          <Spacer y={10} />
-          <ScrollView>
-            <Txt>{selectedElement?.description}</Txt>
-            <Spacer y={10} />
-          </ScrollView>
-        </Section>
+          ) : null}
+        </ScrollSection>
       </View>
+      <Spacer x={10} />
+      <Section title="description" style={{ width: 200 }}>
+        <ScrollView>
+          <Txt>{selectedElement?.description}</Txt>
+          <Spacer y={10} />
+        </ScrollView>
+      </Section>
     </DrawerPage>
   )
 }

@@ -1,41 +1,26 @@
-import { useLocalSearchParams } from "expo-router"
-import { Tabs } from "expo-router/tabs"
+import { View } from "react-native"
 
-import Header from "components/Header/Header"
-import { HeaderElementId } from "components/Header/Header.utils"
-import TabBar from "components/TabBar/TabBar"
-import colors from "styles/colors"
+import { Slot } from "expo-router"
 
-const datetime: HeaderElementId[] = ["date", "time"]
-const carry: HeaderElementId[] = ["weight", "place"]
+import Drawer from "components/Drawer/Drawer"
+import Spacer from "components/Spacer"
+import styles from "styles/DrawerLayout.styles"
+import layout from "styles/layout"
 
-const headerElementsIds: HeaderElementId[] = [...datetime, "progression", ...carry, "caps"]
+const navElements = [
+  { path: "weapons", label: "Armes" },
+  { path: "clothings", label: "Armures" },
+  { path: "consumables", label: "Consommables" },
+  { path: "misc-objects", label: "Divers" },
+  { path: "ammo", label: "Munitions" }
+]
 
 export default function InventoryLayout() {
-  const { squadId, charId } = useLocalSearchParams<{ squadId: string; charId: string }>()
   return (
-    <Tabs
-      tabBar={props => <TabBar tabBarId="inventory" {...props} />}
-      screenOptions={{
-        tabBarHideOnKeyboard: true,
-        header: () => <Header headerElementsIds={headerElementsIds} />,
-        headerStyle: {
-          backgroundColor: colors.primColor,
-          height: 40,
-          borderBottomWidth: 0
-        },
-        sceneStyle: { backgroundColor: colors.primColor }
-      }}
-    >
-      <Tabs.Screen
-        name="weapons"
-        options={{ title: "Armes" }}
-        initialParams={{ squadId, charId }}
-      />
-      <Tabs.Screen name="clothings" options={{ title: "Armures" }} />
-      <Tabs.Screen name="consumables" options={{ title: "Consommables" }} />
-      <Tabs.Screen name="misc-objects" options={{ title: "Divers" }} />
-      <Tabs.Screen name="ammo" options={{ title: "Munitions" }} />
-    </Tabs>
+    <View style={styles.drawerLayout}>
+      <Drawer sectionId="inventory" navElements={navElements} />
+      <Spacer x={layout.globalPadding} />
+      <Slot />
+    </View>
   )
 }

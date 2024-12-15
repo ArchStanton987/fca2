@@ -21,13 +21,16 @@ const routes = {
     perks: `${main}/perks`
   },
   inventory: {
+    index: `${inventory}/weapons`,
     weapons: `${inventory}/weapons`,
     clothings: `${inventory}/clothings`,
     consumables: `${inventory}/consumables`,
     miscObj: `${inventory}/misc-objects`,
     ammo: `${inventory}/ammo`
   },
-  combat,
+  combat: {
+    index: `${combat}/recap`
+  },
   modal: {
     updateEffects: `${modal}/update-effects`,
     updateEffectsConfirmation: `${modal}/update-effects-confirmation`,

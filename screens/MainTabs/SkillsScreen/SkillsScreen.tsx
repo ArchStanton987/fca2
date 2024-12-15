@@ -1,14 +1,23 @@
 import React, { memo } from "react"
-import { FlatList } from "react-native"
 
 import skillsMap from "lib/character/abilities/skills/skills"
 
 import DrawerPage from "components/DrawerPage"
-import Section from "components/Section"
-import AttributeRow, { SkillsHeader } from "components/tables/Attributes/AttributeRow"
+import List from "components/List"
+import ScrollSection from "components/Section/ScrollSection"
+import { ComposedTitleProps } from "components/Section/Section.types"
+import AttributeRow from "components/tables/Attributes/AttributeRow"
 import { useCharacter } from "contexts/CharacterContext"
 
 const skillsArray = Object.values(skillsMap)
+
+const title: ComposedTitleProps = [
+  { title: "attribut", containerStyle: { flex: 1 } },
+  { title: "base", containerStyle: { width: 55 } },
+  { title: "up", containerStyle: { width: 55 } },
+  { title: "mod", containerStyle: { width: 55 } },
+  { title: "tot", containerStyle: { width: 55 } }
+]
 
 function SkillsScreen() {
   const { skills } = useCharacter()
@@ -16,22 +25,20 @@ function SkillsScreen() {
 
   return (
     <DrawerPage>
-      <Section style={{ flex: 1 }}>
-        <FlatList
+      <ScrollSection style={{ flex: 1 }} contentContainerStyle={{ paddingRight: 0 }} title={title}>
+        <List
           data={skillsArray}
           keyExtractor={item => item.id}
-          ListHeaderComponent={SkillsHeader}
-          stickyHeaderIndices={[0]}
           renderItem={({ item }) => {
             const baseValue = base[item.id]
             const upValue = up[item.id]
             const modValue = mod[item.id]
             const currValue = curr[item.id]
             const values = { baseValue, upValue, modValue, currValue }
-            return <AttributeRow label={item.label} values={values} />
+            return <AttributeRow label={item.label} values={values} onPress={() => {}} />
           }}
         />
-      </Section>
+      </ScrollSection>
     </DrawerPage>
   )
 }

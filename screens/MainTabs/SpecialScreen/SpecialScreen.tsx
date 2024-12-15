@@ -1,15 +1,24 @@
 import React, { memo, useState } from "react"
-import { FlatList, ScrollView } from "react-native"
 
 import specialMap, { specialArray } from "lib/character/abilities/special/special"
 import { SpecialId } from "lib/character/abilities/special/special.types"
 
 import DrawerPage from "components/DrawerPage"
-import Section from "components/Section"
+import List from "components/List"
+import ScrollSection from "components/Section/ScrollSection"
+import { ComposedTitleProps } from "components/Section/Section.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import AttributeRow, { AttributeHeader } from "components/tables/Attributes/AttributeRow"
+import AttributeRow from "components/tables/Attributes/AttributeRow"
 import { useCharacter } from "contexts/CharacterContext"
+import layout from "styles/layout"
+
+const title: ComposedTitleProps = [
+  { title: "attribut", containerStyle: { flex: 1 } },
+  { title: "base", containerStyle: { width: 55 } },
+  { title: "mod", containerStyle: { width: 55 } },
+  { title: "tot", containerStyle: { width: 55 } }
+]
 
 function SpecialScreen() {
   const [selectedId, setSelectedId] = useState<SpecialId | null>(null)
@@ -19,12 +28,10 @@ function SpecialScreen() {
 
   return (
     <DrawerPage>
-      <Section style={{ flex: 1 }}>
-        <FlatList
+      <ScrollSection style={{ flex: 1 }} contentContainerStyle={{ paddingRight: 0 }} title={title}>
+        <List
           data={specialArray}
           keyExtractor={item => item.id}
-          ListHeaderComponent={AttributeHeader}
-          stickyHeaderIndices={[0]}
           renderItem={({ item }) => {
             const baseValue = base[item.id]
             const modValue = mod[item.id]
@@ -39,15 +46,11 @@ function SpecialScreen() {
             )
           }}
         />
-      </Section>
-      <Spacer x={10} />
-      <Section style={{ width: 200 }}>
-        <ScrollView>
-          <Txt>DESCRIPTION</Txt>
-          <Spacer y={10} />
-          {selectedId && <Txt>{specialMap[selectedId].description}</Txt>}
-        </ScrollView>
-      </Section>
+      </ScrollSection>
+      <Spacer x={layout.globalPadding} />
+      <ScrollSection style={{ width: 200 }} title="description">
+        {selectedId && <Txt>{specialMap[selectedId].description}</Txt>}
+      </ScrollSection>
     </DrawerPage>
   )
 }
