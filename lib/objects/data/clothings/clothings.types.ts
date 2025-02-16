@@ -1,5 +1,5 @@
-import { Symptom } from "../../../character/effects/symptoms.type"
-import { BodyPart } from "../../../character/health/health-types"
+import { DbSymptoms, Symptom } from "../../../character/effects/symptoms.type"
+import { BodyPart, DbBodyParts } from "../../../character/health/health-types"
 
 export type ClothingType = "light" | "medium" | "heavy" | "carry"
 
@@ -21,6 +21,24 @@ export type ClothingData = {
   weight: number
   value: number
   symptoms: Symptom[]
+}
+
+export type DbClothingData = {
+  id: string
+  label: string
+  type: ClothingType
+  armorClass: number
+  threshold: number
+  physicalDamageResist: number
+  laserDamageResist: number
+  plasmaDamageResist: number
+  fireDamageResist: number
+  protects: DbBodyParts
+  malus: number
+  place: number
+  weight: number
+  value: number
+  symptoms: DbSymptoms
 }
 
 export type Clothing = {

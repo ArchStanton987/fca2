@@ -22,6 +22,7 @@ export type Symptom = {
   value: number
   level?: number
 }
+export type DbSymptoms = Record<ChangeableAttribute, Symptom>
 export type Modifier = {
   id: HealthStatusId
   operation: Operation

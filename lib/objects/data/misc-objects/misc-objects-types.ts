@@ -28,6 +28,15 @@ export type MiscObjectData = {
   weight: number
 }
 
+export type DbMiscObjectData = {
+  id: string
+  label: string
+  description: string
+  value: number | "?"
+  place: number
+  weight: number
+}
+
 export type MiscObject = {
   id: MiscObjectId
   dbKey: string

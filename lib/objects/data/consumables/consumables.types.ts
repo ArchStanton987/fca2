@@ -2,7 +2,9 @@ import { KnowledgeId } from "lib/character/abilities/knowledges/knowledge-types"
 import { SkillId } from "lib/character/abilities/skills/skills.types"
 import { EffectId } from "lib/character/effects/effects.types"
 import { Modifier } from "lib/character/effects/symptoms.type"
+import { HealthStatusId } from "lib/character/health/health-types"
 
+export type ConsumableType = "heal" | "kit" | "drugs"
 export type DbConsumable = { id: ConsumableId; remainingUse?: number }
 
 export type ConsumableData = {
@@ -21,6 +23,24 @@ export type ConsumableData = {
   knowledges?: KnowledgeId[]
   skillId?: SkillId
   modifiers?: Modifier[]
+}
+
+export type DbConsumableData = {
+  id: ConsumableId
+  label: string
+  effectId: EffectId | null
+  challengeLabel: string | null
+  od?: number | false
+  addict?: `${number}-${number}` | false
+  value: number
+  place: number
+  weight: number
+  description: string
+  tags: Record<ConsumableType, ConsumableType>
+  maxUsage: number
+  knowledges?: Record<KnowledgeId, KnowledgeId>
+  skillId?: Record<SkillId, SkillId>
+  modifiers?: Record<HealthStatusId, Modifier>
 }
 
 export type Consumable = {
