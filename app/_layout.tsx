@@ -11,6 +11,7 @@ import { toastConfig } from "lib/common/ui/toast"
 import Toast from "react-native-toast-message"
 
 import fonts from "assets/fonts"
+import AdditionalElementsProvider from "providers/AdditionalElementsProvider"
 import LoadingScreen from "screens/LoadingScreen"
 import colors from "styles/colors"
 
@@ -52,9 +53,11 @@ export default function RootLayout() {
   return (
     <View style={{ flex: 1, backgroundColor: colors.primColor }}>
       <AuthContainer>
-        <StatusBar hidden />
-        <Slot />
-        <Toast config={toastConfig} />
+        <AdditionalElementsProvider>
+          <StatusBar hidden />
+          <Slot />
+          <Toast config={toastConfig} />
+        </AdditionalElementsProvider>
       </AuthContainer>
     </View>
   )

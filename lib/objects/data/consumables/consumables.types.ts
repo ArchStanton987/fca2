@@ -39,7 +39,7 @@ export type DbConsumableData = {
   tags: Record<ConsumableType, ConsumableType>
   maxUsage: number
   knowledges?: Record<KnowledgeId, KnowledgeId>
-  skillId?: Record<SkillId, SkillId>
+  skillId?: SkillId
   modifiers?: Record<HealthStatusId, Modifier>
 }
 

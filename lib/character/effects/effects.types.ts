@@ -1,4 +1,4 @@
-import { Symptom } from "./symptoms.type"
+import { DbSymptoms, Symptom } from "./symptoms.type"
 
 export type DbEffect = { id: EffectId; startTs?: string; endTs?: string }
 
@@ -76,6 +76,17 @@ export type EffectData = {
   description: string
   od: number | null
   nextEffectId: EffectId | null
+}
+
+export type DbEffectData = {
+  id: string
+  type: EffectType
+  label: string
+  symptoms: DbSymptoms
+  length: number | null
+  description: string
+  od: number | null
+  nextEffectId: string | null
 }
 
 export type Effect = {
