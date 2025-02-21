@@ -4,10 +4,10 @@ import { ClothingData, ClothingId } from "lib/objects/data/clothings/clothings.t
 import { ConsumableData, ConsumableId } from "lib/objects/data/consumables/consumables.types"
 import { MiscObjectData, MiscObjectId } from "lib/objects/data/misc-objects/misc-objects-types"
 
-type AdditionalElContextType = {
-  clothings: Record<ClothingId, ClothingData>
-  consumables: Record<ConsumableId, ConsumableData>
-  miscObjects: Record<MiscObjectId, MiscObjectData>
+export type AdditionalElContextType = {
+  newClothings: Record<ClothingId, ClothingData>
+  newConsumables: Record<ConsumableId, ConsumableData>
+  newMiscObjects: Record<MiscObjectId, MiscObjectData>
 }
 
 export const AdditionalElementsContext = createContext<AdditionalElContextType>(

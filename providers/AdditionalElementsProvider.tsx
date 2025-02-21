@@ -24,58 +24,58 @@ import useRtdbSub from "hooks/db/useRtdbSub"
 const useCases = getUseCases("rtdb")
 
 export default function AdditionalElementsProvider({ children }: { children: React.ReactNode }) {
-  const newClothings = useRtdbSub(useCases.additional.subAdditionalClothings())
-  const newConsumables = useRtdbSub(useCases.additional.subAdditionalConsumables())
-  const newMiscObjects = useRtdbSub(useCases.additional.subAdditionalMisc())
-  const newEffects = useRtdbSub(useCases.additional.subAdditionalEffects())
+  const clothings = useRtdbSub(useCases.additional.subAdditionalClothings())
+  const consumables = useRtdbSub(useCases.additional.subAdditionalConsumables())
+  const miscObjects = useRtdbSub(useCases.additional.subAdditionalMisc())
+  const effects = useRtdbSub(useCases.additional.subAdditionalEffects())
 
-  const clothings = useMemo(() => {
-    if (!newClothings) return clothingsMap
-    const newClothingsArr = Object.values(newClothings) as unknown as DbClothingData[]
+  const newClothings = useMemo(() => {
+    if (!clothings) return clothingsMap
+    const newClothingsArr = Object.values(clothings) as unknown as DbClothingData[]
     const result = {} as Record<ClothingId, ClothingData>
     newClothingsArr.forEach((clothing: DbClothingData) => {
       const clothingData = ClothingsMappers.toDomain(clothing)
       result[clothingData.id] = clothingData
     })
     return { ...clothingsMap, ...result }
-  }, [newClothings])
+  }, [clothings])
 
-  const consumables = useMemo(() => {
-    if (!newConsumables) return consumablesMap
-    const newConsumablesArr = Object.values(newConsumables) as unknown as DbConsumableData[]
+  const newConsumables = useMemo(() => {
+    if (!consumables) return consumablesMap
+    const newConsumablesArr = Object.values(consumables) as unknown as DbConsumableData[]
     const result = {} as Record<string, ConsumableData>
     newConsumablesArr.forEach((consumable: DbConsumableData) => {
       const consumableData = ConsumablesMapper.toDomain(consumable)
       result[consumableData.id] = consumableData
     })
     return { ...consumablesMap, ...result }
-  }, [newConsumables])
+  }, [consumables])
 
-  const miscObjects = useMemo(() => {
-    if (!newMiscObjects) return miscObjectsMap
-    const newMiscObjectsArr = Object.values(newMiscObjects) as unknown as DbMiscObjectData[]
+  const newMiscObjects = useMemo(() => {
+    if (!miscObjects) return miscObjectsMap
+    const newMiscObjectsArr = Object.values(miscObjects) as unknown as DbMiscObjectData[]
     const result = {} as Record<string, MiscObjectData>
     newMiscObjectsArr.forEach(miscObject => {
       const miscObjectData = MiscObjectsMappers.toDomain(miscObject)
       result[miscObjectData.id] = miscObjectData
     })
     return { ...miscObjectsMap, ...result }
-  }, [newMiscObjects])
+  }, [miscObjects])
 
-  const effects = useMemo(() => {
-    if (!newEffects) return effectsMap
-    const newEffectsArr = Object.values(newEffects) as unknown as DbEffectData[]
+  const newEffects = useMemo(() => {
+    if (!effects) return effectsMap
+    const newEffectsArr = Object.values(effects) as unknown as DbEffectData[]
     const result = {} as Record<string, EffectData>
     newEffectsArr.forEach(effect => {
       const effectData = EffectsMappers.toDomain(effect)
       result[effectData.id] = effectData
     })
     return { ...effectsMap, ...result }
-  }, [newEffects])
+  }, [effects])
 
   const value = useMemo(
-    () => ({ clothings, consumables, miscObjects, effects }),
-    [clothings, consumables, miscObjects, effects]
+    () => ({ newClothings, newConsumables, newMiscObjects, newEffects }),
+    [newClothings, newConsumables, newMiscObjects, newEffects]
   )
   return (
     <AdditionalElementsContext.Provider value={value}>
