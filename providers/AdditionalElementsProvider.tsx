@@ -1,8 +1,6 @@
 import { useMemo } from "react"
 
-import effectsMap from "lib/character/effects/effects"
-import EffectsMappers from "lib/character/effects/effects.mappers"
-import { DbEffectData, EffectData } from "lib/character/effects/effects.types"
+import getUseCases from "lib/get-use-cases"
 import clothingsMap from "lib/objects/data/clothings/clothings"
 import ClothingsMappers from "lib/objects/data/clothings/clothings.mappers"
 import {
@@ -16,18 +14,17 @@ import { ConsumableData, DbConsumableData } from "lib/objects/data/consumables/c
 import miscObjectsMap from "lib/objects/data/misc-objects/misc-objects"
 import { DbMiscObjectData, MiscObjectData } from "lib/objects/data/misc-objects/misc-objects-types"
 import MiscObjectsMappers from "lib/objects/data/misc-objects/misc-objects.mappers"
-import getUseCases from "lib/shared/db/get-use-cases"
 
 import { AdditionalElementsContext } from "contexts/AdditionalElementsContext"
 import useRtdbSub from "hooks/db/useRtdbSub"
 
-const useCases = getUseCases("rtdb")
+const useCases = getUseCases()
 
 export default function AdditionalElementsProvider({ children }: { children: React.ReactNode }) {
   const clothings = useRtdbSub(useCases.additional.subAdditionalClothings())
   const consumables = useRtdbSub(useCases.additional.subAdditionalConsumables())
   const miscObjects = useRtdbSub(useCases.additional.subAdditionalMisc())
-  const effects = useRtdbSub(useCases.additional.subAdditionalEffects())
+  // const effects = useRtdbSub(useCases.additional.subAdditionalEffects())
 
   const newClothings = useMemo(() => {
     if (!clothings) return clothingsMap
@@ -62,20 +59,30 @@ export default function AdditionalElementsProvider({ children }: { children: Rea
     return { ...miscObjectsMap, ...result }
   }, [miscObjects])
 
-  const newEffects = useMemo(() => {
-    if (!effects) return effectsMap
-    const newEffectsArr = Object.values(effects) as unknown as DbEffectData[]
-    const result = {} as Record<string, EffectData>
-    newEffectsArr.forEach(effect => {
-      const effectData = EffectsMappers.toDomain(effect)
-      result[effectData.id] = effectData
-    })
-    return { ...effectsMap, ...result }
-  }, [effects])
+  // const newEffects = useMemo(() => {
+  //   if (!effects) return effectsMap
+  //   const newEffectsArr = Object.values(effects) as unknown as DbEffectData[]
+  //   const result = {} as Record<string, EffectData>
+  //   newEffectsArr.forEach(effect => {
+  //     const effectData = EffectsMappers.toDomain(effect)
+  //     result[effectData.id] = effectData
+  //   })
+  //   return { ...effectsMap, ...result }
+  // }, [effects])
 
   const value = useMemo(
-    () => ({ newClothings, newConsumables, newMiscObjects, newEffects }),
-    [newClothings, newConsumables, newMiscObjects, newEffects]
+    () => ({
+      newClothings,
+      newConsumables,
+      newMiscObjects
+      //  newEffects
+    }),
+    [
+      newClothings,
+      newConsumables,
+      newMiscObjects
+      //  newEffects
+    ]
   )
   return (
     <AdditionalElementsContext.Provider value={value}>

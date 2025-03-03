@@ -1,8 +1,6 @@
 import React, { memo, useState } from "react"
 import { ScrollView, View } from "react-native"
 
-import useCases from "lib/common/use-cases"
-
 import CheckBox from "components/CheckBox/CheckBox"
 import DrawerPage from "components/DrawerPage"
 import List from "components/List"
@@ -10,12 +8,14 @@ import Section from "components/Section"
 import Spacer from "components/Spacer"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
+import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 
 import styles from "./CombatScreen.styles"
 import WeaponCard from "./WeaponCard"
 
 function CombatScreen() {
+  const useCases = useGetUseCases()
   const character = useCharacter()
   const inventory = useInventory()
   const { status, secAttr, equipedObjects } = character

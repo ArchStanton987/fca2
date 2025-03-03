@@ -5,7 +5,6 @@ import { router, useLocalSearchParams } from "expo-router"
 
 import skillsMap from "lib/character/abilities/skills/skills"
 import { SkillId, SkillsValues } from "lib/character/abilities/skills/skills.types"
-import useCases from "lib/common/use-cases"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import ModalCta from "components/ModalCta/ModalCta"
@@ -14,12 +13,14 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import ModalBody from "components/wrappers/ModalBody"
 import { useCharacter } from "contexts/CharacterContext"
+import { useGetUseCases } from "providers/UseCasesProvider"
 
 type SkillsConfirmationModalParams = DrawerParams & {
   newUpSkills?: string
 }
 
 export default function UpdateSkillsConfirmation() {
+  const useCases = useGetUseCases()
   const { charId, skills } = useCharacter()
   const { up } = skills
   const params = useLocalSearchParams<SkillsConfirmationModalParams>()

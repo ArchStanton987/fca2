@@ -1,5 +1,6 @@
 import { createContext, useContext } from "react"
 
+import { defaultCreatedElements } from "lib/objects/created-elements"
 import { ClothingData, ClothingId } from "lib/objects/data/clothings/clothings.types"
 import { ConsumableData, ConsumableId } from "lib/objects/data/consumables/consumables.types"
 import { MiscObjectData, MiscObjectId } from "lib/objects/data/misc-objects/misc-objects-types"
@@ -8,10 +9,11 @@ export type AdditionalElContextType = {
   newClothings: Record<ClothingId, ClothingData>
   newConsumables: Record<ConsumableId, ConsumableData>
   newMiscObjects: Record<MiscObjectId, MiscObjectData>
+  // newEffects: Record<string, EffectData>
 }
 
 export const AdditionalElementsContext = createContext<AdditionalElContextType>(
-  {} as AdditionalElContextType
+  defaultCreatedElements as AdditionalElContextType
 )
 
 export const useAdditionalElements = () => {

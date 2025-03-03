@@ -11,8 +11,7 @@ import {
 import { getRtdbSub } from "../common/utils/rtdb-utils"
 import { AmmoType } from "./data/ammo/ammo.types"
 import { Clothing, DbClothing } from "./data/clothings/clothings.types"
-import consumablesMap from "./data/consumables/consumables"
-import { Consumable, ConsumableId, DbConsumable } from "./data/consumables/consumables.types"
+import { Consumable, DbConsumable } from "./data/consumables/consumables.types"
 import { DbMiscObject, MiscObject } from "./data/misc-objects/misc-objects-types"
 import { DbInventory } from "./data/objects.types"
 import { DbWeapon, Weapon } from "./data/weapons/weapons.types"
@@ -25,19 +24,7 @@ export type CollectibleInventoryCategory = keyof Pick<
 export type RecordInventoryCategory = keyof Pick<DbInventory, "ammo" | "caps">
 export type InventoryCollectible = Weapon | Clothing | Consumable | MiscObject
 
-type DbObjPayload = Partial<DbWeapon | DbClothing | DbConsumable | DbMiscObject>
-
-const getDbConsumable = (id: ConsumableId, data?: Partial<DbConsumable>): DbConsumable => ({
-  id,
-  remainingUse: data?.remainingUse || consumablesMap[id].maxUsage
-})
-
-const getDbObject = (objectId: InventoryCollectible["id"], data?: DbObjPayload) => {
-  const consumable = consumablesMap[objectId as ConsumableId]
-  // TODO: use a generic instead of casting type
-  if (consumable) return getDbConsumable(objectId as ConsumableId, data as Partial<DbConsumable>)
-  return { id: objectId }
-}
+export type DbObjPayload = Partial<DbWeapon | DbClothing | DbConsumable | DbMiscObject>
 
 const getContainerPath = (charId: string) => dbKeys.char(charId).inventory.index
 
@@ -61,13 +48,12 @@ const fbInventoryRepository = {
     charId: string,
     array: {
       category: CollectibleInventoryCategory
-      objectId: InventoryCollectible["id"]
+      dbObject: DbObjPayload
     }[]
   ) => {
     const updates: { containerUrl: string; data: any }[] = []
-    array.forEach(({ category, objectId }) => {
+    array.forEach(({ category, dbObject }) => {
       const path = getCategoryPath(charId, category)
-      const dbObject = getDbObject(objectId)
       updates.push({ containerUrl: path, data: dbObject })
     })
 

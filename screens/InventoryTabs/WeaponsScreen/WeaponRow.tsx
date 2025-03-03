@@ -1,7 +1,6 @@
 import React from "react"
 import { PressableProps, View } from "react-native"
 
-import useCases from "lib/common/use-cases"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
 import Toast from "react-native-toast-message"
 
@@ -13,6 +12,7 @@ import Selectable from "components/Selectable"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
+import { useGetUseCases } from "providers/UseCasesProvider"
 
 type WeaponRowProps = PressableProps & {
   weapon: Weapon
@@ -21,6 +21,7 @@ type WeaponRowProps = PressableProps & {
 }
 
 export default function WeaponRow({ weapon, isSelected, onPress, ...rest }: WeaponRowProps) {
+  const useCases = useGetUseCases()
   const character = useCharacter()
   const { isEquiped, skill, ammo, data } = weapon
   const { label, damageBasic, damageBurst, ammoType } = data

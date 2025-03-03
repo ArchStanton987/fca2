@@ -5,8 +5,13 @@ import dbKeys from "db/db-keys"
 import { DataSnapshot, onValue, ref } from "firebase/database"
 import Character from "lib/character/Character"
 import Squad from "lib/character/Squad"
+import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
 
-export default function useGetSquadCharacters(membersIds: string[], squad: Squad) {
+export default function useGetSquadCharacters(
+  membersIds: string[],
+  squad: Squad,
+  newElements: CreatedElements = defaultCreatedElements
+) {
   const [characters, setCharacters] = useState<Record<string, Character>>({})
 
   useEffect(() => {
@@ -19,7 +24,7 @@ export default function useGetSquadCharacters(membersIds: string[], squad: Squad
         if (snapshot.exists()) {
           // Create Character instance for each snapshot
           const characterData = snapshot.val()
-          const characterInstance = new Character(characterData, squad, memberId)
+          const characterInstance = new Character(characterData, squad, memberId, newElements)
 
           // Update characters state
           setCharacters(prev => ({ ...prev, [memberId]: characterInstance }))

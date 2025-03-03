@@ -4,7 +4,6 @@ import { Stack, useLocalSearchParams } from "expo-router"
 
 import { NativeStackNavigationOptions } from "@react-navigation/native-stack"
 import Character, { DbChar } from "lib/character/Character"
-import useCases from "lib/common/use-cases"
 import Inventory from "lib/objects/Inventory"
 import Toast from "react-native-toast-message"
 
@@ -12,8 +11,10 @@ import { DrawerParams } from "components/Drawer/Drawer.params"
 import { CharacterContext } from "contexts/CharacterContext"
 import { InventoryContext } from "contexts/InventoryContext"
 import { useSquad } from "contexts/SquadContext"
+import useCreatedElements from "hooks/context/useCreatedElements"
 import useRtdbSub from "hooks/db/useRtdbSub"
 import UpdatesProvider from "providers/UpdatesProvider"
+import { useGetUseCases } from "providers/UseCasesProvider"
 import LoadingScreen from "screens/LoadingScreen"
 import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
@@ -31,6 +32,8 @@ const modalOptions: NativeStackNavigationOptions = {
 export default function CharStack() {
   const { charId } = useLocalSearchParams() as SearchParams<DrawerParams>
 
+  const useCases = useGetUseCases()
+
   const squad = useSquad()
 
   const [currDatetime, setCurrDatetime] = useState(squad.date.toJSON())
@@ -42,12 +45,14 @@ export default function CharStack() {
   const inventory = useRtdbSub(useCases.inventory.getAll(charId))
   const status = useRtdbSub(useCases.status.get(charId))
 
+  const newElements = useCreatedElements()
+
   const character = useMemo(() => {
     const dbCharData = { abilities, effects, equipedObj, status }
     if (Object.values(dbCharData).some(data => data === undefined)) return null
     if (!squad) return null
-    return new Character(dbCharData as DbChar, squad, charId)
-  }, [squad, charId, abilities, effects, equipedObj, status])
+    return new Character(dbCharData as DbChar, squad, charId, newElements)
+  }, [squad, charId, abilities, effects, equipedObj, status, newElements])
 
   const charInventory = useMemo(() => {
     if (!character || !inventory) return null
@@ -59,8 +64,8 @@ export default function CharStack() {
       dbEquipedObjects,
       currSpecial: special.curr
     }
-    return new Inventory(inventory, charData)
-  }, [character, inventory])
+    return new Inventory(inventory, charData, newElements)
+  }, [character, inventory, newElements])
 
   if (!character || !charInventory || !squad) return <LoadingScreen />
 

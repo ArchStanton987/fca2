@@ -1,4 +1,3 @@
-import useCases from "lib/common/use-cases"
 import { Consumable } from "lib/objects/data/consumables/consumables.types"
 
 import Spacer from "components/Spacer"
@@ -6,8 +5,10 @@ import Txt from "components/Txt"
 import RevertColorsPressable from "components/wrappers/RevertColorsPressable/RevertColorsPressable"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
+import { useGetUseCases } from "providers/UseCasesProvider"
 
 export default function ConsumableDetails({ dbKey }: { dbKey: Consumable["dbKey"] | null }) {
+  const useCases = useGetUseCases()
   const character = useCharacter()
   const { consumablesRecord } = useInventory()
 

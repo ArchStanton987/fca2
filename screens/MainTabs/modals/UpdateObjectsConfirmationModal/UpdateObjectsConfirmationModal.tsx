@@ -2,8 +2,6 @@ import { StyleSheet, View } from "react-native"
 
 import { router } from "expo-router"
 
-import useCases from "lib/common/use-cases"
-
 import ModalCta from "components/ModalCta/ModalCta"
 import ScrollableSection from "components/ScrollableSection"
 import Spacer from "components/Spacer"
@@ -12,7 +10,8 @@ import ModalBody from "components/wrappers/ModalBody"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useUpdateObjects } from "contexts/UpdateObjectsContext"
-import { categoriesMap } from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.utils"
+import { useGetUseCases } from "providers/UseCasesProvider"
+import { getCategoriesMap } from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.utils"
 import colors from "styles/colors"
 
 const styles = StyleSheet.create({
@@ -34,6 +33,7 @@ const styles = StyleSheet.create({
 })
 
 export default function UpdateObjectsConfirmationModal() {
+  const useCases = useGetUseCases()
   const { state, dispatch } = useUpdateObjects()
   const character = useCharacter()
   const inventory = useInventory()
@@ -53,6 +53,8 @@ export default function UpdateObjectsConfirmationModal() {
     dispatch({ type: "reset" })
     router.dismiss(2)
   }
+
+  const categoriesMap = getCategoriesMap()
 
   return (
     <ModalBody>

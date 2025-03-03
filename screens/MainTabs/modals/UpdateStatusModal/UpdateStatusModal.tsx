@@ -3,8 +3,6 @@ import { TouchableOpacity, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import useCases from "lib/common/use-cases"
-
 import AmountSelector from "components/AmountSelector"
 import List from "components/List"
 import ModalCta from "components/ModalCta/ModalCta"
@@ -16,6 +14,7 @@ import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import ModalBody from "components/wrappers/ModalBody"
 import { useCharacter } from "contexts/CharacterContext"
+import { useGetUseCases } from "providers/UseCasesProvider"
 import { UpdateStatusModalParams } from "screens/MainTabs/modals/UpdateStatusModal/UpdateStatusModal.params"
 import {
   UpdatableStatusElement,
@@ -28,6 +27,7 @@ import styles from "./UpdateStatusModal.styles"
 const defaultState = { exp: { count: 0, initValue: 0 } }
 
 export default function UpdateStatusModal() {
+  const useCases = useGetUseCases()
   const localParams = useLocalSearchParams() as SearchParams<UpdateStatusModalParams>
   const { initCategory } = fromLocalParams(localParams)
 

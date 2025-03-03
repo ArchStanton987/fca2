@@ -3,7 +3,6 @@ import { Image, TouchableOpacity, View } from "react-native"
 
 import AntDesign from "@expo/vector-icons/AntDesign"
 import secAttrMap from "lib/character/abilities/sec-attr/sec-attr"
-import useCases from "lib/common/use-cases"
 import {
   getApCost,
   getAvailableWeaponActions,
@@ -19,6 +18,7 @@ import { ComposedTitleProps } from "components/Section/Section.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
+import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import { getHapticSequence } from "utils/haptics"
 
@@ -33,6 +33,7 @@ const getTitle = (str: string): ComposedTitleProps => [
 ]
 
 export default function WeaponCard({ weapon, setPrevAp }: WeaponCardProps) {
+  const useCases = useGetUseCases()
   const char = useCharacter()
 
   const [selectedAction, setSelectedAction] = useState<WeaponActionId | null>(null)

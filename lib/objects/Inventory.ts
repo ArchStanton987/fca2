@@ -2,11 +2,19 @@ import { Special } from "lib/character/abilities/special/special.types"
 import ammoMap from "lib/objects/data/ammo/ammo"
 import { Ammo, AmmoType } from "lib/objects/data/ammo/ammo.types"
 import clothingsMap from "lib/objects/data/clothings/clothings"
-import { Clothing } from "lib/objects/data/clothings/clothings.types"
+import { Clothing, ClothingData, ClothingId } from "lib/objects/data/clothings/clothings.types"
 import consumablesMap from "lib/objects/data/consumables/consumables"
-import { Consumable, ConsumableId } from "lib/objects/data/consumables/consumables.types"
+import {
+  Consumable,
+  ConsumableData,
+  ConsumableId
+} from "lib/objects/data/consumables/consumables.types"
 import miscObjectsMap from "lib/objects/data/misc-objects/misc-objects"
-import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
+import {
+  MiscObject,
+  MiscObjectData,
+  MiscObjectId
+} from "lib/objects/data/misc-objects/misc-objects-types"
 import { DbEquipedObjects, DbInventory } from "lib/objects/data/objects.types"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
 import { computed, makeObservable, observable } from "mobx"
@@ -16,6 +24,7 @@ import { filterUnique } from "utils/array-utils"
 import { DbAbilities } from "../character/abilities/abilities.types"
 import { SkillsValues } from "../character/abilities/skills/skills.types"
 import { Symptom } from "../character/effects/symptoms.type"
+import { CreatedElements, defaultCreatedElements } from "./created-elements"
 import { dbToWeapon } from "./data/weapons/weapons.mappers"
 
 type CharData = {
@@ -35,10 +44,22 @@ type Carriable = {
 export default class Inventory {
   dbInventory: DbInventory
   charData: CharData
+  allClothings: Record<ClothingId, ClothingData>
+  allConsumables: Record<ConsumableId, ConsumableData>
+  allMiscObjects: Record<MiscObjectId, MiscObjectData>
 
-  constructor(dbInventory: DbInventory, charData: CharData) {
+  constructor(
+    dbInventory: DbInventory,
+    charData: CharData,
+    newElements: CreatedElements = defaultCreatedElements
+  ) {
+    const { newClothings, newConsumables, newMiscObjects } = newElements
     this.dbInventory = dbInventory
     this.charData = charData
+    this.allClothings = { ...clothingsMap, ...newClothings }
+    this.allConsumables = { ...consumablesMap, ...newConsumables }
+    this.allMiscObjects = { ...miscObjectsMap, ...newMiscObjects }
+
     makeObservable(this, {
       dbInventory: observable,
       charData: observable,
@@ -74,13 +95,13 @@ export default class Inventory {
   get clothings(): Clothing[] {
     return Object.entries(this.dbInventory.clothings || []).map(([dbKey, { id }]) => {
       const isEquiped = this.charData.dbEquipedObjects?.clothings?.[dbKey] !== undefined
-      return { data: clothingsMap[id], dbKey, id, isEquiped }
+      return { data: this.allClothings[id], dbKey, id, isEquiped }
     })
   }
 
   get consumables(): Consumable[] {
     return Object.entries(this.dbInventory.consumables || []).map(([dbKey, value]) => ({
-      data: consumablesMap[value.id as ConsumableId],
+      data: this.allConsumables[value.id as ConsumableId],
       dbKey,
       id: value.id,
       remainingUse: value.remainingUse
@@ -99,7 +120,7 @@ export default class Inventory {
 
   get miscObjects(): MiscObject[] {
     return Object.entries(this.dbInventory.miscObjects || {}).map(([dbKey, { id }]) => ({
-      data: miscObjectsMap[id],
+      data: this.allMiscObjects[id],
       dbKey,
       id
     }))

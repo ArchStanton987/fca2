@@ -1,7 +1,6 @@
 import { memo, useState } from "react"
 import { View } from "react-native"
 
-import useCases from "lib/common/use-cases"
 import Toast from "react-native-toast-message"
 
 import AmountSelector from "components/AmountSelector"
@@ -15,6 +14,7 @@ import PlusIcon from "components/icons/PlusIcon"
 import RevertColorsPressable from "components/wrappers/RevertColorsPressable/RevertColorsPressable"
 import { useAdmin } from "contexts/AdminContext"
 import { useSquad } from "contexts/SquadContext"
+import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import { getDDMMYYYY, getHHMM } from "utils/date"
 
@@ -25,6 +25,7 @@ const timespans: Timespan[] = ["MIN", "HOUR", "DAY"]
 const selectors = [1, 5, 20, 60]
 
 function DatetimeSelectionScreen() {
+  const useCases = useGetUseCases()
   const squad = useSquad()
   const { characters } = useAdmin()
 

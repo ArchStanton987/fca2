@@ -1,9 +1,9 @@
 /* eslint-disable import/prefer-default-export */
+import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
 import ammoMap from "lib/objects/data/ammo/ammo"
 import clothingsMap from "lib/objects/data/clothings/clothings"
 import consumablesMap from "lib/objects/data/consumables/consumables"
 import miscObjectsMap from "lib/objects/data/misc-objects/misc-objects"
-import { DbInventory } from "lib/objects/data/objects.types"
 import weaponsMap from "lib/objects/data/weapons/weapons"
 
 type Category = {
@@ -14,7 +14,9 @@ type Category = {
   data: Record<string, { id: string; label: string }>
 }
 
-export const categoriesMap: Record<keyof DbInventory, Category> = {
+export const getCategoriesMap = (
+  createdElements: CreatedElements = defaultCreatedElements
+): Record<string, Category> => ({
   weapons: {
     id: "weapons",
     label: "Armes",
@@ -27,21 +29,21 @@ export const categoriesMap: Record<keyof DbInventory, Category> = {
     label: "Armures",
     selectors: [1, 5],
     hasSearch: false,
-    data: clothingsMap
+    data: { ...clothingsMap, ...createdElements.newClothings }
   },
   consumables: {
     id: "consumables",
     label: "Consommables",
     selectors: [1, 5, 20],
     hasSearch: false,
-    data: consumablesMap
+    data: { ...consumablesMap, ...createdElements.newConsumables }
   },
   miscObjects: {
     id: "miscObjects",
     label: "Objets",
     selectors: [1, 5, 20, 100],
     hasSearch: true,
-    data: miscObjectsMap
+    data: { ...miscObjectsMap, ...createdElements.newMiscObjects }
   },
   ammo: {
     id: "ammo",
@@ -57,4 +59,4 @@ export const categoriesMap: Record<keyof DbInventory, Category> = {
     hasSearch: false,
     data: { caps: { id: "caps", label: "Capsule(s)" } }
   }
-}
+})

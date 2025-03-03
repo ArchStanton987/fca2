@@ -3,8 +3,6 @@ import { View } from "react-native"
 
 import { router } from "expo-router"
 
-import useCases from "lib/common/use-cases"
-
 import ModalCta from "components/ModalCta/ModalCta"
 import ScrollableSection from "components/ScrollableSection"
 import Spacer from "components/Spacer"
@@ -12,8 +10,10 @@ import Txt from "components/Txt"
 import ModalBody from "components/wrappers/ModalBody"
 import { useCharacter } from "contexts/CharacterContext"
 import { useUpdateHealth } from "contexts/UpdateHealthContext"
+import { useGetUseCases } from "providers/UseCasesProvider"
 
 export default function UpdateHealthConfirmationModal() {
+  const useCases = useGetUseCases()
   const character = useCharacter()
 
   const { state, dispatch } = useUpdateHealth()

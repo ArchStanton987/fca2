@@ -20,15 +20,14 @@ import ModalBody from "components/wrappers/ModalBody"
 import routes from "constants/routes"
 import { useInventory } from "contexts/InventoryContext"
 import { useUpdateObjects } from "contexts/UpdateObjectsContext"
+import useCreatedElements from "hooks/context/useCreatedElements"
 import { UpdateObjectsModalParams } from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.params"
-import { categoriesMap } from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.utils"
+import { getCategoriesMap } from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.utils"
 import { SearchParams, fromLocalParams, toLocalParams } from "screens/ScreenParams"
 
 import styles from "./UpdateObjectsModal.styles"
 
 type SelectedItem = { id: string; label: string; inInventory: number } | null
-
-const categories = Object.values(categoriesMap)
 
 type ListItemRowProps = TouchableOpacityProps & {
   label: string
@@ -70,6 +69,10 @@ export default function UpdateObjectsModal() {
   const { caps } = inventory
 
   const { state, dispatch } = useUpdateObjects()
+
+  const createdElements = useCreatedElements()
+  const categoriesMap = getCategoriesMap(createdElements)
+  const categories = Object.values(categoriesMap)
 
   const onPressMod = (modType: "minus" | "plus") => {
     if (selectedItem === null) return
@@ -116,7 +119,7 @@ export default function UpdateObjectsModal() {
           return el.label.toLowerCase().includes(searchInput.toLowerCase())
         })
       : []
-  }, [selectedCat, searchInput])
+  }, [selectedCat, searchInput, categoriesMap])
 
   return (
     <ModalBody>

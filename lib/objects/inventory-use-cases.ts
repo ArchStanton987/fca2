@@ -1,4 +1,3 @@
-// import Character from "lib/character/Character"
 import Character from "lib/character/Character"
 import getEffectsUseCases from "lib/character/effects/effects-use-cases"
 import healthMap from "lib/character/health/health"
@@ -8,6 +7,7 @@ import { applyMod } from "lib/common/utils/char-calc"
 
 import { getRepository } from "../RepositoryBuilder"
 import Inventory from "./Inventory"
+import { CreatedElements, defaultCreatedElements } from "./created-elements"
 import { AmmoType } from "./data/ammo/ammo.types"
 import clothingsMap from "./data/clothings/clothings"
 import { Clothing, ClothingId } from "./data/clothings/clothings.types"
@@ -19,24 +19,43 @@ import weaponsMap from "./data/weapons/weapons"
 import { Weapon, WeaponId } from "./data/weapons/weapons.types"
 import {
   CollectibleInventoryCategory,
+  DbObjPayload,
   InventoryCollectible,
   RecordInventoryCategory
 } from "./fbInventoryRepository"
 import { ExchangeState } from "./objects-reducer"
 
-const getObjectCategory = (object: Weapon | Clothing | Consumable | MiscObject) => {
-  if (weaponsMap[object.id as WeaponId] !== undefined) return "weapons"
-  if (clothingsMap[object.id as ClothingId] !== undefined) return "clothings"
-  if (consumablesMap[object.id as ConsumableId] !== undefined) return "consumables"
-  if (miscObjectsMap[object.id as MiscObjectId] !== undefined) return "miscObjects"
-  throw new Error("Object category not found")
-}
-
-const getInventoryUseCases = (db: keyof typeof getRepository = "rtdb") => {
+const getInventoryUseCases = (
+  db: keyof typeof getRepository = "rtdb",
+  createdElements: CreatedElements = defaultCreatedElements
+) => {
   const repository = getRepository[db].inventory
   const equipedObjectsRepository = getRepository[db].equipedObjects
   const effectsUseCases = getEffectsUseCases(db)
   const statusUseCases = getStatusUseCases(db)
+
+  const allClothings = { ...clothingsMap, ...createdElements.newClothings }
+  const allConsumables = { ...consumablesMap, ...createdElements.newConsumables }
+  const allMiscObjects = { ...miscObjectsMap, ...createdElements.newMiscObjects }
+
+  const getObjectCategory = (object: Weapon | Clothing | Consumable | MiscObject) => {
+    if (weaponsMap[object.id as WeaponId] !== undefined) return "weapons"
+    if (allClothings[object.id as ClothingId] !== undefined) return "clothings"
+    if (allConsumables[object.id as ConsumableId] !== undefined) return "consumables"
+    if (allMiscObjects[object.id as MiscObjectId] !== undefined) return "miscObjects"
+    throw new Error("Object category not found")
+  }
+
+  const getDbObject = (id: InventoryCollectible["id"]) => {
+    const category = getObjectCategory({ id } as InventoryCollectible)
+    if (category === "consumables") {
+      return { id: id as ConsumableId, remainingUse: allConsumables[id as ConsumableId].maxUsage }
+    }
+    if (category === "weapons") return { id: id as WeaponId }
+    if (category === "clothings") return { id: id as ClothingId }
+    if (category === "miscObjects") return { id: id as MiscObjectId }
+    throw new Error("Object category not found")
+  }
 
   return {
     getAll: (charId: string) => repository.getAll(charId),
@@ -49,7 +68,7 @@ const getInventoryUseCases = (db: keyof typeof getRepository = "rtdb") => {
       }[] = []
       const addCollectiblesUpdates: {
         category: CollectibleInventoryCategory
-        objectId: InventoryCollectible["id"]
+        dbObject: DbObjPayload
       }[] = []
       const removeCollectiblesUpdates: {
         category: CollectibleInventoryCategory
@@ -76,7 +95,7 @@ const getInventoryUseCases = (db: keyof typeof getRepository = "rtdb") => {
             for (let i = 0; i < state.count; i += 1) {
               addCollectiblesUpdates.push({
                 category: category as CollectibleInventoryCategory,
-                objectId: id as InventoryCollectible["id"]
+                dbObject: getDbObject(id as InventoryCollectible["id"])
               })
             }
           }
@@ -139,7 +158,7 @@ const getInventoryUseCases = (db: keyof typeof getRepository = "rtdb") => {
       // handle object in inventory
       const shouldRemoveObject = remainingUse === undefined || remainingUse <= 1
       if (shouldRemoveObject) {
-        promises.push(getInventoryUseCases(db).throw(charId, consumable))
+        promises.push(getInventoryUseCases(db, createdElements).throw(charId, consumable))
       } else {
         repository.updateCollectible(
           charId,

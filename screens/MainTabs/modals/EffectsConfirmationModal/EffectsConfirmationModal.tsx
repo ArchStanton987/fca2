@@ -4,7 +4,6 @@ import { router, useLocalSearchParams } from "expo-router"
 
 import effectsMap from "lib/character/effects/effects"
 import { EffectId } from "lib/character/effects/effects.types"
-import useCases from "lib/common/use-cases"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import ModalCta from "components/ModalCta/ModalCta"
@@ -13,12 +12,14 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import ModalBody from "components/wrappers/ModalBody"
 import { useCharacter } from "contexts/CharacterContext"
+import { useGetUseCases } from "providers/UseCasesProvider"
 
 type EffectConfirmationModalParams = DrawerParams & {
   effectsToAdd?: string
 }
 
 export default function EffectsConfirmationModal() {
+  const useCases = useGetUseCases()
   const character = useCharacter()
   const { effectsToAdd } = useLocalSearchParams<EffectConfirmationModalParams>()
   let effects: EffectId[] = []

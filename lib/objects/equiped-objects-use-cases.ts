@@ -5,13 +5,19 @@ import { Clothing, ClothingId } from "lib/objects/data/clothings/clothings.types
 import weaponsMap from "lib/objects/data/weapons/weapons"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
 
+import { CreatedElements, defaultCreatedElements } from "./created-elements"
 import { EquipableCategory, EquipableObject } from "./fbEquipedObjectsRepository"
 
 const getObjectCategory = (object: EquipableObject): EquipableCategory =>
   "armorClass" in object.data ? "clothings" : "weapons"
 
-const getEquipedObjectsUseCases = (db: keyof typeof getRepository = "rtdb") => {
+const getEquipedObjectsUseCases = (
+  db: keyof typeof getRepository = "rtdb",
+  { newClothings }: CreatedElements = defaultCreatedElements
+) => {
   const repository = getRepository[db].equipedObjects
+
+  const allClothings = { ...clothingsMap, ...newClothings } as unknown as typeof clothingsMap
 
   return {
     get: (charId: string, category: EquipableCategory, dbKey: EquipableObject["dbKey"]) =>
@@ -40,7 +46,7 @@ const getEquipedObjectsUseCases = (db: keyof typeof getRepository = "rtdb") => {
         if (category === "clothings") {
           const protectedBodyParts = clothings.map(obj => obj.data.protects).flat()
           const hasClothOnBodyPart = protectedBodyParts.some(part =>
-            clothingsMap[object.id as ClothingId].protects.includes(part)
+            allClothings[object.id as ClothingId].protects.includes(part)
           )
           if (hasClothOnBodyPart)
             throw new Error(

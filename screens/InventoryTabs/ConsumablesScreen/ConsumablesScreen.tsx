@@ -3,7 +3,6 @@ import { View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import useCases from "lib/common/use-cases"
 import { Consumable } from "lib/objects/data/consumables/consumables.types"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
@@ -17,6 +16,7 @@ import PlusIcon from "components/icons/PlusIcon"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
+import { useGetUseCases } from "providers/UseCasesProvider"
 import ConsumableDetails from "screens/InventoryTabs/ConsumablesScreen/ConsumableDetails"
 import ConsumableRow from "screens/InventoryTabs/ConsumablesScreen/ConsumableRow"
 import { SearchParams } from "screens/ScreenParams"
@@ -29,6 +29,7 @@ const getTitle = (cb: (str: string) => void): ComposedTitleProps => [
 ]
 
 function ConsumablesScreen() {
+  const useCases = useGetUseCases()
   const localParams = useLocalSearchParams<SearchParams<DrawerParams>>()
   const [selectedItem, setSelectedItem] = useState<Consumable["dbKey"] | null>(null)
   const [isAscSort, setIsAscSort] = useState(true)

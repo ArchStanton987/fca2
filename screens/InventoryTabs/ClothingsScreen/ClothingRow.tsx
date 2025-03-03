@@ -1,7 +1,6 @@
 import { PressableProps } from "react-native"
 
 import combatModsMap from "lib/character/combat/combat-mods"
-import useCases from "lib/common/use-cases"
 import { Clothing } from "lib/objects/data/clothings/clothings.types"
 import Toast from "react-native-toast-message"
 
@@ -12,6 +11,7 @@ import ListScoreLabel from "components/ListScoreLabel"
 import Selectable from "components/Selectable"
 import Spacer from "components/Spacer"
 import { useCharacter } from "contexts/CharacterContext"
+import { useGetUseCases } from "providers/UseCasesProvider"
 
 type ClothingRowProps = PressableProps & {
   clothing: Clothing
@@ -20,6 +20,8 @@ type ClothingRowProps = PressableProps & {
 }
 
 export default function ClothingRow({ clothing, isSelected, onPress, ...rest }: ClothingRowProps) {
+  const useCases = useGetUseCases()
+
   const character = useCharacter()
   const { isEquiped, data } = clothing
   const {

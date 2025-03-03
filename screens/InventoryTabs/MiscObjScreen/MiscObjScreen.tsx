@@ -3,7 +3,6 @@ import { View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import useCases from "lib/common/use-cases"
 import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
@@ -16,6 +15,7 @@ import Spacer from "components/Spacer"
 import PlusIcon from "components/icons/PlusIcon"
 import routes from "constants/routes"
 import { useInventory } from "contexts/InventoryContext"
+import { useGetUseCases } from "providers/UseCasesProvider"
 import MiscObjDetails from "screens/InventoryTabs/MiscObjScreen/MiscObjDetails"
 import MiscObjRow from "screens/InventoryTabs/MiscObjScreen/MiscObjRow"
 import { SearchParams } from "screens/ScreenParams"
@@ -26,6 +26,7 @@ const getTitle = (cb: (str: string) => void): ComposedTitleProps => [
 ]
 
 function MiscObjScreen() {
+  const useCases = useGetUseCases()
   const { squadId, charId } = useLocalSearchParams() as SearchParams<DrawerParams>
   const [selectedItem, setSelectedItem] = useState<MiscObject | null>(null)
   const [isAscSort, setIsAscSort] = useState(true)

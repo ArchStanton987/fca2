@@ -13,6 +13,8 @@ import {
 import { Progress } from "lib/character/progress/progress.types"
 import { getLevelAndThresholds } from "lib/character/status/status-calc"
 import { getRemainingTime } from "lib/common/utils/time-calc"
+import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
+import { ClothingData, ClothingId } from "lib/objects/data/clothings/clothings.types"
 import { DbEquipedObjects } from "lib/objects/data/objects.types"
 import weaponsMap from "lib/objects/data/weapons/weapons"
 import { dbToWeapon } from "lib/objects/data/weapons/weapons.mappers"
@@ -33,7 +35,7 @@ import { specialArray } from "./abilities/special/special"
 import { Special } from "./abilities/special/special.types"
 import traitsMap from "./abilities/traits/traits"
 import effectsMap from "./effects/effects"
-import { DbEffects, Effect, EffectId } from "./effects/effects.types"
+import { DbEffects, Effect, EffectData, EffectId } from "./effects/effects.types"
 import { Symptom } from "./effects/symptoms.type"
 import { getMaxHP, getMissingHp } from "./health/health-calc"
 import { Health } from "./health/health-types"
@@ -55,7 +57,16 @@ export default class Character {
   date: Date
   squadId: Squad["squadId"]
 
-  constructor(obj: DbChar, squad: Squad, charId: string) {
+  allClothings: Record<ClothingId, ClothingData>
+  allEffects: Record<EffectId, EffectData>
+
+  constructor(
+    obj: DbChar,
+    squad: Squad,
+    charId: string,
+    newElements: CreatedElements = defaultCreatedElements
+  ) {
+    const { newClothings, newEffects } = newElements
     this.charId = charId
     this.dbAbilities = obj.abilities
     this.dbEffects = obj.effects || {}
@@ -63,6 +74,8 @@ export default class Character {
     this.status = obj.status
     this.squadId = squad.squadId
     this.date = squad.date
+    this.allClothings = { ...clothingsMap, ...newClothings }
+    this.allEffects = { ...effectsMap, ...newEffects }
 
     makeObservable(this, {
       dbAbilities: observable,
@@ -127,7 +140,7 @@ export default class Character {
     // get all db stored effects
     const effectsIds = Object.entries(this.dbEffects).map(([dbKey, value]) => {
       let timeRemaining = null
-      const { length } = effectsMap[value.id]
+      const { length } = this.allEffects[value.id]
       let startTs
       let endTs
       if (value.endTs) {
@@ -141,15 +154,15 @@ export default class Character {
         timeRemaining = getRemainingTime(this.date.getTime(), end)
       }
 
-      return { ...value, timeRemaining, dbKey, data: effectsMap[value.id], startTs, endTs }
+      return { ...value, timeRemaining, dbKey, data: this.allEffects[value.id], startTs, endTs }
     })
     return effectsIds
   }
 
   get symptoms(): Symptom[] {
     const clothingsIds = Object.values(this.dbEquipedObjects.clothings || []).map(el => el.id)
-    const clothingsSymptoms = clothingsIds.map(el => clothingsMap[el].symptoms)
-    const effectsSymptoms = this.effects.map(el => effectsMap[el.id].symptoms)
+    const clothingsSymptoms = clothingsIds.map(el => this.allClothings[el].symptoms)
+    const effectsSymptoms = this.effects.map(el => this.allEffects[el.id].symptoms)
     return [...effectsSymptoms, ...clothingsSymptoms].flat()
   }
 
@@ -220,7 +233,7 @@ export default class Character {
     const clothings = Object.entries(this.dbEquipedObjects.clothings || {}).map(
       ([dbKey, value]) => ({
         dbKey,
-        data: clothingsMap[value.id],
+        data: this.allClothings[value.id],
         ...value
       })
     )

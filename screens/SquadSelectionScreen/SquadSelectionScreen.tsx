@@ -2,7 +2,6 @@ import { ScrollView } from "react-native"
 
 import { useRouter } from "expo-router"
 
-import useCases from "lib/common/use-cases"
 import { getVersion } from "lib/common/utils/expo-utils"
 
 import Spacer from "components/Spacer"
@@ -11,11 +10,13 @@ import RevertColorsPressable from "components/wrappers/RevertColorsPressable/Rev
 import WithItemSeparator from "components/wrappers/WithItemSeparator"
 import routes from "constants/routes"
 import useRtdbSub from "hooks/db/useRtdbSub"
+import { useGetUseCases } from "providers/UseCasesProvider"
 import { getDDMMYYYY } from "utils/date"
 
 import styles from "./SquadSelectionScreen.styles"
 
 export default function SquadSelectionScreen() {
+  const useCases = useGetUseCases()
   const router = useRouter()
   const squadsObj = useRtdbSub(useCases.squad.getAll())
   const squadsArray = squadsObj

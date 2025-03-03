@@ -6,7 +6,6 @@ import {
   KnowledgeId,
   KnowledgeLevelValue
 } from "lib/character/abilities/knowledges/knowledge-types"
-import useCases from "lib/common/use-cases"
 
 import ModalCta from "components/ModalCta/ModalCta"
 import Section from "components/Section"
@@ -14,6 +13,7 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import ModalBody from "components/wrappers/ModalBody"
 import { useCharacter } from "contexts/CharacterContext"
+import { useGetUseCases } from "providers/UseCasesProvider"
 import KnowledgeRow, {
   ListFooter,
   ListHeader
@@ -27,6 +27,7 @@ type Params = {
 type ModifiedKnowledges = Record<KnowledgeId, KnowledgeLevelValue>
 
 export default function UpdateKnowledgesConfirmationModal() {
+  const useCases = useGetUseCases()
   const { charId } = useCharacter()
   const params = useLocalSearchParams<Params>()
   const modifiedKnowledges = (JSON.parse(params.modifiedKnowledges) ?? {}) as ModifiedKnowledges
