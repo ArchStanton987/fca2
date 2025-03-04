@@ -1,5 +1,8 @@
 import { useMemo } from "react"
 
+import effectsMap from "lib/character/effects/effects"
+import EffectsMappers from "lib/character/effects/effects.mappers"
+import { DbEffectData, EffectData } from "lib/character/effects/effects.types"
 import getUseCases from "lib/get-use-cases"
 import clothingsMap from "lib/objects/data/clothings/clothings"
 import ClothingsMappers from "lib/objects/data/clothings/clothings.mappers"
@@ -24,7 +27,7 @@ export default function AdditionalElementsProvider({ children }: { children: Rea
   const clothings = useRtdbSub(useCases.additional.subAdditionalClothings())
   const consumables = useRtdbSub(useCases.additional.subAdditionalConsumables())
   const miscObjects = useRtdbSub(useCases.additional.subAdditionalMisc())
-  // const effects = useRtdbSub(useCases.additional.subAdditionalEffects())
+  const effects = useRtdbSub(useCases.additional.subAdditionalEffects())
 
   const newClothings = useMemo(() => {
     if (!clothings) return clothingsMap
@@ -59,30 +62,25 @@ export default function AdditionalElementsProvider({ children }: { children: Rea
     return { ...miscObjectsMap, ...result }
   }, [miscObjects])
 
-  // const newEffects = useMemo(() => {
-  //   if (!effects) return effectsMap
-  //   const newEffectsArr = Object.values(effects) as unknown as DbEffectData[]
-  //   const result = {} as Record<string, EffectData>
-  //   newEffectsArr.forEach(effect => {
-  //     const effectData = EffectsMappers.toDomain(effect)
-  //     result[effectData.id] = effectData
-  //   })
-  //   return { ...effectsMap, ...result }
-  // }, [effects])
+  const newEffects = useMemo(() => {
+    if (!effects) return effectsMap
+    const newEffectsArr = Object.values(effects) as unknown as DbEffectData[]
+    const result = {} as Record<string, EffectData>
+    newEffectsArr.forEach(effect => {
+      const effectData = EffectsMappers.toDomain(effect)
+      result[effectData.id] = effectData
+    })
+    return { ...effectsMap, ...result }
+  }, [effects])
 
   const value = useMemo(
     () => ({
       newClothings,
       newConsumables,
-      newMiscObjects
-      //  newEffects
+      newMiscObjects,
+      newEffects
     }),
-    [
-      newClothings,
-      newConsumables,
-      newMiscObjects
-      //  newEffects
-    ]
+    [newClothings, newConsumables, newMiscObjects, newEffects]
   )
   return (
     <AdditionalElementsContext.Provider value={value}>

@@ -1,7 +1,6 @@
 import React from "react"
 import { ActivityIndicator, View } from "react-native"
 
-import effectsMap from "lib/character/effects/effects"
 import { observer } from "mobx-react-lite"
 
 import List from "components/List"
@@ -11,10 +10,12 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import HealthFigure from "components/draws/HealthFigure/HealthFigure"
 import { useCharacter } from "contexts/CharacterContext"
+import useCreatedElements from "hooks/context/useCreatedElements"
 import colors from "styles/colors"
 
 function HealthSection() {
   const { effects } = useCharacter()
+  const { newEffects } = useCreatedElements()
 
   return (
     <View style={{ width: 160 }}>
@@ -34,7 +35,7 @@ function HealthSection() {
             keyExtractor={item => item.dbKey || item.id}
             style={{ flexWrap: "wrap", flex: 1 }}
             separator={<Txt> / </Txt>}
-            renderItem={({ item }) => <Txt>{effectsMap[item.id].label}</Txt>}
+            renderItem={({ item }) => <Txt>{newEffects[item.id].label}</Txt>}
           />
         ) : (
           <ActivityIndicator color={colors.secColor} />

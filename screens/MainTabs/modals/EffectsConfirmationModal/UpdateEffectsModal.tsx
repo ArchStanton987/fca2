@@ -3,7 +3,6 @@ import { TouchableOpacity, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import effectsMap from "lib/character/effects/effects"
 import { EffectId } from "lib/character/effects/effects.types"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
@@ -18,11 +17,10 @@ import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import ModalBody from "components/wrappers/ModalBody"
 import routes from "constants/routes"
+import useCreatedElements from "hooks/context/useCreatedElements"
 import { SearchParams, fromLocalParams } from "screens/ScreenParams"
 
 import styles from "./UpdateEffectsModal.styles"
-
-const effects = Object.values(effectsMap)
 
 export default function UpdateEffectsModal() {
   const localParams = useLocalSearchParams() as SearchParams<DrawerParams>
@@ -30,6 +28,9 @@ export default function UpdateEffectsModal() {
   const [searchValue, setSearchValue] = useState("")
   const [selectedEffectId, setSelectedEffectId] = useState<EffectId | null>(null)
   const [effectsToAdd, setEffectsToAdd] = useState<EffectId[]>([])
+
+  const { newEffects } = useCreatedElements()
+  const effects = Object.values(newEffects)
 
   const onPressEffect = (effectId: EffectId) => {
     setSelectedEffectId(prev => (prev === effectId ? null : effectId))

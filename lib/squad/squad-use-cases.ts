@@ -1,12 +1,19 @@
 import { getRepository } from "lib/RepositoryBuilder"
 import Character from "lib/character/Character"
+import effectsMap from "lib/character/effects/effects"
 import getEffectsUseCases from "lib/character/effects/effects-use-cases"
 import { getExpiringEffects, getFollowingEffects } from "lib/character/effects/effects-utils"
 import { getNewLimbsHp } from "lib/character/health/health-utils"
 import getStatusUseCases from "lib/character/status/status-use-cases"
+import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
 
-function getSquadUseCases(db: keyof typeof getRepository = "rtdb") {
+function getSquadUseCases(
+  db: keyof typeof getRepository = "rtdb",
+  { newEffects }: CreatedElements = defaultCreatedElements
+) {
   const squadRepo = getRepository[db].squads
+
+  const allEffects = { ...effectsMap, ...newEffects }
 
   return {
     get: (squadId: string) => squadRepo.get(squadId),
@@ -23,7 +30,7 @@ function getSquadUseCases(db: keyof typeof getRepository = "rtdb") {
         const expiringEffects = getExpiringEffects(char, date)
         promises.push(effectsUseCases.groupRemove(char, expiringEffects))
 
-        const followingEffects = getFollowingEffects(char, date)
+        const followingEffects = getFollowingEffects(char, date, allEffects)
         promises.push(effectsUseCases.groupAdd(char, followingEffects))
 
         // TODO: add "types" for effects (poison, withdrawal, cripled, healthState, etc)

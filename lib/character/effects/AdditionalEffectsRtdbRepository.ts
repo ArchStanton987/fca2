@@ -12,6 +12,6 @@ export default class AdditionalEffectsRtdbRepository extends RtdbRepository<
   AdditionalEffectsParams
 > {
   getPath(params: AdditionalEffectsParams) {
-    return this.rtdb.getAdditionalMiscObjects(params)
+    return this.rtdb.getAdditionalEffects(params)
   }
 }

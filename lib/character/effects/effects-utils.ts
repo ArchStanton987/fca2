@@ -1,6 +1,5 @@
 import Character from "lib/character/Character"
-import effectsMap from "lib/character/effects/effects"
-import { DbEffect, Effect, EffectData, EffectId } from "lib/character/effects/effects.types"
+import { Effect, EffectData, EffectId } from "lib/character/effects/effects.types"
 import { limbsMap, radStates } from "lib/character/health/health"
 import { getMissingHp } from "lib/character/health/health-calc"
 import { getHealthState } from "lib/character/health/health-utils"
@@ -14,16 +13,6 @@ export const getEffectLengthInMs = (char: Character, effect: EffectData) => {
   return lengthInH * 60 * 60 * 1000
 }
 
-export const createDbEffect = (char: Character, effectId: EffectId, startDate?: Date) => {
-  const refStartDate = startDate || char.date
-  const dbEffect: DbEffect = { id: effectId, startTs: refStartDate.toJSON() }
-  const lengthInMs = getEffectLengthInMs(char, effectsMap[effectId])
-  if (lengthInMs) {
-    dbEffect.endTs = new Date(refStartDate.getTime() + lengthInMs).toJSON()
-  }
-  return dbEffect
-}
-
 export const getExpiringEffects = (char: Character, refDate: Date) =>
   char.effects.filter(effect => {
     const { startTs, endTs, data } = effect
@@ -35,12 +24,16 @@ export const getExpiringEffects = (char: Character, refDate: Date) =>
     return startTs.getTime() + effectLengthInMs < refDate.getTime()
   }) as Effect[]
 
-export const getFollowingEffects = (char: Character, newDate: Date) =>
+export const getFollowingEffects = (
+  char: Character,
+  newDate: Date,
+  allEffects: Record<EffectId, EffectData>
+) =>
   getExpiringEffects(char, newDate)
     .filter(effect => {
       const { data, startTs, endTs } = effect
       if (!data.nextEffectId || !data.length || !startTs) return false
-      const nextEffect = effectsMap[data.nextEffectId]
+      const nextEffect = allEffects[data.nextEffectId]
       const prevEffectLengthInMs = getEffectLengthInMs(char, effect.data)
       const nextEffectLengthInMs = getEffectLengthInMs(char, nextEffect)
       if (!prevEffectLengthInMs || !nextEffectLengthInMs) return false

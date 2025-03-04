@@ -2,7 +2,6 @@ import { View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import effectsMap from "lib/character/effects/effects"
 import { EffectId } from "lib/character/effects/effects.types"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
@@ -12,6 +11,7 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import ModalBody from "components/wrappers/ModalBody"
 import { useCharacter } from "contexts/CharacterContext"
+import useCreatedElements from "hooks/context/useCreatedElements"
 import { useGetUseCases } from "providers/UseCasesProvider"
 
 type EffectConfirmationModalParams = DrawerParams & {
@@ -19,6 +19,7 @@ type EffectConfirmationModalParams = DrawerParams & {
 }
 
 export default function EffectsConfirmationModal() {
+  const { newEffects } = useCreatedElements()
   const useCases = useGetUseCases()
   const character = useCharacter()
   const { effectsToAdd } = useLocalSearchParams<EffectConfirmationModalParams>()
@@ -45,7 +46,7 @@ export default function EffectsConfirmationModal() {
       <ScrollableSection title="EFFETS" style={{ flex: 1, width: 300, alignSelf: "center" }}>
         {effects.map(effect => (
           <View key={effect} style={{ flexDirection: "row", justifyContent: "space-between" }}>
-            <Txt>{effectsMap[effect as EffectId].label}</Txt>
+            <Txt>{newEffects[effect as EffectId].label}</Txt>
             <Txt>x1</Txt>
           </View>
         ))}

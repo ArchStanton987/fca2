@@ -1,9 +1,33 @@
 import { getRepository } from "lib/RepositoryBuilder"
 import Character from "lib/character/Character"
-import { DbEffect, Effect, EffectId } from "lib/character/effects/effects.types"
+import { DbEffect, Effect, EffectData, EffectId } from "lib/character/effects/effects.types"
+import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
 
-function getEffectsUseCases(db: keyof typeof getRepository = "rtdb") {
+import effectsMap from "./effects"
+import { getEffectLengthInMs } from "./effects-utils"
+
+const createDbEffect = (
+  char: Character,
+  effectId: EffectId,
+  startDate?: Date,
+  withCreatedEffects: Record<EffectId, EffectData> = effectsMap
+) => {
+  const refStartDate = startDate || char.date
+  const dbEffect: DbEffect = { id: effectId, startTs: refStartDate.toJSON() }
+  const lengthInMs = getEffectLengthInMs(char, withCreatedEffects[effectId])
+  if (lengthInMs) {
+    dbEffect.endTs = new Date(refStartDate.getTime() + lengthInMs).toJSON()
+  }
+  return dbEffect
+}
+
+function getEffectsUseCases(
+  db: keyof typeof getRepository = "rtdb",
+  { newEffects }: CreatedElements = defaultCreatedElements
+) {
   const repository = getRepository[db].effects
+
+  const allEffects = { ...effectsMap, ...newEffects }
 
   return {
     get: (charId: string, effectId: EffectId) => repository.get(charId, effectId),
@@ -11,7 +35,7 @@ function getEffectsUseCases(db: keyof typeof getRepository = "rtdb") {
     getAll: (charId: string) => repository.getAll(charId),
 
     add: async (char: Character, effectId: EffectId, refDate?: Date) => {
-      const dbEffect = repository.createDbEffect(char, effectId, refDate)
+      const dbEffect = createDbEffect(char, effectId, refDate, allEffects)
       const existingEffect = char.effectsRecord[effectId]
       if (existingEffect) {
         return repository.update(char.charId, existingEffect.dbKey, dbEffect)
@@ -24,7 +48,7 @@ function getEffectsUseCases(db: keyof typeof getRepository = "rtdb") {
       const newDbEffects: DbEffect[] = []
       const updatedDbEffects: { dbKey: Effect["dbKey"]; updatedEffect: DbEffect }[] = []
       effects.forEach(({ effectId, startDate }) => {
-        const dbEffect = repository.createDbEffect(char, effectId, startDate)
+        const dbEffect = createDbEffect(char, effectId, startDate, allEffects)
         const existingEffect = char.effectsRecord[effectId]
         if (existingEffect) {
           updatedDbEffects.push({ dbKey: existingEffect.dbKey, updatedEffect: dbEffect })
