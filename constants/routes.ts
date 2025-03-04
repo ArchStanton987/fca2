@@ -1,5 +1,6 @@
 const charSelection = "/squad/[squadId]"
 export const charRoute = `${charSelection}/character/[charId]`
+export const adminRoute = `${charSelection}/admin`
 const main = `${charRoute}/(nav)/main`
 const inventory = `${charRoute}/(nav)/inventory`
 const combat = `${charRoute}/(nav)/combat`

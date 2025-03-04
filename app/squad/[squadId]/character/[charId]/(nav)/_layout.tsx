@@ -44,7 +44,7 @@ function HeaderCombat() {
 }
 
 function TabBarComponent(props: any) {
-  return <TabBar {...props} />
+  return <TabBar tabBarId="char" {...props} />
 }
 
 export default function CharLayout() {

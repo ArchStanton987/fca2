@@ -8,23 +8,27 @@ import { DrawerParams } from "components/Drawer/Drawer.params"
 import List from "components/List"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { charRoute } from "constants/routes"
+import { adminRoute, charRoute } from "constants/routes"
 import { SearchParams } from "screens/ScreenParams"
 import layout from "styles/layout"
 
 import styles from "./TabBar.styles"
 
-export default function TabBar(props: BottomTabBarProps) {
-  const { state, descriptors } = props
+type TabBarId = "char" | "admin"
+
+export default function TabBar(props: BottomTabBarProps & { tabBarId: TabBarId }) {
+  const { state, descriptors, tabBarId } = props
   const { routes } = state
   const router = useRouter()
   const localParams = useLocalSearchParams() as SearchParams<DrawerParams>
   const { charId, squadId } = localParams
 
-  const onPress = (pathname: string) => {
-    requestAnimationFrame(() => {
-      router.push({ pathname, params: { charId, squadId } })
-    })
+  const onPressTab = (routeName: string) => {
+    if (tabBarId === "char") {
+      router.push({ pathname: `${charRoute}/${routeName}`, params: { charId, squadId } })
+      return
+    }
+    router.push({ pathname: `${adminRoute}/${routeName}` })
   }
 
   const toHome = () => router.push("/")
@@ -46,12 +50,11 @@ export default function TabBar(props: BottomTabBarProps) {
             const { key, name } = item
             const { options } = descriptors[key]
             const isFocused = state.index === index
-            const pathname = `${charRoute}/${name}`
             return (
               <TouchableHighlight
                 key={key}
                 style={[styles.tabBarItem, isFocused && styles.tabBarItemActive]}
-                onPress={() => onPress(pathname)}
+                onPress={() => onPressTab(name)}
               >
                 <Txt style={[styles.label, isFocused && styles.labelActive]}>{options.title}</Txt>
               </TouchableHighlight>

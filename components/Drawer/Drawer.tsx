@@ -34,7 +34,7 @@ export default function Drawer({ sectionId, navElements }: DrawerProps) {
   const squadMember = squad.members.find(member => member.id === charId)
   const charDisplayName = squadMember ? squadMember.firstname : "Personnage"
 
-  const toTabs = (path: SectionId) => {
+  const toTabs = (path: string) => {
     router.push({
       pathname: `${charRoute}/${sectionId}/${path}`,
       params: { squadId, charId }

@@ -52,6 +52,7 @@ export default function AdminLayout() {
           }}
         >
           <Tabs.Screen name="datetime" options={{ title: "Horloge" }} />
+          <Tabs.Screen name="creation" options={{ title: "Creation" }} />
         </Tabs>
       </View>
     </AdminContext.Provider>
