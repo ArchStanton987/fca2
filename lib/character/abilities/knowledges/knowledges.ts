@@ -136,7 +136,9 @@ const knowledgesMap: Record<KnowledgeId, Knowledge> = {
 }
 
 // create a section list of knowledges, by alphabetical order, grouped by category
-const knowledgesList = Object.values(knowledgesMap).sort((a, b) => a.label.localeCompare(b.label))
+export const knowledgesList = Object.values(knowledgesMap).sort((a, b) =>
+  a.label.localeCompare(b.label)
+)
 // knowledges categories
 const knowledgesCategories = Array.from(new Set(knowledgesList.map(k => k.category)))
 

@@ -3,9 +3,7 @@ import { AdditionalClothingsParams } from "lib/shared/db/api-rtdb"
 
 import { DbClothingData } from "./clothings.types"
 
-export type DbAdditionalClothings = {
-  clothings?: Record<string, DbClothingData>
-}
+export type DbAdditionalClothings = Record<string, DbClothingData>
 
 export default class AdditionalClothingsRtdbRepository extends RtdbRepository<
   DbAdditionalClothings,

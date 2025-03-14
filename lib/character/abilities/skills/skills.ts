@@ -117,3 +117,5 @@ const skillsMap: Record<SkillId, Skill> = {
 }
 
 export default skillsMap
+
+export const skillsArray = Object.values(skillsMap)

@@ -81,3 +81,5 @@ const combatModsMap: Record<CombatModId, CombatMod> = {
 }
 
 export default combatModsMap
+
+export const combatModsArray = Object.values(combatModsMap)

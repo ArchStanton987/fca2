@@ -28,7 +28,7 @@ export default function TabBar(props: BottomTabBarProps & { tabBarId: TabBarId }
       router.push({ pathname: `${charRoute}/${routeName}`, params: { charId, squadId } })
       return
     }
-    router.push({ pathname: `${adminRoute}/${routeName}` })
+    router.push({ pathname: `${adminRoute}/${routeName}`, params: { squadId } })
   }
 
   const toHome = () => router.push("/")

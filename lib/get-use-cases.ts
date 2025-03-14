@@ -3,6 +3,8 @@ import getEffectsUseCases from "./character/effects/effects-use-cases"
 import subAdditionalEffects from "./character/effects/sub-additional-effects"
 import getStatusUseCases from "./character/status/status-use-cases"
 import { defaultCreatedElements } from "./objects/created-elements"
+import addAdditionalClothing from "./objects/data/clothings/add-additional-clothings"
+import { DbClothingData } from "./objects/data/clothings/clothings.types"
 import subAdditionalClothings from "./objects/data/clothings/sub-additional-clothings"
 import subAdditionalConsumables from "./objects/data/consumables/sub-additional-consumables"
 import subAdditionalMisc from "./objects/data/misc-objects/sub-additional-misc"
@@ -40,7 +42,9 @@ export default function getUseCases(
         subAdditionalConsumables(dbType)(params),
       subAdditionalMisc: (params: AdditionalMiscParams = {}) => subAdditionalMisc(dbType)(params),
       subAdditionalEffects: (params: AdditionalEffectsParams = {}) =>
-        subAdditionalEffects(dbType)(params)
+        subAdditionalEffects(dbType)(params),
+
+      addClothing: (data: DbClothingData) => addAdditionalClothing(dbType)(data)
     }
   }
 }
