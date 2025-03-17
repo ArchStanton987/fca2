@@ -13,7 +13,7 @@ export type ConsumableData = {
   effectId: EffectId | null
   challengeLabel: string | null
   od: number | false
-  addict: `${number}-${number}` | false
+  addict: string | false
   value: number
   place: number
   weight: number
@@ -31,7 +31,7 @@ export type DbConsumableData = {
   effectId: EffectId | null
   challengeLabel: string | null
   od?: number | false
-  addict?: `${number}-${number}` | false
+  addict?: string | false
   value: number
   place: number
   weight: number

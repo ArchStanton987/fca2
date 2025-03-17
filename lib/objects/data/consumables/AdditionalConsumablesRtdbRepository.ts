@@ -3,9 +3,7 @@ import { AdditionalConsumablesParams } from "lib/shared/db/api-rtdb"
 
 import { DbConsumableData } from "./consumables.types"
 
-export type DbAdditionalConsumables = {
-  consumables?: Record<string, DbConsumableData>
-}
+export type DbAdditionalConsumables = Record<string, DbConsumableData>
 
 export default class AdditionalConsumablesRtdbRepository extends RtdbRepository<
   DbAdditionalConsumables,

@@ -47,15 +47,16 @@ export default function ConsumableRow({
   ...rest
 }: ConsumableRowProps) {
   const { newEffects } = useCreatedElements()
-  const { label, effectId, challengeLabel } = charConsumable.data
+  const { label, effectId, challengeLabel, modifiers = [] } = charConsumable.data
   const symptoms = effectId ? newEffects[effectId].symptoms : []
+  const visibleMods = [...symptoms, ...modifiers]
   const countAppend = count > 1 ? ` (${count})` : ""
   return (
     <Selectable isSelected={isSelected} onPress={onPress} {...rest}>
       <ListLabel label={`${label}${countAppend}`} style={{ alignSelf: "flex-start" }} />
       <View style={styles.effectContainer}>
-        {symptoms
-          ? symptoms.map(({ id, value }) => {
+        {visibleMods
+          ? visibleMods.map(({ id, value }) => {
               const prepend = value > 0 ? "+" : ""
               return (
                 <Txt key={id}>{`${changeableAttributesMap[id].short}: ${prepend}${value}`}</Txt>

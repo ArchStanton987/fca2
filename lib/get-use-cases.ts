@@ -6,6 +6,8 @@ import { defaultCreatedElements } from "./objects/created-elements"
 import addAdditionalClothing from "./objects/data/clothings/add-additional-clothings"
 import { DbClothingData } from "./objects/data/clothings/clothings.types"
 import subAdditionalClothings from "./objects/data/clothings/sub-additional-clothings"
+import addAdditionalConsumable from "./objects/data/consumables/add-additional-consumable"
+import { DbConsumableData } from "./objects/data/consumables/consumables.types"
 import subAdditionalConsumables from "./objects/data/consumables/sub-additional-consumables"
 import subAdditionalMisc from "./objects/data/misc-objects/sub-additional-misc"
 import getWeaponsUseCases from "./objects/data/weapons/weapons-use-cases"
@@ -44,7 +46,8 @@ export default function getUseCases(
       subAdditionalEffects: (params: AdditionalEffectsParams = {}) =>
         subAdditionalEffects(dbType)(params),
 
-      addClothing: (data: DbClothingData) => addAdditionalClothing(dbType)(data)
+      addClothing: (data: DbClothingData) => addAdditionalClothing(dbType)(data),
+      addConsumable: (data: DbConsumableData) => addAdditionalConsumable(dbType)(data)
     }
   }
 }

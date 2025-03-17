@@ -833,3 +833,5 @@ const effectsMap: Record<EffectId, EffectData> = {
 }
 
 export default effectsMap
+
+export const effectsArray = Object.values(effectsMap)

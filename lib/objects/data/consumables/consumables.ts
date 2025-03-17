@@ -279,7 +279,7 @@ const consumablesMap: Record<ConsumableId, ConsumableData> = {
     label: "Rad-Away",
     effectId: null,
     modifiers: [{ id: "rads", operation: "add", value: -300 }],
-    challengeLabel: "-300 RADS",
+    challengeLabel: null,
     od: 6,
     addict: "5-24",
     value: 1200,

@@ -7,8 +7,13 @@ import { HealthStatusId } from "../health/health-types"
 
 export type Operation = "add" | "mult" | "abs"
 
-export type ChangeableAttribute = SpecialId | SecAttrId | SkillId | CombatModId | KnowledgeId
-// | HealthStatusId
+export type ChangeableAttribute =
+  | SpecialId
+  | SecAttrId
+  | SkillId
+  | CombatModId
+  | KnowledgeId
+  | HealthStatusId
 
 // Symptom is temporary, Modifier is permanent
 export type Symptom = {
@@ -23,3 +28,4 @@ export type Modifier = {
   operation: Operation
   value: number
 }
+export type DbModifiers = Record<HealthStatusId, Modifier>
