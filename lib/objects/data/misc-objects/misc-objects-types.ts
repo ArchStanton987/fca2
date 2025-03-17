@@ -23,7 +23,7 @@ export type MiscObjectData = {
   id: MiscObjectId
   label: string
   description: string
-  value: number | "?"
+  value: number
   place: number
   weight: number
 }
@@ -32,7 +32,7 @@ export type DbMiscObjectData = {
   id: string
   label: string
   description: string
-  value: number | "?"
+  value: number
   place: number
   weight: number
 }

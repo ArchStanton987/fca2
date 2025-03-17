@@ -9,6 +9,8 @@ import subAdditionalClothings from "./objects/data/clothings/sub-additional-clot
 import addAdditionalConsumable from "./objects/data/consumables/add-additional-consumable"
 import { DbConsumableData } from "./objects/data/consumables/consumables.types"
 import subAdditionalConsumables from "./objects/data/consumables/sub-additional-consumables"
+import addAdditionalMisc from "./objects/data/misc-objects/add-addictional-misc"
+import { DbMiscObjectData } from "./objects/data/misc-objects/misc-objects-types"
 import subAdditionalMisc from "./objects/data/misc-objects/sub-additional-misc"
 import getWeaponsUseCases from "./objects/data/weapons/weapons-use-cases"
 import getEquipedObjectsUseCases from "./objects/equiped-objects-use-cases"
@@ -47,7 +49,8 @@ export default function getUseCases(
         subAdditionalEffects(dbType)(params),
 
       addClothing: (data: DbClothingData) => addAdditionalClothing(dbType)(data),
-      addConsumable: (data: DbConsumableData) => addAdditionalConsumable(dbType)(data)
+      addConsumable: (data: DbConsumableData) => addAdditionalConsumable(dbType)(data),
+      addMiscObject: (data: DbMiscObjectData) => addAdditionalMisc(dbType)(data)
     }
   }
 }

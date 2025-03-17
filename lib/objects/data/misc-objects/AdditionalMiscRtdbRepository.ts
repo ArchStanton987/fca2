@@ -3,9 +3,7 @@ import { AdditionalMiscParams } from "lib/shared/db/api-rtdb"
 
 import { DbMiscObjectData } from "./misc-objects-types"
 
-export type DbAdditionalMisc = {
-  miscObjects?: Record<string, DbMiscObjectData>
-}
+export type DbAdditionalMisc = Record<string, DbMiscObjectData>
 
 export default class AdditionalMiscRtdbRepository extends RtdbRepository<
   DbAdditionalMisc,
