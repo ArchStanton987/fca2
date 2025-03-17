@@ -1,11 +1,9 @@
 import RtdbRepository from "lib/shared/db/RtdbRepository"
 import { AdditionalEffectsParams } from "lib/shared/db/api-rtdb"
 
-import { DbEffect } from "./effects.types"
+import { DbEffectData } from "./effects.types"
 
-export type DbAdditionalEffects = {
-  effects?: Record<string, DbEffect>
-}
+export type DbAdditionalEffects = Record<string, DbEffectData>
 
 export default class AdditionalEffectsRtdbRepository extends RtdbRepository<
   DbAdditionalEffects,

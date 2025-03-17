@@ -4,6 +4,7 @@ import {
   handleLimbsEffects,
   handleRadsEffects
 } from "lib/character/effects/effects-utils"
+import { CreatedElements } from "lib/objects/created-elements"
 
 import Character from "../Character"
 import getEffectsUseCases from "../effects/effects-use-cases"
@@ -13,9 +14,10 @@ import { DbStatus } from "./status.types"
 export const onStatusUpdate = (
   character: Character,
   newStatus: DbStatus,
+  createdElements: CreatedElements,
   db: keyof typeof getRepository = "rtdb"
 ) => {
-  const effectsUseCases = getEffectsUseCases(db)
+  const effectsUseCases = getEffectsUseCases(db, createdElements)
   const promises = []
 
   // handle add / remove cripled limbs effects

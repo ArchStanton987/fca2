@@ -9,7 +9,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "cripled",
     description:
       "Vous avez pris de vilains coups dans la mouille. Vos capacités cognitives et sensorielles sont clairement dégradées.",
-    od: null,
     nextEffectId: null
   },
   cripledLeftArm: {
@@ -19,7 +18,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     length: null,
     type: "cripled",
     description: "Aïe ! Outre la douleur, vous ne pouvez plus utiliser votre bras gauche.",
-    od: null,
     nextEffectId: null
   },
   cripledRightArm: {
@@ -29,7 +27,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     length: null,
     type: "cripled",
     description: "Aïe ! Outre la douleur, vous ne pouvez plus utiliser votre bras droit.",
-    od: null,
     nextEffectId: null
   },
   cripledLeftTorso: {
@@ -40,7 +37,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "cripled",
     description:
       "Ouhh ! Vous avez dû manger sévère, vous avez proablement au moins une côte pétée ! Vous êtes douloureux et essouflé.",
-    od: null,
     nextEffectId: null
   },
   cripledRightTorso: {
@@ -51,7 +47,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "cripled",
     description:
       "Ouhh ! Vous avez dû manger sévère, vous avez proablement au moins une côte pétée ! Vous êtes douloureux et essouflé.",
-    od: null,
     nextEffectId: null
   },
   cripledLeftLeg: {
@@ -62,7 +57,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "cripled",
     description:
       "Aïe ! Outre la douleur, vous ne pouvez plus utiliser votre jambe gauche. En combat, les déplacements vous coûtent le double de points d'actions.",
-    od: null,
     nextEffectId: null
   },
   cripledRightLeg: {
@@ -73,7 +67,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "cripled",
     description:
       "Aïe ! Outre la douleur, vous ne pouvez plus utiliser votre jambe droite. En combat, les déplacements vous coûtent le double de points d'actions.",
-    od: null,
     nextEffectId: null
   },
   cripledGroin: {
@@ -84,7 +77,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "cripled",
     description:
       "Bon dieu que ça fait mal ! Quand vous réussirez à vous relever, vous aurez sûrement du mal à vous déplacer.",
-    od: null,
     nextEffectId: null
   },
   woundedTired: {
@@ -112,7 +104,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "healthState",
     description:
       "Vous avez le souffle bien court, cela vous rend fébrile et vous avez aussi du mal à vous concentrer.",
-    od: null,
     nextEffectId: null
   },
   woundedExhausted: {
@@ -140,7 +131,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "healthState",
     description:
       "Vous êtes mal en point. Chaque geste, chaque action demande un effort considérable.",
-    od: null,
     nextEffectId: null
   },
   woundedUnconscious: {
@@ -168,7 +158,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "healthState",
     description:
       "Vous êtes inconscient, d'ailleurs vous n'êtes normalement pas en capacité de lire ceci. Si personne ne vous soigne avant le nombre d'heures qui correspond à votre endurance, vous allez probablement y rester.",
-    od: null,
     nextEffectId: null
   },
   dead: {
@@ -196,7 +185,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "healthState",
     description:
       "Vous êtes mort, tout au moins cliniquement. Peut-être que le MJ peut vous accorder un jet de sauvegarde contre la mort s'il estime que vous avez une chance de vous sortir de ce qui vous est arrivé.",
-    od: null,
     nextEffectId: null
   },
   vanished: {
@@ -224,7 +212,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "healthState",
     description:
       "Si vous voyez ceci, c'est que votre mort a été violente... TRES violente ! Vos avez été propablement vaporisé, liquéfié ou réduit littéralement en bouillie. La seule chose qu'il reste de vous, ce sont des souvenirs. Avez-vous marqué l'Histoire ?",
-    od: null,
     nextEffectId: null
   },
   radLvl1: {
@@ -251,7 +238,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     length: null,
     type: "radState",
     description: "Vous vous sentez un peu faible et fatigué.",
-    od: null,
     nextEffectId: null
   },
   radLvl2: {
@@ -279,7 +265,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "radState",
     description:
       "Vous êtes mal, vous vous sentez douloureux. En plus, des taches comme des coups de soleil apparaissent sur votre peau.",
-    od: null,
     nextEffectId: null
   },
   radLvl3: {
@@ -307,7 +292,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "radState",
     description:
       "Vous êtes empoisonné. Physiquement diminué, vos cheveux tombent. Je ne vous parle pas de ce qui arriverait à vos enfants si vous vous décidiez à procréer dans votre état.",
-    od: null,
     nextEffectId: null
   },
   radLvl4: {
@@ -335,7 +319,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "radState",
     description:
       "Vous avez fréquemment des vomissements et des diarrhées. Vous avez des plaies ouvertes sur le corps. Vos muscles, vos os vous causent des douleurs. La nuit vous commencez à luire.",
-    od: null,
     nextEffectId: null
   },
   radLvl5: {
@@ -363,7 +346,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "radState",
     description:
       "Vous vomissez du sang, vous n'avez plus de cheveux. Il ne vous reste que votre score d'endurance x 5 heures à vivre si vous ne trouvez pas rapidement un médecin ou ne prenez pas les produits appropriés.",
-    od: null,
     nextEffectId: null
   },
   radLvl6: {
@@ -391,7 +373,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "radState",
     description:
       "Vous êtes dans le coma et sur le point de mourir. Il ne vous reste que quelques heures. Vous avez des lésios internes et externes si sérieuses que vous êtes désormais incurable.",
-    od: null,
     nextEffectId: null
   },
   dirty: {
@@ -405,7 +386,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "other",
     description:
       "Même si les standards d'hygiène ne sont pas très élevés dans les terres désolés, vous ne les atteignez pas. Vous avez l'air assez sale et laissez une empreinte olfactive perceptible.",
-    od: null,
     nextEffectId: null
   },
   dirtyPlus: {
@@ -420,7 +400,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     length: null,
     type: "other",
     description: `Vous êtes cradingue, avec tout ce que cela implique en terme d'apparence et de senteurs. Dans un environnement faiblement olfactif, vous perdrez en discrétion. Les humains "normaux" ne semblent pas enchantés de discuter avec vous...`,
-    od: null,
     nextEffectId: null
   },
 
@@ -430,7 +409,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     symptoms: [{ id: "endurance", operation: "add", value: 3 }],
     length: 6,
     type: "drug",
-    od: 5,
     description:
       "Un petit cacheton inventé avant la grande guerre... Cela permettait aux soldats de tenir le coup en mission vachement plus longtemps.",
     nextEffectId: null
@@ -444,7 +422,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     ],
     length: 4,
     type: "drug",
-    od: 2,
     nextEffectId: "psycho_withdraw",
     description:
       "Encore un truc inventé par l'armée pour maximiser le potentiel de combat de la personne s'en injectant. Attention, cela rend carrément vénère ! Il parait même qu'une fois un gars qui en a trop pris s'est lui même dévoré le bras !"
@@ -456,7 +433,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     length: 4,
     type: "withdrawal",
     description: "Le psycho, quand ça descend, on va dire qu'il vaut mieux ne pas trop en faire !",
-    od: null,
     nextEffectId: null
   },
   mentats: {
@@ -468,7 +444,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     ],
     length: 12,
     type: "drug",
-    od: 5,
     nextEffectId: "mentats_withdraw",
     description:
       "Une superbe invention pour booster son potentiel intellectuel. Apprécié des scientifiques, des étudiants... et de pas mal de monde ! Même si l'emballage est coloré, ce ne sont pas des bonbons !"
@@ -484,7 +459,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "withdrawal",
     description:
       "Vous vous sentez... Fatigué, inapte et confus. C'est forcément un contre coup de quelque chose...",
-    od: null,
     nextEffectId: null
   },
   jet: {
@@ -496,7 +470,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     ],
     length: 12,
     type: "drug",
-    od: 2,
     nextEffectId: "jet_withdraw",
     description: "JAILAJIGA PATATAAAAATE !!!"
   },
@@ -510,7 +483,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     length: 12,
     type: "withdrawal",
     description: "Vous êtes tout blanc. Vos gestes sont saccadés et vous avez la tremblote.",
-    od: null,
     nextEffectId: null
   },
   radx: {
@@ -520,7 +492,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     length: 24,
     type: "drug",
     description: "Une belle invention pour affronter les terres désolées !",
-    od: null,
     nextEffectId: null
   },
   voodoo: {
@@ -532,7 +503,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     ],
     length: 12,
     type: "drug",
-    od: 3,
     description: "Vous vous sentez très tonique, en parfaite conscience de votre corps !",
     nextEffectId: null
   },
@@ -545,7 +515,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     ],
     length: 12,
     type: "drug",
-    od: 3,
     description:
       "Vos sens et votre système nerveux sont bien stimulés. Vous êtes un peu agité aussi...",
     nextEffectId: null
@@ -560,7 +529,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     ],
     length: 1,
     type: "drug",
-    od: 20,
     description: "Vous avez bu un petit coup, et cela commence à faire effet.",
     nextEffectId: null
   },
@@ -574,7 +542,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     ],
     length: 1,
     type: "drug",
-    od: null,
     description: "Boire des choses rares et raffinées vous inspire...!",
     nextEffectId: null
   },
@@ -589,7 +556,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     ],
     length: 1,
     type: "drug",
-    od: 10,
     description:
       "Disons le, c'était pas très bon. Aucune idée d'avec quoi c'est fait. En tout cas, la vache ce que c'est fort !!! Penser à ne pas trop s'éloigner des comidités...",
     nextEffectId: null
@@ -608,8 +574,7 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "drug",
     nextEffectId: "alcohol_withdraw",
     description:
-      "Vous avez bu de l'alcool, cela devient visible ! Bizarrement, vous n'avez plus très peur, et vous en avez un peu rien à foutre.",
-    od: null
+      "Vous avez bu de l'alcool, cela devient visible ! Bizarrement, vous n'avez plus très peur, et vous en avez un peu rien à foutre."
   },
   wasted: {
     id: "wasted",
@@ -625,8 +590,7 @@ const effectsMap: Record<EffectId, EffectData> = {
     length: 3,
     type: "drug",
     nextEffectId: "alcohol_withdraw",
-    description: "Touuuuuuut vaaaaa bienbienbiennnn ?",
-    od: null
+    description: "Touuuuuuut vaaaaa bienbienbiennnn ?"
   },
   alcohol_withdraw: {
     id: "alcohol_withdraw",
@@ -640,7 +604,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     length: 10,
     type: "withdrawal",
     description: "Le bien connu syndrome de la casquette plombée !",
-    od: null,
     nextEffectId: null
   },
   lunaticPlus: {
@@ -650,7 +613,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     length: 24,
     type: "other",
     description: "Ahhh ! Quel plaisir de vous voir de cette humeur !",
-    od: null,
     nextEffectId: null
   },
   lunaticMinus: {
@@ -660,7 +622,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     length: 24,
     type: "other",
     description: "Ahhh... C'est le mauvais jour... ? On se revoit demain... Faut que je file !",
-    od: null,
     nextEffectId: null
   },
   cheater: {
@@ -671,7 +632,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "other",
     description:
       "Vous avez lâchement enfreint les règles du valeureux MJ. C'est l'équivalant de croiser un chat noir en passant sous une échelle après avoir profanné un cimetierre natif américain.",
-    od: null,
     nextEffectId: null
   },
   healingPowder: {
@@ -682,7 +642,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "drug",
     description:
       "Cette poudre que vous avez consommé embrûme l'esprit presque autant qu'elle soigne.",
-    od: null,
     nextEffectId: null
   },
   superStimpack: {
@@ -692,7 +651,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     length: 4,
     type: "drug",
     description: "Cela soigne le corps, mais pas l'esprit. Vous êtes dans le flou.",
-    od: null,
     nextEffectId: null
   },
   ultraStimpack: {
@@ -702,7 +660,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     length: 4,
     type: "drug",
     description: "La puissance des agents actifs engendre un état comateux.",
-    od: null,
     nextEffectId: null
   },
   traumapack: {
@@ -715,7 +672,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     length: 5,
     type: "drug",
     description: "Votre regain en vitalité vous permet de dire bonjour aux éléphants roses.",
-    od: null,
     nextEffectId: null
   },
   poisonMustardGas: {
@@ -729,7 +685,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "poison",
     description:
       "Vous avez inhalé du gaz moutarde. Cela vous brûle les poumons et vous rend temporairement aveugle.",
-    od: null,
     nextEffectId: null
   },
   poisonRadRatVenom: {
@@ -743,7 +698,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "poison",
     description:
       "Les radrats n'ont pas une bonne hygiène bucco-dentaire... Vous voilà infecté suite à la morsure.",
-    od: null,
     nextEffectId: null
   },
 
@@ -758,7 +712,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "poison",
     description:
       "Le venin de radscorpion, c'est du sérieux. Si vous n'êtes pas soigné très rapidement, vous allez y rester.",
-    od: null,
     nextEffectId: null
   },
 
@@ -773,7 +726,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "poison",
     description:
       "Le venin de radscorpion, c'est du sérieux. Si vous n'êtes pas soigné très rapidement, vous allez y rester.",
-    od: null,
     nextEffectId: null
   },
 
@@ -788,7 +740,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "poison",
     description:
       "Le venin de radscorpion, c'est du sérieux. Si vous n'êtes pas soigné très rapidement, vous allez y rester.",
-    od: null,
     nextEffectId: null
   },
 
@@ -803,7 +754,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "poison",
     description:
       "Vous avez été empoisonnés par une mixture tribale. Cela vous rend confus et vous donne des vertiges.",
-    od: null,
     nextEffectId: null
   },
 
@@ -815,7 +765,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "poison",
     description:
       "Vous avez été empoisonnés par une plante. Cela vous rend faible et vous donne des nausées.",
-    od: null,
     nextEffectId: null
   },
 
@@ -827,7 +776,6 @@ const effectsMap: Record<EffectId, EffectData> = {
     type: "poison",
     description:
       "Vous avez été empoisonnés par une plante. Cela vous rend faible et vous donne des nausées.",
-    od: null,
     nextEffectId: null
   }
 }

@@ -1,5 +1,7 @@
 import getAbilitiesUseCases from "./character/abilities/abilities-use-cases"
+import addAdditionalEffect from "./character/effects/add-additional-effect"
 import getEffectsUseCases from "./character/effects/effects-use-cases"
+import { DbEffectData } from "./character/effects/effects.types"
 import subAdditionalEffects from "./character/effects/sub-additional-effects"
 import getStatusUseCases from "./character/status/status-use-cases"
 import { defaultCreatedElements } from "./objects/created-elements"
@@ -31,11 +33,11 @@ export default function getUseCases(
   createdElements = defaultCreatedElements
 ) {
   return {
-    effects: getEffectsUseCases(dbType),
+    effects: getEffectsUseCases(dbType, createdElements),
     equipedObjects: getEquipedObjectsUseCases(dbType, createdElements),
     inventory: getInventoryUseCases(dbType, createdElements),
     weapons: getWeaponsUseCases(dbType),
-    status: getStatusUseCases(dbType),
+    status: getStatusUseCases(dbType, createdElements),
     squad: getSquadUseCases(dbType),
     abilities: getAbilitiesUseCases(dbType),
     additional: {
@@ -50,7 +52,8 @@ export default function getUseCases(
 
       addClothing: (data: DbClothingData) => addAdditionalClothing(dbType)(data),
       addConsumable: (data: DbConsumableData) => addAdditionalConsumable(dbType)(data),
-      addMiscObject: (data: DbMiscObjectData) => addAdditionalMisc(dbType)(data)
+      addMiscObject: (data: DbMiscObjectData) => addAdditionalMisc(dbType)(data),
+      addEffect: (data: DbEffectData) => addAdditionalEffect(dbType)(data)
     }
   }
 }

@@ -9,11 +9,11 @@ import { CreatedElements, defaultCreatedElements } from "lib/objects/created-ele
 
 function getSquadUseCases(
   db: keyof typeof getRepository = "rtdb",
-  { newEffects }: CreatedElements = defaultCreatedElements
+  createdElements: CreatedElements = defaultCreatedElements
 ) {
   const squadRepo = getRepository[db].squads
 
-  const allEffects = { ...effectsMap, ...newEffects }
+  const allEffects = { ...effectsMap, ...createdElements.newEffects }
 
   return {
     get: (squadId: string) => squadRepo.get(squadId),
@@ -21,8 +21,8 @@ function getSquadUseCases(
     getAll: () => squadRepo.getAll(),
 
     updateDate: (squadId: string, date: Date, characters: Character[]) => {
-      const effectsUseCases = getEffectsUseCases(db)
-      const statusUseCases = getStatusUseCases(db)
+      const effectsUseCases = getEffectsUseCases(db, createdElements)
+      const statusUseCases = getStatusUseCases(db, createdElements)
 
       const promises = []
 

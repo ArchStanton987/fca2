@@ -74,7 +74,6 @@ export type EffectData = {
   symptoms: Symptom[]
   length: number | null
   description: string
-  od: number | null
   nextEffectId: EffectId | null
 }
 
@@ -85,7 +84,6 @@ export type DbEffectData = {
   symptoms: DbSymptoms
   length: number | null
   description: string
-  od: number | null
   nextEffectId: string | null
 }
 

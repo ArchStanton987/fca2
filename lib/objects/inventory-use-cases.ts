@@ -31,8 +31,8 @@ const getInventoryUseCases = (
 ) => {
   const repository = getRepository[db].inventory
   const equipedObjectsRepository = getRepository[db].equipedObjects
-  const effectsUseCases = getEffectsUseCases(db)
-  const statusUseCases = getStatusUseCases(db)
+  const effectsUseCases = getEffectsUseCases(db, createdElements)
+  const statusUseCases = getStatusUseCases(db, createdElements)
 
   const allClothings = { ...clothingsMap, ...createdElements.newClothings }
   const allConsumables = { ...consumablesMap, ...createdElements.newConsumables }

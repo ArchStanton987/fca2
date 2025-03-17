@@ -1,11 +1,15 @@
 import { getRepository } from "lib/RepositoryBuilder"
 import Character from "lib/character/Character"
+import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
 
 import { HealthUpdateState } from "../health/health-reducer"
 import { onStatusUpdate } from "./status-utils"
 import { UpdatableDbStatus } from "./status.types"
 
-function getStatusUseCases(db: keyof typeof getRepository = "rtdb") {
+function getStatusUseCases(
+  db: keyof typeof getRepository = "rtdb",
+  createdElements: CreatedElements = defaultCreatedElements
+) {
   const repository = getRepository[db].status
   return {
     getElement: (charId: string, field: keyof UpdatableDbStatus) => repository.get(charId, field),
@@ -18,7 +22,7 @@ function getStatusUseCases(db: keyof typeof getRepository = "rtdb") {
       data: UpdatableDbStatus[T]
     ) => {
       const newStatus = { ...character.status, [field]: data }
-      onStatusUpdate(character, newStatus, db)
+      onStatusUpdate(character, newStatus, createdElements, db)
       return repository.updateElement(character, field, data)
     },
     groupUpdate: (character: Character, data: Partial<UpdatableDbStatus>) => {
@@ -27,7 +31,7 @@ function getStatusUseCases(db: keyof typeof getRepository = "rtdb") {
         updates[key as keyof UpdatableDbStatus] = value
       })
       const newStatus = { ...character.status, ...updates }
-      onStatusUpdate(character, newStatus, db)
+      onStatusUpdate(character, newStatus, createdElements, db)
       return repository.groupUpdate(character, updates)
     },
 
@@ -39,7 +43,7 @@ function getStatusUseCases(db: keyof typeof getRepository = "rtdb") {
         }
       })
       const newStatus = { ...character.status, ...updates }
-      onStatusUpdate(character, newStatus, db)
+      onStatusUpdate(character, newStatus, createdElements, db)
       return repository.groupUpdate(character, updates)
     }
   }
