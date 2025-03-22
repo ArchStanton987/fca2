@@ -9,7 +9,6 @@ export default class EffectsMappers {
       symptoms: Object.values(payload.symptoms ?? {}),
       length: payload.length,
       description: payload.description,
-      od: payload.od,
       nextEffectId: payload.nextEffectId as EffectId | null
     }
   }

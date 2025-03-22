@@ -3,6 +3,9 @@ import { View } from "react-native"
 
 import { router } from "expo-router"
 
+import { HealthStatusId } from "lib/character/health/health-types"
+import { DbStatus } from "lib/character/status/status.types"
+
 import ModalCta from "components/ModalCta/ModalCta"
 import ScrollableSection from "components/ScrollableSection"
 import Spacer from "components/Spacer"
@@ -23,7 +26,13 @@ export default function UpdateHealthConfirmationModal() {
     .map(([id, content]) => ({ id, ...content }))
 
   const onPressConfirm = async () => {
-    await useCases.status.groupMod(character, state)
+    const newStatus: Partial<DbStatus> = {}
+    Object.entries(state).forEach(([key, value]) => {
+      if (typeof value.count === "number" && typeof value.initValue === "number") {
+        newStatus[key as HealthStatusId] = Math.max(value.initValue + value.count, 0)
+      }
+    })
+    await useCases.status.groupUpdate(character, newStatus)
     dispatch({ type: "reset" })
     router.dismiss(2)
   }

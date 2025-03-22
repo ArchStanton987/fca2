@@ -59,7 +59,7 @@ const miscObjectsMap: Record<MiscObjectId, MiscObjectData> = {
     label: "carte de visite de 'Papy'",
     description:
       "'Papy Chocolat' est le nom de l'artiste. Les coordonnées sont effacées. Les illustrations sur la carte laissent supposer qu'il s'agit ou qu'il s'agissait d'un sculpteur, qui reproduit l'humain dans toutes ses formes.",
-    value: "?",
+    value: 0,
     place: 0,
     weight: 0
   },
@@ -76,7 +76,7 @@ const miscObjectsMap: Record<MiscObjectId, MiscObjectData> = {
     label: "magazine 'Cat's Paw'",
     description:
       "Un magasine érotique d'avant guerre. Un design très raffiné et des articles pas du tout vulgaires.",
-    value: "?",
+    value: 0,
     place: 0.1,
     weight: 0
   },
@@ -94,7 +94,7 @@ const miscObjectsMap: Record<MiscObjectId, MiscObjectData> = {
     label: "montre en or avec une odeur suspecte",
     description:
       "Cette montre de grande horlogerie a l'air très ancienne et chargée d'histoire. Si seulement l'on pouvait connaître l'histoire qui lui donne cette odeur plutôt désagréable et déroutante...",
-    value: "?",
+    value: 0,
     place: 0.1,
     weight: 0.1
   },
@@ -128,7 +128,7 @@ const miscObjectsMap: Record<MiscObjectId, MiscObjectData> = {
     label: "sculpture de boule",
     description:
       "Il semble que cela soit du bronze... Mais celle-ci n'a jamais pu en 'couler'. Cela a vraiment l'air d'être artistique. Elle est en bon étant et porte une griffe 'Pappy C.' à la place du tatouage papillon / tribal en bas des reins.",
-    value: "?",
+    value: 0,
     place: 2,
     weight: 3
   },
