@@ -1,9 +1,9 @@
 /* eslint-disable import/prefer-default-export */
+import combatModsMap from "../../combat/combat-mods"
 import knowledgesMap from "../abilities/knowledges/knowledges"
 import secAttrMap from "../abilities/sec-attr/sec-attr"
 import skillsMap from "../abilities/skills/skills"
 import specialMap from "../abilities/special/special"
-import combatModsMap from "../combat/combat-mods"
 import healthMap from "../health/health"
 import { ChangeableAttribute } from "./symptoms.type"
 

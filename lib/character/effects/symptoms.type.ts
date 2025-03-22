@@ -1,8 +1,8 @@
+import { CombatModId } from "../../combat/combat-mods"
 import { KnowledgeId } from "../abilities/knowledges/knowledge-types"
 import { SecAttrId } from "../abilities/sec-attr/sec-attr-types"
 import { SkillId } from "../abilities/skills/skills.types"
 import { SpecialId } from "../abilities/special/special.types"
-import { CombatModId } from "../combat/combat-mods"
 import { HealthStatusId } from "../health/health-types"
 
 export type Operation = "add" | "mult" | "abs"

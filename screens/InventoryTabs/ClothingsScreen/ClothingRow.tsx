@@ -1,6 +1,6 @@
 import { PressableProps } from "react-native"
 
-import combatModsMap from "lib/character/combat/combat-mods"
+import combatModsMap from "lib/combat/combat-mods"
 import { Clothing } from "lib/objects/data/clothings/clothings.types"
 import Toast from "react-native-toast-message"
 

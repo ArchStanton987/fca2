@@ -1,0 +1,76 @@
+import { LimbsHp } from "lib/character/health/health-types"
+
+type MovementType = "crawl" | "walk" | "run" | "sprint" | "jump" | "climb" | "getUp"
+type ItemActionType = "reload" | "drop" | "equip" | "unequip" | "use" | "search"
+
+type CharId = string
+type EnemyId = string
+type WeaponId = string
+type ItemId = string
+type AimZone = "torso" | "legs" | "arms" | "head" | "groin" | "eyes"
+
+type SimpleRoll = {
+  actorSkillScore: number
+  actorDiceScore: number
+  difficultyModifier: number
+}
+type OppositionRoll = SimpleRoll & {
+  opponentSkillScore: number
+  opponentDiceScore: number
+  opponentArmorClass?: number
+}
+type Roll = SimpleRoll | OppositionRoll
+type HealthChangeEntry = Partial<LimbsHp>
+type HealthChangeEntries = Record<CharId, HealthChangeEntry>
+
+type CombatAction = {
+  actionCategory: "combat"
+  actionName: "attack" | "aim" | "burst"
+  actor: CharId
+  weaponId: WeaponId
+  target: Record<CharId, CharId>
+  attackType: "basic" | "aim" | "burst"
+  aimZone?: AimZone
+  apCost: number
+  roll: Roll
+  healthChangeEntries?: HealthChangeEntries
+}
+
+type MovementAction = {
+  actionCategory: "move"
+  actionName: MovementType
+  actor: CharId
+  apCost: number
+  roll?: SimpleRoll
+  aftermath: { type: MovementAction; distance: number }
+  healthChangeEntries?: HealthChangeEntries
+}
+
+type ItemAction = {
+  actionCategory: "items"
+  actionName: { 0: ItemActionType; 1?: ItemActionType }
+  itemId: { 0: ItemId; 1?: ItemId }
+  actor: CharId
+  apCost: number
+  roll?: SimpleRoll
+  aftermath: {
+    0: { action: ItemActionType; itemId: ItemId }
+    1?: { action: ItemActionType; itemId: ItemId }
+  }
+  healthChangeEntries?: HealthChangeEntries
+}
+
+type PauseAction = { actionCategory: "pause"; actor: CharId }
+
+type Action = CombatAction | MovementAction | ItemAction | PauseAction
+
+export type DbCombatEntry = {
+  id: string
+  timestamp: number
+  location?: string
+  title: string
+  description?: string
+  players: Record<CharId, CharId>
+  enemies: Record<EnemyId, EnemyId>
+  rounds: Record<number, Record<number, Action>>
+}
