@@ -5,6 +5,9 @@ export type BackgroundId = "jackal" | "vaultDweller"
 export type StatusId = "background" | "currAp" | "exp" | "level" | "rads" | HealthStatusId
 
 export type DbStatus = {
+  combatStatus?: "active" | "inactive" | "dead"
+  turnStatus?: "acting" | "waiting" | "pause" | "done"
+  currentCombatId?: string
   background: BackgroundId
   currAp: number
   exp: number

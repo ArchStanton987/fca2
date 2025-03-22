@@ -46,6 +46,7 @@ export type DbChar = {
   effects?: DbEffects
   equipedObj?: DbEquipedObjects
   status: DbStatus
+  combats?: Record<string, string>
 }
 
 export default class Character {
