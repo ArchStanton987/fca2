@@ -42,5 +42,8 @@ export const BACKGROUND_INIT_AVAILABLE_KNOWLEDGES_CATEGORIES: Record<
     { id: "medical", levelId: 2 },
     { id: "outdoorsman", levelId: 2 }
   ],
-  vaultDweller: []
+  vaultDweller: [],
+  raider: [],
+  fiend: [],
+  other: []
 }

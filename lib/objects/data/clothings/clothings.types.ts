@@ -20,6 +20,7 @@ export type ClothingData = {
   place: number
   weight: number
   value: number
+  tier: number
   symptoms: Symptom[]
 }
 
@@ -38,6 +39,7 @@ export type DbClothingData = {
   place: number
   weight: number
   value: number
+  tier: number
   symptoms: DbSymptoms
 }
 

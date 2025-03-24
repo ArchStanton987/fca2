@@ -17,6 +17,7 @@ export default class ClothingsMappers {
       place: payload.place,
       weight: payload.weight,
       value: payload.value,
+      tier: payload.tier,
       symptoms: Object.values(payload.symptoms)
     }
   }

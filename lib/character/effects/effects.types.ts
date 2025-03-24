@@ -59,6 +59,8 @@ export type EffectId =
   | "radLvl5"
   | "radLvl6"
   | "poisonMustardGas"
+  | "poisonLightBeast"
+  | "poisonMedBeast"
   | "poisonRadRatVenom"
   | "poisonRadScorpionLightVenom"
   | "poisonRadScorpionMedVenom"

@@ -687,6 +687,32 @@ const effectsMap: Record<EffectId, EffectData> = {
       "Vous avez inhalé du gaz moutarde. Cela vous brûle les poumons et vous rend temporairement aveugle.",
     nextEffectId: null
   },
+  poisonLightBeast: {
+    id: "poisonLightBeast",
+    label: "Poison : venin léger de bestiole",
+    symptoms: [
+      { id: "healHpPerHour", operation: "add", value: -5 },
+      { id: "stealth", operation: "add", value: -15 }
+    ],
+    length: 48,
+    type: "poison",
+    description:
+      "Les radrats n'ont pas une bonne hygiène bucco-dentaire... Vous voilà infecté suite à la morsure.",
+    nextEffectId: null
+  },
+  poisonMedBeast: {
+    id: "poisonMedBeast",
+    label: "Poison : venin moyen de bestiole",
+    symptoms: [
+      { id: "healHpPerHour", operation: "add", value: -10 },
+      { id: "stealth", operation: "add", value: -15 }
+    ],
+    length: 48,
+    type: "poison",
+    description:
+      "Les radrats n'ont pas une bonne hygiène bucco-dentaire... Vous voilà infecté suite à la morsure.",
+    nextEffectId: null
+  },
   poisonRadRatVenom: {
     id: "poisonRadRatVenom",
     label: "Poison : venin de radrat",

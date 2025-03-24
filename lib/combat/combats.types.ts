@@ -62,11 +62,11 @@ type ItemAction = {
 
 type PauseAction = { actionCategory: "pause"; actor: CharId }
 
-type Action = CombatAction | MovementAction | ItemAction | PauseAction
+export type Action = CombatAction | MovementAction | ItemAction | PauseAction
 
 export type DbCombatEntry = {
   id: string
-  timestamp: number
+  timestamp: string
   location?: string
   title: string
   description?: string

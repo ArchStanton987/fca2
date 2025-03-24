@@ -1,10 +1,11 @@
 import { HealthStatusId } from "../health/health-types"
 
 export type RaceId = "human"
-export type BackgroundId = "jackal" | "vaultDweller"
+export type BackgroundId = "jackal" | "vaultDweller" | "raider" | "fiend" | "other"
 export type StatusId = "background" | "currAp" | "exp" | "level" | "rads" | HealthStatusId
 
 export type DbStatus = {
+  raceId?: RaceId
   combatStatus?: "active" | "inactive" | "dead"
   turnStatus?: "acting" | "waiting" | "pause" | "done"
   currentCombatId?: string
