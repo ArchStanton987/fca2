@@ -4,6 +4,9 @@ import getEffectsUseCases from "./character/effects/effects-use-cases"
 import { DbEffectData } from "./character/effects/effects.types"
 import subAdditionalEffects from "./character/effects/sub-additional-effects"
 import getStatusUseCases from "./character/status/status-use-cases"
+import { DbCombatEntry } from "./combat/combats.types"
+import createFight from "./combat/use-cases/create-fight"
+import createEnemy, { CreateEnemyParams } from "./enemy/use-cases/create-enemy"
 import { defaultCreatedElements } from "./objects/created-elements"
 import addAdditionalClothing from "./objects/data/clothings/add-additional-clothings"
 import { DbClothingData } from "./objects/data/clothings/clothings.types"
@@ -54,6 +57,12 @@ export default function getUseCases(
       addConsumable: (data: DbConsumableData) => addAdditionalConsumable(dbType)(data),
       addMiscObject: (data: DbMiscObjectData) => addAdditionalMisc(dbType)(data),
       addEffect: (data: DbEffectData) => addAdditionalEffect(dbType)(data)
+    },
+    combat: {
+      create: (data: DbCombatEntry) => createFight(dbType)(data)
+    },
+    enemy: {
+      create: (data: CreateEnemyParams) => createEnemy(dbType)(data)
     }
   }
 }

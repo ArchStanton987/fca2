@@ -56,7 +56,8 @@ const defaultClothingForm = {
   malus: "-0",
   place: "1",
   weight: "1",
-  value: "10"
+  value: "10",
+  tier: "4"
 } as const
 type NewSymptom = {
   key: string
@@ -92,6 +93,7 @@ type ClothingForm = {
   place: string
   weight: string
   value: string
+  tier: string
 }
 
 export default function ClothingsCreation() {
@@ -178,6 +180,7 @@ export default function ClothingsCreation() {
       place: parseInt(clothingForm.place, 10),
       weight: parseInt(clothingForm.weight, 10),
       value: parseInt(clothingForm.value, 10),
+      tier: parseInt(clothingForm.tier, 10),
       symptoms: symptoms.reduce((acc, symptom) => {
         const { attrType, attrId, operation, value } = symptom
         const newSymptom = { id: attrId, operation, value: parseInt(value, 10) }
@@ -205,6 +208,11 @@ export default function ClothingsCreation() {
           <Col style={{ flex: 1 }}>
             <Txt>LABEL</Txt>
             <TxtInput value={clothingForm.label} onChangeText={e => handleSetForm("label", e)} />
+          </Col>
+          <Spacer x={layout.globalPadding} />
+          <Col style={{ flex: 1 }}>
+            <Txt>TIER</Txt>
+            <TxtInput value={clothingForm.label} onChangeText={e => handleSetForm("tier", e)} />
           </Col>
         </Row>
 

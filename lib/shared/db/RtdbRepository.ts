@@ -1,5 +1,5 @@
 import database from "config/firebase-env"
-import { ref, update } from "firebase/database"
+import { child, push, ref, update } from "firebase/database"
 
 import { BaseParams, DbEntity, Repository } from "./Repository"
 import rtdb from "./api-rtdb"
@@ -27,8 +27,10 @@ export default abstract class RtdbRepository<Db extends DbEntity, BP extends Bas
 
   set = (params: BP, data: Db) => updateValue(this.getPath(params), data)
 
-  addChild = <K extends keyof Db>(params: BP & { childKey?: K }, data: Db[K]) =>
-    updateValue(this.getPath(params), data)
+  add = <K extends keyof Db | undefined = undefined>(
+    params: K extends keyof Db ? BP & { childKey: K } : BP & { childKey?: never },
+    data: K extends keyof Db ? Db[K] : Db
+  ) => push(child(ref(database), this.getPath(params)), data)
 
   setChild = <K extends keyof Db>(params: BP & { childKey: K }, data: Db[K]) =>
     updateValue(this.getPath(params), data)

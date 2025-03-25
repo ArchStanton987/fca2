@@ -1,9 +1,10 @@
 import { DbChar } from "lib/character/Character"
 import { EffectId } from "lib/character/effects/effects.types"
 import { Modifier } from "lib/character/effects/symptoms.type"
+import { DbStatus } from "lib/character/status/status.types"
 import { WeaponId } from "lib/objects/data/weapons/weapons.types"
 
-export type DbEnemy = DbChar
+export type DbEnemy = DbChar | ((BeastCharacteristics & { status: DbStatus }) & Common)
 
 export type BeastAttack = {
   name: string
@@ -15,9 +16,16 @@ export type BeastAttack = {
   modifiers?: Modifier[]
 }
 
+type Common = {
+  templateId: string
+  id: string
+  combats?: Record<string, string>
+  description?: string
+}
+
 export type BeastCharacteristics = {
-  id: string // Unique identifier in camelCase
-  label: string // Original French name
+  templateId: string
+  label: string
   hp: number // Health Points
   actionPoints: number // Action Points
   mentalStrength: number // Moral Strength

@@ -11,7 +11,9 @@ const navElements = [
   { path: "clothings", label: "Armures" },
   { path: "consumables", label: "Consommables" },
   { path: "misc-objects", label: "Divers" },
-  { path: "effects", label: "Effets" }
+  { path: "effects", label: "Effets" },
+  { path: "combat", label: "Combat" },
+  { path: "enemy", label: "Ennemi" }
 ]
 
 export default function AdminCreationLayout() {

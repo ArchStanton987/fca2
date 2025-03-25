@@ -2,7 +2,7 @@ import { BeastCharacteristics } from "../enemy.types"
 
 const beasts: Record<string, BeastCharacteristics> = {
   giantRat: {
-    id: "giantRat",
+    templateId: "giantRat",
     label: "Rat Géant",
     hp: 12,
     actionPoints: 6,
@@ -23,7 +23,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   radRat: {
-    id: "radRat",
+    templateId: "radRat",
     label: "RadRat",
     hp: 10,
     actionPoints: 6,
@@ -56,7 +56,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   standardMolerat: {
-    id: "standardMolerat",
+    templateId: "standardMolerat",
     label: "Molerat standard",
     hp: 15,
     actionPoints: 7,
@@ -77,7 +77,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   powerfulMolerat: {
-    id: "powerfulMolerat",
+    templateId: "powerfulMolerat",
     label: "Molerat puissant",
     hp: 30,
     actionPoints: 7,
@@ -98,7 +98,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   standardPigrat: {
-    id: "standardPigrat",
+    templateId: "standardPigrat",
     label: "Pigrat standard",
     hp: 20,
     actionPoints: 7,
@@ -119,7 +119,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   powerfulPigrat: {
-    id: "powerfulPigrat",
+    templateId: "powerfulPigrat",
     label: "Pigrat puissant",
     hp: 30,
     actionPoints: 9,
@@ -140,7 +140,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   radRoach: {
-    id: "radRoach",
+    templateId: "radRoach",
     label: "Rad-cafard",
     hp: 15,
     actionPoints: 6,
@@ -166,7 +166,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   giantAnt: {
-    id: "giantAnt",
+    templateId: "giantAnt",
     label: "Fourmi géante",
     hp: 20,
     actionPoints: 6,
@@ -184,7 +184,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     attacks: [{ name: "Mandibles", skill: 65, apCost: 3, damage: "1d6+5" }]
   },
   fireAnt: {
-    id: "fireAnt",
+    templateId: "fireAnt",
     label: "Fourmi de feu",
     hp: 30,
     actionPoints: 6,
@@ -210,7 +210,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   mantis: {
-    id: "mantis",
+    templateId: "mantis",
     label: "Mante",
     hp: 10,
     actionPoints: 7,
@@ -237,7 +237,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   mutantFly: {
-    id: "mutantFly",
+    templateId: "mutantFly",
     label: "Mouche mutante",
     hp: 20,
     actionPoints: 9,
@@ -258,7 +258,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   brahmin: {
-    id: "brahmin",
+    templateId: "brahmin",
     label: "Brahmine",
     hp: 60,
     actionPoints: 6,
@@ -279,7 +279,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   floater: {
-    id: "floater",
+    templateId: "floater",
     label: "Floater",
     hp: 65,
     actionPoints: 9,
@@ -305,7 +305,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   centaur: {
-    id: "centaur",
+    templateId: "centaur",
     label: "Centaure",
     hp: 80,
     actionPoints: 6,
@@ -338,7 +338,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   radScorpion: {
-    id: "radScorpion",
+    templateId: "radScorpion",
     label: "Radscorpion",
     hp: 20,
     actionPoints: 7,
@@ -365,7 +365,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   giantRadScorpion: {
-    id: "giantRadScorpion",
+    templateId: "giantRadScorpion",
     label: "Radscorpion géant",
     hp: 85,
     actionPoints: 8,
@@ -392,7 +392,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   grayWolf: {
-    id: "grayWolf",
+    templateId: "grayWolf",
     label: "Loup gris",
     hp: 30,
     actionPoints: 6,
@@ -413,7 +413,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   furiousWolf: {
-    id: "furiousWolf",
+    templateId: "furiousWolf",
     label: "Loup furieux",
     hp: 60,
     actionPoints: 8,
@@ -439,7 +439,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   wildDog: {
-    id: "wildDog",
+    templateId: "wildDog",
     label: "Chien sauvage",
     hp: 30,
     actionPoints: 6,
@@ -464,7 +464,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   babyDeathclaw: {
-    id: "babyDeathclaw",
+    templateId: "babyDeathclaw",
     label: "Bébé Griffemort",
     hp: 45,
     actionPoints: 6,
@@ -482,7 +482,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     attacks: [{ name: "Griffe", skill: 70, apCost: 4, damage: "4d6" }]
   },
   adultDeathclaw: {
-    id: "adultDeathclaw",
+    templateId: "adultDeathclaw",
     label: "Griffemort adulte",
     hp: 105,
     actionPoints: 10,
@@ -500,7 +500,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     attacks: [{ name: "Griffe", skill: 90, apCost: 5, damage: "5d6+5" }]
   },
   alphaFemaleDeathclaw: {
-    id: "alphaFemaleDeathclaw",
+    templateId: "alphaFemaleDeathclaw",
     label: "Femelle Alpha Griffemort",
     hp: 170,
     actionPoints: 12,
@@ -519,7 +519,7 @@ const beasts: Record<string, BeastCharacteristics> = {
   },
 
   babySpitter: {
-    id: "babySpitter",
+    templateId: "babySpitter",
     label: "Bébé plante",
     hp: 25,
     actionPoints: 8,
@@ -545,7 +545,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   adultSpitter: {
-    id: "adultSpitter",
+    templateId: "adultSpitter",
     label: "Plante adulte",
     hp: 35,
     actionPoints: 8,
@@ -571,7 +571,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   gecko: {
-    id: "gecko",
+    templateId: "gecko",
     label: "Gecko",
     hp: 40,
     actionPoints: 7,
@@ -602,7 +602,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   fireGecko: {
-    id: "fireGecko",
+    templateId: "fireGecko",
     label: "Gecko de feu",
     hp: 55,
     actionPoints: 8,
@@ -633,7 +633,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   goldenGecko: {
-    id: "goldenGecko",
+    templateId: "goldenGecko",
     label: "Gecko doré",
     hp: 70,
     actionPoints: 9,
@@ -664,7 +664,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   yaoGuai: {
-    id: "yaoGuai",
+    templateId: "yaoGuai",
     label: "Yao Guai",
     hp: 155,
     actionPoints: 10,
@@ -689,7 +689,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   mirelurk: {
-    id: "mirelurk",
+    templateId: "mirelurk",
     label: "Mirelurk (crabe des bourbiers)",
     hp: 20,
     actionPoints: 7,
@@ -715,7 +715,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   mirelurking: {
-    id: "mirelurking",
+    templateId: "mirelurking",
     label: "Mirelurk King (Seigneur crabe des bourbiers)",
     hp: 65,
     actionPoints: 7,
@@ -748,7 +748,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   weakFeralGhoul: {
-    id: "weakFeralGhoul",
+    templateId: "weakFeralGhoul",
     label: "Goule sauvage faible",
     hp: 30,
     actionPoints: 5,
@@ -781,7 +781,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   furiousFeralGhoul: {
-    id: "furiousFeralGhoul",
+    templateId: "furiousFeralGhoul",
     label: "Goule sauvage furieuse",
     hp: 40,
     actionPoints: 6,
@@ -814,7 +814,7 @@ const beasts: Record<string, BeastCharacteristics> = {
     ]
   },
   glowingFeralGhoul: {
-    id: "glowingFeralGhoul",
+    templateId: "glowingFeralGhoul",
     label: "Goule sauvage luminescente",
     hp: 45,
     actionPoints: 6,

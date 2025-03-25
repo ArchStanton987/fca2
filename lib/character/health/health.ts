@@ -98,6 +98,11 @@ export const limbsMap: Record<LimbHpId, Limb> = {
   }
 }
 
+export const limbsDefault = Object.values(limbsMap).reduce((acc, curr) => {
+  acc[curr.id] = curr.maxValue
+  return acc
+}, {} as Record<LimbHpId, number>)
+
 const healthMap: Record<HealthStatusId, HealthType> = {
   headHp: {
     id: "headHp",

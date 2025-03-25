@@ -3,7 +3,7 @@ import { DbStatus } from "lib/character/status/status.types"
 import { DbCombatEntry } from "lib/combat/combats.types"
 import { DbEnemy } from "lib/enemy/enemy.types"
 
-type Collectible = { id: string }
+type CollectibleParams = { id?: string } | { id?: string; childKey?: string } | undefined
 export type AdditionalCategory = "clothings" | "consumables" | "effects" | "miscObjects"
 
 export type AdditionalParams = { childKey?: AdditionalCategory }
@@ -12,10 +12,10 @@ export type AdditionalConsumablesParams = { childKey?: string }
 export type AdditionalEffectsParams = { childKey?: string }
 export type AdditionalMiscParams = { childKey?: string }
 //
-export type CombatParams = Collectible & { childKey?: keyof DbCombatEntry }
-export type EnemiesParams = Collectible & { childKey?: keyof DbEnemy }
-export type CharacterParams = Collectible & { childKey?: keyof DbChar }
-export type StatusParams = Collectible & { childKey?: keyof DbStatus }
+export type CombatParams = CollectibleParams & { childKey?: keyof DbCombatEntry }
+export type EnemiesParams = CollectibleParams & { childKey?: keyof DbEnemy }
+export type CharacterParams = CollectibleParams & { childKey?: keyof DbChar }
+export type StatusParams = CollectibleParams & { childKey?: keyof DbStatus }
 
 const rtdb = {
   getAdditionalData: ({ childKey }: AdditionalParams) => `v2/additional/${childKey ?? ""}`,
@@ -29,7 +29,8 @@ const rtdb = {
     `v2/additional/miscObjects/${childKey ?? ""}`,
   //
   getCombat: ({ id, childKey }: CombatParams) => `v2/combat/${id}/${childKey ?? ""}`,
-  getEnemy: ({ id, childKey }: EnemiesParams) => `v2/enemies/${id}/${childKey ?? ""}`,
+  getEnemy: ({ id, childKey }: EnemiesParams) =>
+    id ? `v2/enemies/${id}/${childKey ?? ""}` : `v2/enemies/${childKey ?? ""}`,
   getCharacter: ({ id, childKey }: CharacterParams) => `v2/characters/${id}/${childKey ?? ""}`,
   getStatus: ({ id, childKey }: StatusParams) => `v2/characters/${id}/status/${childKey ?? ""}`
 }
