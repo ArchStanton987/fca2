@@ -83,6 +83,8 @@ export default function UpdateSkillsModal() {
     })
   }
 
+  // TODO: manage case when skill score > 100
+
   return (
     <ModalBody>
       <Spacer y={10} />

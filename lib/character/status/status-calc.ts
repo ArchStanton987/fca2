@@ -10,3 +10,11 @@ export const getLevelAndThresholds = (exp: number) => {
   }
   return { level, prev, next }
 }
+
+export const getExpForLevel = (level: number) => {
+  let total = 0
+  for (let i = 1; i < level; i += 1) {
+    total += i * 1000
+  }
+  return total
+}

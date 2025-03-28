@@ -1,6 +1,6 @@
-import { BeastCharacteristics } from "../enemy.types"
+import { NonHumanEnemyTemplate } from "../enemy.types"
 
-const beasts: Record<string, BeastCharacteristics> = {
+const beasts: Record<string, NonHumanEnemyTemplate> = {
   giantRat: {
     templateId: "giantRat",
     label: "Rat Géant",

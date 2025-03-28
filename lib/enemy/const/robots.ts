@@ -1,8 +1,8 @@
-import { BeastCharacteristics } from "../enemy.types"
+import { NonHumanEnemyTemplate } from "../enemy.types"
 
-const robots: Record<string, BeastCharacteristics> = {
+const robots: Record<string, NonHumanEnemyTemplate> = {
   mrHandy: {
-    id: "mrHandy",
+    templateId: "mrHandy",
     label: "Mr Handy",
     hp: 44,
     actionPoints: 6,
@@ -27,7 +27,7 @@ const robots: Record<string, BeastCharacteristics> = {
     ]
   },
   mrGutsy: {
-    id: "mrGutsy",
+    templateId: "mrGutsy",
     label: "Mr Gutsy",
     hp: 60,
     actionPoints: 6,
@@ -58,7 +58,7 @@ const robots: Record<string, BeastCharacteristics> = {
     ]
   },
   sentinelRobotMkII: {
-    id: "sentinelRobotMkII",
+    templateId: "sentinelRobotMkII",
     label: "Robot Sentinelle MK II",
     hp: 85,
     actionPoints: 6,
@@ -89,7 +89,7 @@ const robots: Record<string, BeastCharacteristics> = {
     ]
   },
   enclaveEyebot: {
-    id: "enclaveEyebot",
+    templateId: "enclaveEyebot",
     label: "Eyebot de l'Enclave",
     hp: 25,
     actionPoints: 8,
@@ -107,7 +107,7 @@ const robots: Record<string, BeastCharacteristics> = {
     attacks: [] // Pas d'attaques spécifiées dans le document
   },
   robotBrain: {
-    id: "robotBrain",
+    templateId: "robotBrain",
     label: "Robot-Cerveau",
     hp: 70,
     actionPoints: 6,
@@ -138,7 +138,7 @@ const robots: Record<string, BeastCharacteristics> = {
     ]
   },
   robotBrainLeader: {
-    id: "robotBrainLeader",
+    templateId: "robotBrainLeader",
     label: "Chef Robot-Cerveau",
     hp: 90,
     actionPoints: 6,
@@ -175,7 +175,7 @@ const robots: Record<string, BeastCharacteristics> = {
     ]
   },
   cyberdog: {
-    id: "cyberdog",
+    templateId: "cyberdog",
     label: "Cyberchien",
     hp: 60,
     actionPoints: 7,
@@ -206,7 +206,7 @@ const robots: Record<string, BeastCharacteristics> = {
     ]
   },
   militaryCyberdog: {
-    id: "militaryCyberdog",
+    templateId: "militaryCyberdog",
     label: "Cyberchien Militaire",
     hp: 70,
     actionPoints: 8,

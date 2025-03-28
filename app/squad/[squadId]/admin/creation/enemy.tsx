@@ -6,7 +6,8 @@ import { DbStatus } from "lib/character/status/status.types"
 import beasts from "lib/enemy/const/beasts"
 import humanTemplates from "lib/enemy/const/human-templates"
 import robots from "lib/enemy/const/robots"
-import { DbEnemy } from "lib/enemy/enemy.types"
+import { EnemyType } from "lib/enemy/enemy.types"
+import { generateDbChar } from "lib/enemy/utils/enemy-generation"
 import Toast from "react-native-toast-message"
 
 import Col from "components/Col"
@@ -23,17 +24,12 @@ import PlusIcon from "components/icons/PlusIcon"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
 
-const enemyMap = {
-  human: Object.keys(humanTemplates).map(h => ({ id: h, label: h })),
-  robot: Object.values(robots).map(r => ({ id: r.id, label: r.label })),
-  animal: Object.values(beasts).map(b => ({ id: b.id, label: b.label }))
-}
+const templates = { human: humanTemplates, robot: robots, animal: beasts }
 
-type EnemyType = "human" | "robot" | "animal"
 const enemyTypes = ["human", "robot", "animal"] as const
 const defaultForm = {
   enemyType: "human",
-  template: "gunner",
+  templateId: "gunner",
   description: "",
   name: "",
   level: ""
@@ -43,7 +39,7 @@ type Form = {
   enemyType: EnemyType
   description?: string
   name: string
-  template: keyof typeof humanTemplates | keyof typeof robots | keyof typeof beasts
+  templateId: keyof typeof humanTemplates | keyof typeof robots | keyof typeof beasts
   level: string
 }
 
@@ -63,28 +59,39 @@ export default function EnemyCreation() {
   }
 
   const submit = async () => {
-    if (form.enemyType === "human") return
-    const bestiary = { human: humanTemplates, robot: robots, animal: beasts }
-    const template = bestiary[form.enemyType][form.template]
-    const status: DbStatus = {
-      background: "other",
-      currAp: template.actionPoints,
-      exp: 1,
-      level: Number.isNaN(parseInt(form.level, 10)) ? 1 : parseInt(form.level, 10),
-      ...limbsDefault,
-      rads: 0
+    let payload
+    const finalLevel = Number.isNaN(parseInt(form.level, 10)) ? 1 : parseInt(form.level, 10)
+    if (form.enemyType === "human") {
+      payload = generateDbChar(finalLevel, form.templateId)
+    } else {
+      const template = templates[form.enemyType][form.templateId]
+      const status: DbStatus = {
+        background: "other",
+        currAp: template.actionPoints,
+        exp: 1,
+        level: 1,
+        ...limbsDefault,
+        rads: 0
+      }
+      payload = { ...template, status }
     }
-    const payload: DbEnemy = { ...template, status, ...form }
+    const common = {
+      enemyType: form.enemyType,
+      name: form.name,
+      templateId: form.templateId,
+      description: form.description
+    }
+    payload = { ...payload, ...common }
+
     try {
-      await useCases.enemy.create({ data: payload })
+      await useCases.enemy.create(payload)
       Toast.show({ type: "custom", text1: "L'ennemi a été créé" })
       setForm(defaultForm)
     } catch (err) {
+      console.log("err", err)
       Toast.show({ type: "error", text1: "Erreur lors de la création de l'ennemi" })
     }
   }
-
-  const templateList = enemyMap[form.enemyType]
 
   return (
     <DrawerPage>
@@ -102,7 +109,7 @@ export default function EnemyCreation() {
           <Spacer x={layout.globalPadding} />
           <Col style={{ flex: 1 }}>
             <Txt>TEMPLATE</Txt>
-            <TxtInput value={form.template} />
+            <TxtInput value={form.templateId} />
           </Col>
           <Spacer x={layout.globalPadding} />
           {form.enemyType === "human" ? (
@@ -130,11 +137,11 @@ export default function EnemyCreation() {
       <View style={{ width: 160 }}>
         <ScrollSection style={{ flex: 1 }} title="template">
           <List
-            data={templateList}
-            keyExtractor={item => item.id}
+            data={Object.values(templates[form.enemyType])}
+            keyExtractor={item => item.templateId}
             separator={<Spacer y={10} />}
             renderItem={({ item }) => (
-              <Txt onPress={() => handleSetForm("template", item.id)}>{item.label}</Txt>
+              <Txt onPress={() => handleSetForm("templateId", item.templateId)}>{item.label}</Txt>
             )}
           />
         </ScrollSection>

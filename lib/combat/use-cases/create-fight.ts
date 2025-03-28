@@ -13,13 +13,13 @@ export default function createFight(dbType: keyof typeof repositoryMap = "rtdb")
     const enemiesIds = Object.keys(params.enemies ?? {})
 
     playersIds.forEach(id =>
-      promises.push(charRepo.addChild({ id, childKey: "combats" }, { [combatId]: combatId }))
+      promises.push(charRepo.add({ id, childKey: "combats" }, { [combatId]: combatId }))
     )
     enemiesIds.forEach(id =>
-      promises.push(enemyRepo.addChild({ id, childKey: "combats" }, { [combatId]: combatId }))
+      promises.push(enemyRepo.add({ id, childKey: "combats" }, { [combatId]: combatId }))
     )
 
-    promises.push(combatRepo.addChild({ id: combatId }, params))
+    promises.push(combatRepo.add({ id: combatId }, params))
 
     return Promise.all(promises)
   }

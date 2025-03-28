@@ -4,7 +4,11 @@ import { Modifier } from "lib/character/effects/symptoms.type"
 import { DbStatus } from "lib/character/status/status.types"
 import { WeaponId } from "lib/objects/data/weapons/weapons.types"
 
-export type DbEnemy = DbChar | ((BeastCharacteristics & { status: DbStatus }) & Common)
+type DbHumanEnemy = DbChar & Common
+type DbNonHumanEnemy = NonHumanEnemyTemplate & { status: DbStatus } & Common
+export type DbEnemy = DbHumanEnemy | DbNonHumanEnemy
+
+export type EnemyType = "human" | "robot" | "animal"
 
 export type BeastAttack = {
   name: string
@@ -17,13 +21,14 @@ export type BeastAttack = {
 }
 
 type Common = {
+  enemyType: EnemyType
+  name: string
   templateId: string
-  id: string
   combats?: Record<string, string>
   description?: string
 }
 
-export type BeastCharacteristics = {
+export type NonHumanEnemyTemplate = {
   templateId: string
   label: string
   hp: number // Health Points
