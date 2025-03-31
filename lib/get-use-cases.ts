@@ -4,9 +4,9 @@ import getEffectsUseCases from "./character/effects/effects-use-cases"
 import { DbEffectData } from "./character/effects/effects.types"
 import subAdditionalEffects from "./character/effects/sub-additional-effects"
 import getStatusUseCases from "./character/status/status-use-cases"
-import { DbCombatEntry } from "./combat/combats.types"
-import createFight from "./combat/use-cases/create-fight"
+import createFight, { CreateFightParams } from "./combat/use-cases/create-fight"
 import createEnemy, { CreateEnemyParams } from "./enemy/use-cases/create-enemy"
+import subAllEnemies from "./enemy/use-cases/sub-all-enemies"
 import { defaultCreatedElements } from "./objects/created-elements"
 import addAdditionalClothing from "./objects/data/clothings/add-additional-clothings"
 import { DbClothingData } from "./objects/data/clothings/clothings.types"
@@ -20,13 +20,11 @@ import subAdditionalMisc from "./objects/data/misc-objects/sub-additional-misc"
 import getWeaponsUseCases from "./objects/data/weapons/weapons-use-cases"
 import getEquipedObjectsUseCases from "./objects/equiped-objects-use-cases"
 import getInventoryUseCases from "./objects/inventory-use-cases"
-import subAdditional from "./objects/sub-additional"
 import {
   AdditionalClothingsParams,
   AdditionalConsumablesParams,
   AdditionalEffectsParams,
-  AdditionalMiscParams,
-  AdditionalParams
+  AdditionalMiscParams
 } from "./shared/db/api-rtdb"
 import { DbType } from "./shared/db/db.types"
 import getSquadUseCases from "./squad/squad-use-cases"
@@ -44,7 +42,6 @@ export default function getUseCases(
     squad: getSquadUseCases(dbType),
     abilities: getAbilitiesUseCases(dbType),
     additional: {
-      subAdditionalData: (params: AdditionalParams = {}) => subAdditional(dbType)(params),
       subAdditionalClothings: (params: AdditionalClothingsParams = {}) =>
         subAdditionalClothings(dbType)(params),
       subAdditionalConsumables: (params: AdditionalConsumablesParams = {}) =>
@@ -59,9 +56,10 @@ export default function getUseCases(
       addEffect: (data: DbEffectData) => addAdditionalEffect(dbType)(data)
     },
     combat: {
-      create: (data: DbCombatEntry) => createFight(dbType)(data)
+      create: (data: CreateFightParams) => createFight(dbType)(data)
     },
     enemy: {
+      subAll: () => subAllEnemies(dbType)(),
       create: (data: CreateEnemyParams) => createEnemy(dbType)(data)
     }
   }
