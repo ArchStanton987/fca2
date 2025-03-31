@@ -17,6 +17,10 @@ export type CombatMod = {
   unit: string
 }
 
+export type CombatModValues = {
+  [key in CombatModId]: number
+}
+
 const combatModsMap: Record<CombatModId, CombatMod> = {
   damageResist: {
     id: "damageResist",

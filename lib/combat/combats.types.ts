@@ -70,7 +70,7 @@ export type DbCombatEntry = {
   location?: string
   title: string
   description?: string
-  players: Record<CharId, CharId>
-  enemies: Record<EnemyId, EnemyId>
+  players: Record<CharId, { initiative: number }>
+  enemies: Record<EnemyId, { initiative: number }>
   rounds: Record<number, Record<number, Action>>
 }
