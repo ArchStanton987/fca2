@@ -4,6 +4,7 @@ import { View } from "react-native"
 import { limbsDefault } from "lib/character/health/health"
 import { DbStatus } from "lib/character/status/status.types"
 import beasts from "lib/enemy/const/beasts"
+import enemyTemplates from "lib/enemy/const/enemy-templates"
 import humanTemplates from "lib/enemy/const/human-templates"
 import robots from "lib/enemy/const/robots"
 import { EnemyType } from "lib/enemy/enemy.types"
@@ -23,8 +24,6 @@ import TxtInput from "components/TxtInput"
 import PlusIcon from "components/icons/PlusIcon"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
-
-const templates = { human: humanTemplates, robot: robots, animal: beasts }
 
 const enemyTypes = ["human", "robot", "animal"] as const
 const defaultForm = {
@@ -64,7 +63,7 @@ export default function EnemyCreation() {
     if (form.enemyType === "human") {
       payload = generateDbChar(finalLevel, form.templateId)
     } else {
-      const template = templates[form.enemyType][form.templateId]
+      const template = enemyTemplates[form.enemyType][form.templateId]
       const status: DbStatus = {
         background: "other",
         currAp: template.actionPoints,
@@ -137,7 +136,7 @@ export default function EnemyCreation() {
       <View style={{ width: 160 }}>
         <ScrollSection style={{ flex: 1 }} title="template">
           <List
-            data={Object.values(templates[form.enemyType])}
+            data={Object.values(enemyTemplates[form.enemyType])}
             keyExtractor={item => item.templateId}
             separator={<Spacer y={10} />}
             renderItem={({ item }) => (
