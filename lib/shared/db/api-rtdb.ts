@@ -3,22 +3,23 @@ import { DbStatus } from "lib/character/status/status.types"
 import { DbCombatEntry } from "lib/combat/combats.types"
 import { DbEnemy } from "lib/enemy/enemy.types"
 
-type CollectibleParams = { id?: string } | { id?: string; childKey?: string } | undefined
+type CharType = "characters" | "enemies"
+type CharParams = { charId: string; charType: CharType }
+type Child<T> = { childKey?: T }
+
 export type AdditionalCategory = "clothings" | "consumables" | "effects" | "miscObjects"
 
-export type AdditionalParams = { childKey?: AdditionalCategory }
-export type AdditionalClothingsParams = { childKey?: string }
-export type AdditionalConsumablesParams = { childKey?: string }
-export type AdditionalEffectsParams = { childKey?: string }
-export type AdditionalMiscParams = { childKey?: string }
+export type AdditionalClothingsParams = Child<string>
+export type AdditionalConsumablesParams = Child<string>
+export type AdditionalEffectsParams = Child<string>
+export type AdditionalMiscParams = Child<string>
 //
-export type CombatParams = CollectibleParams & { childKey?: keyof DbCombatEntry }
-export type EnemiesParams = CollectibleParams & { childKey?: keyof DbEnemy }
-export type CharacterParams = CollectibleParams & { childKey?: keyof DbChar }
-export type StatusParams = CollectibleParams & { childKey?: keyof DbStatus }
+export type CombatParams = { id?: string; childKey?: keyof DbCombatEntry }
+export type EnemiesParams = { id?: string; childKey?: keyof DbEnemy }
+export type CharacterParams = { id?: string; childKey?: keyof DbChar }
+export type StatusParams = CharParams & { childKey?: keyof DbStatus }
 
 const rtdb = {
-  getAdditionalData: ({ childKey }: AdditionalParams) => `v2/additional/${childKey ?? ""}`,
   getAdditionalClothings: ({ childKey }: AdditionalClothingsParams) =>
     `v2/additional/clothings/${childKey ?? ""}`,
   getAdditionalConsumables: ({ childKey }: AdditionalConsumablesParams) =>
@@ -28,11 +29,17 @@ const rtdb = {
   getAdditionalMiscObjects: ({ childKey }: AdditionalMiscParams) =>
     `v2/additional/miscObjects/${childKey ?? ""}`,
   //
-  getCombat: ({ id, childKey }: CombatParams) => `v2/combat/${id}/${childKey ?? ""}`,
+  getCombat: ({ id, childKey }: CombatParams) =>
+    childKey ? `v2/combat/${id}/${childKey}` : `v2/combat/${id ?? ""}`,
+
   getEnemy: ({ id, childKey }: EnemiesParams) =>
-    id ? `v2/enemies/${id}/${childKey ?? ""}` : `v2/enemies/${childKey ?? ""}`,
-  getCharacter: ({ id, childKey }: CharacterParams) => `v2/characters/${id}/${childKey ?? ""}`,
-  getStatus: ({ id, childKey }: StatusParams) => `v2/characters/${id}/status/${childKey ?? ""}`
+    childKey ? `v2/enemies/${id}/${childKey}` : `v2/enemies/${id ?? ""}`,
+
+  getCharacter: ({ id, childKey }: CharacterParams) =>
+    childKey ? `v2/characters/${id}/${childKey}` : `v2/characters/${id ?? ""}`,
+
+  getStatus: ({ charId, charType, childKey }: StatusParams) =>
+    `v2/${charType}/${charId}/status/${childKey ?? ""}`
 }
 
 export default rtdb

@@ -6,5 +6,5 @@ export type UpdateFightParams = Partial<DbCombatEntry> & { id: string }
 export default function updateFight(dbType: keyof typeof repositoryMap = "rtdb") {
   const combatRepo = repositoryMap[dbType].combatRepository
 
-  return (params: UpdateFightParams) => combatRepo.setChildren({ id: params.id }, params)
+  return (params: UpdateFightParams) => combatRepo.patch({ id: params.id }, params)
 }

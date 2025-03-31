@@ -27,8 +27,11 @@ function getStatusUseCases(
       onStatusUpdate(character, newStatus, createdElements, db)
       return repository.updateElement(character, field, data)
     },
-    groupUpdate: (character: Character, data: Partial<UpdatableDbStatus>) =>
-      statusRepo.setChildren({ id: character.charId }, data)
+    groupUpdate: (
+      character: Character,
+      data: Partial<UpdatableDbStatus>,
+      charType: "enemies" | "characters" = "characters"
+    ) => statusRepo.patch({ charId: character.charId, charType }, data)
   }
 }
 

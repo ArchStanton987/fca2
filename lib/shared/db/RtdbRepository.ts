@@ -7,6 +7,10 @@ import { RtdbReturnTypes } from "./api-rtdb.types"
 import getSub from "./get-sub"
 import updateValue from "./update-value"
 
+type Collectible = { id?: string }
+type Child<T> = { childKey: T }
+type CollectibleChild<T> = Collectible & Child<T>
+
 export default abstract class RtdbRepository<Db extends DbEntity, BP extends BaseParams>
   implements Repository<Db, BP>
 {
@@ -15,27 +19,13 @@ export default abstract class RtdbRepository<Db extends DbEntity, BP extends Bas
 
   subGetValue = null
 
-  get = (params: BP) => getSub<Db>(this.getPath(params)).getSnapshot()
+  get = (params: BP & Collectible) => getSub<Db>(this.getPath(params)).getSnapshot()
 
-  getChild = <K extends keyof Db>(params: BP & { childKey: K }) =>
-    getSub<Db[K]>(this.getPath(params)).getSnapshot()
+  sub = (params: BP & Collectible) => getSub<Db>(this.getPath(params))
 
-  sub = (params: BP) => getSub<Db>(this.getPath(params))
+  set = (params: BP & Collectible, data: Db) => updateValue(this.getPath(params), data)
 
-  subChild = <K extends keyof Db>(params: BP & { childKey: K }) =>
-    getSub<Db[K]>(this.getPath(params))
-
-  set = (params: BP, data: Db) => updateValue(this.getPath(params), data)
-
-  add = <K extends keyof Db | undefined = undefined>(
-    params: K extends keyof Db ? BP & { childKey: K } : BP & { childKey?: never },
-    data: K extends keyof Db ? Db[K] : Db
-  ) => push(child(ref(database), this.getPath(params)), data)
-
-  setChild = <K extends keyof Db>(params: BP & { childKey: K }, data: Db[K]) =>
-    updateValue(this.getPath(params), data)
-
-  setChildren = (params: BP, data: Partial<Db>) => {
+  patch = (params: BP & Collectible, data: Partial<Db>) => {
     const updatesObj: Record<RtdbReturnTypes, any> = {}
     Object.entries(data).forEach(([key, value]) => {
       updatesObj[this.getPath({ ...params, childKey: key })] = value
@@ -43,12 +33,59 @@ export default abstract class RtdbRepository<Db extends DbEntity, BP extends Bas
     return update(ref(database), updatesObj)
   }
 
-  delete = (params: BP) => updateValue(this.getPath(params), null)
+  delete = (params: BP & Collectible) => updateValue(this.getPath(params), null)
 
-  deleteChild = <K extends keyof Db>(params: BP & { childKey: K }) =>
+  add = (params: BP & { id?: string }, data: Db) => {
+    if (!params.id) return push(child(ref(database), this.getPath(params)), data)
+    return updateValue(this.getPath(params), data)
+  }
+
+  getAll = (params: BP) => getSub<Record<string, Db>>(this.getPath(params)).getSnapshot()
+
+  subAll = (params: BP) => getSub<Record<string, Db>>(this.getPath(params))
+
+  setAll = (params: BP, data: Record<string, Db>) => {
+    const updatesObj: Record<RtdbReturnTypes, any> = {}
+    Object.entries(data).forEach(([id, value]) => {
+      updatesObj[this.getPath({ ...params, id })] = value
+    })
+    return update(ref(database), updatesObj)
+  }
+
+  deleteAll = (params: BP) => updateValue(this.getPath(params), null)
+
+  getChild = <K extends keyof Db>(params: BP & CollectibleChild<K>) =>
+    getSub<Db[K]>(this.getPath(params)).getSnapshot()
+
+  subChild = <K extends keyof Db>(params: BP & CollectibleChild<K>) =>
+    getSub<Db[K]>(this.getPath(params))
+
+  setChild = <K extends keyof Db>(params: BP & CollectibleChild<K>, data: Db[K]) =>
+    updateValue(this.getPath(params), data)
+
+  patchChild = <K extends keyof Db>(params: BP & CollectibleChild<K>, data: Partial<Db[K]>) => {
+    const updatesObj: Record<RtdbReturnTypes, any> = {}
+    Object.entries(data).forEach(([key, value]) => {
+      updatesObj[this.getPath({ ...params, childKey: key })] = value
+    })
+    return update(ref(database), updatesObj)
+  }
+
+  deleteChild = <K extends keyof Db>(params: BP & CollectibleChild<K>) =>
     updateValue(this.getPath(params), null)
 
-  deleteChildren = <K extends keyof Db>(params: BP, keys: K[]) => {
+  addChild = <K extends keyof Db>(
+    params: BP & CollectibleChild<K> & { childId?: string },
+    data: Db[K]
+  ) => {
+    if (!params.childId) return push(child(ref(database), this.getPath(params)), data)
+    return updateValue(this.getPath(params), data)
+  }
+
+  deleteChildren = <K extends keyof Db>(
+    params: BP & { id: string } & { childKey: K },
+    keys: Db[K][]
+  ) => {
     const updatesObj: Record<RtdbReturnTypes, any> = {}
     keys.forEach(key => {
       updatesObj[this.getPath({ ...params, childKey: key })] = null
