@@ -7,6 +7,7 @@ type CombatStatus = {
 }
 
 export type CreateFightParams = {
+  squadId: string
   id: string
   timestamp: string
   location?: string
@@ -20,29 +21,39 @@ export type CreateFightParams = {
 export default function createFight(dbType: keyof typeof repositoryMap = "rtdb") {
   const combatRepo = repositoryMap[dbType].combatRepository
   const statusRepo = repositoryMap[dbType].statusRepository
+  const squadRepo = repositoryMap[dbType].squadRepository
 
   return (params: CreateFightParams) => {
-    const { isStartingNow, id, timestamp, location, title, description } = params
-    const combatId = params.id
+    const { isStartingNow, id, ...rest } = params
     const promises = []
     const players: Record<string, { initiative: number }> = {}
     const enemies: Record<string, { initiative: number }> = {}
+
+    // update squad fight status
+    if (isStartingNow) {
+      promises.push(squadRepo.patch({ id: params.squadId }, { isInFight: true }))
+    }
+
+    // for each player, set combat status, current combat id
     Object.keys(params.players).forEach(charId => {
       players[charId] = { initiative: 1000 }
       if (isStartingNow) {
-        const p = { charId, charType: "characters" as const }
-        promises.push(statusRepo.patch(p, { combatStatus: "active", currentCombatId: combatId }))
+        const playerParams = { charId, charType: "characters" as const }
+        const payload = { combatStatus: "active" as const, currentCombatId: id }
+        promises.push(statusRepo.patch(playerParams, payload))
       }
     })
+    // for each enemy, set combat status, current combat id
     Object.keys(params.enemies).forEach(charId => {
       enemies[charId] = { initiative: 1000 }
       if (isStartingNow) {
-        const p = { charId, charType: "enemies" as const }
-        promises.push(statusRepo.patch(p, { combatStatus: "active", currentCombatId: combatId }))
+        const enemyParams = { charId, charType: "enemies" as const }
+        const payload = { combatStatus: "active" as const, currentCombatId: id }
+        promises.push(statusRepo.patch(enemyParams, payload))
       }
     })
-    const payload = { id, timestamp, location, title, description, players, enemies, rounds: {} }
-    promises.push(combatRepo.add({ id: combatId }, payload))
+    const payload = { ...rest, id, players, enemies, rounds: {} }
+    promises.push(combatRepo.add({ id }, payload))
 
     return Promise.all(promises)
   }

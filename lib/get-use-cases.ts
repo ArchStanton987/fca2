@@ -5,6 +5,9 @@ import { DbEffectData } from "./character/effects/effects.types"
 import subAdditionalEffects from "./character/effects/sub-additional-effects"
 import getStatusUseCases from "./character/status/status-use-cases"
 import createFight, { CreateFightParams } from "./combat/use-cases/create-fight"
+import subFight, { SubFightParams } from "./combat/use-cases/sub-fight"
+import updateContender, { UpdateContenderParams } from "./combat/use-cases/update-contender"
+import updateFight, { UpdateFightParams } from "./combat/use-cases/update-fight"
 import createEnemy, { CreateEnemyParams } from "./enemy/use-cases/create-enemy"
 import subAllEnemies from "./enemy/use-cases/sub-all-enemies"
 import { defaultCreatedElements } from "./objects/created-elements"
@@ -56,7 +59,10 @@ export default function getUseCases(
       addEffect: (data: DbEffectData) => addAdditionalEffect(dbType)(data)
     },
     combat: {
-      create: (data: CreateFightParams) => createFight(dbType)(data)
+      sub: (data: SubFightParams) => subFight(dbType)(data),
+      create: (data: CreateFightParams) => createFight(dbType)(data),
+      update: (data: UpdateFightParams) => updateFight(dbType)(data),
+      updateContender: (data: UpdateContenderParams) => updateContender(dbType)(data)
     },
     enemy: {
       subAll: () => subAllEnemies(dbType)(),

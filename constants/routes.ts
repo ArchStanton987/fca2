@@ -33,6 +33,7 @@ const routes = {
     index: `${combat}/recap`
   },
   modal: {
+    initiative: `${modal}/initiative`,
     updateEffects: `${modal}/update-effects`,
     updateEffectsConfirmation: `${modal}/update-effects-confirmation`,
     updateSkills: `${modal}/update-skills`,

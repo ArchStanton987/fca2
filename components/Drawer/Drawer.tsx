@@ -25,7 +25,9 @@ export default function Drawer({ sectionId, navElements }: DrawerProps) {
   const segments = useSegments()
   const squad = useSquad()
   const { squadId } = squad
-  const { charId, progress } = useCharacter()
+  const { charId, progress, status } = useCharacter()
+
+  const isInFight = typeof status.currentCombatId === "string"
 
   const { availableFreeKnowledgePoints, availableKnowledgePoints, availableSkillPoints } = progress
   const canAddSkill = availableSkillPoints > 0
@@ -56,6 +58,8 @@ export default function Drawer({ sectionId, navElements }: DrawerProps) {
     }
   }
 
+  // TODO: differentiate progress & combat badges
+
   return (
     <ScrollSection style={styles.drawerContainer} title={charDisplayName} titleVariant="shiny">
       <List
@@ -66,7 +70,9 @@ export default function Drawer({ sectionId, navElements }: DrawerProps) {
           const { path } = item
           const isSelected = segments.includes(path)
           const hasBadge =
-            (path === "skills" && canAddSkill) || (path === "knowledges" && canAddKnowledge)
+            (path === "skills" && canAddSkill) ||
+            (path === "knowledges" && canAddKnowledge) ||
+            (path === "recap" && sectionId === "combat" && isInFight)
           return (
             <TouchableHighlight
               style={[styles.navButton, isSelected && styles.navButtonActive]}

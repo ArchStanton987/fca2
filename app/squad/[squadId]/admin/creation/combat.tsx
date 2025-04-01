@@ -82,11 +82,11 @@ export default function CombatCreation() {
       return
     }
 
-    const { date } = squad
+    const { date, squadId } = squad
     const d = getDDMMYYYY(date, "-")
     const h = getHHMM(date, "-")
     const id = `${squad.squadId}_${d}_${h}`
-    const payload = { id, ...form, timestamp: date.getTime().toString(), isStartingNow }
+    const payload = { id, ...form, timestamp: date.getTime().toString(), isStartingNow, squadId }
     if (isStartingNow) {
       Object.entries(payload.enemies).forEach(([key, value]) => {
         payload.enemies[key] = { ...value, combatStatus: "active", currentCombatId: id }

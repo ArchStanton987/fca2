@@ -2,6 +2,7 @@ import { DbChar } from "lib/character/Character"
 import { DbStatus } from "lib/character/status/status.types"
 import { DbCombatEntry } from "lib/combat/combats.types"
 import { DbEnemy } from "lib/enemy/enemy.types"
+import { DbSquad } from "lib/squad/squad-types"
 
 type CharType = "characters" | "enemies"
 type CharParams = { charId: string; charType: CharType }
@@ -18,6 +19,8 @@ export type CombatParams = { id?: string; childKey?: keyof DbCombatEntry }
 export type EnemiesParams = { id?: string; childKey?: keyof DbEnemy }
 export type CharacterParams = { id?: string; childKey?: keyof DbChar }
 export type StatusParams = CharParams & { childKey?: keyof DbStatus }
+//
+export type SquadParams = { id?: string; childKey?: keyof DbSquad }
 
 const rtdb = {
   getAdditionalClothings: ({ childKey }: AdditionalClothingsParams) =>
@@ -39,7 +42,10 @@ const rtdb = {
     childKey ? `v2/characters/${id}/${childKey}` : `v2/characters/${id ?? ""}`,
 
   getStatus: ({ charId, charType, childKey }: StatusParams) =>
-    `v2/${charType}/${charId}/status/${childKey ?? ""}`
+    `v2/${charType}/${charId}/status/${childKey ?? ""}`,
+
+  getSquad: ({ id, childKey }: SquadParams) =>
+    childKey ? `v2/squads/${id}/${childKey}` : `v2/squads/${id ?? ""}`
 }
 
 export default rtdb

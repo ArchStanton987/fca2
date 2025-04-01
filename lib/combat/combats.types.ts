@@ -66,6 +66,7 @@ export type Action = CombatAction | MovementAction | ItemAction | PauseAction
 
 export type DbCombatEntry = {
   id: string
+  squadId: string
   timestamp: string
   location?: string
   title: string

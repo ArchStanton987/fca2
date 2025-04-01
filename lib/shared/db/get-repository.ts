@@ -6,6 +6,7 @@ import EnemyRtdbRepository from "lib/enemy/EnemyRtdbRepository"
 import AdditionalClothingsRtdbRepository from "lib/objects/data/clothings/AdditionalClothingsRtdbRepository"
 import AdditionalConsumablesRtdbRepository from "lib/objects/data/consumables/AdditionalConsumablesRtdbRepository"
 import AdditionalMiscRtdbRepository from "lib/objects/data/misc-objects/AdditionalMiscRtdbRepository"
+import SquadRtdbRepository from "lib/squad/SquadRtdbRepository"
 
 const repositoryMap = {
   rtdb: {
@@ -17,7 +18,9 @@ const repositoryMap = {
     combatRepository: new CombatRtdbRepository(),
     enemyRepository: new EnemyRtdbRepository(),
     characterRepository: new CharacterRtdbRepository(),
-    statusRepository: new StatusRtdbRepository()
+    statusRepository: new StatusRtdbRepository(),
+    //
+    squadRepository: new SquadRtdbRepository()
   }
 }
 

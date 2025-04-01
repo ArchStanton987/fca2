@@ -1,13 +1,17 @@
-import React, { memo, useState } from "react"
+import React, { memo, useEffect, useState } from "react"
 import { ScrollView, View } from "react-native"
+
+import { router } from "expo-router"
 
 import CheckBox from "components/CheckBox/CheckBox"
 import DrawerPage from "components/DrawerPage"
 import List from "components/List"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
+import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
+import useRtdbSub from "hooks/db/useRtdbSub"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 
@@ -18,11 +22,23 @@ function CombatScreen() {
   const useCases = useGetUseCases()
   const character = useCharacter()
   const inventory = useInventory()
-  const { status, secAttr, equipedObjects } = character
+  const { status, secAttr, equipedObjects, charId } = character
   const equWeapons = equipedObjects.weapons
-  const { currAp } = status
+  const { currAp, currentCombatId = "none" } = status
   const maxAp = secAttr.curr.actionPoints
   const weapons = equWeapons.map(eW => inventory.weaponsRecord[eW.dbKey])
+  const combat = useRtdbSub(useCases.combat.sub({ id: currentCombatId }))
+
+  const shouldRollInitiative = combat && combat.players[charId].initiative === 1000
+
+  useEffect(() => {
+    if (shouldRollInitiative) {
+      router.push({
+        pathname: routes.modal.initiative,
+        params: { charId, combatId: currentCombatId, charType: "players" }
+      })
+    }
+  }, [charId, currentCombatId, shouldRollInitiative])
 
   const [prevAp, setPrevAp] = useState(currAp)
 
