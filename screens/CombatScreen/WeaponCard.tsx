@@ -4,8 +4,8 @@ import { Image, TouchableOpacity, View } from "react-native"
 import AntDesign from "@expo/vector-icons/AntDesign"
 import secAttrMap from "lib/character/abilities/sec-attr/sec-attr"
 import {
+  actionsMap,
   getApCost,
-  getAvailableWeaponActions,
   getHasStrengthMalus,
   getWeaponActionLabel
 } from "lib/objects/data/weapons/weapons-utils"
@@ -69,7 +69,8 @@ export default function WeaponCard({ weapon, setPrevAp }: WeaponCardProps) {
     await getHapticSequence(selectedAction, weapon)
   }
 
-  const actions = getAvailableWeaponActions(weapon, char)
+  // const actions = getAvailableWeaponActions(weapon, char)
+  const actions = actionsMap
 
   return (
     <Section title={getTitle(weapon.data.label)}>
@@ -124,17 +125,31 @@ export default function WeaponCard({ weapon, setPrevAp }: WeaponCardProps) {
         <View style={styles.actionsContainer}>
           <List
             data={actions}
-            keyExtractor={item => item}
+            keyExtractor={item => item.actionId}
             separator={<Spacer y={10} />}
             renderItem={({ item }) => {
-              const isSelected = selectedAction === item
+              const isSelected = selectedAction === item.actionId
+              const isAvailable = item.fn(weapon, char)
               return (
                 <TouchableOpacity
-                  onPress={() => selectAction(item)}
-                  style={[styles.actionButton, isSelected && styles.selected]}
+                  onPress={() => {
+                    if (!isAvailable) return
+                    selectAction(item.actionId)
+                  }}
+                  style={[
+                    styles.actionButton,
+                    isSelected && styles.selected,
+                    !isAvailable && styles.disabled
+                  ]}
                 >
-                  <Txt style={[styles.actionButtonText, isSelected && styles.txtSelected]}>
-                    {getWeaponActionLabel(weapon, item)}
+                  <Txt
+                    style={[
+                      styles.actionButtonText,
+                      isSelected && styles.txtSelected,
+                      !isAvailable && styles.disabledText
+                    ]}
+                  >
+                    {getWeaponActionLabel(weapon, item.actionId)}
                   </Txt>
                 </TouchableOpacity>
               )

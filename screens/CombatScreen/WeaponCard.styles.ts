@@ -41,6 +41,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secColor,
     borderColor: colors.primColor
   },
+  disabled: {
+    backgroundColor: colors.quadColor,
+    borderColor: colors.quadColor
+  },
+  disabledText: {
+    color: colors.primColor
+  },
   txtSelected: {
     color: colors.primColor
   },

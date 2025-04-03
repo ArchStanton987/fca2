@@ -70,17 +70,21 @@ function CombatScreen() {
     <DrawerPage>
       <View style={{ flex: 1 }}>
         <Section title={`Points d'action : ${currAp} / ${maxAp}`}>
-          <View style={styles.checkboxContainer}>
-            {apArr.map((ap, i) => (
+          <List
+            data={apArr}
+            horizontal
+            style={styles.checkboxContainer}
+            keyExtractor={item => item}
+            renderItem={({ item }) => (
               <CheckBox
-                color={getCheckboxColor(i)}
+                color={getCheckboxColor(Number(item.replace("pa", "")))}
                 size={22}
-                key={ap}
-                isChecked={i < currAp}
-                onPress={() => handleSetAp(i)}
+                key={item}
+                isChecked={Number(item.replace("pa", "")) < currAp}
+                onPress={() => handleSetAp(Number(item.replace("pa", "")))}
               />
-            ))}
-          </View>
+            )}
+          />
           <Spacer y={5} />
         </Section>
 

@@ -96,6 +96,8 @@ export default function CombatCreation() {
       })
     }
 
+    // TODO: reset AP of all contenders
+
     try {
       await useCases.combat.create(payload)
       Toast.show({ type: "custom", text1: "Le combat a été créé" })
