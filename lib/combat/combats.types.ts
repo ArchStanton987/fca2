@@ -1,7 +1,8 @@
 import { LimbsHp } from "lib/character/health/health-types"
 
+type WeaponActionSubtypeId = "basicAttack" | "aim" | "burst" | "reload" | "unload"
 type MovementType = "crawl" | "walk" | "run" | "sprint" | "jump" | "climb" | "getUp"
-type ItemActionType = "reload" | "drop" | "equip" | "unequip" | "use" | "search"
+type ItemActionType = "drop" | "equip" | "unequip" | "use" | "search"
 
 type CharId = string
 type EnemyId = string
@@ -9,7 +10,7 @@ type WeaponId = string
 type ItemId = string
 type AimZone = "torso" | "legs" | "arms" | "head" | "groin" | "eyes"
 
-type SimpleRoll = {
+export type SimpleRoll = {
   actorSkillScore: number
   actorDiceScore: number
   difficultyModifier: number
@@ -21,11 +22,11 @@ type OppositionRoll = SimpleRoll & {
 }
 type Roll = SimpleRoll | OppositionRoll
 type HealthChangeEntry = Partial<LimbsHp>
-type HealthChangeEntries = Record<CharId, HealthChangeEntry>
+export type HealthChangeEntries = Record<CharId, HealthChangeEntry>
 
-type CombatAction = {
-  actionCategory: "combat"
-  actionName: "attack" | "aim" | "burst"
+type WeaponAction = {
+  actionType: "weapon"
+  actionSubtype: WeaponActionSubtypeId
   actor: CharId
   weaponId: WeaponId
   target: Record<CharId, CharId>
@@ -33,36 +34,46 @@ type CombatAction = {
   aimZone?: AimZone
   apCost: number
   roll: Roll
+  // aftermath?: { type: MovementAction; distance: number }
   healthChangeEntries?: HealthChangeEntries
 }
 
 type MovementAction = {
-  actionCategory: "move"
-  actionName: MovementType
+  actionType: "movement"
+  actionSubtype: MovementType
   actor: CharId
   apCost: number
   roll?: SimpleRoll
-  aftermath: { type: MovementAction; distance: number }
+  // aftermath: { type: MovementType; distance: number }
   healthChangeEntries?: HealthChangeEntries
 }
 
 type ItemAction = {
-  actionCategory: "items"
-  actionName: { 0: ItemActionType; 1?: ItemActionType }
+  actionType: "item"
+  actionSubtype: { 0: ItemActionType; 1?: ItemActionType }
   itemId: { 0: ItemId; 1?: ItemId }
   actor: CharId
   apCost: number
   roll?: SimpleRoll
-  aftermath: {
-    0: { action: ItemActionType; itemId: ItemId }
-    1?: { action: ItemActionType; itemId: ItemId }
-  }
+  // aftermath: {
+  //   0: { action: ItemActionType; itemId: ItemId }
+  //   1?: { action: ItemActionType; itemId: ItemId }
+  // }
   healthChangeEntries?: HealthChangeEntries
 }
 
-type PauseAction = { actionCategory: "pause"; actor: CharId }
+type PauseAction = { actionType: "pause"; actor: CharId }
 
-export type Action = CombatAction | MovementAction | ItemAction | PauseAction
+type OtherAction = {
+  actionType: "other"
+  actionSubtype: string
+  actor: CharId
+  apCost: number
+  roll?: SimpleRoll
+  healthChangeEntries?: HealthChangeEntries
+}
+
+export type Action = WeaponAction | MovementAction | ItemAction | PauseAction | OtherAction
 
 export type DbCombatEntry = {
   id: string
