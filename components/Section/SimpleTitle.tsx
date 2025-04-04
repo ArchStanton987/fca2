@@ -31,7 +31,9 @@ export default function SimpleTitle(props: SimpleTitleProps) {
       <TouchableOpacity disabled={!onPress} style={styles.button} onPress={handleOnPress}>
         <Spacer x={spacerWidth} />
         {hasText ? (
-          <Txt style={[styles[titleVariant], textStyle]}>{title.toUpperCase()}</Txt>
+          <Txt style={[styles[titleVariant], textStyle]} numberOfLines={1}>
+            {title.toUpperCase()}
+          </Txt>
         ) : null}
         <Spacer x={spacerWidth} />
       </TouchableOpacity>

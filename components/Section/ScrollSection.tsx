@@ -14,6 +14,7 @@ type ScrollableSectionProps = {
   contentContainerStyle?: StyleProp<ViewStyle>
   title?: TitleType
   titleVariant?: TitleVariant
+  onPressTitle?: () => void
 }
 
 export default function ScrollSection({
@@ -21,11 +22,12 @@ export default function ScrollSection({
   contentContainerStyle,
   title,
   titleVariant,
+  onPressTitle,
   children
 }: ScrollableSectionProps) {
   return (
     <View style={[styles.container, style]}>
-      <SectionTopRow title={title} titleVariant={titleVariant} />
+      <SectionTopRow title={title} titleVariant={titleVariant} onPressTitle={onPressTitle} />
       <ScrollView style={[styles.scrollView, contentContainerStyle]}>
         <Spacer y={layout.smallLineHeight} />
         {children}
