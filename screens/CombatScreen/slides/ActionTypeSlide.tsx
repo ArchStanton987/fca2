@@ -19,15 +19,11 @@ import {
 } from "providers/ActionProvider"
 import layout from "styles/layout"
 
+import MovementActions from "./MovementActions"
 import NextButton from "./NextButton"
 import WeaponActions from "./WeaponActions"
 
 const actionTypes = Object.values(actions).map(a => ({ id: a.id, label: a.label }))
-
-const getsubtypeTitle = (actionType: string) => {
-  if (actionType === "weapon") return "action / pa"
-  return "action"
-}
 
 export default function ActionTypeSlide({ scrollNext }: SlideProps) {
   const { equipedObjects, unarmed } = useCharacter()
@@ -35,9 +31,6 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
 
   const { actionType, actionSubtype, weapon } = useActionForm()
   const { setForm } = useActionApi()
-
-  // const actionsSubTypes = actionType ? actions[actionType]?.subtypes : {}
-  // const subtypes = Object.values(actionsSubTypes).map(s => ({ id: s.id, label: s.label }))
 
   const onPressActionType = (actionId: keyof typeof actions) => {
     const payload: Partial<ActionStateContext> = { ...defaultForm, actionType: actionId }
@@ -54,7 +47,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
   }
 
   const isWeapon = actionType === "weapon" && !!weapon?.id
-  // const infoTitle = isWeapon ? weaponsMap[weapon.id].label : "infos"
+  const isMovement = actionType === "movement"
   const canGoNext = !!actionType && !!actionSubtype
 
   return (
@@ -74,9 +67,10 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
       </ScrollSection>
       <Spacer x={layout.globalPadding} />
 
-      <ScrollSection title={getsubtypeTitle(actionType)} style={{ width: 150 }}>
-        {isWeapon ? <WeaponActions selectedWeapon={weapon.dbKey} onPress={onPressSubtype} /> : null}
-      </ScrollSection>
+      {isWeapon ? <WeaponActions selectedWeapon={weapon.dbKey} onPress={onPressSubtype} /> : null}
+      {isMovement ? (
+        <MovementActions selectedAction={actionSubtype} onPress={onPressSubtype} />
+      ) : null}
 
       <Spacer x={layout.globalPadding} />
 

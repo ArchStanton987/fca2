@@ -6,6 +6,7 @@ import {
 
 import List from "components/List"
 import ListItemSelectable from "components/ListItemSelectable"
+import ScrollSection from "components/Section/ScrollSection"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
@@ -15,6 +16,8 @@ type WeaponActionsProps = {
   selectedWeapon: string
   onPress: (action: string) => void
 }
+
+const title = [{ title: "action", containerStyle: { flex: 1 } }, { title: "pa" }]
 
 export default function WeaponActions({ selectedWeapon, onPress }: WeaponActionsProps) {
   const { actionSubtype } = useActionForm()
@@ -27,19 +30,21 @@ export default function WeaponActions({ selectedWeapon, onPress }: WeaponActions
   const actions = getAvailableWeaponActions(weapon, char)
 
   return (
-    <List
-      data={actions}
-      keyExtractor={item => item}
-      renderItem={({ item }) => (
-        <ListItemSelectable
-          isSelected={actionSubtype === item}
-          style={{ flexDirection: "row", justifyContent: "space-between" }}
-          onPress={() => onPress(item)}
-        >
-          <Txt>{getWeaponActionLabel(weapon, item)}</Txt>
-          <Txt>{getApCost(weapon, char, item)}</Txt>
-        </ListItemSelectable>
-      )}
-    />
+    <ScrollSection style={{ width: 180 }} title={title}>
+      <List
+        data={actions}
+        keyExtractor={item => item}
+        renderItem={({ item }) => (
+          <ListItemSelectable
+            isSelected={actionSubtype === item}
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+            onPress={() => onPress(item)}
+          >
+            <Txt>{getWeaponActionLabel(weapon, item)}</Txt>
+            <Txt>{getApCost(weapon, char, item)}</Txt>
+          </ListItemSelectable>
+        )}
+      />
+    </ScrollSection>
   )
 }

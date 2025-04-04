@@ -14,13 +14,13 @@ const actions = {
     id: "movement",
     label: "Déplacement",
     subtypes: {
-      run: { id: "run", label: "Courir" },
-      walk: { id: "walk", label: "Marcher" },
-      getUp: { id: "getUp", label: "Se relever" },
-      sprint: { id: "sprint", label: "Sprint" },
-      crawl: { id: "crawl", label: "Ramper" },
-      jump: { id: "jump", label: "Sauter" },
-      climb: { id: "climb", label: "Grimper" }
+      run: { id: "run", label: "Courir", apCost: null, distance: "18m" },
+      walk: { id: "walk", label: "Marcher", apCost: null, distance: "8m" },
+      getUp: { id: "getUp", label: "Se relever", apCost: 4, distance: "0m" },
+      sprint: { id: "sprint", label: "Sprint", apCost: null, distance: "35m" },
+      crawl: { id: "crawl", label: "Ramper", apCost: 3, distance: "1m" },
+      jump: { id: "jump", label: "Sauter", apCost: 4, distance: "2m" },
+      climb: { id: "climb", label: "Grimper", apCost: null, distance: "1.5m" }
     }
   },
   item: {
