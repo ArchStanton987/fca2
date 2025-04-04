@@ -1,6 +1,11 @@
 import Character from "lib/character/Character"
 import { Special } from "lib/character/abilities/special/special.types"
-import { LOAD_AP_COST, UNLOAD_AP_COST } from "lib/objects/data/weapons/weapons-const"
+import {
+  HIT_WITH_AP_COST,
+  LOAD_AP_COST,
+  THROW_AP_COST,
+  UNLOAD_AP_COST
+} from "lib/objects/data/weapons/weapons-const"
 import { Weapon, WeaponActionId } from "lib/objects/data/weapons/weapons.types"
 
 export const getApCost = (weapon: Weapon, char: Character, actionId: WeaponActionId) => {
@@ -9,7 +14,9 @@ export const getApCost = (weapon: Weapon, char: Character, actionId: WeaponActio
     aim: weapon.data.specialApCost,
     burst: char.secAttr.curr.actionPoints,
     load: LOAD_AP_COST,
-    unload: UNLOAD_AP_COST
+    unload: UNLOAD_AP_COST,
+    throw: THROW_AP_COST,
+    hit: HIT_WITH_AP_COST
   }
   return apCosts[actionId] || char.secAttr.curr.actionPoints
 }
@@ -69,7 +76,13 @@ export const getCanUnload = ({ data, inMagazine = 0 }: Weapon, char: Character) 
   return char.status.currAp >= UNLOAD_AP_COST
 }
 
-const actionsMap: {
+export const getCanHitWith = (weapon: Weapon, char: Character) => {
+  if (weapon.data.skill === "melee" || weapon.data.skill === "unarmed") return false
+  return char.status.currAp >= HIT_WITH_AP_COST
+}
+export const getCanThrow = (weapon: Weapon, char: Character) => char.status.currAp >= THROW_AP_COST
+
+export const weaponActionsMap: {
   actionId: WeaponActionId
   fn: (weapon: Weapon, char: Character) => boolean
 }[] = [
@@ -77,16 +90,20 @@ const actionsMap: {
   { actionId: "aim", fn: getCanAim },
   { actionId: "burst", fn: getCanShootBurst },
   { actionId: "load", fn: getCanLoad },
-  { actionId: "unload", fn: getCanUnload }
+  { actionId: "unload", fn: getCanUnload },
+  { actionId: "throw", fn: getCanThrow },
+  { actionId: "hit", fn: getCanHitWith }
 ]
 
 export const getAvailableWeaponActions = (weapon: Weapon, char: Character) =>
-  actionsMap.filter(({ fn }) => fn(weapon, char)).map(({ actionId }) => actionId)
+  weaponActionsMap.filter(({ fn }) => fn(weapon, char)).map(({ actionId }) => actionId)
 
 export const getWeaponActionLabel = (weapon: Weapon, actionId: WeaponActionId) => {
   if (actionId === "burst") return "Tirer (rafale)"
   if (actionId === "load") return "Recharger"
   if (actionId === "unload") return "Décharger"
+  if (actionId === "hit") return "Frapper"
+  if (actionId === "throw") return "Lancer"
 
   let verb = "Utiliser"
   switch (weapon.data.skill) {

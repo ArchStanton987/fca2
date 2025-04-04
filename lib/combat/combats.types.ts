@@ -1,6 +1,6 @@
 import { LimbsHp } from "lib/character/health/health-types"
 
-type WeaponActionSubtypeId = "basicAttack" | "aim" | "burst" | "reload" | "unload"
+type WeaponActionSubtypeId = "basicAttack" | "aim" | "burst" | "reload" | "unload" | "hit" | "throw"
 type MovementType = "crawl" | "walk" | "run" | "sprint" | "jump" | "climb" | "getUp"
 type ItemActionType = "drop" | "equip" | "unequip" | "use" | "search"
 

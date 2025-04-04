@@ -6,7 +6,7 @@ import actions from "lib/combat/const/actions"
 import { WeaponId } from "lib/objects/data/weapons/weapons.types"
 import { Form } from "lib/shared/types/utils-types"
 
-type ActionStateContext = Form<{
+export type ActionStateContext = Form<{
   actionType: keyof typeof actions
   actionSubtype: string
   actor: string

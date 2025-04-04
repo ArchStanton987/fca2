@@ -3,7 +3,7 @@ import { SkillId } from "lib/character/abilities/skills/skills.types"
 
 import { AmmoType } from "../ammo/ammo.types"
 
-export type WeaponUseType = "basic" | "burst" | "aim"
+export type WeaponUseType = "basic" | "burst" | "aim" | "hit" | "throw"
 
 export type WeaponActionId = WeaponUseType | "load" | "unload"
 

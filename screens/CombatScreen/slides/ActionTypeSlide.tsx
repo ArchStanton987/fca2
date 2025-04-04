@@ -10,41 +10,52 @@ import ScrollSection from "components/Section/ScrollSection"
 import DrawerSlide from "components/Slides/DrawerSlide"
 import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
-import { useActionApi, useActionForm } from "providers/ActionProvider"
+import { useCharacter } from "contexts/CharacterContext"
+import {
+  ActionStateContext,
+  defaultActionForm as defaultForm,
+  useActionApi,
+  useActionForm
+} from "providers/ActionProvider"
 import layout from "styles/layout"
 
 import NextButton from "./NextButton"
+import WeaponActions from "./WeaponActions"
 
 const actionTypes = Object.values(actions).map(a => ({ id: a.id, label: a.label }))
 
-export default function ActionTypeSlide({ scrollNext }: SlideProps) {
-  // const { equipedObjects, unarmed } = useCharacter()
-  // const weapons = equipedObjects.weapons.length > 0 ? equipedObjects.weapons : [unarmed]
-  // const defaultWeapon = weapons[0]
+const getsubtypeTitle = (actionType: string) => {
+  if (actionType === "weapon") return "action / pa"
+  return "action"
+}
 
-  const { actionType } = useActionForm()
+export default function ActionTypeSlide({ scrollNext }: SlideProps) {
+  const { equipedObjects, unarmed } = useCharacter()
+  const weapons = equipedObjects.weapons.length > 0 ? equipedObjects.weapons : [unarmed]
+
+  const { actionType, actionSubtype, weapon } = useActionForm()
   const { setForm } = useActionApi()
 
   // const actionsSubTypes = actionType ? actions[actionType]?.subtypes : {}
   // const subtypes = Object.values(actionsSubTypes).map(s => ({ id: s.id, label: s.label }))
 
-  // const toggleWeapon = () => {
-  //   const nextIndex = (weapons.findIndex(w => w.dbKey === weapon?.dbKey) + 1) % weapons.length
-  //   setForm("weapon", { id: weapons[nextIndex].id, dbKey: weapons[nextIndex].dbKey })
-  // }
-
   const onPressActionType = (actionId: keyof typeof actions) => {
-    // if (actionId === "weapon") {
-    //   console.log("defaultWeapon", defaultWeapon)
-    //   setForm("weapon", { id: defaultWeapon.id, dbKey: defaultWeapon.dbKey })
-    // }
-    setForm({ actionType: actionId })
+    const payload: Partial<ActionStateContext> = { ...defaultForm, actionType: actionId }
+    if (actionId === "weapon") {
+      const nextIndex = (weapons.findIndex(w => w.dbKey === weapon?.dbKey) + 1) % weapons.length
+      payload.weapon = { id: weapons[nextIndex].id, dbKey: weapons[nextIndex].dbKey }
+    }
+    setForm(payload)
   }
 
-  // const isWeapon = actionType === "weapon" && !!weapon?.id
+  const onPressSubtype = (str: string) => {
+    const payload: Partial<ActionStateContext> = { ...defaultForm, actionType, actionSubtype: str }
+    setForm(payload)
+  }
+
+  const isWeapon = actionType === "weapon" && !!weapon?.id
   // const infoTitle = isWeapon ? weaponsMap[weapon.id].label : "infos"
-  // const canGoNext = !!actionType && !!actionSubtype
-  const canGoNext = false
+  const canGoNext = !!actionType && !!actionSubtype
 
   return (
     <DrawerSlide>
@@ -63,11 +74,11 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
       </ScrollSection>
       <Spacer x={layout.globalPadding} />
 
-      {/* <ScrollSection style={{ flex: 1 }} title="action">
-        {isWeapon ? <WeaponActions selectedWeapon={weapon.dbKey} /> : null}
-      </ScrollSection> */}
+      <ScrollSection title={getsubtypeTitle(actionType)} style={{ width: 150 }}>
+        {isWeapon ? <WeaponActions selectedWeapon={weapon.dbKey} onPress={onPressSubtype} /> : null}
+      </ScrollSection>
 
-      {/* <Spacer x={layout.globalPadding} /> */}
+      <Spacer x={layout.globalPadding} />
 
       <View style={{ width: 160 }}>
         {/* <ScrollSection style={{ flex: 1 }} title={infoTitle} onPressTitle={toggleWeapon}> */}

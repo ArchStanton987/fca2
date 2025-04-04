@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
 
 export default function ListItemSelectable({
   label,
+  style,
   isSelected,
   disabled,
   children,
@@ -40,6 +41,7 @@ export default function ListItemSelectable({
     <TouchableOpacity
       style={[
         styles.actionTypeContainer,
+        style,
         isSelected && styles.selected,
         disabled && styles.disabled
       ]}
