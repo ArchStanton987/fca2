@@ -27,11 +27,12 @@ const actions = {
     id: "item",
     label: "Objets / Inv.",
     subtypes: {
-      drop: { id: "drop", label: "Lâcher" },
-      equip: { id: "equip", label: "Équiper" },
-      unequip: { id: "unequip", label: "Désequiper" },
-      use: { id: "use", label: "Utiliser" },
-      search: { id: "search", label: "Chercher" }
+      drop: { id: "drop", label: "Lâcher", apCost: 2 },
+      equip: { id: "equip", label: "Équiper", apCost: 2 },
+      unequip: { id: "unequip", label: "Désequiper", apCost: 2 },
+      use: { id: "use", label: "Utiliser", apCost: 3 },
+      search: { id: "search", label: "Chercher", apCost: 4 },
+      throw: { id: "throw", label: "Lancer", apCost: 3 }
     }
   },
   pause: {

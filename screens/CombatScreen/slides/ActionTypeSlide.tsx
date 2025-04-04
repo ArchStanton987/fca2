@@ -1,5 +1,6 @@
-import { View } from "react-native"
+import { TouchableOpacity, View } from "react-native"
 
+import AntDesign from "@expo/vector-icons/AntDesign"
 import actions from "lib/combat/const/actions"
 
 import List from "components/List"
@@ -17,10 +18,13 @@ import {
   useActionApi,
   useActionForm
 } from "providers/ActionProvider"
+import colors from "styles/colors"
 import layout from "styles/layout"
 
+import ItemActions from "./ItemActions"
 import MovementActions from "./MovementActions"
 import NextButton from "./NextButton"
+import OtherAction from "./OtherAction"
 import WeaponActions from "./WeaponActions"
 
 const actionTypes = Object.values(actions).map(a => ({ id: a.id, label: a.label }))
@@ -48,11 +52,14 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
 
   const isWeapon = actionType === "weapon" && !!weapon?.id
   const isMovement = actionType === "movement"
+  const isItem = actionType === "item"
+  const isPause = actionType === "pause"
+  const isOther = actionType === "other"
   const canGoNext = !!actionType && !!actionSubtype
 
   return (
     <DrawerSlide>
-      <ScrollSection style={{ width: 120 }} title="type d'action">
+      <ScrollSection style={{ width: 130 }} title="type d'action">
         <List
           data={actionTypes}
           keyExtractor={item => item.id}
@@ -71,6 +78,8 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
       {isMovement ? (
         <MovementActions selectedAction={actionSubtype} onPress={onPressSubtype} />
       ) : null}
+      {isItem ? <ItemActions selectedAction={actionSubtype} onPress={onPressSubtype} /> : null}
+      {isOther ? <OtherAction /> : null}
 
       <Spacer x={layout.globalPadding} />
 
@@ -82,9 +91,15 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
 
         <Spacer y={layout.globalPadding} />
 
-        <Section title="suivant">
+        <Section title={isPause ? "valider" : "suivant"}>
           <Row style={{ justifyContent: "center" }}>
-            <NextButton disabled={!canGoNext} onPress={scrollNext} />
+            {isPause ? (
+              <TouchableOpacity>
+                <AntDesign name="pausecircle" size={36} color={colors.secColor} />
+              </TouchableOpacity>
+            ) : (
+              <NextButton disabled={!canGoNext} onPress={scrollNext} />
+            )}
           </Row>
         </Section>
       </View>
