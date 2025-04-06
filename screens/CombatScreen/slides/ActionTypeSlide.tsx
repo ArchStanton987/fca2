@@ -1,4 +1,4 @@
-import { TouchableOpacity, View } from "react-native"
+import { Pressable, TouchableOpacity, View } from "react-native"
 
 import AntDesign from "@expo/vector-icons/AntDesign"
 import actions from "lib/combat/const/actions"
@@ -11,6 +11,8 @@ import ScrollSection from "components/Section/ScrollSection"
 import DrawerSlide from "components/Slides/DrawerSlide"
 import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
+import Txt from "components/Txt"
+import HealthFigure from "components/draws/HealthFigure/HealthFigure"
 import { useCharacter } from "contexts/CharacterContext"
 import {
   ActionStateContext,
@@ -26,11 +28,20 @@ import MovementActions from "./MovementActions"
 import NextButton from "./NextButton"
 import OtherAction from "./OtherAction"
 import WeaponActions from "./WeaponActions"
+import WeaponInfo from "./WeaponInfo"
 
 const actionTypes = Object.values(actions).map(a => ({ id: a.id, label: a.label }))
 
+function SectionSpacer() {
+  return (
+    <Section style={{ flex: 1 }}>
+      <Spacer fullspace />
+    </Section>
+  )
+}
+
 export default function ActionTypeSlide({ scrollNext }: SlideProps) {
-  const { equipedObjects, unarmed } = useCharacter()
+  const { equipedObjects, unarmed, status, secAttr } = useCharacter()
   const weapons = equipedObjects.weapons.length > 0 ? equipedObjects.weapons : [unarmed]
 
   const { actionType, actionSubtype, weapon } = useActionForm()
@@ -39,10 +50,16 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
   const onPressActionType = (actionId: keyof typeof actions) => {
     const payload: Partial<ActionStateContext> = { ...defaultForm, actionType: actionId }
     if (actionId === "weapon") {
-      const nextIndex = (weapons.findIndex(w => w.dbKey === weapon?.dbKey) + 1) % weapons.length
-      payload.weapon = { id: weapons[nextIndex].id, dbKey: weapons[nextIndex].dbKey }
+      payload.weapon = { id: weapons[0].id, dbKey: weapons[0].dbKey }
     }
     setForm(payload)
+  }
+
+  const toggleWeapon = () => {
+    if (weapons.length < 2) return
+    const currentIndex = weapons.findIndex(w => w.dbKey === weapon?.dbKey)
+    const nextIndex = (currentIndex + 1) % weapons.length
+    setForm({ weapon: { id: weapons[nextIndex].id, dbKey: weapons[nextIndex].dbKey } })
   }
 
   const onPressSubtype = (str: string) => {
@@ -59,7 +76,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
 
   return (
     <DrawerSlide>
-      <ScrollSection style={{ width: 130 }} title="type d'action">
+      <ScrollSection style={{ width: 150 }} title="type d'action">
         <List
           data={actionTypes}
           keyExtractor={item => item.id}
@@ -74,6 +91,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
       </ScrollSection>
       <Spacer x={layout.globalPadding} />
 
+      {!actionType || isPause ? <SectionSpacer /> : null}
       {isWeapon ? <WeaponActions selectedWeapon={weapon.dbKey} onPress={onPressSubtype} /> : null}
       {isMovement ? (
         <MovementActions selectedAction={actionSubtype} onPress={onPressSubtype} />
@@ -83,25 +101,41 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
 
       <Spacer x={layout.globalPadding} />
 
-      <View style={{ width: 160 }}>
-        {/* <ScrollSection style={{ flex: 1 }} title={infoTitle} onPressTitle={toggleWeapon}> */}
-        {/* WEAPON CARD */}
-        {/* {isWeapon ? <WeaponInfo selectedWeapon={weapon.dbKey} /> : null} */}
-        {/* </ScrollSection> */}
+      <View style={{ width: 170 }}>
+        <ScrollSection style={{ flex: 1 }} title="info">
+          {isWeapon ? (
+            <Pressable onPress={toggleWeapon} disabled={weapons.length < 2}>
+              <WeaponInfo selectedWeapon={weapon.dbKey} />
+            </Pressable>
+          ) : null}
+          {isMovement ? <HealthFigure /> : null}
+        </ScrollSection>
 
         <Spacer y={layout.globalPadding} />
 
-        <Section title={isPause ? "valider" : "suivant"}>
-          <Row style={{ justifyContent: "center" }}>
-            {isPause ? (
-              <TouchableOpacity>
-                <AntDesign name="pausecircle" size={36} color={colors.secColor} />
-              </TouchableOpacity>
-            ) : (
-              <NextButton disabled={!canGoNext} onPress={scrollNext} />
-            )}
-          </Row>
-        </Section>
+        <Row>
+          <Section title="pa" style={{ flex: 1 }}>
+            <Row style={{ justifyContent: "center" }}>
+              <Txt style={{ fontSize: 20 }}>
+                {status.currAp} / {secAttr.curr.actionPoints}
+              </Txt>
+            </Row>
+          </Section>
+
+          <Spacer x={layout.globalPadding} />
+
+          <Section title={isPause ? "valider" : "suivant"} style={{ flex: 1 }}>
+            <Row style={{ justifyContent: "center" }}>
+              {isPause ? (
+                <TouchableOpacity>
+                  <AntDesign name="pausecircle" size={36} color={colors.secColor} />
+                </TouchableOpacity>
+              ) : (
+                <NextButton disabled={!canGoNext} onPress={scrollNext} />
+              )}
+            </Row>
+          </Section>
+        </Row>
       </View>
     </DrawerSlide>
   )

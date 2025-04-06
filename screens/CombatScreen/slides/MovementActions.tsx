@@ -10,11 +10,11 @@ type WeaponActionsProps = {
   onPress: (action: string) => void
 }
 
-const title = [{ title: "action" }, { title: "pa" }, { title: "dist" }]
+const title = [{ title: "action", containerStyle: { flex: 1 } }, { title: "pa" }, { title: "dist" }]
 
 export default function MovementActions({ selectedAction, onPress }: WeaponActionsProps) {
   return (
-    <ScrollSection style={{ width: 180 }} title={title}>
+    <ScrollSection style={{ flex: 1 }} title={title}>
       <List
         data={Object.values(actions.movement.subtypes)}
         keyExtractor={item => item.id}

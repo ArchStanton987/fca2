@@ -14,7 +14,7 @@ const title = [{ title: "action", containerStyle: { flex: 1 } }, { title: "pa" }
 
 export default function ItemActions({ selectedAction, onPress }: WeaponActionsProps) {
   return (
-    <ScrollSection style={{ width: 180 }} title={title}>
+    <ScrollSection style={{ flex: 1 }} title={title}>
       <List
         data={Object.values(actions.item.subtypes)}
         keyExtractor={item => item.id}

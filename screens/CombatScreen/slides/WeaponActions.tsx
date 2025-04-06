@@ -30,7 +30,7 @@ export default function WeaponActions({ selectedWeapon, onPress }: WeaponActions
   const actions = getAvailableWeaponActions(weapon, char)
 
   return (
-    <ScrollSection style={{ width: 180 }} title={title}>
+    <ScrollSection style={{ flex: 1 }} title={title}>
       <List
         data={actions}
         keyExtractor={item => item}

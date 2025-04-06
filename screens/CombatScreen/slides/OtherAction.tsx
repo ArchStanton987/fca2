@@ -7,7 +7,7 @@ export default function OtherAction() {
   const { setForm } = useActionApi()
 
   return (
-    <Section style={{ width: 180 }} title="action">
+    <Section style={{ flex: 1 }} title="action">
       <TxtInput value={actionSubtype} onChangeText={e => setForm({ actionSubtype: e })} />
     </Section>
   )
