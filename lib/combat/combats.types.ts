@@ -30,7 +30,6 @@ type WeaponAction = {
   actor: CharId
   weaponId: WeaponId
   target: Record<CharId, CharId>
-  attackType: "basic" | "aim" | "burst"
   aimZone?: AimZone
   apCost: number
   roll: Roll
@@ -50,8 +49,8 @@ type MovementAction = {
 
 type ItemAction = {
   actionType: "item"
-  actionSubtype: { 0: ItemActionType; 1?: ItemActionType }
-  itemId: { 0: ItemId; 1?: ItemId }
+  actionSubtype: ItemActionType
+  itemId: ItemId
   actor: CharId
   apCost: number
   roll?: SimpleRoll

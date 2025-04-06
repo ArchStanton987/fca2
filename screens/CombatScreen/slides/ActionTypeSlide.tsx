@@ -24,6 +24,7 @@ import colors from "styles/colors"
 import layout from "styles/layout"
 
 import ItemActions from "./ItemActions"
+import ItemsActionInfo from "./ItemsActionInfo"
 import MovementActions from "./MovementActions"
 import NextButton from "./NextButton"
 import OtherAction from "./OtherAction"
@@ -109,6 +110,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
             </Pressable>
           ) : null}
           {isMovement ? <HealthFigure /> : null}
+          {isItem ? <ItemsActionInfo /> : null}
         </ScrollSection>
 
         <Spacer y={layout.globalPadding} />

@@ -32,12 +32,13 @@ const actions = {
       unequip: { id: "unequip", label: "Désequiper", apCost: 2 },
       use: { id: "use", label: "Utiliser", apCost: 3 },
       search: { id: "search", label: "Chercher", apCost: 4 },
-      throw: { id: "throw", label: "Lancer", apCost: 3 }
+      throw: { id: "throw", label: "Lancer", apCost: 3 },
+      pickUp: { id: "pickUp", label: "Ramasser", apCost: 3 }
     }
   },
   pause: {
     id: "pause",
-    label: "Pause",
+    label: "Attendre",
     subtypes: {}
   },
   other: {
