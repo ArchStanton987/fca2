@@ -1,6 +1,6 @@
 import { Pressable, TouchableOpacity, View } from "react-native"
 
-import AntDesign from "@expo/vector-icons/AntDesign"
+import Ionicons from "@expo/vector-icons/Ionicons"
 import actions from "lib/combat/const/actions"
 
 import List from "components/List"
@@ -111,6 +111,19 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
           ) : null}
           {isMovement ? <HealthFigure /> : null}
           {isItem ? <ItemsActionInfo /> : null}
+          {isPause ? (
+            <Txt>
+              Conservez vos points d&apos;action et attendez le bon moment pour agir au cours du
+              round. Attention, on ne peut pas interrompre une autre action un fois les dés lancés !
+            </Txt>
+          ) : null}
+          {isOther ? (
+            <Txt>
+              Pour toutes les actions qui ne sont pas explicitement prévues dans l&apos;interface du
+              pipboy. Cela permet d&apos;en garder une trace en archive pour vous souvenir de vos
+              actions héroïques, ou pour aider des archéologues à reconstituer votre mort.
+            </Txt>
+          ) : null}
         </ScrollSection>
 
         <Spacer y={layout.globalPadding} />
@@ -130,7 +143,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
             <Row style={{ justifyContent: "center" }}>
               {isPause ? (
                 <TouchableOpacity>
-                  <AntDesign name="pausecircle" size={36} color={colors.secColor} />
+                  <Ionicons name="pause-circle" size={36} color={colors.secColor} />
                 </TouchableOpacity>
               ) : (
                 <NextButton disabled={!canGoNext} onPress={scrollNext} />
