@@ -68,7 +68,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
     setForm(payload)
   }
 
-  const isWeapon = actionType === "weapon" && !!weapon?.id
+  const isWeapon = actionType === "weapon"
   const isMovement = actionType === "movement"
   const isItem = actionType === "item"
   const isPause = actionType === "pause"
@@ -93,7 +93,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
       <Spacer x={layout.globalPadding} />
 
       {!actionType || isPause ? <SectionSpacer /> : null}
-      {isWeapon ? <WeaponActions selectedWeapon={weapon.dbKey} onPress={onPressSubtype} /> : null}
+      {isWeapon ? <WeaponActions selectedWeapon={weapon?.dbKey} onPress={onPressSubtype} /> : null}
       {isMovement ? (
         <MovementActions selectedAction={actionSubtype} onPress={onPressSubtype} />
       ) : null}
@@ -104,7 +104,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
 
       <View style={{ width: 170 }}>
         <ScrollSection style={{ flex: 1 }} title="info">
-          {isWeapon ? (
+          {isWeapon && weapon?.dbKey ? (
             <Pressable onPress={toggleWeapon} disabled={weapons.length < 2}>
               <WeaponInfo selectedWeapon={weapon.dbKey} />
             </Pressable>
@@ -114,7 +114,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
           {isPause ? (
             <Txt>
               Conservez vos points d&apos;action et attendez le bon moment pour agir au cours du
-              round. Attention, on ne peut pas interrompre une autre action un fois les dés lancés !
+              round.
             </Txt>
           ) : null}
           {isOther ? (

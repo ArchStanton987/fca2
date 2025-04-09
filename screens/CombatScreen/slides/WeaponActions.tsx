@@ -13,7 +13,7 @@ import { useInventory } from "contexts/InventoryContext"
 import { useActionForm } from "providers/ActionProvider"
 
 type WeaponActionsProps = {
-  selectedWeapon: string
+  selectedWeapon?: string
   onPress: (action: string) => void
 }
 
@@ -23,7 +23,10 @@ export default function WeaponActions({ selectedWeapon, onPress }: WeaponActions
   const { actionSubtype } = useActionForm()
   const char = useCharacter()
   const inv = useInventory()
-  const weapon = inv.weaponsRecord[selectedWeapon]
+  let weapon = char.unarmed
+  if (selectedWeapon) {
+    weapon = inv.weaponsRecord[selectedWeapon] ?? char.unarmed
+  }
 
   if (!weapon) return null
 

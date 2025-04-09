@@ -23,10 +23,13 @@ const styles = StyleSheet.create({
   }
 })
 
-export default function WeaponInfo({ selectedWeapon }: { selectedWeapon: string }) {
+export default function WeaponInfo({ selectedWeapon }: { selectedWeapon?: string }) {
   const char = useCharacter()
   const inv = useInventory()
-  const weapon = inv.weaponsRecord[selectedWeapon]
+  let weapon = char.unarmed
+  if (selectedWeapon) {
+    weapon = inv.weaponsRecord[selectedWeapon] ?? char.unarmed
+  }
 
   if (!weapon) return null
 
