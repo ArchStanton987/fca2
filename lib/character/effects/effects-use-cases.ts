@@ -10,11 +10,12 @@ const createDbEffect = (
   char: Character,
   effectId: EffectId,
   startDate?: Date,
+  effectLengthInMs?: number,
   withCreatedEffects: Record<EffectId, EffectData> = effectsMap
 ) => {
   const refStartDate = startDate || char.date
   const dbEffect: DbEffect = { id: effectId, startTs: refStartDate.toJSON() }
-  const lengthInMs = getEffectLengthInMs(char, withCreatedEffects[effectId])
+  const lengthInMs = effectLengthInMs ?? getEffectLengthInMs(char, withCreatedEffects[effectId])
   if (lengthInMs) {
     dbEffect.endTs = new Date(refStartDate.getTime() + lengthInMs).toJSON()
   }
@@ -34,8 +35,8 @@ function getEffectsUseCases(
 
     getAll: (charId: string) => repository.getAll(charId),
 
-    add: async (char: Character, effectId: EffectId, refDate?: Date) => {
-      const dbEffect = createDbEffect(char, effectId, refDate, allEffects)
+    add: async (char: Character, effectId: EffectId, refDate?: Date, lengthInMs?: number) => {
+      const dbEffect = createDbEffect(char, effectId, refDate, lengthInMs, allEffects)
       const existingEffect = char.effectsRecord[effectId]
       if (existingEffect) {
         return repository.update(char.charId, existingEffect.dbKey, dbEffect)
@@ -44,11 +45,14 @@ function getEffectsUseCases(
     },
 
     // we process one start date for each effect, as start dates can be different inside a batch of effects (e.g. datetime update)
-    groupAdd: (char: Character, effects: { effectId: EffectId; startDate?: Date }[]) => {
+    groupAdd: (
+      char: Character,
+      effects: { effectId: EffectId; startDate?: Date; lengthInMs?: number }[]
+    ) => {
       const newDbEffects: DbEffect[] = []
       const updatedDbEffects: { dbKey: Effect["dbKey"]; updatedEffect: DbEffect }[] = []
-      effects.forEach(({ effectId, startDate }) => {
-        const dbEffect = createDbEffect(char, effectId, startDate, allEffects)
+      effects.forEach(({ effectId, startDate, lengthInMs }) => {
+        const dbEffect = createDbEffect(char, effectId, startDate, lengthInMs, allEffects)
         const existingEffect = char.effectsRecord[effectId]
         if (existingEffect) {
           updatedDbEffects.push({ dbKey: existingEffect.dbKey, updatedEffect: dbEffect })

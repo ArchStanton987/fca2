@@ -26,6 +26,7 @@ quid combatStatus : "active" | "inactive" | "outOfCombat"
 
 comment récup joueur actif ?
 1. tri caracs
+  - si currActorId => currActorId
   - retirer contenders non actifs
   - retirer contenders en pause
   - retourner plus haut AP
@@ -33,10 +34,6 @@ comment récup joueur actif ?
 
 PB : pas valide si action combinée, joueur avec moins de PA peut jouer
 
-2. variable currActorId
-quand la mettre à jour ?
-- lors du post de la dernière initiative
-- lors de la validation d'une action
 
 fin combat si :
   - action GM
@@ -58,6 +55,12 @@ ajout round lorsque :
 
 
 => comment gérer inactif temporaire ?
+via effet ?
++ plus facile côté dev dans gestion combat
++ mieux pour ui joueur ?
+- complexe à établir durée...
+
+ ou via combat status ?
 
 
 

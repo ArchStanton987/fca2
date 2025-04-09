@@ -1,3 +1,4 @@
+import { EffectId } from "lib/character/effects/effects.types"
 import { LimbsHp } from "lib/character/health/health-types"
 
 type WeaponActionSubtypeId = "basicAttack" | "aim" | "burst" | "reload" | "unload" | "hit" | "throw"
@@ -12,6 +13,12 @@ type AimZone = "torso" | "legs" | "arms" | "head" | "groin" | "eyes"
 
 type InactiveRecord = Record<number, { inactiveRoundStart: number; inactiveRoundEnd: number }>
 
+type PlayerCombatData = {
+  initiative: number
+  inactiveRecord?: InactiveRecord
+  nextActionBonus: number
+}
+
 type SimpleRoll = {
   actorSkillScore: number
   actorDiceScore: number
@@ -23,7 +30,10 @@ type OppositionRoll = SimpleRoll & {
   opponentArmorClass?: number
 }
 type Roll = SimpleRoll | OppositionRoll
-type HealthChangeEntry = Partial<LimbsHp>
+type HealthChangeEntry = {
+  status: Partial<LimbsHp>
+  newEffects: { id: EffectId; duration: number }[]
+}
 export type HealthChangeEntries = Record<CharId, HealthChangeEntry>
 
 type WeaponAction = {
@@ -84,7 +94,7 @@ export type DbCombatEntry = {
   title: string
   description?: string
   currActorId: CharId | EnemyId | null
-  players: Record<CharId, { initiative: number; inactiveRecord?: InactiveRecord }>
-  enemies: Record<EnemyId, { initiative: number; inactiveRecord?: InactiveRecord }>
+  players: Record<CharId, PlayerCombatData>
+  enemies: Record<EnemyId, PlayerCombatData>
   rounds: Record<number, Record<number, Action>>
 }
