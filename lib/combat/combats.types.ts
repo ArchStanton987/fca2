@@ -10,7 +10,9 @@ type WeaponId = string
 type ItemId = string
 type AimZone = "torso" | "legs" | "arms" | "head" | "groin" | "eyes"
 
-export type SimpleRoll = {
+type InactiveRecord = Record<number, { inactiveRoundStart: number; inactiveRoundEnd: number }>
+
+type SimpleRoll = {
   actorSkillScore: number
   actorDiceScore: number
   difficultyModifier: number
@@ -81,7 +83,8 @@ export type DbCombatEntry = {
   location?: string
   title: string
   description?: string
-  players: Record<CharId, { initiative: number }>
-  enemies: Record<EnemyId, { initiative: number }>
+  currActorId: CharId | EnemyId | null
+  players: Record<CharId, { initiative: number; inactiveRecord?: InactiveRecord }>
+  enemies: Record<EnemyId, { initiative: number; inactiveRecord?: InactiveRecord }>
   rounds: Record<number, Record<number, Action>>
 }

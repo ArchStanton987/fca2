@@ -1,5 +1,4 @@
 TODO: remove trap / thrown weapon after usage
-TODO: création objets on the fly
 
 
 perks & traits page
@@ -12,6 +11,55 @@ TODO: add levelup
 TODO: collectibles UI
 
 TODO: sound
+
+TODO: initiative:
+- récup initiative de tous les autres contenders
+- tant que égalité entre 2 scores => reroll
+- pas la main tant que tout le monde n'a pas un score d'initiative
+
+TODO: combat health change entries
+- changement hp
+- peut modifier combat status
+- peut ajouter (retirer ?) effet
+
+quid combatStatus : "active" | "inactive" | "outOfCombat"
+
+comment récup joueur actif ?
+1. tri caracs
+  - retirer contenders non actifs
+  - retirer contenders en pause
+  - retourner plus haut AP
+    => si égalité, retourner meilleur initiative
+
+PB : pas valide si action combinée, joueur avec moins de PA peut jouer
+
+2. variable currActorId
+quand la mettre à jour ?
+- lors du post de la dernière initiative
+- lors de la validation d'une action
+
+fin combat si :
+  - action GM
+  - tous les membres d'un camp ont un statut "outOfCombat"
+=> réinitialise combatStatus, PA
+
+ajout round lorsque :
+  - n'est pas en fin de combat
+  - tous les contenders ont PA = 0
+=> réinitialise PA
+=> peut lever statut "inactive" : si "inactive" && currentRoundId n'est compris entre aucun inactiveRecord
+=> réinitialise currActorId
+
+à la fin d'une action :
+  - set currActorId
+  - check ajout round
+
+
+
+
+=> comment gérer inactif temporaire ?
+
+
 
 
 
