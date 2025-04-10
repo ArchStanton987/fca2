@@ -1,6 +1,7 @@
 import { Pressable, TouchableOpacity, View } from "react-native"
 
 import Ionicons from "@expo/vector-icons/Ionicons"
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import actions from "lib/combat/const/actions"
 
 import List from "components/List"
@@ -42,15 +43,15 @@ function SectionSpacer() {
 }
 
 export default function ActionTypeSlide({ scrollNext }: SlideProps) {
-  const { equipedObjects, unarmed, status, secAttr } = useCharacter()
+  const { equipedObjects, unarmed, status, secAttr, charId } = useCharacter()
   const weapons = equipedObjects.weapons.length > 0 ? equipedObjects.weapons : [unarmed]
 
-  const { actionType, actionSubtype, weapon } = useActionForm()
+  const { actionType, actionSubtype, weapon, nextActorId } = useActionForm()
   const { setForm } = useActionApi()
 
-  const onPressActionType = (actionId: keyof typeof actions) => {
-    const payload: Partial<ActionStateContext> = { ...defaultForm, actionType: actionId }
-    if (actionId === "weapon") {
+  const onPressActionType = (id: keyof typeof actions) => {
+    const payload: Partial<ActionStateContext> = { ...defaultForm, nextActorId, actionType: id }
+    if (id === "weapon") {
       payload.weapon = { id: weapons[0].id, dbKey: weapons[0].dbKey }
     }
     setForm(payload)
@@ -63,10 +64,21 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
     setForm({ weapon: { id: weapons[nextIndex].id, dbKey: weapons[nextIndex].dbKey } })
   }
 
-  const onPressSubtype = (str: string) => {
-    const payload: Partial<ActionStateContext> = { ...defaultForm, actionType, actionSubtype: str }
+  const onPressSubtype = (id: string) => {
+    const payload: Partial<ActionStateContext> = {
+      ...defaultForm,
+      nextActorId,
+      actionType,
+      actionSubtype: id
+    }
     setForm(payload)
   }
+
+  const toggleCombinedAction = () => {
+    setForm({ nextActorId: nextActorId === charId ? "" : charId })
+  }
+
+  const isCombinedAction = nextActorId === charId
 
   const isWeapon = actionType === "weapon"
   const isMovement = actionType === "movement"
@@ -75,21 +87,37 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
   const isOther = actionType === "other"
   const canGoNext = !!actionType && !!actionSubtype
 
+  // TODO: add "prepare" actions to allow to spend AP to gain AC or bonus on next dice roll
+
   return (
     <DrawerSlide>
-      <ScrollSection style={{ width: 150 }} title="type d'action">
-        <List
-          data={actionTypes}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => (
-            <ListItemSelectable
-              onPress={() => onPressActionType(item.id)}
-              label={item.label}
-              isSelected={actionType === item.id}
-            />
-          )}
-        />
-      </ScrollSection>
+      <View style={{ width: 150 }}>
+        <Section title="action combinee">
+          <Row style={{ alignItems: "center", justifyContent: "center" }}>
+            <TouchableOpacity onPress={toggleCombinedAction}>
+              <MaterialCommunityIcons
+                name={isCombinedAction ? "check-decagram-outline" : "decagram-outline"}
+                size={30}
+                color={colors.secColor}
+              />
+            </TouchableOpacity>
+          </Row>
+        </Section>
+        <Spacer y={layout.globalPadding} />
+        <ScrollSection style={{ flex: 1 }} title="type d'action">
+          <List
+            data={actionTypes}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => (
+              <ListItemSelectable
+                onPress={() => onPressActionType(item.id)}
+                label={item.label}
+                isSelected={actionType === item.id}
+              />
+            )}
+          />
+        </ScrollSection>
+      </View>
       <Spacer x={layout.globalPadding} />
 
       {!actionType || isPause ? <SectionSpacer /> : null}

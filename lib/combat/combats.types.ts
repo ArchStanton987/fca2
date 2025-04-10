@@ -19,7 +19,7 @@ type PlayerCombatData = {
   nextActionBonus: number
 }
 
-type SimpleRoll = {
+export type SimpleRoll = {
   actorSkillScore: number
   actorDiceScore: number
   difficultyModifier: number
@@ -30,7 +30,7 @@ type OppositionRoll = SimpleRoll & {
   opponentArmorClass?: number
 }
 type Roll = SimpleRoll | OppositionRoll
-type HealthChangeEntry = {
+export type HealthChangeEntry = {
   status: Partial<LimbsHp>
   newEffects: { id: EffectId; duration: number }[]
 }
@@ -93,7 +93,7 @@ export type DbCombatEntry = {
   location?: string
   title: string
   description?: string
-  currActorId: CharId | EnemyId | null
+  currActorId: string
   players: Record<CharId, PlayerCombatData>
   enemies: Record<EnemyId, PlayerCombatData>
   rounds: Record<number, Record<number, Action>>

@@ -1,7 +1,6 @@
 import { createContext, useContext, useMemo, useReducer } from "react"
 
-import { LimbsHp } from "lib/character/health/health-types"
-import { HealthChangeEntries, SimpleRoll } from "lib/combat/combats.types"
+import { HealthChangeEntries, HealthChangeEntry, SimpleRoll } from "lib/combat/combats.types"
 import actions from "lib/combat/const/actions"
 import { WeaponId } from "lib/objects/data/weapons/weapons.types"
 import { Form } from "lib/shared/types/utils-types"
@@ -10,6 +9,7 @@ export type ActionStateContext = Form<{
   actionType: keyof typeof actions
   actionSubtype: string
   actor: string
+  nextActorId: string
   apCost: number
   roll?: SimpleRoll
   healthChangeEntries: HealthChangeEntries
@@ -22,7 +22,7 @@ export type ActionStateContext = Form<{
 
 type ActionApiContext = {
   setForm: (payload: Partial<ActionStateContext>) => void
-  addHealthEntry: (charId: string, entry: Partial<LimbsHp>) => void
+  addHealthEntry: (charId: string, entry: HealthChangeEntry) => void
   removeHealthEntry: (charId: string) => void
   addTarget: (charId: string) => void
   removeTarget: (charId: string) => void
@@ -33,6 +33,7 @@ export const defaultActionForm = {
   actionType: "",
   actionSubtype: "",
   actor: "",
+  nextActorId: "",
   apCost: 0,
   roll: undefined,
   healthChangeEntries: {},
@@ -48,7 +49,7 @@ const actionContextApi = createContext<ActionApiContext>({} as ActionApiContext)
 
 type Action =
   | { type: "SET_FORM"; payload: Partial<ActionStateContext> }
-  | { type: "ADD_HEALTH_ENTRY"; payload: { charId: string; entry: Partial<LimbsHp> } }
+  | { type: "ADD_HEALTH_ENTRY"; payload: { charId: string; entry: HealthChangeEntry } }
   | { type: "REMOVE_HEALTH_ENTRY"; payload: { charId: string } }
   | { type: "ADD_TARGET"; payload: { charId: string } }
   | { type: "REMOVE_TARGET"; payload: { charId: string } }
@@ -100,7 +101,7 @@ export function ActionProvider({ children }: { children: React.ReactNode }) {
         dispatch({ type: "SET_FORM", payload })
       },
 
-      addHealthEntry: (charId: string, entry: Partial<LimbsHp>) => {
+      addHealthEntry: (charId: string, entry: HealthChangeEntry) => {
         dispatch({ type: "ADD_HEALTH_ENTRY", payload: { charId, entry } })
       },
 
