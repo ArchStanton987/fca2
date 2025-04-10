@@ -34,13 +34,13 @@ const getItemList = (
         { title: "équipements", data: equipedObjects.clothings }
       ]
     case "use":
-      return [{ title: "consommables", data: inventory.consumables }]
+      return [{ title: "consommables", data: inventory.groupedConsumables }]
     case "search":
     case "throw":
       return [
         { title: "armes", data: inventory.weapons },
         { title: "équipements", data: inventory.clothings },
-        { title: "consommables", data: inventory.consumables }
+        { title: "consommables", data: inventory.groupedConsumables }
       ]
     case "pickUp":
       return [{ title: "ajouter", data: [] }]
@@ -69,7 +69,7 @@ export default function ItemsActionInfo() {
   }
 
   const itemLists = getItemList(actionSubtype, inventory, equipedObjects)
-  // TODO: group consumables with same id and add quantity
+
   return (
     <View>
       <List
@@ -86,7 +86,7 @@ export default function ItemsActionInfo() {
               renderItem={({ item }) => (
                 <ListItemSelectable
                   isSelected={itemId === item.dbKey}
-                  label={item.data.label}
+                  label={"count" in item ? `${item.data.label}(${item.count})` : item.data.label}
                   onPress={() => onPressItem(item.dbKey)}
                 />
               )}
