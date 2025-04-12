@@ -53,6 +53,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
   const onPressActionType = (id: keyof typeof actions) => {
     if (id === "weapon") {
       setActionType({ actionId: id, itemId: weapons[0].dbKey })
+      return
     }
     setActionType({ actionId: id })
   }

@@ -73,7 +73,7 @@ const reducer = (state: ActionStateContext, { type, payload }: Action): ActionSt
     case "SET_ACTION_SUBTYPE": {
       const { actionType, actorId, itemId } = state
       const newState = { ...defaultActionForm, actionType, actorId, actionSubtype: payload }
-      if (payload === "weapon") return { ...newState, itemId }
+      if (actionType === "weapon") return { ...newState, itemId }
       return newState
     }
 
