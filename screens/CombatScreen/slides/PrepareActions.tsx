@@ -4,19 +4,21 @@ import List from "components/List"
 import ListItemSelectable from "components/ListItemSelectable"
 import ScrollSection from "components/Section/ScrollSection"
 import Txt from "components/Txt"
+import { useCharacter } from "contexts/CharacterContext"
 
-type ItemActionsProps = {
+type PrepareActionProps = {
   selectedAction: string
   onPress: (action: string) => void
 }
 
 const title = [{ title: "action", containerStyle: { flex: 1 } }, { title: "pa" }]
 
-export default function ItemActions({ selectedAction, onPress }: ItemActionsProps) {
+export default function PrepareActions({ selectedAction, onPress }: PrepareActionProps) {
+  const { status } = useCharacter()
   return (
     <ScrollSection style={{ flex: 1 }} title={title}>
       <List
-        data={Object.values(actions.item.subtypes)}
+        data={Object.values(actions.prepare.subtypes)}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <ListItemSelectable
@@ -25,7 +27,7 @@ export default function ItemActions({ selectedAction, onPress }: ItemActionsProp
             onPress={() => onPress(item.id)}
           >
             <Txt>{item.label}</Txt>
-            <Txt>{item.apCost}</Txt>
+            <Txt>{status.currAp}</Txt>
           </ListItemSelectable>
         )}
       />

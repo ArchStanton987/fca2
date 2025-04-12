@@ -1,6 +1,7 @@
 import CharacterRtdbRepository from "lib/character/CharacterRtdbRepository"
 import AdditionalEffectsRtdbRepository from "lib/character/effects/AdditionalEffectsRtdbRepository"
 import StatusRtdbRepository from "lib/character/status/StatusRtdbRepository"
+import ActionRtdbRepository from "lib/combat/ActionRtdbRepository"
 import CombatRtdbRepository from "lib/combat/CombatRtdbRepository"
 import EnemyRtdbRepository from "lib/enemy/EnemyRtdbRepository"
 import AdditionalClothingsRtdbRepository from "lib/objects/data/clothings/AdditionalClothingsRtdbRepository"
@@ -16,6 +17,7 @@ const repositoryMap = {
     additionalMiscRepository: new AdditionalMiscRtdbRepository(),
     //
     combatRepository: new CombatRtdbRepository(),
+    actionRepository: new ActionRtdbRepository(),
     enemyRepository: new EnemyRtdbRepository(),
     characterRepository: new CharacterRtdbRepository(),
     statusRepository: new StatusRtdbRepository(),

@@ -29,6 +29,7 @@ import ItemsActionInfo from "./ItemsActionInfo"
 import MovementActions from "./MovementActions"
 import NextButton from "./NextButton"
 import OtherAction from "./OtherAction"
+import PrepareActions from "./PrepareActions"
 import WeaponActions from "./WeaponActions"
 import WeaponInfo from "./WeaponInfo"
 
@@ -43,25 +44,30 @@ function SectionSpacer() {
 }
 
 export default function ActionTypeSlide({ scrollNext }: SlideProps) {
+  // const useCases = useGetUseCases()
   const { equipedObjects, unarmed, status, secAttr, charId } = useCharacter()
   const weapons = equipedObjects.weapons.length > 0 ? equipedObjects.weapons : [unarmed]
 
-  const { actionType, actionSubtype, weapon, nextActorId } = useActionForm()
+  // const currFightId = status.currentCombatId ?? ""
+  // const currFight = useRtdbSub(useCases.combat.sub({ id: currFightId }))
+
+  const form = useActionForm()
+  const { actionType, actionSubtype, itemId, nextActorId } = form
   const { setForm } = useActionApi()
 
   const onPressActionType = (id: keyof typeof actions) => {
     const payload: Partial<ActionStateContext> = { ...defaultForm, nextActorId, actionType: id }
     if (id === "weapon") {
-      payload.weapon = { id: weapons[0].id, dbKey: weapons[0].dbKey }
+      payload.itemId = weapons[0].dbKey
     }
     setForm(payload)
   }
 
   const toggleWeapon = () => {
     if (weapons.length < 2) return
-    const currentIndex = weapons.findIndex(w => w.dbKey === weapon?.dbKey)
+    const currentIndex = weapons.findIndex(w => w.dbKey === itemId)
     const nextIndex = (currentIndex + 1) % weapons.length
-    setForm({ weapon: { id: weapons[nextIndex].id, dbKey: weapons[nextIndex].dbKey } })
+    setForm({ itemId: weapons[nextIndex].dbKey })
   }
 
   const onPressSubtype = (id: string) => {
@@ -78,16 +84,26 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
     setForm({ nextActorId: nextActorId === charId ? "" : charId })
   }
 
+  const onPressWait = () => {
+    // if (!currFight || !actionType) return
+    // const payload = {
+    //   combatId: currFightId,
+    //   roundId: getCurrentRoundId(currFight).toString(),
+    //   newActionId: (getCurrentRoundId(currFight) + 1).toString(),
+    //   payload: { actionType: "pause", actor: charId, apCost: 0, actionSubtype: "" }
+    // }
+    // useCases.combat.addAction(payload)
+  }
+
   const isCombinedAction = nextActorId === charId
 
   const isWeapon = actionType === "weapon"
   const isMovement = actionType === "movement"
   const isItem = actionType === "item"
   const isPause = actionType === "pause"
+  const isPrepare = actionType === "prepare"
   const isOther = actionType === "other"
   const canGoNext = !!actionType && !!actionSubtype
-
-  // TODO: add "prepare" actions to allow to spend AP to gain AC or bonus on next dice roll
 
   return (
     <DrawerSlide>
@@ -121,20 +137,23 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
       <Spacer x={layout.globalPadding} />
 
       {!actionType || isPause ? <SectionSpacer /> : null}
-      {isWeapon ? <WeaponActions selectedWeapon={weapon?.dbKey} onPress={onPressSubtype} /> : null}
+      {isWeapon ? <WeaponActions selectedWeapon={itemId} onPress={onPressSubtype} /> : null}
       {isMovement ? (
         <MovementActions selectedAction={actionSubtype} onPress={onPressSubtype} />
       ) : null}
       {isItem ? <ItemActions selectedAction={actionSubtype} onPress={onPressSubtype} /> : null}
+      {isPrepare ? (
+        <PrepareActions selectedAction={actionSubtype} onPress={onPressSubtype} />
+      ) : null}
       {isOther ? <OtherAction /> : null}
 
       <Spacer x={layout.globalPadding} />
 
       <View style={{ width: 170 }}>
         <ScrollSection style={{ flex: 1 }} title="info">
-          {isWeapon && weapon?.dbKey ? (
+          {isWeapon && itemId ? (
             <Pressable onPress={toggleWeapon} disabled={weapons.length < 2}>
-              <WeaponInfo selectedWeapon={weapon.dbKey} />
+              <WeaponInfo selectedWeapon={itemId} />
             </Pressable>
           ) : null}
           {isMovement ? <HealthFigure /> : null}
@@ -150,6 +169,21 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
               Pour toutes les actions qui ne sont pas explicitement prévues dans l&apos;interface du
               pipboy. Cela permet d&apos;en garder une trace en archive pour vous souvenir de vos
               actions héroïques, ou pour aider des archéologues à reconstituer votre mort.
+            </Txt>
+          ) : null}
+
+          {isPrepare && actionSubtype === "dangerAwareness" ? (
+            <Txt>
+              Dépensez ce qu&apos;il vous reste de points d&apos;action pour mieux faire face au
+              danger. Pour le prochain round, vous gagnez autant de classe d&apos;armure (CA) que
+              vous dépensez de points d&apos;action (PA).
+            </Txt>
+          ) : null}
+          {isPrepare && actionSubtype === "visualize" ? (
+            <Txt>
+              Dépensez ce qu&apos;il vous reste de points d&apos;action (PA) pour mieux réussir
+              votre prochaine action. Pour chaque PA dépensé, vous gagnez un bonus de +2 au score de
+              votre prochaine action.
             </Txt>
           ) : null}
         </ScrollSection>
@@ -170,7 +204,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
           <Section title={isPause ? "valider" : "suivant"} style={{ flex: 1 }}>
             <Row style={{ justifyContent: "center" }}>
               {isPause ? (
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => onPressWait()}>
                   <Ionicons name="pause-circle" size={36} color={colors.secColor} />
                 </TouchableOpacity>
               ) : (

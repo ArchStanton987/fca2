@@ -36,15 +36,23 @@ const actions = {
       pickUp: { id: "pickUp", label: "Ramasser", apCost: 3 }
     }
   },
+  other: {
+    id: "other",
+    label: "Autre",
+    subtypes: {}
+  },
   pause: {
     id: "pause",
     label: "Attendre",
     subtypes: {}
   },
-  other: {
-    id: "other",
-    label: "Autre",
-    subtypes: {}
+  prepare: {
+    id: "prepare",
+    label: "Préparer",
+    subtypes: {
+      dangerAwareness: { id: "dangerAwareness", label: "Anticipe les attaques" },
+      visualize: { id: "visualize", label: "Visualiser prochaine action" }
+    }
   }
 } as const
 

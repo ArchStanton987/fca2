@@ -1,23 +1,21 @@
 import { createContext, useContext, useMemo, useReducer } from "react"
 
 import { HealthChangeEntries, HealthChangeEntry, SimpleRoll } from "lib/combat/combats.types"
-import actions from "lib/combat/const/actions"
-import { WeaponId } from "lib/objects/data/weapons/weapons.types"
+import { ActionTypeId } from "lib/combat/const/actions"
 import { Form } from "lib/shared/types/utils-types"
 
 export type ActionStateContext = Form<{
-  actionType: keyof typeof actions
+  actionType: ActionTypeId
   actionSubtype: string
   actor: string
   nextActorId: string
   apCost: number
   roll?: SimpleRoll
   healthChangeEntries: HealthChangeEntries
-  weapon?: { id: WeaponId; dbKey: string }
   target?: Record<string, string>
   attackType?: string
   aimZone?: string
-  itemId?: string | string[]
+  itemId?: string
 }>
 
 type ActionApiContext = {
@@ -37,7 +35,6 @@ export const defaultActionForm = {
   apCost: 0,
   roll: undefined,
   healthChangeEntries: {},
-  weaponId: undefined,
   target: {},
   attackType: undefined,
   aimZone: undefined,

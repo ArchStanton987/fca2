@@ -4,6 +4,7 @@ import { LimbsHp } from "lib/character/health/health-types"
 type WeaponActionSubtypeId = "basicAttack" | "aim" | "burst" | "reload" | "unload" | "hit" | "throw"
 type MovementType = "crawl" | "walk" | "run" | "sprint" | "jump" | "climb" | "getUp"
 type ItemActionType = "drop" | "equip" | "unequip" | "use" | "search"
+type PrepareActionType = "dangerAwareness" | "visualize"
 
 type CharId = string
 type EnemyId = string
@@ -13,7 +14,7 @@ type AimZone = "torso" | "legs" | "arms" | "head" | "groin" | "eyes"
 
 type InactiveRecord = Record<number, { inactiveRoundStart: number; inactiveRoundEnd: number }>
 
-type PlayerCombatData = {
+export type PlayerCombatData = {
   initiative: number
   inactiveRecord?: InactiveRecord
   nextActionBonus: number
@@ -45,7 +46,6 @@ type WeaponAction = {
   aimZone?: AimZone
   apCost: number
   roll: Roll
-  // aftermath?: { type: MovementAction; distance: number }
   healthChangeEntries?: HealthChangeEntries
 }
 
@@ -55,7 +55,6 @@ type MovementAction = {
   actor: CharId
   apCost: number
   roll?: SimpleRoll
-  // aftermath: { type: MovementType; distance: number }
   healthChangeEntries?: HealthChangeEntries
 }
 
@@ -66,10 +65,6 @@ type ItemAction = {
   actor: CharId
   apCost: number
   roll?: SimpleRoll
-  // aftermath: {
-  //   0: { action: ItemActionType; itemId: ItemId }
-  //   1?: { action: ItemActionType; itemId: ItemId }
-  // }
   healthChangeEntries?: HealthChangeEntries
 }
 
@@ -84,7 +79,20 @@ type OtherAction = {
   healthChangeEntries?: HealthChangeEntries
 }
 
-export type Action = WeaponAction | MovementAction | ItemAction | PauseAction | OtherAction
+type PrepareAction = {
+  actionType: "prepare"
+  actionSubtype: PrepareActionType
+  actor: CharId
+  apCost: number
+}
+
+export type Action =
+  | WeaponAction
+  | MovementAction
+  | ItemAction
+  | PauseAction
+  | OtherAction
+  | PrepareAction
 
 export type DbCombatEntry = {
   id: string

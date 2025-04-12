@@ -26,8 +26,8 @@ export default function createFight(dbType: keyof typeof repositoryMap = "rtdb")
   return (params: CreateFightParams) => {
     const { isStartingNow, id, ...rest } = params
     const promises = []
-    const players: Record<string, { initiative: number }> = {}
-    const enemies: Record<string, { initiative: number }> = {}
+    const players: Record<string, { initiative: number; nextActionBonus: number }> = {}
+    const enemies: Record<string, { initiative: number; nextActionBonus: number }> = {}
 
     // update squad fight status
     if (isStartingNow) {
@@ -36,7 +36,7 @@ export default function createFight(dbType: keyof typeof repositoryMap = "rtdb")
 
     // for each player, set combat status, current combat id
     Object.keys(params.players).forEach(charId => {
-      players[charId] = { initiative: 1000 }
+      players[charId] = { initiative: 1000, nextActionBonus: 0 }
       if (isStartingNow) {
         const playerParams = { charId, charType: "characters" as const }
         const payload = { combatStatus: "active" as const, currentCombatId: id }
@@ -45,14 +45,14 @@ export default function createFight(dbType: keyof typeof repositoryMap = "rtdb")
     })
     // for each enemy, set combat status, current combat id
     Object.keys(params.enemies).forEach(charId => {
-      enemies[charId] = { initiative: 1000 }
+      enemies[charId] = { initiative: 1000, nextActionBonus: 0 }
       if (isStartingNow) {
         const enemyParams = { charId, charType: "enemies" as const }
         const payload = { combatStatus: "active" as const, currentCombatId: id }
         promises.push(statusRepo.patch(enemyParams, payload))
       }
     })
-    const payload = { ...rest, id, players, enemies, rounds: {} }
+    const payload = { ...rest, id, players, enemies, currActorId: "", rounds: {} }
     promises.push(combatRepo.add({ id }, payload))
 
     return Promise.all(promises)
