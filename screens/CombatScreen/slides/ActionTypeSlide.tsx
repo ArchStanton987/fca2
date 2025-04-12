@@ -52,10 +52,10 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
 
   const onPressActionType = (id: keyof typeof actions) => {
     if (id === "weapon") {
-      setActionType({ actionId: id, itemId: weapons[0].dbKey })
+      setActionType({ actionType: id, itemId: weapons[0].dbKey })
       return
     }
-    setActionType({ actionId: id })
+    setActionType({ actionType: id })
   }
 
   const toggleWeapon = () => {
@@ -63,10 +63,6 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
     const currentIndex = weapons.findIndex(w => w.dbKey === itemId)
     const nextIndex = (currentIndex + 1) % weapons.length
     setForm({ itemId: weapons[nextIndex].dbKey })
-  }
-
-  const toggleCombinedAction = () => {
-    setForm({ nextActorId: nextActorId === charId ? "" : charId })
   }
 
   const onPressWait = () => {
@@ -90,16 +86,23 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
   const isOther = actionType === "other"
   const canGoNext = !!actionType && !!actionSubtype
 
+  const canCombineAction = actionType !== "pause" && actionType !== "prepare"
+
+  const toggleCombinedAction = () => {
+    if (!canCombineAction) return
+    setForm({ nextActorId: nextActorId === charId ? "" : charId })
+  }
+
   return (
     <DrawerSlide>
       <View style={{ width: 150 }}>
         <Section title="action combinee">
           <Row style={{ alignItems: "center", justifyContent: "center" }}>
-            <TouchableOpacity onPress={toggleCombinedAction}>
+            <TouchableOpacity onPress={toggleCombinedAction} disabled={!canCombineAction}>
               <MaterialCommunityIcons
                 name={isCombinedAction ? "check-decagram-outline" : "decagram-outline"}
                 size={30}
-                color={colors.secColor}
+                color={canCombineAction ? colors.secColor : colors.terColor}
               />
             </TouchableOpacity>
           </Row>

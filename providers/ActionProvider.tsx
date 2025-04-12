@@ -22,7 +22,7 @@ export type ActionStateContext = Form<{
 
 type ActionApiContext = {
   setActionType: (
-    payload: { actionId: ActionTypeId } | { actionId: "weapon"; itemId: string }
+    payload: { actionType: ActionTypeId } | { actionType: "weapon"; itemId: string }
   ) => void
   setActionSubtype: (actionSubtype: string) => void
   setForm: (payload: Partial<ActionStateContext>) => void
@@ -51,7 +51,7 @@ const actionContextApi = createContext<ActionApiContext>({} as ActionApiContext)
 type Action =
   | {
       type: "SET_ACTION_TYPE"
-      payload: { actionId: ActionTypeId } | { actionId: "weapon"; itemId: string }
+      payload: { actionType: ActionTypeId } | { actionType: "weapon"; itemId: string }
     }
   | { type: "SET_ACTION_SUBTYPE"; payload: string }
   | { type: "SET_FORM"; payload: Partial<ActionStateContext> }
@@ -62,11 +62,12 @@ type Action =
 const reducer = (state: ActionStateContext, { type, payload }: Action): ActionStateContext => {
   switch (type) {
     case "SET_ACTION_TYPE": {
-      const { actionId } = payload
-      const newState = { ...defaultActionForm, actorId: state.actorId, actionType: actionId }
-      if ("itemId" in payload) {
-        return { ...newState, itemId: payload.itemId }
-      }
+      const { nextActorId, itemId, actorId } = state
+      const { actionType } = payload
+      const newState = { ...defaultActionForm, nextActorId, actorId, actionType }
+      if ("itemId" in payload) return { ...newState, itemId }
+      if (actionType === "prepare" || actionType === "pause")
+        return { ...newState, nextActorId: "" }
       return newState
     }
 
@@ -109,7 +110,7 @@ export function ActionProvider({ children }: { children: React.ReactNode }) {
   const api = useMemo(
     () => ({
       setActionType: (
-        payload: { actionId: ActionTypeId } | { actionId: "weapon"; itemId: string }
+        payload: { actionType: ActionTypeId } | { actionType: "weapon"; itemId: string }
       ) => {
         dispatch({ type: "SET_ACTION_TYPE", payload })
       },
