@@ -4,38 +4,42 @@ import { HealthChangeEntries, HealthChangeEntry, SimpleRoll } from "lib/combat/c
 import { ActionTypeId } from "lib/combat/const/actions"
 import { Form } from "lib/shared/types/utils-types"
 
+import { useCharacter } from "contexts/CharacterContext"
+
 export type ActionStateContext = Form<{
   actionType: ActionTypeId
   actionSubtype: string
-  actor: string
+  actorId: string
   nextActorId: string
   apCost: number
   roll?: SimpleRoll
   healthChangeEntries: HealthChangeEntries
-  target?: Record<string, string>
+  targetName?: string
   attackType?: string
   aimZone?: string
   itemId?: string
 }>
 
 type ActionApiContext = {
+  setActionType: (
+    payload: { actionId: ActionTypeId } | { actionId: "weapon"; itemId: string }
+  ) => void
+  setActionSubtype: (actionSubtype: string) => void
   setForm: (payload: Partial<ActionStateContext>) => void
   addHealthEntry: (charId: string, entry: HealthChangeEntry) => void
   removeHealthEntry: (charId: string) => void
-  addTarget: (charId: string) => void
-  removeTarget: (charId: string) => void
   reset: () => void
 }
 
 export const defaultActionForm = {
   actionType: "",
   actionSubtype: "",
-  actor: "",
+  actorId: "",
   nextActorId: "",
   apCost: 0,
   roll: undefined,
   healthChangeEntries: {},
-  target: {},
+  targetName: "",
   attackType: undefined,
   aimZone: undefined,
   itemId: undefined
@@ -45,15 +49,34 @@ const actionContextForm = createContext<ActionStateContext>({} as ActionStateCon
 const actionContextApi = createContext<ActionApiContext>({} as ActionApiContext)
 
 type Action =
+  | {
+      type: "SET_ACTION_TYPE"
+      payload: { actionId: ActionTypeId } | { actionId: "weapon"; itemId: string }
+    }
+  | { type: "SET_ACTION_SUBTYPE"; payload: string }
   | { type: "SET_FORM"; payload: Partial<ActionStateContext> }
   | { type: "ADD_HEALTH_ENTRY"; payload: { charId: string; entry: HealthChangeEntry } }
   | { type: "REMOVE_HEALTH_ENTRY"; payload: { charId: string } }
-  | { type: "ADD_TARGET"; payload: { charId: string } }
-  | { type: "REMOVE_TARGET"; payload: { charId: string } }
-  | { type: "RESET"; payload: undefined }
+  | { type: "RESET"; payload: { actorId: string } }
 
 const reducer = (state: ActionStateContext, { type, payload }: Action): ActionStateContext => {
   switch (type) {
+    case "SET_ACTION_TYPE": {
+      const { actionId } = payload
+      const newState = { ...defaultActionForm, actorId: state.actorId, actionType: actionId }
+      if ("itemId" in payload) {
+        return { ...newState, itemId: payload.itemId }
+      }
+      return newState
+    }
+
+    case "SET_ACTION_SUBTYPE": {
+      const { actionType, actorId, itemId } = state
+      const newState = { ...defaultActionForm, actionType, actorId, actionSubtype: payload }
+      if (payload === "weapon") return { ...newState, itemId }
+      return newState
+    }
+
     case "SET_FORM":
       return { ...state, ...payload }
 
@@ -69,20 +92,9 @@ const reducer = (state: ActionStateContext, { type, payload }: Action): ActionSt
       return { ...state, healthChangeEntries: newHealthEntries }
     }
 
-    case "ADD_TARGET": {
-      const { charId } = payload
-      return { ...state, target: { ...state.target, [charId]: charId } }
-    }
+    case "RESET":
+      return { ...defaultActionForm, actorId: payload.actorId }
 
-    case "REMOVE_TARGET": {
-      const { charId } = payload
-      const newTarget = { ...state.target }
-      delete newTarget[charId]
-      return { ...state, target: newTarget }
-    }
-    case "RESET": {
-      return defaultActionForm
-    }
     default: {
       throw Error(`Unknown action : ${type}`)
     }
@@ -90,10 +102,22 @@ const reducer = (state: ActionStateContext, { type, payload }: Action): ActionSt
 }
 
 export function ActionProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(reducer, defaultActionForm)
+  const character = useCharacter()
+  const actorId = character.charId
+  const [state, dispatch] = useReducer(reducer, { ...defaultActionForm, actorId })
 
   const api = useMemo(
     () => ({
+      setActionType: (
+        payload: { actionId: ActionTypeId } | { actionId: "weapon"; itemId: string }
+      ) => {
+        dispatch({ type: "SET_ACTION_TYPE", payload })
+      },
+
+      setActionSubtype: (actionSubtype: string) => {
+        dispatch({ type: "SET_ACTION_SUBTYPE", payload: actionSubtype })
+      },
+
       setForm: (payload: Partial<ActionStateContext>) => {
         dispatch({ type: "SET_FORM", payload })
       },
@@ -106,19 +130,11 @@ export function ActionProvider({ children }: { children: React.ReactNode }) {
         dispatch({ type: "REMOVE_HEALTH_ENTRY", payload: { charId } })
       },
 
-      addTarget: (charId: string) => {
-        dispatch({ type: "ADD_TARGET", payload: { charId } })
-      },
-
-      removeTarget: (charId: string) => {
-        dispatch({ type: "REMOVE_TARGET", payload: { charId } })
-      },
-
       reset: () => {
-        dispatch({ type: "RESET", payload: undefined })
+        dispatch({ type: "RESET", payload: { actorId } })
       }
     }),
-    []
+    [actorId]
   )
 
   return (

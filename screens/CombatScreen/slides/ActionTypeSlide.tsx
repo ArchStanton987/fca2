@@ -15,12 +15,7 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import HealthFigure from "components/draws/HealthFigure/HealthFigure"
 import { useCharacter } from "contexts/CharacterContext"
-import {
-  ActionStateContext,
-  defaultActionForm as defaultForm,
-  useActionApi,
-  useActionForm
-} from "providers/ActionProvider"
+import { useActionApi, useActionForm } from "providers/ActionProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
 
@@ -53,14 +48,13 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
 
   const form = useActionForm()
   const { actionType, actionSubtype, itemId, nextActorId } = form
-  const { setForm } = useActionApi()
+  const { setForm, setActionType, setActionSubtype } = useActionApi()
 
   const onPressActionType = (id: keyof typeof actions) => {
-    const payload: Partial<ActionStateContext> = { ...defaultForm, nextActorId, actionType: id }
     if (id === "weapon") {
-      payload.itemId = weapons[0].dbKey
+      setActionType({ actionId: id, itemId: weapons[0].dbKey })
     }
-    setForm(payload)
+    setActionType({ actionId: id })
   }
 
   const toggleWeapon = () => {
@@ -68,16 +62,6 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
     const currentIndex = weapons.findIndex(w => w.dbKey === itemId)
     const nextIndex = (currentIndex + 1) % weapons.length
     setForm({ itemId: weapons[nextIndex].dbKey })
-  }
-
-  const onPressSubtype = (id: string) => {
-    const payload: Partial<ActionStateContext> = {
-      ...defaultForm,
-      nextActorId,
-      actionType,
-      actionSubtype: id
-    }
-    setForm(payload)
   }
 
   const toggleCombinedAction = () => {
@@ -137,13 +121,13 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
       <Spacer x={layout.globalPadding} />
 
       {!actionType || isPause ? <SectionSpacer /> : null}
-      {isWeapon ? <WeaponActions selectedWeapon={itemId} onPress={onPressSubtype} /> : null}
+      {isWeapon ? <WeaponActions selectedWeapon={itemId} onPress={setActionSubtype} /> : null}
       {isMovement ? (
-        <MovementActions selectedAction={actionSubtype} onPress={onPressSubtype} />
+        <MovementActions selectedAction={actionSubtype} onPress={setActionSubtype} />
       ) : null}
-      {isItem ? <ItemActions selectedAction={actionSubtype} onPress={onPressSubtype} /> : null}
+      {isItem ? <ItemActions selectedAction={actionSubtype} onPress={setActionSubtype} /> : null}
       {isPrepare ? (
-        <PrepareActions selectedAction={actionSubtype} onPress={onPressSubtype} />
+        <PrepareActions selectedAction={actionSubtype} onPress={setActionSubtype} />
       ) : null}
       {isOther ? <OtherAction /> : null}
 
