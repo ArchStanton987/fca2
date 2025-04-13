@@ -3,6 +3,8 @@ import { ScrollView, View } from "react-native"
 
 import { router } from "expo-router"
 
+import { DEFAULT_INITIATIVE } from "lib/combat/const/combat-const"
+
 import CheckBox from "components/CheckBox/CheckBox"
 import DrawerPage from "components/DrawerPage"
 import List from "components/List"
@@ -29,7 +31,7 @@ function CombatScreen() {
   const weapons = equWeapons.map(eW => inventory.weaponsRecord[eW.dbKey])
   const combat = useRtdbSub(useCases.combat.sub({ id: currentCombatId }))
 
-  const shouldRollInitiative = combat && combat.players[charId].initiative === 1000
+  const shouldRollInitiative = combat && combat.players[charId].initiative === DEFAULT_INITIATIVE
 
   useEffect(() => {
     if (shouldRollInitiative) {

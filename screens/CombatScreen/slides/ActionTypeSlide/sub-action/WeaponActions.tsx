@@ -10,22 +10,18 @@ import ScrollSection from "components/Section/ScrollSection"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
-import { useActionForm } from "providers/ActionProvider"
-
-type WeaponActionsProps = {
-  selectedWeapon?: string
-  onPress: (action: string) => void
-}
+import { useActionApi, useActionForm } from "providers/ActionProvider"
 
 const title = [{ title: "action", containerStyle: { flex: 1 } }, { title: "pa" }]
 
-export default function WeaponActions({ selectedWeapon, onPress }: WeaponActionsProps) {
-  const { actionSubtype } = useActionForm()
+export default function WeaponActions() {
+  const { itemId, actionSubtype } = useActionForm()
+  const { setActionSubtype } = useActionApi()
   const char = useCharacter()
   const inv = useInventory()
   let weapon = char.unarmed
-  if (selectedWeapon) {
-    weapon = inv.weaponsRecord[selectedWeapon] ?? char.unarmed
+  if (itemId) {
+    weapon = inv.weaponsRecord[itemId] ?? char.unarmed
   }
 
   if (!weapon) return null
@@ -41,7 +37,7 @@ export default function WeaponActions({ selectedWeapon, onPress }: WeaponActions
           <ListItemSelectable
             isSelected={actionSubtype === item}
             style={{ flexDirection: "row", justifyContent: "space-between" }}
-            onPress={() => onPress(item)}
+            onPress={() => setActionSubtype(item)}
           >
             <Txt>{getWeaponActionLabel(weapon, item)}</Txt>
             <Txt>{getApCost(weapon, char, item)}</Txt>

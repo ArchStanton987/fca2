@@ -4,15 +4,13 @@ import List from "components/List"
 import ListItemSelectable from "components/ListItemSelectable"
 import ScrollSection from "components/Section/ScrollSection"
 import Txt from "components/Txt"
-
-type WeaponActionsProps = {
-  selectedAction: string
-  onPress: (action: string) => void
-}
+import { useActionApi, useActionForm } from "providers/ActionProvider"
 
 const title = [{ title: "action", containerStyle: { flex: 1 } }, { title: "pa" }, { title: "dist" }]
 
-export default function MovementActions({ selectedAction, onPress }: WeaponActionsProps) {
+export default function MovementActions() {
+  const { actionSubtype } = useActionForm()
+  const { setActionSubtype } = useActionApi()
   return (
     <ScrollSection style={{ flex: 1 }} title={title}>
       <List
@@ -20,9 +18,9 @@ export default function MovementActions({ selectedAction, onPress }: WeaponActio
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <ListItemSelectable
-            isSelected={selectedAction === item.id}
+            isSelected={actionSubtype === item.id}
             style={{ flexDirection: "row", justifyContent: "space-between" }}
-            onPress={() => onPress(item.id)}
+            onPress={() => setActionSubtype(item.id)}
           >
             <Txt style={{ flex: 1 }}>{item.label}</Txt>
             <Txt>{item.apCost ?? "-"}</Txt>

@@ -8,7 +8,7 @@ import List from "components/List"
 import { SlideProps } from "components/Slides/Slide.types"
 import { getSlideWidth } from "components/Slides/slide.utils"
 import { useActionApi } from "providers/ActionProvider"
-import ActionTypeSlide from "screens/CombatScreen/slides/ActionTypeSlide"
+import ActionTypeSlide from "screens/CombatScreen/slides/ActionTypeSlide/ActionTypeSlide"
 
 const getSlides = () => [
   {

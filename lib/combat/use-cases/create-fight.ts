@@ -1,6 +1,8 @@
 import { DbStatus } from "lib/character/status/status.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
+import { DEFAULT_INITIATIVE } from "../const/combat-const"
+
 type CombatStatus = {
   combatStatus?: DbStatus["combatStatus"]
   currentCombatId?: DbStatus["currentCombatId"]
@@ -36,7 +38,7 @@ export default function createFight(dbType: keyof typeof repositoryMap = "rtdb")
 
     // for each player, set combat status, current combat id
     Object.keys(params.players).forEach(charId => {
-      players[charId] = { initiative: 1000, nextActionBonus: 0 }
+      players[charId] = { initiative: DEFAULT_INITIATIVE, nextActionBonus: 0 }
       if (isStartingNow) {
         const playerParams = { charId, charType: "characters" as const }
         const payload = { combatStatus: "active" as const, currentCombatId: id }
@@ -45,7 +47,7 @@ export default function createFight(dbType: keyof typeof repositoryMap = "rtdb")
     })
     // for each enemy, set combat status, current combat id
     Object.keys(params.enemies).forEach(charId => {
-      enemies[charId] = { initiative: 1000, nextActionBonus: 0 }
+      enemies[charId] = { initiative: DEFAULT_INITIATIVE, nextActionBonus: 0 }
       if (isStartingNow) {
         const enemyParams = { charId, charType: "enemies" as const }
         const payload = { combatStatus: "active" as const, currentCombatId: id }

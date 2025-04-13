@@ -44,14 +44,26 @@ const actions = {
   pause: {
     id: "pause",
     label: "Attendre",
-    subtypes: {}
+    subtypes: {},
+    description:
+      "Conservez vos points d&apos;action et attendez le bon moment pour agir au cours du round."
   },
   prepare: {
     id: "prepare",
     label: "Préparer",
     subtypes: {
-      dangerAwareness: { id: "dangerAwareness", label: "Anticipe les attaques" },
-      visualize: { id: "visualize", label: "Visualiser prochaine action" }
+      dangerAwareness: {
+        id: "dangerAwareness",
+        label: "Anticipe les attaques",
+        description:
+          "Dépensez ce qu'il vous reste de points d'action pour mieux faire face au danger. Pour le prochain round, vous gagnez autant de classe d'armure (CA) que vous dépensez de points d'action (PA)."
+      },
+      visualize: {
+        id: "visualize",
+        label: "Visualiser prochaine action",
+        description:
+          "Dépensez ce qu'il vous reste de points d'action (PA) pour mieux réussir votre prochaine action. Pour chaque PA dépensé, vous gagnez un bonus de +2 au score de votre prochaine action."
+      }
     }
   }
 } as const

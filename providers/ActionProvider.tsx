@@ -62,10 +62,10 @@ type Action =
 const reducer = (state: ActionStateContext, { type, payload }: Action): ActionStateContext => {
   switch (type) {
     case "SET_ACTION_TYPE": {
-      const { nextActorId, itemId, actorId } = state
+      const { nextActorId, actorId } = state
       const { actionType } = payload
       const newState = { ...defaultActionForm, nextActorId, actorId, actionType }
-      if ("itemId" in payload) return { ...newState, itemId }
+      if ("itemId" in payload) return { ...newState, itemId: payload.itemId }
       if (actionType === "prepare" || actionType === "pause")
         return { ...newState, nextActorId: "" }
       return newState
