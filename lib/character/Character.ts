@@ -63,7 +63,7 @@ export default class Character {
 
   constructor(
     obj: DbChar,
-    squad: Squad,
+    squad: { date: Date; squadId: string },
     charId: string,
     newElements: CreatedElements = defaultCreatedElements
   ) {
