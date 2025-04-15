@@ -16,6 +16,11 @@ export type AdditionalEffectsParams = Child<string>
 export type AdditionalMiscParams = Child<string>
 //
 export type CombatParams = { id?: string; childKey?: keyof DbCombatEntry }
+export type RoundParams = {
+  combatId: string
+  roundId?: number
+  childKey?: keyof DbCombatEntry["rounds"]
+}
 export type ActionParams = {
   combatId: string
   roundId: string
@@ -41,10 +46,15 @@ const rtdb = {
   getCombat: ({ id, childKey }: CombatParams) =>
     childKey ? `v2/combat/${id}/${childKey}` : `v2/combat/${id ?? ""}`,
 
+  getRound: ({ combatId, roundId, childKey }: RoundParams) =>
+    roundId
+      ? `v2/combat/${combatId}/rounds/${roundId}/${childKey ?? ""}`
+      : `v2/combat/${combatId}/rounds/`,
+
   getAction: ({ combatId, roundId, actionId, childKey }: ActionParams) =>
     actionId
       ? `v2/combat/${combatId}/rounds/${roundId}/${actionId}/${childKey ?? ""}`
-      : `v2/combat/${combatId}/rounds/${roundId}/${actionId ?? ""}`,
+      : `v2/combat/${combatId}/rounds/${roundId}/`,
 
   getEnemy: ({ id, childKey }: EnemiesParams) =>
     childKey ? `v2/enemies/${id}/${childKey}` : `v2/enemies/${id ?? ""}`,
