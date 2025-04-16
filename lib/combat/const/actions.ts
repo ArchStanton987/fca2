@@ -46,7 +46,7 @@ const actions = {
     label: "Attendre",
     subtypes: {},
     description:
-      "Conservez vos points d&apos;action et attendez le bon moment pour agir au cours du round."
+      "Conservez vos points d'action et attendez le bon moment pour agir au cours du round."
   },
   prepare: {
     id: "prepare",

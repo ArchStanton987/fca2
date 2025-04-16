@@ -35,7 +35,7 @@ export default abstract class RtdbRepository<Db extends DbEntity, BP extends Bas
 
   delete = (params: BP & Collectible) => updateValue(this.getPath(params), null)
 
-  add = (params: BP & { id?: string }, data: Db) => {
+  add = (params: BP & { id?: string | number }, data: Db) => {
     if (!params.id) return push(child(ref(database), this.getPath(params)), data)
     return updateValue(this.getPath(params), data)
   }
@@ -75,7 +75,7 @@ export default abstract class RtdbRepository<Db extends DbEntity, BP extends Bas
     updateValue(this.getPath(params), null)
 
   addChild = <K extends keyof Db>(
-    params: BP & CollectibleChild<K> & { childId?: string },
+    params: BP & CollectibleChild<K> & { childId?: string | number },
     data: Db[K]
   ) => {
     if (!params.childId) return push(child(ref(database), this.getPath(params)), data)

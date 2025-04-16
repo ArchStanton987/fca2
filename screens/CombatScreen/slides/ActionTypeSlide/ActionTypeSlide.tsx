@@ -3,6 +3,9 @@ import { TouchableOpacity, View } from "react-native"
 import Ionicons from "@expo/vector-icons/Ionicons"
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import actions from "lib/combat/const/actions"
+import { getCurrentActionId, getCurrentRoundId } from "lib/combat/utils/combat-utils"
+import getUseCases from "lib/get-use-cases"
+import Toast from "react-native-toast-message"
 
 import List from "components/List"
 import ListItemSelectable from "components/ListItemSelectable"
@@ -14,6 +17,7 @@ import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
+import { useCombat } from "providers/CombatProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
 
@@ -25,12 +29,10 @@ import SubActionList from "./sub-action/SubActionList"
 const actionTypes = Object.values(actions).map(a => ({ id: a.id, label: a.label }))
 
 export default function ActionTypeSlide({ scrollNext }: SlideProps) {
-  // const useCases = useGetUseCases()
+  const useCases = getUseCases()
+  const combatContext = useCombat()
   const { equipedObjects, unarmed, charId } = useCharacter()
   const weapons = equipedObjects.weapons.length > 0 ? equipedObjects.weapons : [unarmed]
-
-  // const currFightId = status.currentCombatId ?? ""
-  // const currFight = useRtdbSub(useCases.combat.sub({ id: currFightId }))
 
   const form = useActionForm()
   const { actionType, actionSubtype, nextActorId } = form
@@ -44,15 +46,24 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
     setActionType({ actionType: id })
   }
 
-  const onPressWait = () => {
-    // if (!currFight || !actionType) return
-    // const payload = {
-    //   combatId: currFightId,
-    //   roundId: getCurrentRoundId(currFight).toString(),
-    //   newActionId: (getCurrentRoundId(currFight) + 1).toString(),
-    //   payload: { actionType: "pause", actor: charId, apCost: 0, actionSubtype: "" }
-    // }
-    // useCases.combat.addAction(payload)
+  const onPressWait = async () => {
+    const { players, enemies, combat } = combatContext
+    if (!combat || !players || !enemies || actionType !== "pause") return
+    const payload = {
+      combatId: combat.id,
+      roundId: getCurrentRoundId(combat),
+      actionId: getCurrentActionId(combat),
+      players,
+      enemies,
+      action: { actionType, actorId: charId }
+    }
+    try {
+      await useCases.combat.waitAction(payload)
+      Toast.show({ type: "custom", text1: "Pigé ! On se tient prêt !" })
+    } catch (error) {
+      console.log("error", error)
+      Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement de l'action" })
+    }
   }
 
   const isCombinedAction = nextActorId === charId

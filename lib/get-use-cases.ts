@@ -9,6 +9,7 @@ import createFight, { CreateFightParams } from "./combat/use-cases/create-fight"
 import subFight, { SubFightParams } from "./combat/use-cases/sub-fight"
 import updateContender, { UpdateContenderParams } from "./combat/use-cases/update-contender"
 import updateFight, { UpdateFightParams } from "./combat/use-cases/update-fight"
+import waitAction, { WaitActionParams } from "./combat/use-cases/wait-action"
 import createEnemy, { CreateEnemyParams } from "./enemy/use-cases/create-enemy"
 import subAllEnemies from "./enemy/use-cases/sub-all-enemies"
 import subEnemies from "./enemy/use-cases/sub-enemies"
@@ -65,7 +66,9 @@ export default function getUseCases(
       sub: (data: SubFightParams) => subFight(dbType)(data),
       create: (data: CreateFightParams) => createFight(dbType)(data),
       update: (data: UpdateFightParams) => updateFight(dbType)(data),
-      updateContender: (data: UpdateContenderParams) => updateContender(dbType)(data)
+      updateContender: (data: UpdateContenderParams) => updateContender(dbType)(data),
+      waitAction: (data: WaitActionParams) => waitAction(dbType)(data)
+      // addNewRound: (data: AddRoundParams) => addNewRound(dbType)(data),
       // addAction: (data: AddActionParams) => addAction(dbType)(data)
     },
     enemy: {

@@ -23,8 +23,8 @@ export type RoundParams = {
 }
 export type ActionParams = {
   combatId: string
-  roundId: string
-  actionId?: string
+  roundId: number
+  actionId?: number
   childKey?: keyof Action
 }
 export type EnemiesParams = { id?: string; childKey?: keyof DbEnemy }

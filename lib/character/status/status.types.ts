@@ -6,7 +6,7 @@ export type StatusId = "background" | "currAp" | "exp" | "level" | "rads" | Heal
 
 export type DbStatus = {
   raceId?: RaceId
-  combatStatus?: "active" | "inactive" | "dead"
+  combatStatus?: "active" | "wait" | "inactive" | "dead"
   turnStatus?: "acting" | "waiting" | "pause" | "done"
   currentCombatId?: string
   background: BackgroundId

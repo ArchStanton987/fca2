@@ -1,5 +1,6 @@
 import { EffectId } from "lib/character/effects/effects.types"
 import { LimbsHp } from "lib/character/health/health-types"
+import { DbStatus } from "lib/character/status/status.types"
 
 type WeaponActionSubtypeId = "basicAttack" | "aim" | "burst" | "reload" | "unload" | "hit" | "throw"
 type MovementType = "crawl" | "walk" | "run" | "sprint" | "jump" | "climb" | "getUp"
@@ -20,69 +21,73 @@ export type PlayerCombatData = {
   nextActionBonus: number
 }
 
+export type PlayerData = DbStatus & PlayerCombatData & { currMaxAp: number }
+
 export type SimpleRoll = {
   actorSkillScore: number
   actorDiceScore: number
   difficultyModifier: number
 }
 type OppositionRoll = SimpleRoll & {
+  opponentId: string
   opponentSkillScore: number
   opponentDiceScore: number
   opponentArmorClass?: number
+  opponentApCost: number
 }
-type Roll = SimpleRoll | OppositionRoll
+export type Roll = SimpleRoll | OppositionRoll
 export type HealthChangeEntry = {
   status: Partial<LimbsHp>
   newEffects: { id: EffectId; duration: number }[]
 }
 export type HealthChangeEntries = Record<CharId, HealthChangeEntry>
 
-type WeaponAction = {
+export type WeaponAction = {
   actionType: "weapon"
   actionSubtype: WeaponActionSubtypeId
-  actor: CharId
+  actorId: CharId
   weaponId: WeaponId
-  target: Record<CharId, CharId>
+  targetName: string
   aimZone?: AimZone
   apCost: number
   roll: Roll
   healthChangeEntries?: HealthChangeEntries
 }
 
-type MovementAction = {
+export type MovementAction = {
   actionType: "movement"
   actionSubtype: MovementType
-  actor: CharId
+  actorId: CharId
   apCost: number
   roll?: SimpleRoll
   healthChangeEntries?: HealthChangeEntries
 }
 
-type ItemAction = {
+export type ItemAction = {
   actionType: "item"
   actionSubtype: ItemActionType
   itemId: ItemId
-  actor: CharId
+  actorId: CharId
   apCost: number
   roll?: SimpleRoll
   healthChangeEntries?: HealthChangeEntries
 }
 
-type PauseAction = { actionType: "pause"; actor: CharId }
+export type PauseAction = { actionType: "pause"; actorId: CharId }
 
-type OtherAction = {
+export type OtherAction = {
   actionType: "other"
   actionSubtype: string
-  actor: CharId
+  actorId: CharId
   apCost: number
   roll?: SimpleRoll
   healthChangeEntries?: HealthChangeEntries
 }
 
-type PrepareAction = {
+export type PrepareAction = {
   actionType: "prepare"
   actionSubtype: PrepareActionType
-  actor: CharId
+  actorId: CharId
   apCost: number
 }
 

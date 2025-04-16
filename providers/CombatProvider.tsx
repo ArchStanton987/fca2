@@ -1,7 +1,7 @@
-import { createContext, useMemo } from "react"
+import { createContext, useContext, useMemo } from "react"
 
 import Character from "lib/character/Character"
-import { PlayerData } from "lib/combat/combats.types"
+import { DbCombatEntry, PlayerData } from "lib/combat/combats.types"
 
 import { useCharacter } from "contexts/CharacterContext"
 import { useSquad } from "contexts/SquadContext"
@@ -11,7 +11,19 @@ import useRtdbSubs from "hooks/db/useRtdbSubs"
 
 import { useGetUseCases } from "./UseCasesProvider"
 
-const CombatContext = createContext({})
+type CombatContextType = {
+  combat: DbCombatEntry | null
+  players: Record<string, PlayerData> | null
+  enemies: Record<string, PlayerData> | null
+}
+
+const defaultCombatContext: CombatContextType = {
+  combat: null,
+  players: null,
+  enemies: null
+}
+
+const CombatContext = createContext<CombatContextType>(defaultCombatContext)
 
 export default function CombatProvider({ children }: { children: React.ReactNode }) {
   const useCases = useGetUseCases()
@@ -66,9 +78,18 @@ export default function CombatProvider({ children }: { children: React.ReactNode
     return foes
   }, [enemiesData, combat, squad, createdElements])
 
-  const value = useMemo(() => ({ combat, players, enemies }), [combat, players, enemies])
-
-  if (!combat) return children
+  const value = useMemo(
+    () => ({ combat: combat ?? null, players, enemies }),
+    [combat, players, enemies]
+  )
 
   return <CombatContext.Provider value={value}>{children}</CombatContext.Provider>
+}
+
+export const useCombat = () => {
+  const context = useContext(CombatContext)
+  if (!context) {
+    throw new Error("useCombat must be used within a CombatProvider")
+  }
+  return context
 }
