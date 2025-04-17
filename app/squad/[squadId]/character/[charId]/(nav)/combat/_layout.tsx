@@ -16,38 +16,29 @@ const navElements = [
   { path: "recap", label: "Bagarre" },
   { path: "action", label: "Action" }
 ]
+const { initiative, waitingInitiative } = routes.modal
 
 export default function CombatLayout() {
   const { charId } = useLocalSearchParams<{ charId: string }>()
 
   const { combat, players, enemies } = useCombat()
   const charType = players && players[charId] ? "characters" : "enemies"
-  const initiativeHref = useMemo(
-    () => ({
-      pathname: routes.modal.initiative,
-      params: { charId, combatId: combat?.id, charType }
-    }),
-    [charId, combat?.id, charType]
-  )
-  const waitingHref = useMemo(
-    () => ({
-      pathname: routes.modal.waitingInitiative,
-      params: { combatId: combat?.id, charType }
-    }),
-    [combat?.id, charType]
+  const params = useMemo(
+    () => ({ charId, combatId: combat?.id, charType }),
+    [charId, charType, combat?.id]
   )
 
   const prompts = getInitiativePrompts(charId, players ?? {}, enemies ?? {})
 
   useEffect(() => {
     if (prompts.playerShouldRollInitiative) {
-      router.push(initiativeHref)
+      router.push({ pathname: initiative, params })
       return
     }
     if (prompts.shouldWaitOthers && !prompts.playerShouldRollInitiative) {
-      router.push(waitingHref)
+      router.push({ pathname: waitingInitiative, params })
     }
-  }, [initiativeHref, waitingHref, prompts])
+  }, [params, prompts])
   return (
     <View style={styles.drawerLayout}>
       <Drawer sectionId="combat" navElements={navElements} />
