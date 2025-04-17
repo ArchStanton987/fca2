@@ -28,7 +28,7 @@ export default function ScrollSection({
   return (
     <View style={[styles.container, style]}>
       <SectionTopRow title={title} titleVariant={titleVariant} onPressTitle={onPressTitle} />
-      <ScrollView style={[styles.scrollView, contentContainerStyle]}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={contentContainerStyle}>
         <Spacer y={layout.smallLineHeight} />
         {children}
         <Spacer y={layout.smallLineHeight} />
