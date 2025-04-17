@@ -13,6 +13,8 @@ import { InventoryContext } from "contexts/InventoryContext"
 import { useSquad } from "contexts/SquadContext"
 import useCreatedElements from "hooks/context/useCreatedElements"
 import useRtdbSub from "hooks/db/useRtdbSub"
+import { ActionProvider } from "providers/ActionProvider"
+import CombatProvider from "providers/CombatProvider"
 import UpdatesProvider from "providers/UpdatesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import LoadingScreen from "screens/LoadingScreen"
@@ -84,23 +86,27 @@ export default function CharStack() {
     <CharacterContext.Provider value={character}>
       <InventoryContext.Provider value={charInventory}>
         <UpdatesProvider>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              contentStyle: { backgroundColor: colors.primColor, padding: 10 }
-            }}
-          >
-            <Stack.Screen name="(nav)" />
-            <Stack.Screen name="(modal)/update-effects" options={modalOptions} />
-            <Stack.Screen name="(modal)/update-effects-confirmation" options={modalOptions} />
-            <Stack.Screen name="(modal)/update-objects" options={modalOptions} />
-            <Stack.Screen name="(modal)/update-objects-confirmation" options={modalOptions} />
-            <Stack.Screen name="(modal)/update-status" options={modalOptions} />
-            <Stack.Screen name="(modal)/update-health" options={modalOptions} />
-            <Stack.Screen name="(modal)/update-skills" options={modalOptions} />
-            <Stack.Screen name="(modal)/update-skills-confirmation" options={modalOptions} />
-            <Stack.Screen name="(modal)/update-knowledges" options={modalOptions} />
-          </Stack>
+          <CombatProvider>
+            <ActionProvider>
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  contentStyle: { backgroundColor: colors.primColor, padding: 10 }
+                }}
+              >
+                <Stack.Screen name="(nav)" />
+                <Stack.Screen name="(modal)/update-effects" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-effects-confirmation" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-objects" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-objects-confirmation" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-status" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-health" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-skills" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-skills-confirmation" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-knowledges" options={modalOptions} />
+              </Stack>
+            </ActionProvider>
+          </CombatProvider>
         </UpdatesProvider>
       </InventoryContext.Provider>
     </CharacterContext.Provider>

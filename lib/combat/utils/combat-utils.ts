@@ -1,6 +1,8 @@
 import { DbStatus } from "lib/character/status/status.types"
 
-import { Action } from "../combats.types"
+import { isKeyOf } from "utils/ts-utils"
+
+import { Action, PlayerCombatData } from "../combats.types"
 import { DEFAULT_INITIATIVE } from "../const/combat-const"
 
 interface CombatEntry {
@@ -82,4 +84,19 @@ export const getShouldCreateNewRound = (
   const actorAp = charsWithAp[0].status.currAp
   const willSpendAllAp = actorAp - action.apCost <= 0
   return willSpendAllAp
+}
+
+export const getInitiativePrompts = (
+  charId: string,
+  players: Record<string, PlayerCombatData>,
+  enemies: Record<string, PlayerCombatData>
+) => {
+  const contenders = { ...players, ...enemies }
+  if (!isKeyOf(charId, contenders)) throw new Error("Character not found in combat")
+  const playerShouldRollInitiative = contenders[charId].initiative === DEFAULT_INITIATIVE
+  const shouldWaitOthers =
+    Object.values(contenders).some(p => p.initiative === DEFAULT_INITIATIVE) &&
+    !playerShouldRollInitiative
+
+  return { playerShouldRollInitiative, shouldWaitOthers }
 }
