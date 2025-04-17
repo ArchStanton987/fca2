@@ -1,3 +1,15 @@
+TODO: accéder à la nav depuis un ennemi
+- créer page "ennemis" depuis espace admin, lister ennemis dans drawer
+- si onLongPress => nav vers layout/[charId]
+- lors "activation" du combat, ajouter ennemis dans Squad en DB
+- à la fin du combat, retirer ennemis dans squad en DB
+- dans layout "character/[charId] : détecter si "characters" ou "enemies"
+- ajouter le charType en paramètre des subs pour récupérer les data personnage
+- créer classes Robot et Animal
+- créer factory pour création Character, Robot, Animal
+
+
+
 TODO: remove trap / thrown weapon after usage
 
 
@@ -52,15 +64,8 @@ ajout round lorsque :
   - check ajout round
 
 
-
-
 => comment gérer inactif temporaire ?
-via effet ?
-+ plus facile côté dev dans gestion combat
-+ mieux pour ui joueur ?
-- complexe à établir durée...
-
- ou via combat status ?
+ ou via combat status
 
 
 
