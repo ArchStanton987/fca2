@@ -15,6 +15,9 @@ export default class Squad {
       members: computed,
       membersRecord: computed,
       //
+      enemies: computed,
+      enemiesRecord: computed,
+      //
       date: computed,
       //
       data: computed
@@ -29,6 +32,18 @@ export default class Squad {
     const res: Record<string, SquadMember> = {}
     this.members.forEach(member => {
       res[member.id] = member
+    })
+    return res
+  }
+
+  get enemies() {
+    return Object.entries(this.dbSquad.enemies).map(([id]) => ({ id }))
+  }
+
+  get enemiesRecord(): Record<string, string> {
+    const res: Record<string, string> = {}
+    this.enemies.forEach(enemy => {
+      res[enemy.id] = enemy.id
     })
     return res
   }

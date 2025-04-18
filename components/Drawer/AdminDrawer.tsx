@@ -12,7 +12,7 @@ import { useSquad } from "contexts/SquadContext"
 
 import styles from "./Drawer.styles"
 
-type SectionId = "creation"
+type SectionId = "creation" | "enemies"
 type DrawerProps = {
   sectionId: SectionId
   navElements: { path: string; label: string }[]
@@ -29,7 +29,7 @@ export default function AdminDrawer({ sectionId, navElements }: DrawerProps) {
   }
 
   return (
-    <ScrollSection style={styles.drawerContainer} title="CREATION" titleVariant="shiny">
+    <ScrollSection style={styles.drawerContainer} title={sectionId} titleVariant="shiny">
       <List
         data={navElements}
         keyExtractor={item => item.label}

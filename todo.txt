@@ -1,3 +1,18 @@
+    // Clôturer un combat :
+    // 1. POV joueur : affichage indique que le combat est terminé, à la validation :
+    //  - reset currFightId
+    //  - reset combatStatus
+    //  - reset AP
+
+    // 2. POV admin / ennemi : affichage indique que le combat est terminé, à la validation :
+    //  - retirer les ennemis du squad
+    //    pour CHAQUE ennemi :
+    //    - reset currFightId
+    //    - reset combatStatus
+    //    - reset AP
+
+=> updateDate : inclure les ennemis
+
 TODO: accéder à la nav depuis un ennemi
 - créer page "ennemis" depuis espace admin, lister ennemis dans drawer
 - si onLongPress => nav vers layout/[charId]

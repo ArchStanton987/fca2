@@ -92,7 +92,9 @@ export const getInitiativePrompts = (
   enemies: Record<string, PlayerCombatData>
 ) => {
   const contenders = { ...players, ...enemies }
-  if (!isKeyOf(charId, contenders)) throw new Error("Character not found in combat")
+  if (!isKeyOf(charId, contenders)) {
+    return { playerShouldRollInitiative: false, shouldWaitOthers: false }
+  }
   const playerShouldRollInitiative = contenders[charId].initiative === DEFAULT_INITIATIVE
   const shouldWaitOthers =
     Object.values(contenders).some(p => p.initiative === DEFAULT_INITIATIVE) &&

@@ -3,6 +3,9 @@ import { View } from "react-native"
 
 import { Tabs } from "expo-router"
 
+import Character from "lib/character/Character"
+import { DbNonHumanEnemy } from "lib/enemy/enemy.types"
+
 import Header from "components/Header/Header"
 import { HeaderElementId } from "components/Header/Header.utils"
 import TabBar from "components/TabBar/TabBar"
@@ -10,6 +13,8 @@ import { AdminContext } from "contexts/AdminContext"
 import { useSquad } from "contexts/SquadContext"
 import useCreatedElements from "hooks/context/useCreatedElements"
 import useGetSquadCharacters from "hooks/db/useGetSquadCharacters"
+import useRtdbSub from "hooks/db/useRtdbSub"
+import { useGetUseCases } from "providers/UseCasesProvider"
 import LoadingScreen from "screens/LoadingScreen"
 import colors from "styles/colors"
 
@@ -24,6 +29,7 @@ function TabBarComponent(props: any) {
 }
 
 export default function AdminLayout() {
+  const useCases = useGetUseCases()
   const createdElements = useCreatedElements()
   const squad = useSquad()
   const { members } = squad
@@ -32,10 +38,25 @@ export default function AdminLayout() {
   const currSquad = useMemo(() => squad, [squad])
   const characters = useGetSquadCharacters(squadMembersIds || [], currSquad, createdElements)
 
+  const allEnemies = useRtdbSub(useCases.enemy.subAll())
+
+  const enemies = useMemo(() => {
+    if (!allEnemies) return {}
+    const foes: Record<string, DbNonHumanEnemy | Character> = {}
+    Object.entries(allEnemies).forEach(([id, value]) => {
+      if (value.enemyType === "human") {
+        foes[id] = new Character(value, squad, id, createdElements)
+        return
+      }
+      foes[id] = value
+    })
+    return foes
+  }, [allEnemies, squad, createdElements])
+
   const context = useMemo(() => {
     if (!characters) return null
-    return { characters }
-  }, [characters])
+    return { characters, enemies }
+  }, [characters, enemies])
 
   if (!context) return <LoadingScreen />
 
@@ -52,6 +73,7 @@ export default function AdminLayout() {
           }}
         >
           <Tabs.Screen name="datetime" options={{ title: "Horloge" }} />
+          <Tabs.Screen name="enemies" options={{ title: "Ennemis" }} />
           <Tabs.Screen name="creation" options={{ title: "Creation" }} />
         </Tabs>
       </View>
