@@ -12,7 +12,7 @@ import { TraitId } from "lib/character/abilities/traits/traits.types"
 import { limbsDefault } from "lib/character/health/health"
 import { getInitSkillsPoints, getSkillPointsPerLevel } from "lib/character/progress/progress-utils"
 import { getExpForLevel } from "lib/character/status/status-calc"
-import { BackgroundId, DbStatus, RaceId } from "lib/character/status/status.types"
+import { BackgroundId, DbStatus } from "lib/character/status/status.types"
 import { getRandomArbitrary } from "lib/common/utils/dice-calc"
 import clothingsMap from "lib/objects/data/clothings/clothings"
 import { DbEquipedObjects } from "lib/objects/data/objects.types"
@@ -131,17 +131,11 @@ export const getEquipedObjects = (
   return equipedObjects
 }
 
-export const getStatus = (
-  level: number,
-  special: Special,
-  raceId: RaceId = "human",
-  background?: BackgroundId
-): DbStatus => {
+export const getStatus = (level: number, special: Special, background?: BackgroundId): DbStatus => {
   const currAp = secAttrMap.actionPoints.calc(special)
   const exp = getExpForLevel(level)
   const rads = 0
   return {
-    raceId,
     background: background ?? "other",
     currAp,
     exp,
@@ -151,7 +145,10 @@ export const getStatus = (
   }
 }
 
-export const generateDbChar = (level: number, template: keyof typeof humanTemplates): DbChar => {
+export const generateDbHuman = (
+  level: number,
+  template: keyof typeof humanTemplates
+): Omit<DbChar, "meta"> => {
   const baseSPECIAL = getSpecialFromTemplate(template)
   const traits = getTraitsFromTemplate(template)
   const tagSkills = getTagSkillsFromTemplate(level, template)

@@ -15,7 +15,7 @@ export default function EnemiesLayout() {
   const enemies = useRtdbSub(useCases.enemy.subAll())
   const navElements = Object.entries(enemies ?? {}).map(([id, entry]) => ({
     path: id,
-    label: entry.name
+    label: entry.meta.firstname
   }))
 
   return (

@@ -1,4 +1,5 @@
-import { BackgroundId, RaceId } from "lib/character/status/status.types"
+import { SpeciesId } from "lib/character/meta/meta"
+import { BackgroundId } from "lib/character/status/status.types"
 
 import { KnowledgeCategory, KnowledgeId, KnowledgeLevelValue } from "./knowledge-types"
 
@@ -21,7 +22,7 @@ export const knowledgesCategoryLabel: Record<KnowledgeCategory, string> = {
 }
 
 // Free mandatory cumulative knowledges
-export const RACE_INIT_KNOWLEDGES: Record<RaceId, InitKnowledge[]> = {
+export const RACE_INIT_KNOWLEDGES: Record<SpeciesId, InitKnowledge[]> = {
   human: [
     { id: "kBarter", levelId: 1 },
     { id: "kHear", levelId: 1 },
@@ -30,7 +31,11 @@ export const RACE_INIT_KNOWLEDGES: Record<RaceId, InitKnowledge[]> = {
     { id: "kSmell", levelId: 1 },
     { id: "kStrength", levelId: 1 },
     { id: "kStunt", levelId: 1 }
-  ]
+  ],
+  robot: [],
+  mutie: [],
+  ghoul: [],
+  animal: []
 }
 
 // Free non cumulative knowledge from a category

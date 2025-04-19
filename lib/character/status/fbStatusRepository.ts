@@ -1,5 +1,5 @@
 import dbKeys from "db/db-keys"
-import { UpdatableDbStatus } from "lib/character/status/status.types"
+import { DbStatus, UpdatableDbStatus } from "lib/character/status/status.types"
 import { getRtdbSub } from "lib/common/utils/rtdb-utils"
 
 import { groupUpdateValue, updateValue } from "api/api-rtdb"
@@ -19,7 +19,7 @@ const fbStatusRepository = {
   },
   getAll: (charId: string) => {
     const path = getContainerPath(charId)
-    return getRtdbSub<UpdatableDbStatus>(path)
+    return getRtdbSub<DbStatus>(path)
   },
   updateElement: <T extends keyof UpdatableDbStatus>(
     char: Character,

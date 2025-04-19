@@ -3,7 +3,7 @@ import { useMemo, useState } from "react"
 import { Stack, useLocalSearchParams } from "expo-router"
 
 import { NativeStackNavigationOptions } from "@react-navigation/native-stack"
-import Character, { DbChar } from "lib/character/Character"
+import Character from "lib/character/Character"
 import Inventory from "lib/objects/Inventory"
 import Toast from "react-native-toast-message"
 
@@ -46,15 +46,16 @@ export default function CharStack() {
   const equipedObj = useRtdbSub(useCases.equipedObjects.getAll(charId))
   const inventory = useRtdbSub(useCases.inventory.getAll(charId))
   const status = useRtdbSub(useCases.status.get(charId))
+  const meta = useRtdbSub(useCases.character.subMeta(charId))
 
   const newElements = useCreatedElements()
 
   const character = useMemo(() => {
-    const dbCharData = { abilities, effects, equipedObj, status }
-    if (Object.values(dbCharData).some(data => data === undefined)) return null
+    if (!abilities || !effects || !equipedObj || !status || !meta) return null
+    const dbCharData = { abilities, effects, equipedObj, status, meta }
     if (!squad) return null
-    return new Character(dbCharData as DbChar, squad, charId, newElements)
-  }, [squad, charId, abilities, effects, equipedObj, status, newElements])
+    return new Character(dbCharData, squad, newElements)
+  }, [squad, abilities, effects, equipedObj, status, meta, newElements])
 
   const charInventory = useMemo(() => {
     if (!character || !inventory) return null

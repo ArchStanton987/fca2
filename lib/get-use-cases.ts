@@ -4,6 +4,8 @@ import getEffectsUseCases from "./character/effects/effects-use-cases"
 import { DbEffectData } from "./character/effects/effects.types"
 import subAdditionalEffects from "./character/effects/sub-additional-effects"
 import getStatusUseCases from "./character/status/status-use-cases"
+import subCharacter from "./character/use-cases/sub-character"
+import subCharacterMeta from "./character/use-cases/sub-character-meta"
 import subCharacters from "./character/use-cases/sub-characters"
 import createFight, { CreateFightParams } from "./combat/use-cases/create-fight"
 import subFight, { SubFightParams } from "./combat/use-cases/sub-fight"
@@ -31,7 +33,8 @@ import {
   AdditionalClothingsParams,
   AdditionalConsumablesParams,
   AdditionalEffectsParams,
-  AdditionalMiscParams
+  AdditionalMiscParams,
+  CharacterParams
 } from "./shared/db/api-rtdb"
 import { DbType } from "./shared/db/db.types"
 import getSquadUseCases from "./squad/squad-use-cases"
@@ -78,7 +81,9 @@ export default function getUseCases(
       create: (data: CreateEnemyParams) => createEnemy(dbType)(data)
     },
     character: {
-      subCharacters: (ids: string[]) => subCharacters(dbType)(ids)
+      subCharacters: (ids: string[]) => subCharacters(dbType)(ids),
+      sub: (params: CharacterParams) => subCharacter(dbType)(params),
+      subMeta: (id: string) => subCharacterMeta(dbType)(id)
     }
   }
 }

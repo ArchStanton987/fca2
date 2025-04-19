@@ -1,11 +1,11 @@
 import { createContext, useContext } from "react"
 
 import Character from "lib/character/Character"
-import { DbNonHumanEnemy } from "lib/enemy/enemy.types"
+import NonHuman from "lib/enemy/NonHuman"
 
 export type AdminContextType = {
   characters: Record<string, Character>
-  enemies: Record<string, Character | DbNonHumanEnemy>
+  enemies: Record<string, Character | NonHuman>
 }
 export const AdminContext = createContext<AdminContextType | null>(null)
 export const useAdmin = () => {

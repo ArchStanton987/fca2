@@ -2,13 +2,10 @@ import { useState } from "react"
 import { View } from "react-native"
 
 import { limbsDefault } from "lib/character/health/health"
-import { DbStatus } from "lib/character/status/status.types"
-import beasts from "lib/enemy/const/beasts"
+import { DbCharMeta, species } from "lib/character/meta/meta"
+import { BackgroundId, DbStatus } from "lib/character/status/status.types"
 import enemyTemplates from "lib/enemy/const/enemy-templates"
-import humanTemplates from "lib/enemy/const/human-templates"
-import robots from "lib/enemy/const/robots"
-import { EnemyType } from "lib/enemy/enemy.types"
-import { generateDbChar } from "lib/enemy/utils/enemy-generation"
+import { generateDbHuman } from "lib/enemy/utils/enemy-generation"
 import Toast from "react-native-toast-message"
 
 import Col from "components/Col"
@@ -22,66 +19,73 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import TxtInput from "components/TxtInput"
 import PlusIcon from "components/icons/PlusIcon"
+import { useSquad } from "contexts/SquadContext"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
 
-const enemyTypes = ["human", "robot", "animal"] as const
-const defaultForm = {
-  enemyType: "human",
-  templateId: "gunner",
-  description: "",
-  name: "",
-  level: ""
-} as const
+const enemyTypes = Object.keys(enemyTemplates) as ReadonlyArray<keyof typeof enemyTemplates>
 
-type Form = {
-  enemyType: EnemyType
+type EnemyForm = {
+  speciesId: (typeof enemyTypes)[number]
+  templateId: string
+  background: BackgroundId
+  squadId: string
+  firstname: string
+  lastname: string
   description?: string
-  name: string
-  templateId: keyof typeof humanTemplates | keyof typeof robots | keyof typeof beasts
   level: string
 }
 
 export default function EnemyCreation() {
   const useCases = useGetUseCases()
+  const { squadId } = useSquad()
 
-  const [form, setForm] = useState<Form>(defaultForm)
+  const defaultForm: EnemyForm = {
+    speciesId: "human",
+    templateId: "gunner",
+    background: "other",
+    squadId,
+    description: "",
+    firstname: "",
+    lastname: "",
+    level: ""
+  }
 
-  const handleSetForm = (key: keyof Form, value: string) => {
+  const [form, setForm] = useState(defaultForm)
+
+  const handleSetForm = <T extends keyof EnemyForm>(key: T, value: EnemyForm[T]) => {
     setForm({ ...form, [key]: value })
   }
 
   const toggleType = () => {
-    const currIndex = enemyTypes.indexOf(form.enemyType)
+    const currIndex = enemyTypes.indexOf(form.speciesId)
     const nextIndex = (currIndex + 1) % enemyTypes.length
-    handleSetForm("enemyType", enemyTypes[nextIndex])
+    const newType = enemyTypes[nextIndex]
+    handleSetForm("speciesId", newType)
+    handleSetForm("templateId", enemyTemplates[newType][0].templateId)
+    if (newType === "human") return
+    handleSetForm("lastname", "")
   }
 
   const submit = async () => {
     let payload
-    const finalLevel = Number.isNaN(parseInt(form.level, 10)) ? 1 : parseInt(form.level, 10)
-    if (form.enemyType === "human") {
-      payload = generateDbChar(finalLevel, form.templateId)
+    const { level, ...rest } = form
+    const finalLevel = Number.isNaN(parseInt(level, 10)) ? 1 : parseInt(level, 10)
+    const meta: DbCharMeta = { ...rest, id: "" }
+    if (form.speciesId === "human") {
+      payload = { ...generateDbHuman(finalLevel, form.templateId), meta }
     } else {
-      const template = enemyTemplates[form.enemyType][form.templateId]
+      const template = enemyTemplates[form.speciesId][form.templateId]
       const status: DbStatus = {
-        background: "other",
+        background: form.background,
         currAp: template.actionPoints,
         exp: 1,
         level: 1,
         ...limbsDefault,
         rads: 0
       }
-      payload = { ...template, status }
+      payload = { meta, status }
     }
-    const common = {
-      enemyType: form.enemyType,
-      name: form.name,
-      templateId: form.templateId,
-      description: form.description
-    }
-    payload = { ...payload, ...common }
-
     try {
       await useCases.enemy.create(payload)
       Toast.show({ type: "custom", text1: "L'ennemi a été créé" })
@@ -94,24 +98,35 @@ export default function EnemyCreation() {
 
   return (
     <DrawerPage>
-      <ScrollSection style={{ flex: 1 }} title={form.enemyType}>
+      <ScrollSection style={{ flex: 1 }} title={species[form.speciesId]}>
         <Row>
           <Col>
             <Txt>TYPE</Txt>
-            <SelectorButton isSelected={false} onPress={toggleType} label={form.enemyType} />
+            <SelectorButton
+              isSelected={false}
+              onPress={toggleType}
+              label={species[form.speciesId]}
+            />
           </Col>
           <Spacer x={layout.globalPadding} />
           <Col style={{ flex: 1 }}>
-            <Txt>NAME</Txt>
-            <TxtInput value={form.name} onChangeText={e => handleSetForm("name", e)} />
+            <Txt>FIRSTNAME</Txt>
+            <TxtInput value={form.firstname} onChangeText={e => handleSetForm("firstname", e)} />
+            {form.speciesId === "human" ? (
+              <>
+                <Spacer x={layout.globalPadding} />
+                <Txt>LASTNAME</Txt>
+                <TxtInput value={form.lastname} onChangeText={e => handleSetForm("lastname", e)} />
+              </>
+            ) : null}
           </Col>
           <Spacer x={layout.globalPadding} />
           <Col style={{ flex: 1 }}>
             <Txt>TEMPLATE</Txt>
-            <TxtInput value={form.templateId} />
+            <Txt>{form.templateId}</Txt>
           </Col>
           <Spacer x={layout.globalPadding} />
-          {form.enemyType === "human" ? (
+          {form.speciesId === "human" ? (
             <Col style={{ flex: 1 }}>
               <Txt>LEVEL</Txt>
               <TxtInput value={form.level} onChangeText={e => handleSetForm("level", e)} />
@@ -136,7 +151,7 @@ export default function EnemyCreation() {
       <View style={{ width: 160 }}>
         <ScrollSection style={{ flex: 1 }} title="template">
           <List
-            data={Object.values(enemyTemplates[form.enemyType])}
+            data={Object.values(enemyTemplates[form.speciesId])}
             keyExtractor={item => item.templateId}
             separator={<Spacer y={10} />}
             renderItem={({ item }) => (

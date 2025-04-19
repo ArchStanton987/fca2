@@ -45,12 +45,14 @@ export default function EnemyScreen() {
     )
   }
 
+  const { firstname, description, templateId } = dbEnemy.meta
+
   return (
     <DrawerPage>
       <Section style={{ flex: 1 }} title="informations">
-        <Txt>Nom : {dbEnemy.name}</Txt>
-        <Txt>Description : {dbEnemy.description}</Txt>
-        <Txt>Template : {dbEnemy.templateId}</Txt>
+        <Txt>Nom : {firstname}</Txt>
+        <Txt>Description : {description}</Txt>
+        <Txt>Template : {templateId}</Txt>
       </Section>
 
       <Spacer x={layout.globalPadding} />

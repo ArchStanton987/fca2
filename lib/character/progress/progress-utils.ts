@@ -5,13 +5,14 @@ import {
 import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-levels"
 import { Special } from "lib/character/abilities/special/special.types"
 import { TraitId } from "lib/character/abilities/traits/traits.types"
-import { BackgroundId, RaceId } from "lib/character/status/status.types"
+import { BackgroundId } from "lib/character/status/status.types"
 
 import knowledgesMap from "../abilities/knowledges/knowledges"
 import {
   BACKGROUND_INIT_AVAILABLE_KNOWLEDGES_CATEGORIES,
   RACE_INIT_KNOWLEDGES
 } from "../abilities/knowledges/knowledges-const"
+import { SpeciesId } from "../meta/meta"
 
 export const getHpGainPerLevel = (special: Special) => {
   const { endurance } = special
@@ -50,9 +51,9 @@ export const getRawUsedKnowledgePoints = (knowledges: Record<KnowledgeId, Knowle
 
 export const getAssignedFreeRaceKPoints = (
   knowledges: Record<KnowledgeId, KnowledgeLevelValue>,
-  race: RaceId = "human"
+  speciesId: SpeciesId = "human"
 ) => {
-  const freeKnowledges = RACE_INIT_KNOWLEDGES[race]
+  const freeKnowledges = RACE_INIT_KNOWLEDGES[speciesId]
   return freeKnowledges.reduce((acc, k) => {
     if (!knowledges[k.id]) return acc
     const level = knowledgeLevels.find(lvl => lvl.id === k.levelId)
@@ -71,7 +72,7 @@ export const getAssignedRawKPoints = (knowledges: Record<KnowledgeId, KnowledgeL
 export const getRemainingFreeKPoints = (
   knowledges: Record<KnowledgeId, KnowledgeLevelValue>,
   background: BackgroundId,
-  raceId: RaceId = "human"
+  speciesId: SpeciesId = "human"
 ) => {
   const freeCategories = BACKGROUND_INIT_AVAILABLE_KNOWLEDGES_CATEGORIES[background]
   const freeCatIds = freeCategories.map(cat => cat.id)
@@ -84,7 +85,7 @@ export const getRemainingFreeKPoints = (
     const spentLvl = knowledgeLevels.find(lvl => lvl.id === kLvl)?.id ?? 0
     if (spentLvl === 0) return acc
 
-    const freeRaceKnowledges = RACE_INIT_KNOWLEDGES[raceId]
+    const freeRaceKnowledges = RACE_INIT_KNOWLEDGES[speciesId]
     const freeRaceLvl = freeRaceKnowledges.find(k => k.id === id)?.levelId ?? 0
 
     const backgroundSpendLvl = spentLvl - freeRaceLvl

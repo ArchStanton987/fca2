@@ -39,6 +39,7 @@ import { DbEffects, Effect, EffectData, EffectId } from "./effects/effects.types
 import { Symptom } from "./effects/symptoms.type"
 import { getMaxHP, getMissingHp } from "./health/health-calc"
 import { Health } from "./health/health-types"
+import { DbCharMeta } from "./meta/meta"
 import { DbStatus } from "./status/status.types"
 
 export type DbChar = {
@@ -46,17 +47,20 @@ export type DbChar = {
   effects?: DbEffects
   equipedObj?: DbEquipedObjects
   status: DbStatus
+  meta: DbCharMeta
   combats?: Record<string, string>
 }
 
 export default class Character {
   charId: string
+  fullname: string
   dbAbilities: DbAbilities
   dbEffects: DbEffects
   dbEquipedObjects: DbEquipedObjects
   status: DbStatus
   date: Date
   squadId: Squad["squadId"]
+  meta: DbCharMeta
 
   allClothings: Record<ClothingId, ClothingData>
   allEffects: Record<EffectId, EffectData>
@@ -64,16 +68,18 @@ export default class Character {
   constructor(
     obj: DbChar,
     squad: { date: Date; squadId: string },
-    charId: string,
     newElements: CreatedElements = defaultCreatedElements
   ) {
     const { newClothings, newEffects } = newElements
-    this.charId = charId
+    const { id, lastname, firstname } = obj.meta
+    this.charId = id
+    this.fullname = lastname ? `${firstname} ${lastname}` : firstname
     this.dbAbilities = obj.abilities
     this.dbEffects = obj.effects || {}
     this.dbEquipedObjects = obj.equipedObj || {}
     this.status = obj.status
     this.squadId = squad.squadId
+    this.meta = obj.meta
     this.date = squad.date
     this.allClothings = { ...clothingsMap, ...newClothings }
     this.allEffects = { ...effectsMap, ...newEffects }

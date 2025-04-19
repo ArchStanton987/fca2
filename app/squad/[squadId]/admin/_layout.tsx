@@ -4,7 +4,7 @@ import { View } from "react-native"
 import { Tabs } from "expo-router"
 
 import Character from "lib/character/Character"
-import { DbNonHumanEnemy } from "lib/enemy/enemy.types"
+import NonHuman from "lib/enemy/NonHuman"
 
 import Header from "components/Header/Header"
 import { HeaderElementId } from "components/Header/Header.utils"
@@ -42,13 +42,13 @@ export default function AdminLayout() {
 
   const enemies = useMemo(() => {
     if (!allEnemies) return {}
-    const foes: Record<string, DbNonHumanEnemy | Character> = {}
+    const foes: Record<string, NonHuman | Character> = {}
     Object.entries(allEnemies).forEach(([id, value]) => {
-      if (value.enemyType === "human") {
-        foes[id] = new Character(value, squad, id, createdElements)
+      if ("abilities" in value) {
+        foes[id] = new Character(value, squad, createdElements)
         return
       }
-      foes[id] = value
+      foes[id] = new NonHuman(value, squad)
     })
     return foes
   }, [allEnemies, squad, createdElements])

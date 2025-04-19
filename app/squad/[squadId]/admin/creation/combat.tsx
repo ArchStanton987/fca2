@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { ScrollView, View } from "react-native"
 
+import Character from "lib/character/Character"
 import Toast from "react-native-toast-message"
 
 import CheckBox from "components/CheckBox/CheckBox"
@@ -68,12 +69,11 @@ export default function CombatCreation() {
       return
     }
     let currMaxAp
-    if (type === "players") {
-      currMaxAp = characters[id].secAttr.curr.actionPoints
-    } else if ("actionPoints" in enemies[id]) {
-      currMaxAp = enemies[id].actionPoints
+    const curr = type === "players" ? characters[id] : enemies[id]
+    if (curr instanceof Character) {
+      currMaxAp = curr.secAttr.curr.actionPoints
     } else {
-      currMaxAp = enemies[id].secAttr.curr.actionPoints
+      currMaxAp = curr.data.actionPoints
     }
     setForm(prev => ({ ...prev, [type]: { ...prev[type], [id]: { currMaxAp } } }))
   }
@@ -168,7 +168,7 @@ export default function CombatCreation() {
             <SelectorButton
               onPress={() => toggleChar("enemies", item)}
               isSelected={item in form.enemies}
-              label={"name" in enemies[item] ? enemies[item].name : item}
+              label={enemies[item].meta.firstname}
             />
           )}
         />
