@@ -1,6 +1,6 @@
 import { TouchableHighlight } from "react-native"
 
-import { router, useSegments } from "expo-router"
+import { router, usePathname } from "expo-router"
 
 import List from "components/List"
 import ScrollSection from "components/Section/ScrollSection"
@@ -19,7 +19,7 @@ type DrawerProps = {
 }
 
 export default function AdminDrawer({ sectionId, navElements }: DrawerProps) {
-  const segments = useSegments()
+  const pathname = usePathname()
   const squad = useSquad()
   const { squadId } = squad
 
@@ -36,7 +36,7 @@ export default function AdminDrawer({ sectionId, navElements }: DrawerProps) {
         style={{ flex: 1 }}
         renderItem={({ item }) => {
           const { path } = item
-          const isSelected = segments.includes(path)
+          const isSelected = pathname.includes(path)
           const hasBadge = false
           return (
             <TouchableHighlight

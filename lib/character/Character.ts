@@ -66,12 +66,13 @@ export default class Character {
   allEffects: Record<EffectId, EffectData>
 
   constructor(
+    id: string,
     obj: DbChar,
     squad: { date: Date; squadId: string },
     newElements: CreatedElements = defaultCreatedElements
   ) {
     const { newClothings, newEffects } = newElements
-    const { id, lastname, firstname } = obj.meta
+    const { lastname, firstname } = obj.meta
     this.charId = id
     this.fullname = lastname ? `${firstname} ${lastname}` : firstname
     this.dbAbilities = obj.abilities

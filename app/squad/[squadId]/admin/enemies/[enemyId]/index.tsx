@@ -1,4 +1,4 @@
-import { ActivityIndicator, TouchableOpacity } from "react-native"
+import { TouchableOpacity } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
@@ -7,17 +7,13 @@ import Section from "components/Section"
 import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import useRtdbSub from "hooks/db/useRtdbSub"
-import { useGetUseCases } from "providers/UseCasesProvider"
-import colors from "styles/colors"
+import { useAdmin } from "contexts/AdminContext"
 import layout from "styles/layout"
 
 export default function EnemyScreen() {
   const { enemyId, squadId } = useLocalSearchParams<{ enemyId: string; squadId: string }>()
 
-  const useCases = useGetUseCases()
-
-  const dbEnemy = useRtdbSub(useCases.enemy.sub(enemyId))
+  const { enemies } = useAdmin()
 
   const play = () => {
     router.push({
@@ -26,16 +22,7 @@ export default function EnemyScreen() {
     })
   }
 
-  if (dbEnemy === undefined)
-    return (
-      <ActivityIndicator
-        style={{ height: "100%", width: "100%", justifyContent: "center", alignItems: "center" }}
-        color={colors.secColor}
-        size="large"
-      />
-    )
-
-  if (dbEnemy === null) {
+  if (!enemies[enemyId]) {
     return (
       <DrawerPage>
         <Section style={{ flex: 1 }} title="informations">
@@ -45,7 +32,9 @@ export default function EnemyScreen() {
     )
   }
 
-  const { firstname, description, templateId } = dbEnemy.meta
+  const enemy = enemies[enemyId]
+
+  const { firstname, description, templateId } = enemy.meta
 
   return (
     <DrawerPage>

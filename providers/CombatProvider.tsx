@@ -46,7 +46,7 @@ export default function CombatProvider({ children }: { children: React.ReactNode
     if (!playersData || !combat) return null
     const characters: Record<string, PlayerData> = {}
     Object.entries(playersData).forEach(([key, value]) => {
-      const char = new Character(value, squad, createdElements)
+      const char = new Character(key, value, squad, createdElements)
       const combatData = combat.players[key]
       const currMaxAp = char.secAttr.curr.actionPoints
       characters[key] = { ...char.status, ...combatData, currMaxAp }
@@ -68,12 +68,12 @@ export default function CombatProvider({ children }: { children: React.ReactNode
       const combatData = combat.enemies[key]
       if ("abilities" in value) {
         const s = { date: squad.date, squadId: combat.title }
-        const char = new Character(value, s, createdElements)
+        const char = new Character(key, value, s, createdElements)
         const currMaxAp = char.secAttr.curr.actionPoints
         foes[key] = { ...char.status, ...combatData, currMaxAp }
         return
       }
-      const nonHuman = new NonHuman(value, squad)
+      const nonHuman = new NonHuman(key, value, squad)
       foes[key] = { ...value.status, ...combatData, currMaxAp: nonHuman.data.actionPoints }
     })
     return foes

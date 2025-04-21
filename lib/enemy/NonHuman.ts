@@ -17,10 +17,11 @@ export default class NonHuman {
   meta: DbCharMeta
 
   constructor(
+    id: string,
     payload: { status: DbStatus; meta: DbCharMeta },
     game: { date: Date; squadId: string }
   ) {
-    const { id, lastname, firstname } = payload.meta
+    const { lastname, firstname } = payload.meta
     this.charId = id
     this.fullname = lastname ? `${firstname} ${lastname}` : firstname
     this.status = payload.status

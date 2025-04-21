@@ -61,17 +61,23 @@ export default function EnemyCreation() {
     const currIndex = enemyTypes.indexOf(form.speciesId)
     const nextIndex = (currIndex + 1) % enemyTypes.length
     const newType = enemyTypes[nextIndex]
-    handleSetForm("speciesId", newType)
-    handleSetForm("templateId", enemyTemplates[newType][0].templateId)
-    if (newType === "human") return
-    handleSetForm("lastname", "")
+    const templateKeys = Object.keys(enemyTemplates[newType])
+    const randomIndex = Math.floor(Math.random() * templateKeys.length)
+    const newTemplateId = templateKeys[randomIndex]
+    const newLastName = newType === "human" ? form.lastname : ""
+    setForm(prev => ({
+      ...prev,
+      speciesId: newType,
+      templateId: newTemplateId,
+      lastname: newLastName
+    }))
   }
 
   const submit = async () => {
     let payload
     const { level, ...rest } = form
     const finalLevel = Number.isNaN(parseInt(level, 10)) ? 1 : parseInt(level, 10)
-    const meta: DbCharMeta = { ...rest, id: "" }
+    const meta: DbCharMeta = rest
     if (form.speciesId === "human") {
       payload = { ...generateDbHuman(finalLevel, form.templateId), meta }
     } else {
@@ -123,7 +129,7 @@ export default function EnemyCreation() {
           <Spacer x={layout.globalPadding} />
           <Col style={{ flex: 1 }}>
             <Txt>TEMPLATE</Txt>
-            <Txt>{form.templateId}</Txt>
+            <Txt>{enemyTemplates[form.speciesId][form.templateId].label}</Txt>
           </Col>
           <Spacer x={layout.globalPadding} />
           {form.speciesId === "human" ? (

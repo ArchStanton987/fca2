@@ -24,7 +24,7 @@ export default function useGetSquadCharacters(
         if (snapshot.exists()) {
           // Create Character instance for each snapshot
           const characterData = snapshot.val()
-          const characterInstance = new Character(characterData, squad, newElements)
+          const characterInstance = new Character(memberId, characterData, squad, newElements)
 
           // Update characters state
           setCharacters(prev => ({ ...prev, [memberId]: characterInstance }))

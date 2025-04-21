@@ -54,8 +54,8 @@ export default function CharStack() {
     if (!abilities || !effects || !equipedObj || !status || !meta) return null
     const dbCharData = { abilities, effects, equipedObj, status, meta }
     if (!squad) return null
-    return new Character(dbCharData, squad, newElements)
-  }, [squad, abilities, effects, equipedObj, status, meta, newElements])
+    return new Character(charId, dbCharData, squad, newElements)
+  }, [charId, squad, abilities, effects, equipedObj, status, meta, newElements])
 
   const charInventory = useMemo(() => {
     if (!character || !inventory) return null

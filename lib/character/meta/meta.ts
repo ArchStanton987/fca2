@@ -11,7 +11,6 @@ export const species = {
 export type SpeciesId = keyof typeof species
 
 export type DbCharMeta = {
-  id: string
   speciesId: SpeciesId
   templateId: "player" | string
   background: BackgroundId

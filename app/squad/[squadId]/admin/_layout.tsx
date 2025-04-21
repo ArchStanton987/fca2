@@ -45,10 +45,10 @@ export default function AdminLayout() {
     const foes: Record<string, NonHuman | Character> = {}
     Object.entries(allEnemies).forEach(([id, value]) => {
       if ("abilities" in value) {
-        foes[id] = new Character(value, squad, createdElements)
+        foes[id] = new Character(id, value, squad, createdElements)
         return
       }
-      foes[id] = new NonHuman(value, squad)
+      foes[id] = new NonHuman(id, value, squad)
     })
     return foes
   }, [allEnemies, squad, createdElements])
