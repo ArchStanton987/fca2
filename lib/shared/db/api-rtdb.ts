@@ -27,7 +27,7 @@ export type ActionParams = {
   childKey?: keyof Action
 }
 export type EnemiesParams = { id?: string; childKey?: keyof DbEnemy }
-export type CharacterParams = { id?: string; childKey?: keyof DbChar }
+export type CharacterParams = { charType: CharType; id?: string; childKey?: keyof DbChar }
 export type StatusParams = CharParams & { childKey?: keyof DbStatus }
 //
 export type SquadParams = { id?: string; childKey?: keyof DbSquad }
@@ -55,8 +55,8 @@ const rtdb = {
   getEnemy: ({ id, childKey }: EnemiesParams) =>
     childKey ? `v2/enemies/${id}/${childKey}` : `v2/enemies/${id ?? ""}`,
 
-  getCharacter: ({ id, childKey }: CharacterParams) =>
-    childKey ? `v2/characters/${id}/${childKey}` : `v2/characters/${id ?? ""}`,
+  getCharacter: ({ charType, id, childKey }: CharacterParams) =>
+    id ? `v2/${charType}/${id}/${childKey ?? ""}` : `v2/${charType}/`,
 
   getStatus: ({ charId, charType, childKey }: StatusParams) =>
     `v2/${charType}/${charId}/status/${childKey ?? ""}`,

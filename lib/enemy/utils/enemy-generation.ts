@@ -15,7 +15,7 @@ import { getExpForLevel } from "lib/character/status/status-calc"
 import { BackgroundId, DbStatus } from "lib/character/status/status.types"
 import { getRandomArbitrary } from "lib/common/utils/dice-calc"
 import clothingsMap from "lib/objects/data/clothings/clothings"
-import { DbEquipedObjects } from "lib/objects/data/objects.types"
+import { DbEquipedObjects, DbInventory } from "lib/objects/data/objects.types"
 import weaponsMap from "lib/objects/data/weapons/weapons"
 import { getRandomWeightedIndex } from "lib/shared/utils/math-utils"
 
@@ -162,6 +162,7 @@ export const generateDbHuman = (
       traits,
       knowledges: {} as Record<KnowledgeId, KnowledgeLevelValue>
     },
+    inventory: {} as DbInventory,
     equipedObj,
     status
   }

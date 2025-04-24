@@ -37,16 +37,21 @@ export default function CharStack() {
   const useCases = useGetUseCases()
 
   const squad = useSquad()
+  const isEnemy = charId in squad.enemiesRecord
+  const subParams = {
+    id: charId,
+    charType: isEnemy ? ("enemies" as const) : ("characters" as const)
+  }
 
   const [currDatetime, setCurrDatetime] = useState(squad.date.toJSON())
 
   // use separate subscriptions to avoid unnecessary bandwidth usage
-  const abilities = useRtdbSub(useCases.abilities.getAbilities(charId))
-  const effects = useRtdbSub(useCases.effects.getAll(charId))
-  const equipedObj = useRtdbSub(useCases.equipedObjects.getAll(charId))
-  const inventory = useRtdbSub(useCases.inventory.getAll(charId))
-  const status = useRtdbSub(useCases.status.get(charId))
-  const meta = useRtdbSub(useCases.character.subMeta(charId))
+  const abilities = useRtdbSub(useCases.character.subChild({ ...subParams, childKey: "abilities" }))
+  const effects = useRtdbSub(useCases.character.subChild({ ...subParams, childKey: "effects" }))
+  const equipedObj = useRtdbSub(useCases.character.subChild({ ...subParams, childKey: "effects" }))
+  const inventory = useRtdbSub(useCases.character.subChild({ ...subParams, childKey: "inventory" }))
+  const status = useRtdbSub(useCases.character.subChild({ ...subParams, childKey: "status" }))
+  const meta = useRtdbSub(useCases.character.subChild({ ...subParams, childKey: "meta" }))
 
   const newElements = useCreatedElements()
 

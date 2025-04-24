@@ -15,7 +15,7 @@ import { getLevelAndThresholds } from "lib/character/status/status-calc"
 import { getRemainingTime } from "lib/common/utils/time-calc"
 import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
 import { ClothingData, ClothingId } from "lib/objects/data/clothings/clothings.types"
-import { DbEquipedObjects } from "lib/objects/data/objects.types"
+import { DbEquipedObjects, DbInventory } from "lib/objects/data/objects.types"
 import weaponsMap from "lib/objects/data/weapons/weapons"
 import { dbToWeapon } from "lib/objects/data/weapons/weapons.mappers"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
@@ -49,7 +49,7 @@ export type DbChar = {
   status: DbStatus
   meta: DbCharMeta
   combats?: Record<string, string>
-}
+} & { inventory: DbInventory }
 
 export default class Character {
   charId: string
@@ -67,7 +67,7 @@ export default class Character {
 
   constructor(
     id: string,
-    obj: DbChar,
+    obj: Omit<DbChar, "inventory">,
     squad: { date: Date; squadId: string },
     newElements: CreatedElements = defaultCreatedElements
   ) {

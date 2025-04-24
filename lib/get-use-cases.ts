@@ -1,3 +1,4 @@
+import { DbChar } from "./character/Character"
 import getAbilitiesUseCases from "./character/abilities/abilities-use-cases"
 import addAdditionalEffect from "./character/effects/add-additional-effect"
 import getEffectsUseCases from "./character/effects/effects-use-cases"
@@ -5,7 +6,9 @@ import { DbEffectData } from "./character/effects/effects.types"
 import subAdditionalEffects from "./character/effects/sub-additional-effects"
 import getStatusUseCases from "./character/status/status-use-cases"
 import subCharacter from "./character/use-cases/sub-character"
-import subCharacterMeta from "./character/use-cases/sub-character-meta"
+import subCharacterChild, {
+  SubCharacterChildParams
+} from "./character/use-cases/sub-character-child"
 import subCharacters from "./character/use-cases/sub-characters"
 import createFight, { CreateFightParams } from "./combat/use-cases/create-fight"
 import subFight, { SubFightParams } from "./combat/use-cases/sub-fight"
@@ -83,7 +86,8 @@ export default function getUseCases(
     character: {
       subCharacters: (ids: string[]) => subCharacters(dbType)(ids),
       sub: (params: CharacterParams) => subCharacter(dbType)(params),
-      subMeta: (id: string) => subCharacterMeta(dbType)(id)
+      subChild: <T extends keyof DbChar>(params: SubCharacterChildParams<T>) =>
+        subCharacterChild(dbType)(params)
     }
   }
 }
