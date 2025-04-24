@@ -1,0 +1,41 @@
+import { Action, DbCombatEntry, PlayerCombatData } from "./combats.types"
+
+const defaultAction = {
+  actionType: "",
+  actionSubtype: "",
+  actorId: "",
+  apCost: 0,
+  healthChangeEntries: {},
+  itemId: "",
+  targetName: ""
+}
+
+export default class Combat {
+  id: string
+  squadId: string
+  timestamp: Date
+  location?: string
+  title: string
+  description: string
+  currActorId: string
+  players: Record<string, PlayerCombatData>
+  enemies: Record<string, PlayerCombatData>
+  rounds: Record<number, Record<number, Action>>
+
+  constructor(payload: DbCombatEntry) {
+    this.id = payload.id
+    this.squadId = payload.squadId
+    this.timestamp = new Date(payload.timestamp)
+    this.location = payload.location
+    this.title = payload.title
+    this.description = payload.description || ""
+    this.currActorId = payload.currActorId
+    this.players = payload.players
+    this.enemies = payload.enemies
+    if (payload.rounds) {
+      this.rounds = payload.rounds
+    } else {
+      this.rounds = { 1: { 1: defaultAction } }
+    }
+  }
+}

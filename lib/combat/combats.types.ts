@@ -9,7 +9,6 @@ type PrepareActionType = "dangerAwareness" | "visualize"
 
 type CharId = string
 type EnemyId = string
-type WeaponId = string
 type ItemId = string
 type AimZone = "torso" | "legs" | "arms" | "head" | "groin" | "eyes"
 
@@ -42,11 +41,22 @@ export type HealthChangeEntry = {
 }
 export type HealthChangeEntries = Record<CharId, HealthChangeEntry>
 
+export type Action = {
+  actionType: string
+  actionSubtype?: string
+  actorId: CharId
+  apCost?: number
+  roll?: Roll
+  healthChangeEntries?: HealthChangeEntries
+  itemId?: ItemId
+  targetName?: string
+}
+
 export type WeaponAction = {
   actionType: "weapon"
   actionSubtype: WeaponActionSubtypeId
   actorId: CharId
-  weaponId: WeaponId
+  itemId: ItemId
   targetName: string
   aimZone?: AimZone
   apCost: number
@@ -91,7 +101,7 @@ export type PrepareAction = {
   apCost: number
 }
 
-export type Action =
+export type DoneAction =
   | WeaponAction
   | MovementAction
   | ItemAction
@@ -109,5 +119,5 @@ export type DbCombatEntry = {
   currActorId: string
   players: Record<CharId, PlayerCombatData>
   enemies: Record<EnemyId, PlayerCombatData>
-  rounds: Record<number, Record<number, Action>>
+  rounds?: Record<number, Record<number, Action>>
 }

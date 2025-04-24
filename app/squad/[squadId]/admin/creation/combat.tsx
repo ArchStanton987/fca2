@@ -68,7 +68,7 @@ export default function CombatCreation() {
       })
       return
     }
-    let currMaxAp
+    let currMaxAp = 0
     const curr = type === "players" ? characters[id] : enemies[id]
     if (curr instanceof Character) {
       currMaxAp = curr.secAttr.curr.actionPoints
@@ -191,7 +191,7 @@ export default function CombatCreation() {
                   style={isSelected && { backgroundColor: colors.terColor, color: colors.secColor }}
                   onPress={() => toggleChar("enemies", item.id)}
                 >
-                  {item.id}
+                  {item.meta.firstname}
                 </Txt>
               )
             }}

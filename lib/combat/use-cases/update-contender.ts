@@ -11,5 +11,8 @@ export default function updateContender(dbType: keyof typeof repositoryMap = "rt
   const combatRepo = repositoryMap[dbType].combatRepository
 
   return ({ id, playerId, charType, initiative }: UpdateContenderParams) =>
-    combatRepo.patchChild({ id, childKey: charType }, { [playerId]: { initiative } })
+    combatRepo.patchChild(
+      { id, childKey: charType },
+      { [playerId]: { initiative, nextActionBonus: 0 } }
+    )
 }

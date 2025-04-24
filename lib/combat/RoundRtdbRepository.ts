@@ -1,10 +1,10 @@
 import RtdbRepository from "lib/shared/db/RtdbRepository"
 import { RoundParams } from "lib/shared/db/api-rtdb"
 
-import { DbCombatEntry } from "./combats.types"
+import { Action } from "./combats.types"
 
 export default class RoundRtdbRepository extends RtdbRepository<
-  DbCombatEntry["rounds"],
+  Record<number, Record<number, Action>>,
   RoundParams
 > {
   getPath(params: RoundParams) {
