@@ -23,6 +23,7 @@ import { computed, makeObservable, observable } from "mobx"
 
 import { getModAttribute } from "../common/utils/char-calc"
 import clothingsMap from "../objects/data/clothings/clothings"
+import Playable from "./Playable"
 import Squad from "./Squad"
 import { DbAbilities } from "./abilities/abilities.types"
 import { KnowledgeId } from "./abilities/knowledges/knowledge-types"
@@ -51,7 +52,7 @@ export type DbChar = {
   combats?: Record<string, string>
 } & { inventory: DbInventory }
 
-export default class Character {
+export default class Character implements Playable {
   charId: string
   fullname: string
   dbAbilities: DbAbilities

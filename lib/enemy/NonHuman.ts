@@ -1,5 +1,7 @@
 /* eslint-disable class-methods-use-this */
+import Playable from "lib/character/Playable"
 import Squad from "lib/character/Squad"
+import { KnowledgeId } from "lib/character/abilities/knowledges/knowledge-types"
 import { secAttrArray } from "lib/character/abilities/sec-attr/sec-attr"
 import { SecAttrsValues } from "lib/character/abilities/sec-attr/sec-attr-types"
 import skillsMap from "lib/character/abilities/skills/skills"
@@ -17,8 +19,9 @@ import { DbStatus } from "lib/character/status/status.types"
 import { getModAttribute } from "lib/common/utils/char-calc"
 import { getRemainingTime } from "lib/common/utils/time-calc"
 import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
+import { DbEquipedObjects } from "lib/objects/data/objects.types"
 import { attackToWeapon } from "lib/objects/data/weapons/weapons.mappers"
-import { Weapon } from "lib/objects/data/weapons/weapons.types"
+import { Weapon, WeaponId } from "lib/objects/data/weapons/weapons.types"
 import { computed, makeObservable, observable } from "mobx"
 
 import { isKeyOf } from "utils/ts-utils"
@@ -26,7 +29,7 @@ import { isKeyOf } from "utils/ts-utils"
 import enemyTemplates from "./const/enemy-templates"
 import { NonHumanEnemyTemplate } from "./enemy.types"
 
-export default class NonHuman {
+export default class NonHuman implements Playable {
   charId: string
   fullname: string
   status: DbStatus
@@ -203,7 +206,7 @@ export default class NonHuman {
   }
 
   get knowledgesRecord() {
-    return {}
+    return {} as Record<KnowledgeId, number>
   }
 
   get equipedObjects() {
@@ -219,17 +222,17 @@ export default class NonHuman {
   get dbEquipedObjects() {
     const weapons: Record<
       string,
-      { id: string; inMagazine: 0; dbKey: string; data: Weapon["data"] }
+      { id: WeaponId; inMagazine: 0; dbKey: string; data: Weapon["data"] }
     > = {}
     Object.entries(this.data.attacks).forEach(([key, attack]) => {
       weapons[key] = {
-        id: attack.name,
+        id: attack.name as WeaponId,
         inMagazine: 0,
         dbKey: attack.name,
         data: attackToWeapon(attack).data
       }
     })
-    return { weapons, clothings: {} }
+    return { weapons, clothings: {} as DbEquipedObjects["clothings"] }
   }
 
   get equipedObjectsRecord() {
