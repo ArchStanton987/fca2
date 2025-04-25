@@ -1,4 +1,4 @@
-import Character from "lib/character/Character"
+import Playable from "lib/character/Playable"
 import { Special } from "lib/character/abilities/special/special.types"
 import {
   HIT_WITH_AP_COST,
@@ -8,7 +8,7 @@ import {
 } from "lib/objects/data/weapons/weapons-const"
 import { Weapon, WeaponActionId } from "lib/objects/data/weapons/weapons.types"
 
-export const getApCost = (weapon: Weapon, char: Character, actionId: WeaponActionId) => {
+export const getApCost = (weapon: Weapon, char: Playable, actionId: WeaponActionId) => {
   const apCosts = {
     basic: weapon.data.basicApCost,
     aim: weapon.data.specialApCost,
@@ -32,7 +32,7 @@ const getCanBasicUseFirearm = (weapon: Weapon) => {
   return weapon.inMagazine >= weapon.data.ammoPerShot
 }
 
-export const getCanBasicUseWeapon = (weapon: Weapon, char: Character) => {
+export const getCanBasicUseWeapon = (weapon: Weapon, char: Playable) => {
   if (weapon.data.skill === "trap") {
     return char.status.currAp >= char.secAttr.curr.actionPoints
   }
@@ -44,7 +44,7 @@ export const getCanBasicUseWeapon = (weapon: Weapon, char: Character) => {
   return char.status.currAp >= weapon.data?.basicApCost
 }
 
-export const getCanAim = (weapon: Weapon, char: Character) => {
+export const getCanAim = (weapon: Weapon, char: Playable) => {
   if (weapon.data.damageBasic === null) return false
   if (weapon.data.specialApCost === null) return false
   if (weapon.data.ammoType !== null) {
@@ -53,7 +53,7 @@ export const getCanAim = (weapon: Weapon, char: Character) => {
   return char.status.currAp >= weapon.data.specialApCost
 }
 
-export const getCanShootBurst = (weapon: Weapon, char: Character) => {
+export const getCanShootBurst = (weapon: Weapon, char: Playable) => {
   if (weapon.data.ammoPerBurst === null) return false
   if (weapon.data.damageBurst === null) return false
   if (weapon.inMagazine === undefined) return false
@@ -61,7 +61,7 @@ export const getCanShootBurst = (weapon: Weapon, char: Character) => {
   return char.status.currAp >= char.secAttr.curr.actionPoints
 }
 
-export const getCanLoad = (weapon: Weapon, char: Character) => {
+export const getCanLoad = (weapon: Weapon, char: Playable) => {
   if (weapon.data.ammoType === null) return false
   if (weapon.data.magazine === null) return false
   if (weapon.ammo <= 0) return false
@@ -69,22 +69,22 @@ export const getCanLoad = (weapon: Weapon, char: Character) => {
   return char.status.currAp >= LOAD_AP_COST
 }
 
-export const getCanUnload = ({ data, inMagazine = 0 }: Weapon, char: Character) => {
+export const getCanUnload = ({ data, inMagazine = 0 }: Weapon, char: Playable) => {
   if (data.ammoType === null) return false
   if (data.magazine === null) return false
   if (inMagazine === 0) return false
   return char.status.currAp >= UNLOAD_AP_COST
 }
 
-export const getCanHitWith = (weapon: Weapon, char: Character) => {
+export const getCanHitWith = (weapon: Weapon, char: Playable) => {
   if (weapon.data.skill === "melee" || weapon.data.skill === "unarmed") return false
   return char.status.currAp >= HIT_WITH_AP_COST
 }
-export const getCanThrow = (weapon: Weapon, char: Character) => char.status.currAp >= THROW_AP_COST
+export const getCanThrow = (weapon: Weapon, char: Playable) => char.status.currAp >= THROW_AP_COST
 
 export const weaponActionsMap: {
   actionId: WeaponActionId
-  fn: (weapon: Weapon, char: Character) => boolean
+  fn: (weapon: Weapon, char: Playable) => boolean
 }[] = [
   { actionId: "basic", fn: getCanBasicUseWeapon },
   { actionId: "aim", fn: getCanAim },
@@ -95,7 +95,7 @@ export const weaponActionsMap: {
   { actionId: "hit", fn: getCanHitWith }
 ]
 
-export const getAvailableWeaponActions = (weapon: Weapon, char: Character) =>
+export const getAvailableWeaponActions = (weapon: Weapon, char: Playable) =>
   weaponActionsMap.filter(({ fn }) => fn(weapon, char)).map(({ actionId }) => actionId)
 
 export const getWeaponActionLabel = (weapon: Weapon, actionId: WeaponActionId) => {

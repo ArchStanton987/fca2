@@ -1,5 +1,5 @@
 import { getRepository } from "lib/RepositoryBuilder"
-import Character from "lib/character/Character"
+import Playable from "lib/character/Playable"
 import { getApCost } from "lib/objects/data/weapons/weapons-utils"
 import { Weapon, WeaponActionId } from "lib/objects/data/weapons/weapons.types"
 
@@ -12,7 +12,7 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
 
   return {
     load: async (
-      char: Character,
+      char: Playable,
       weapon: Weapon,
       apCostOverride: number | undefined = undefined
     ) => {
@@ -52,7 +52,7 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
     },
 
     unload: async (
-      char: Character,
+      char: Playable,
       weapon: Weapon,
       apCostOverride: number | undefined = undefined
     ) => {
@@ -86,7 +86,7 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
     },
 
     use: async (
-      char: Character,
+      char: Playable,
       weapon: Weapon,
       actionId: WeaponActionId,
       apCostOverride: number | undefined = undefined

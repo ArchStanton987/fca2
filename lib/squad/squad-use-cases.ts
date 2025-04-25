@@ -1,5 +1,5 @@
 import { getRepository } from "lib/RepositoryBuilder"
-import Character from "lib/character/Character"
+import Playable from "lib/character/Playable"
 import effectsMap from "lib/character/effects/effects"
 import getEffectsUseCases from "lib/character/effects/effects-use-cases"
 import { getExpiringEffects, getFollowingEffects } from "lib/character/effects/effects-utils"
@@ -20,7 +20,7 @@ function getSquadUseCases(
 
     getAll: () => squadRepo.getAll(),
 
-    updateDate: (squadId: string, date: Date, characters: Character[]) => {
+    updateDate: (squadId: string, date: Date, characters: Playable[]) => {
       const effectsUseCases = getEffectsUseCases(db, createdElements)
       const statusUseCases = getStatusUseCases(db, createdElements)
 

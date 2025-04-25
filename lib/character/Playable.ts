@@ -1,8 +1,9 @@
-import { ClothingData } from "lib/objects/data/clothings/clothings.types"
+import { ClothingData, ClothingId } from "lib/objects/data/clothings/clothings.types"
 import { DbEquipedObjects } from "lib/objects/data/objects.types"
-import { Weapon, WeaponData } from "lib/objects/data/weapons/weapons.types"
+import { Weapon, WeaponData, WeaponId } from "lib/objects/data/weapons/weapons.types"
 
-import { KnowledgeId } from "./abilities/knowledges/knowledge-types"
+import { DbAbilities } from "./abilities/abilities.types"
+import { KnowledgeId, KnowledgeLevelValue } from "./abilities/knowledges/knowledge-types"
 import { Perk } from "./abilities/perks/perks.types"
 import { SecAttrsValues } from "./abilities/sec-attr/sec-attr-types"
 import { SkillsValues } from "./abilities/skills/skills.types"
@@ -23,11 +24,12 @@ export default interface Playable {
   meta: DbCharMeta
 
   // abilities
+  dbAbilities: DbAbilities
   special: { base: Special; mod: Special; curr: Special }
   secAttr: { base: SecAttrsValues; mod: SecAttrsValues; curr: SecAttrsValues }
   skills: { base: SkillsValues; up: SkillsValues; mod: SkillsValues; curr: SkillsValues }
-  knowledges: { id: KnowledgeId; value: number }[]
-  knowledgesRecord: Record<KnowledgeId, number>
+  knowledges: { id: KnowledgeId; value: KnowledgeLevelValue }[]
+  knowledgesRecord: Record<KnowledgeId, KnowledgeLevelValue>
   traits: Trait[]
   traitsRecord: Record<string, Trait>
   perks: Perk[]
@@ -47,7 +49,7 @@ export default interface Playable {
   unarmed: Weapon
   dbEquipedObjects: DbEquipedObjects
   equipedObjects: {
-    weapons: { dbKey: string; data: WeaponData; inMagazine?: number }[]
-    clothings: { dbKey: string; data: ClothingData }[]
+    weapons: { id: WeaponId; dbKey: string; data: WeaponData; inMagazine?: number }[]
+    clothings: { id: ClothingId; dbKey: string; data: ClothingData }[]
   }
 }

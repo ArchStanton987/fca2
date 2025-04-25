@@ -1,10 +1,14 @@
 /* eslint-disable class-methods-use-this */
 import Playable from "lib/character/Playable"
 import Squad from "lib/character/Squad"
-import { KnowledgeId } from "lib/character/abilities/knowledges/knowledge-types"
+import { DbAbilities } from "lib/character/abilities/abilities.types"
+import {
+  KnowledgeId,
+  KnowledgeLevelValue
+} from "lib/character/abilities/knowledges/knowledge-types"
 import { secAttrArray } from "lib/character/abilities/sec-attr/sec-attr"
 import { SecAttrsValues } from "lib/character/abilities/sec-attr/sec-attr-types"
-import skillsMap from "lib/character/abilities/skills/skills"
+import skillsMap, { skillsArray } from "lib/character/abilities/skills/skills"
 import { SkillsValues } from "lib/character/abilities/skills/skills.types"
 import { specialArray } from "lib/character/abilities/special/special"
 import { Special } from "lib/character/abilities/special/special.types"
@@ -38,6 +42,7 @@ export default class NonHuman implements Playable {
   meta: DbCharMeta
   dbEffects: DbEffects
   allEffects: Record<EffectId, EffectData>
+  dbAbilities: DbAbilities
 
   constructor(
     id: string,
@@ -56,6 +61,11 @@ export default class NonHuman implements Playable {
     this.meta = payload.meta
     this.dbEffects = payload.effects ?? {}
     this.allEffects = { ...effectsMap, ...newEffects }
+    this.dbAbilities = {
+      baseSPECIAL: Object.fromEntries(specialArray.map(e => [e.id, 5])) as Special,
+      knowledges: {} as Record<KnowledgeId, KnowledgeLevelValue>,
+      upSkills: Object.fromEntries(skillsArray.map(e => [e.id, 0])) as SkillsValues
+    }
 
     makeObservable(this, {
       dbEffects: observable,
@@ -206,12 +216,12 @@ export default class NonHuman implements Playable {
   }
 
   get knowledgesRecord() {
-    return {} as Record<KnowledgeId, number>
+    return {} as Record<KnowledgeId, KnowledgeLevelValue>
   }
 
   get equipedObjects() {
     const weapons = this.data.attacks.map(attack => ({
-      id: attack.name,
+      id: attack.name as WeaponId,
       inMagazine: 0,
       dbKey: attack.name,
       data: attackToWeapon(attack).data

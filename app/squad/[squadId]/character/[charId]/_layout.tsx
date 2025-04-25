@@ -59,7 +59,7 @@ export default function CharStack() {
   const character = useMemo(() => {
     if (!status || !meta || !squad) return null
     if (meta.speciesId !== "human") return new NonHuman(charId, { status, meta }, squad)
-    if (!abilities || !effects || !equipedObj) return null
+    if (!abilities) return null
     const dbCharData = { abilities, effects, equipedObj, status, meta }
     return new Character(charId, dbCharData, squad, newElements)
   }, [charId, squad, abilities, effects, equipedObj, status, meta, newElements])
@@ -77,7 +77,7 @@ export default function CharStack() {
     return new Inventory(inventory ?? { caps: 0 }, charData, newElements)
   }, [character, inventory, newElements])
 
-  if (!character || !charInventory || !squad) return <LoadingScreen />
+  if (!character || !squad) return <LoadingScreen />
 
   if (squad.date.toJSON() !== currDatetime) {
     setCurrDatetime(squad.date.toJSON())

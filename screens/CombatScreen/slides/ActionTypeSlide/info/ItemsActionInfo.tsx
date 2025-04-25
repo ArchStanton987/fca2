@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native"
 
-import Character from "lib/character/Character"
+import Playable from "lib/character/Playable"
 import Inventory from "lib/objects/Inventory"
 
 import List from "components/List"
@@ -15,7 +15,7 @@ import colors from "styles/colors"
 const getItemList = (
   actionSubtype: string,
   inventory: Inventory,
-  equipedObjects: Character["equipedObjects"]
+  equipedObjects: Playable["equipedObjects"]
 ): { title: string; data: any[] }[] => {
   switch (actionSubtype) {
     case "drop":

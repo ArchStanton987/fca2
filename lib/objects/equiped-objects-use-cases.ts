@@ -1,5 +1,5 @@
 import { getRepository } from "lib/RepositoryBuilder"
-import Character from "lib/character/Character"
+import Playable from "lib/character/Playable"
 import clothingsMap from "lib/objects/data/clothings/clothings"
 import { Clothing, ClothingId } from "lib/objects/data/clothings/clothings.types"
 import weaponsMap from "lib/objects/data/weapons/weapons"
@@ -28,7 +28,7 @@ const getEquipedObjectsUseCases = (
 
     getAll: (charId: string) => repository.getAll(charId),
 
-    toggle: async (char: Character, object: Weapon | Clothing) => {
+    toggle: async (char: Playable, object: Weapon | Clothing) => {
       const category = getObjectCategory(object)
       const { weapons, clothings } = char.equipedObjects
       const { dbKey } = object

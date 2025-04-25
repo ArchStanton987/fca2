@@ -1,13 +1,13 @@
 import { getRepository } from "lib/RepositoryBuilder"
-import Character from "lib/character/Character"
 import { DbEffect, Effect, EffectData, EffectId } from "lib/character/effects/effects.types"
 import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
 
+import Playable from "../Playable"
 import effectsMap from "./effects"
 import { getEffectLengthInMs } from "./effects-utils"
 
 const createDbEffect = (
-  char: Character,
+  char: Playable,
   effectId: EffectId,
   startDate?: Date,
   effectLengthInMs?: number,
@@ -35,7 +35,7 @@ function getEffectsUseCases(
 
     getAll: (charId: string) => repository.getAll(charId),
 
-    add: async (char: Character, effectId: EffectId, refDate?: Date, lengthInMs?: number) => {
+    add: async (char: Playable, effectId: EffectId, refDate?: Date, lengthInMs?: number) => {
       const dbEffect = createDbEffect(char, effectId, refDate, lengthInMs, allEffects)
       const existingEffect = char.effectsRecord[effectId]
       if (existingEffect) {
@@ -46,7 +46,7 @@ function getEffectsUseCases(
 
     // we process one start date for each effect, as start dates can be different inside a batch of effects (e.g. datetime update)
     groupAdd: (
-      char: Character,
+      char: Playable,
       effects: { effectId: EffectId; startDate?: Date; lengthInMs?: number }[]
     ) => {
       const newDbEffects: DbEffect[] = []
@@ -69,8 +69,7 @@ function getEffectsUseCases(
 
     remove: async (charId: string, effect: Effect) => repository.remove(charId, effect),
 
-    groupRemove: (char: Character, effects: Effect[]) =>
-      repository.groupRemove(char.charId, effects)
+    groupRemove: (char: Playable, effects: Effect[]) => repository.groupRemove(char.charId, effects)
   }
 }
 

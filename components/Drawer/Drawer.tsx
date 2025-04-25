@@ -25,7 +25,7 @@ export default function Drawer({ sectionId, navElements }: DrawerProps) {
   const segments = useSegments()
   const squad = useSquad()
   const { squadId } = squad
-  const { charId, progress, status } = useCharacter()
+  const { charId, progress, status, meta } = useCharacter()
 
   const isInFight = typeof status.currentCombatId === "string"
 
@@ -33,8 +33,7 @@ export default function Drawer({ sectionId, navElements }: DrawerProps) {
   const canAddSkill = availableSkillPoints > 0
   const canAddKnowledge = availableKnowledgePoints > 0 || availableFreeKnowledgePoints > 0
 
-  const squadMember = squad.members.find(member => member.id === charId)
-  const charDisplayName = squadMember ? squadMember.firstname : "Personnage"
+  const charDisplayName = meta.firstname
 
   const toTabs = (path: string) => {
     router.push({

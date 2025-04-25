@@ -6,13 +6,13 @@ import {
 } from "lib/character/effects/effects-utils"
 import { CreatedElements } from "lib/objects/created-elements"
 
-import Character from "../Character"
+import Playable from "../Playable"
 import getEffectsUseCases from "../effects/effects-use-cases"
 import { DbStatus } from "./status.types"
 
 /* eslint-disable import/prefer-default-export */
 export const onStatusUpdate = (
-  character: Character,
+  character: Playable,
   newStatus: DbStatus,
   createdElements: CreatedElements,
   db: keyof typeof getRepository = "rtdb"

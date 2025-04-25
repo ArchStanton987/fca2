@@ -1,12 +1,12 @@
 /* eslint-disable import/prefer-default-export */
-import Character from "lib/character/Character"
 import { LimbHpId, healthStates, limbsMap } from "lib/character/health/health"
 import { getMissingHp } from "lib/character/health/health-calc"
 import { getRandomArbitrary } from "lib/common/utils/dice-calc"
 
+import Playable from "../Playable"
 import { EffectId } from "../effects/effects.types"
 
-export const getNewLimbsHp = (char: Character, newDate: Date) => {
+export const getNewLimbsHp = (char: Playable, newDate: Date) => {
   const { healHpPerHour } = char.secAttr.curr
   const newLimbsHp = { ...char.health.limbsHp }
   if (healHpPerHour === 0) return newLimbsHp

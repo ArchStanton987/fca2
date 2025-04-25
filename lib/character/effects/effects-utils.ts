@@ -1,19 +1,20 @@
-import Character from "lib/character/Character"
 import { Effect, EffectData, EffectId } from "lib/character/effects/effects.types"
 import { limbsMap, radStates } from "lib/character/health/health"
 import { getMissingHp } from "lib/character/health/health-calc"
 import { getHealthState } from "lib/character/health/health-utils"
 import { DbStatus } from "lib/character/status/status.types"
 
-export const getEffectLengthInMs = (char: Character, effect: EffectData) => {
-  const isChemReliant = char.dbAbilities.traits?.includes("chemReliant")
+import Playable from "../Playable"
+
+export const getEffectLengthInMs = (char: Playable, effect: EffectData) => {
+  const isChemReliant = char.traits?.some(t => t.id === "chemReliant")
   if (!effect.length) return null
   const isWithdrawal = effect.type === "withdrawal"
   const lengthInH = isWithdrawal && isChemReliant ? effect.length * 0.5 : effect.length
   return lengthInH * 60 * 60 * 1000
 }
 
-export const getExpiringEffects = (char: Character, refDate: Date) =>
+export const getExpiringEffects = (char: Playable, refDate: Date) =>
   char.effects.filter(effect => {
     const { startTs, endTs, data } = effect
     const { length } = data
@@ -25,7 +26,7 @@ export const getExpiringEffects = (char: Character, refDate: Date) =>
   }) as Effect[]
 
 export const getFollowingEffects = (
-  char: Character,
+  char: Playable,
   newDate: Date,
   allEffects: Record<EffectId, EffectData>
 ) =>
@@ -54,10 +55,10 @@ export const getFollowingEffects = (
     .filter(el => !!el) as { effectId: EffectId; startDate: Date }[]
 
 export const handleLimbsEffects = (
-  character: Character,
+  character: Playable,
   newStatus: DbStatus,
   effectsUseCases: {
-    add: (char: Character, effectId: EffectId) => Promise<void>
+    add: (char: Playable, effectId: EffectId) => Promise<void>
     remove: (charId: string, effect: Effect) => Promise<void>
   }
 ): Promise<void>[] => {
@@ -84,10 +85,10 @@ export const handleLimbsEffects = (
 }
 
 export const handleHealthStatusEffects = (
-  character: Character,
+  character: Playable,
   newStatus: DbStatus,
   effectsUseCases: {
-    add: (char: Character, effectId: EffectId) => Promise<void>
+    add: (char: Playable, effectId: EffectId) => Promise<void>
     remove: (charId: string, effect: Effect) => Promise<void>
   }
 ): Promise<void>[] => {
@@ -114,10 +115,10 @@ export const handleHealthStatusEffects = (
 }
 
 export const handleRadsEffects = (
-  character: Character,
+  character: Playable,
   newStatus: DbStatus,
   effectsUseCases: {
-    add: (char: Character, effectId: EffectId) => Promise<void>
+    add: (char: Playable, effectId: EffectId) => Promise<void>
     remove: (charId: string, effect: Effect) => Promise<void>
   }
 ): Promise<void>[] => {

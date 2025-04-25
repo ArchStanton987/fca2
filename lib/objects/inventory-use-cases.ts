@@ -1,4 +1,4 @@
-import Character from "lib/character/Character"
+import Playable from "lib/character/Playable"
 import getEffectsUseCases from "lib/character/effects/effects-use-cases"
 import healthMap from "lib/character/health/health"
 import getStatusUseCases from "lib/character/status/status-use-cases"
@@ -60,7 +60,7 @@ const getInventoryUseCases = (
   return {
     getAll: (charId: string) => repository.getAll(charId),
 
-    exchange: (character: Character, payload: ExchangeState, inventory: Inventory) => {
+    exchange: (character: Playable, payload: ExchangeState, inventory: Inventory) => {
       const recordsUpdates: {
         category: RecordInventoryCategory
         id?: AmmoType
@@ -131,7 +131,7 @@ const getInventoryUseCases = (
       return Promise.all(promises)
     },
 
-    consume: (character: Character, consumable: Consumable) => {
+    consume: (character: Playable, consumable: Consumable) => {
       const { charId } = character
       const { data, remainingUse } = consumable
       const { effectId, modifiers } = data

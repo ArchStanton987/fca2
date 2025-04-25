@@ -76,7 +76,12 @@ export default class Character implements Playable {
     const { lastname, firstname } = obj.meta
     this.charId = id
     this.fullname = lastname ? `${firstname} ${lastname}` : firstname
-    this.dbAbilities = obj.abilities
+    this.dbAbilities = {
+      ...obj.abilities,
+      traits: obj.abilities.traits ?? [],
+      perks: obj.abilities.perks ?? [],
+      knowledges: obj.abilities.knowledges ?? {}
+    }
     this.dbEffects = obj.effects || {}
     this.dbEquipedObjects = obj.equipedObj || {}
     this.status = obj.status

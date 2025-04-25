@@ -4,12 +4,12 @@ import { getRtdbSub } from "lib/common/utils/rtdb-utils"
 
 import { groupUpdateValue, updateValue } from "api/api-rtdb"
 
-import Character from "../Character"
+import Playable from "../Playable"
 
 const getContainerPath = (charId: string) => dbKeys.char(charId).status.index
 const getFieldPath = (charId: string, id: keyof UpdatableDbStatus) =>
   getContainerPath(charId).concat("/", id)
-const getSquadExpPath = (character: Character) =>
+const getSquadExpPath = (character: Playable) =>
   dbKeys.squad(character.squadId).members.concat("/", character.charId, "/exp")
 
 const fbStatusRepository = {
@@ -22,7 +22,7 @@ const fbStatusRepository = {
     return getRtdbSub<DbStatus>(path)
   },
   updateElement: <T extends keyof UpdatableDbStatus>(
-    char: Character,
+    char: Playable,
     field: T,
     data: UpdatableDbStatus[T]
   ) => {
@@ -36,7 +36,7 @@ const fbStatusRepository = {
     promises.push(updateValue(path, data))
     return Promise.all(promises)
   },
-  groupUpdate: (char: Character, updates: Partial<UpdatableDbStatus>) => {
+  groupUpdate: (char: Playable, updates: Partial<UpdatableDbStatus>) => {
     const promises = []
     const payload = Object.entries(updates).map(([key, value]) => ({
       url: getFieldPath(char.charId, key as keyof UpdatableDbStatus),
