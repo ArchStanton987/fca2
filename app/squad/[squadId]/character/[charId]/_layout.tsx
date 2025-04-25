@@ -4,6 +4,7 @@ import { Stack, useLocalSearchParams } from "expo-router"
 
 import { NativeStackNavigationOptions } from "@react-navigation/native-stack"
 import Character from "lib/character/Character"
+import NonHuman from "lib/enemy/NonHuman"
 import Inventory from "lib/objects/Inventory"
 import Toast from "react-native-toast-message"
 
@@ -56,14 +57,15 @@ export default function CharStack() {
   const newElements = useCreatedElements()
 
   const character = useMemo(() => {
-    if (!abilities || !effects || !equipedObj || !status || !meta) return null
+    if (!status || !meta || !squad) return null
+    if (meta.speciesId !== "human") return new NonHuman(charId, { status, meta }, squad)
+    if (!abilities || !effects || !equipedObj) return null
     const dbCharData = { abilities, effects, equipedObj, status, meta }
-    if (!squad) return null
     return new Character(charId, dbCharData, squad, newElements)
   }, [charId, squad, abilities, effects, equipedObj, status, meta, newElements])
 
   const charInventory = useMemo(() => {
-    if (!character || !inventory) return null
+    if (!character || !(character instanceof Character)) return null
     const { dbAbilities, innateSymptoms, skills, dbEquipedObjects, special } = character
     const charData = {
       dbAbilities,
@@ -72,7 +74,7 @@ export default function CharStack() {
       dbEquipedObjects,
       currSpecial: special.curr
     }
-    return new Inventory(inventory, charData, newElements)
+    return new Inventory(inventory ?? { caps: 0 }, charData, newElements)
   }, [character, inventory, newElements])
 
   if (!character || !charInventory || !squad) return <LoadingScreen />

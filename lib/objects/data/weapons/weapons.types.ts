@@ -1,7 +1,19 @@
 import { KnowledgeId } from "lib/character/abilities/knowledges/knowledge-types"
 import { SkillId } from "lib/character/abilities/skills/skills.types"
+import { EffectId } from "lib/character/effects/effects.types"
+import { Modifier } from "lib/character/effects/symptoms.type"
 
 import { AmmoType } from "../ammo/ammo.types"
+
+export type BeastAttack = {
+  name: string
+  weaponId?: WeaponId
+  skill: number // percentage
+  apCost: number
+  damage: string // dice roll string (e.g., '1d6', '2d4+2')
+  effects?: EffectId[]
+  modifiers?: Modifier[]
+}
 
 export type WeaponUseType = "basic" | "burst" | "aim" | "hit" | "throw"
 

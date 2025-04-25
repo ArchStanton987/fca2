@@ -5,13 +5,14 @@ import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-level
 import { SkillsValues } from "lib/character/abilities/skills/skills.types"
 import { Special } from "lib/character/abilities/special/special.types"
 import traitsMap from "lib/character/abilities/traits/traits"
-import { Symptom } from "lib/character/effects/symptoms.type"
+import { EffectId } from "lib/character/effects/effects.types"
+import { Modifier, Symptom } from "lib/character/effects/symptoms.type"
 import { getModAttribute } from "lib/common/utils/char-calc"
 
 import { DbEquipedObjects, DbInventory } from "../objects.types"
 import weaponsMap from "./weapons"
 import { MALUS_PER_MISSING_STRENGTH } from "./weapons-const"
-import { DbWeapon, Weapon } from "./weapons.types"
+import { BeastAttack, DbWeapon, Weapon, WeaponId } from "./weapons.types"
 
 export const dbToWeapon = (
   [dbKey, dbWeapon]: [string, DbWeapon],
@@ -57,4 +58,44 @@ export const dbToWeapon = (
   const isEquiped = dbEquipedObjects?.weapons?.[dbKey] !== undefined
   const data = { ...weaponsMap[id], basicApCost, specialApCost }
   return { inMagazine, data, dbKey, id, skill, isEquiped, ammo }
+}
+
+export const attackToWeapon = (
+  attack: BeastAttack
+): Weapon & { effects: EffectId[]; modifiers: Modifier[] } => {
+  const { name, skill, apCost, damage, effects, modifiers } = attack
+  return {
+    id: name as WeaponId,
+    dbKey: name,
+    skill,
+    isEquiped: true,
+    data: {
+      id: name as WeaponId,
+      label: name,
+      img: "",
+      damageType: "physical",
+      damageBasic: damage,
+      damageBurst: null,
+      ammoType: null,
+      range: null,
+      magazine: null,
+      ammoPerShot: null,
+      ammoPerBurst: null,
+      basicApCost: apCost,
+      specialApCost: null,
+      minStrength: 0,
+      place: 0,
+      weight: 0,
+      value: 0,
+      frequency: 0,
+      skill: "unarmed",
+      knowledges: [],
+      tags: [],
+      isTwoHanded: false
+    },
+    ammo: 0,
+    inMagazine: undefined,
+    effects: effects || [],
+    modifiers: modifiers || []
+  }
 }
