@@ -320,13 +320,6 @@ export default class Character implements Playable {
   }
 
   get unarmed(): Weapon {
-    const charData = {
-      dbAbilities: this.dbAbilities,
-      innateSymptoms: this.innateSymptoms,
-      currSkills: this.skills.curr,
-      currSpecial: this.special.curr,
-      dbEquipedObjects: this.dbEquipedObjects
-    }
-    return dbToWeapon(["unarmed", { id: "unarmed" }], charData, undefined)
+    return dbToWeapon(["unarmed", { id: "unarmed" }], this, undefined)
   }
 }

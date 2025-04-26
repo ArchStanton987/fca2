@@ -1,4 +1,4 @@
-import { Special } from "lib/character/abilities/special/special.types"
+import Playable from "lib/character/Playable"
 import ammoMap from "lib/objects/data/ammo/ammo"
 import { Ammo, AmmoType } from "lib/objects/data/ammo/ammo.types"
 import clothingsMap from "lib/objects/data/clothings/clothings"
@@ -15,25 +15,14 @@ import {
   MiscObjectData,
   MiscObjectId
 } from "lib/objects/data/misc-objects/misc-objects-types"
-import { DbEquipedObjects, DbInventory } from "lib/objects/data/objects.types"
+import { DbInventory } from "lib/objects/data/objects.types"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
 import { computed, makeObservable, observable } from "mobx"
 
 import { filterUnique } from "utils/array-utils"
 
-import { DbAbilities } from "../character/abilities/abilities.types"
-import { SkillsValues } from "../character/abilities/skills/skills.types"
-import { Symptom } from "../character/effects/symptoms.type"
 import { CreatedElements, defaultCreatedElements } from "./created-elements"
 import { dbToWeapon } from "./data/weapons/weapons.mappers"
-
-type CharData = {
-  dbAbilities: DbAbilities
-  innateSymptoms: Symptom[]
-  currSkills: SkillsValues
-  currSpecial: Special
-  dbEquipedObjects: DbEquipedObjects
-}
 
 type Carriable = {
   data: { weight: number; place: number }
@@ -43,14 +32,14 @@ type Carriable = {
 
 export default class Inventory {
   dbInventory: DbInventory
-  charData: CharData
+  charData: Playable
   allClothings: Record<ClothingId, ClothingData>
   allConsumables: Record<ConsumableId, ConsumableData>
   allMiscObjects: Record<MiscObjectId, MiscObjectData>
 
   constructor(
     dbInventory: DbInventory,
-    charData: CharData,
+    charData: Playable,
     newElements: CreatedElements = defaultCreatedElements
   ) {
     const { newClothings, newConsumables, newMiscObjects } = newElements

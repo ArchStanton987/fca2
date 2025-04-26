@@ -67,16 +67,8 @@ export default function CharStack() {
   }, [charId, squad, abilities, effects, equipedObj, status, meta, newElements])
 
   const charInventory = useMemo(() => {
-    if (!character || !(character instanceof Character)) return null
-    const { dbAbilities, innateSymptoms, skills, dbEquipedObjects, special } = character
-    const charData = {
-      dbAbilities,
-      innateSymptoms,
-      currSkills: skills.curr,
-      dbEquipedObjects,
-      currSpecial: special.curr
-    }
-    return new Inventory(inventory ?? { caps: 0 }, charData, newElements)
+    if (!character) return null
+    return new Inventory(inventory ?? { caps: 0 }, character, newElements)
   }, [character, inventory, newElements])
 
   if (!character || !squad) return <LoadingScreen />

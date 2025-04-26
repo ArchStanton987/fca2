@@ -10,6 +10,7 @@ import { SkillsValues } from "./abilities/skills/skills.types"
 import { Special } from "./abilities/special/special.types"
 import { Trait } from "./abilities/traits/traits.types"
 import { Effect, EffectData } from "./effects/effects.types"
+import { Symptom } from "./effects/symptoms.type"
 import { Health } from "./health/health-types"
 import { DbCharMeta } from "./meta/meta"
 import { Progress } from "./progress/progress.types"
@@ -42,6 +43,7 @@ export default interface Playable {
   progress: Progress
 
   // effects
+  innateSymptoms: Symptom[]
   allEffects: Record<string, EffectData> // with created elements
   effects: Effect[]
   effectsRecord: Record<string, Effect>

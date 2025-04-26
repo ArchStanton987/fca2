@@ -104,6 +104,9 @@ function ClothingsScreen() {
         <Section style={{ flex: 1 }} title="détails">
           <ClothingsDetails charClothing={selectedCloth} />
         </Section>
+
+        <Spacer y={layout.globalPadding} />
+
         <Section title="ajouter">
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
             <PlusIcon onPress={onPressAdd} />
