@@ -36,6 +36,7 @@ function ConsumablesScreen() {
 
   const { groupedConsumables } = useInventory()
   const character = useCharacter()
+  const charType = character.isEnemy ? "enemies" : "characters"
 
   const onPressAdd = () =>
     router.push({
@@ -48,7 +49,7 @@ function ConsumablesScreen() {
     })
 
   const onDelete = (item: Consumable) => {
-    useCases.inventory.throw(character.charId, item)
+    useCases.inventory.throw(charType, character.charId, item)
     setSelectedItem(null)
   }
 

@@ -19,6 +19,7 @@ export default interface Playable {
   // meta
   charId: string
   fullname: string
+  isEnemy: boolean
   date: Date
   squadId: string
   meta: DbCharMeta

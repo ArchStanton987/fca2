@@ -55,6 +55,7 @@ export type DbChar = {
 export default class Character implements Playable {
   charId: string
   fullname: string
+  isEnemy: boolean
   dbAbilities: DbAbilities
   dbEffects: DbEffects
   dbEquipedObjects: DbEquipedObjects
@@ -69,13 +70,14 @@ export default class Character implements Playable {
   constructor(
     id: string,
     obj: Omit<DbChar, "inventory">,
-    squad: { date: Date; squadId: string },
+    squad: { date: Date; squadId: string; membersRecord: Record<string, any> },
     newElements: CreatedElements = defaultCreatedElements
   ) {
     const { newClothings, newEffects } = newElements
     const { lastname, firstname } = obj.meta
     this.charId = id
     this.fullname = lastname ? `${firstname} ${lastname}` : firstname
+    this.isEnemy = !(this.charId in squad.membersRecord)
     this.dbAbilities = {
       ...obj.abilities,
       traits: obj.abilities.traits ?? [],

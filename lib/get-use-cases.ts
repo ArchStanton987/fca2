@@ -89,5 +89,8 @@ export default function getUseCases(
       subChild: <T extends keyof DbChar>(params: SubCharacterChildParams<T>) =>
         subCharacterChild(dbType)(params)
     }
+    // effects: {
+    //   addEffectsToChar: (params: AddEffectsParams) => addEffects(dbType, createdElements)(params)
+    // }
   }
 }

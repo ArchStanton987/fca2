@@ -38,7 +38,7 @@ export default function CharStack() {
   const useCases = useGetUseCases()
 
   const squad = useSquad()
-  const isEnemy = charId in squad.enemiesRecord
+  const isEnemy = !(charId in squad.membersRecord)
   const subParams = {
     id: charId,
     charType: isEnemy ? ("enemies" as const) : ("characters" as const)
@@ -49,7 +49,9 @@ export default function CharStack() {
   // use separate subscriptions to avoid unnecessary bandwidth usage
   const abilities = useRtdbSub(useCases.character.subChild({ ...subParams, childKey: "abilities" }))
   const effects = useRtdbSub(useCases.character.subChild({ ...subParams, childKey: "effects" }))
-  const equipedObj = useRtdbSub(useCases.character.subChild({ ...subParams, childKey: "effects" }))
+  const equipedObj = useRtdbSub(
+    useCases.character.subChild({ ...subParams, childKey: "equipedObj" })
+  )
   const inventory = useRtdbSub(useCases.character.subChild({ ...subParams, childKey: "inventory" }))
   const status = useRtdbSub(useCases.character.subChild({ ...subParams, childKey: "status" }))
   const meta = useRtdbSub(useCases.character.subChild({ ...subParams, childKey: "meta" }))

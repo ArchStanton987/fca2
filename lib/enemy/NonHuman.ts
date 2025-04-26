@@ -36,6 +36,7 @@ import { NonHumanEnemyTemplate } from "./enemy.types"
 export default class NonHuman implements Playable {
   charId: string
   fullname: string
+  isEnemy: boolean
   status: DbStatus
   date: Date
   squadId: Squad["squadId"]
@@ -47,7 +48,7 @@ export default class NonHuman implements Playable {
   constructor(
     id: string,
     payload: { status: DbStatus; meta: DbCharMeta; effects?: DbEffects },
-    game: { date: Date; squadId: string },
+    game: { date: Date; squadId: string; membersRecord: Record<string, any> },
     newElements: CreatedElements = defaultCreatedElements
   ) {
     const { newEffects } = newElements
@@ -55,6 +56,7 @@ export default class NonHuman implements Playable {
     const { lastname, firstname } = payload.meta
     this.charId = id
     this.fullname = lastname ? `${firstname} ${lastname}` : firstname
+    this.isEnemy = !(this.charId in game.membersRecord)
     this.status = payload.status
     this.date = game.date
     this.squadId = game.squadId

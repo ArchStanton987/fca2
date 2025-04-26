@@ -24,7 +24,7 @@ export default function TabBar(props: BottomTabBarProps & { tabBarId: TabBarId }
   const localParams = useLocalSearchParams() as SearchParams<DrawerParams>
   const { charId, squadId } = localParams
   const squad = useSquad()
-  const isEnemy = charId in squad.enemiesRecord
+  const isEnemy = charId && !(charId in squad.membersRecord)
 
   const onPressTab = (routeName: string) => {
     if (tabBarId === "char") {

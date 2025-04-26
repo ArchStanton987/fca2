@@ -1,5 +1,6 @@
 import { getRepository } from "lib/RepositoryBuilder"
 import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
+import { CharType } from "lib/shared/db/api-rtdb"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import Playable from "../Playable"
@@ -14,9 +15,10 @@ function getStatusUseCases(
 
   const statusRepo = repositoryMap[db].statusRepository
   return {
-    getElement: (charId: string, field: keyof UpdatableDbStatus) => repository.get(charId, field),
+    getElement: (charType: CharType, charId: string, field: keyof UpdatableDbStatus) =>
+      repository.get(charType, charId, field),
 
-    get: (charId: string) => repository.getAll(charId),
+    get: (charType: CharType, charId: string) => repository.getAll(charType, charId),
 
     updateElement: <T extends keyof UpdatableDbStatus>(
       character: Playable,

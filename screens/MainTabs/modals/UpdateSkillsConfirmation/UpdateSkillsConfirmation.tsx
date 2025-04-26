@@ -21,7 +21,8 @@ type SkillsConfirmationModalParams = DrawerParams & {
 
 export default function UpdateSkillsConfirmation() {
   const useCases = useGetUseCases()
-  const { charId, skills } = useCharacter()
+  const { charId, skills, isEnemy } = useCharacter()
+  const charType = isEnemy ? "enemies" : "characters"
   const { up } = skills
   const params = useLocalSearchParams<SkillsConfirmationModalParams>()
   const newUpSkills: SkillsValues = JSON.parse(params.newUpSkills as string)
@@ -31,7 +32,7 @@ export default function UpdateSkillsConfirmation() {
     .map(([id, value]) => ({ id, value: value - up[id as SkillId] }))
 
   const onPressConfirm = async () => {
-    await useCases.abilities.updateUpSkills(charId, newUpSkills)
+    await useCases.abilities.updateUpSkills(charType, charId, newUpSkills)
     router.dismiss(2)
   }
   return (

@@ -5,14 +5,7 @@ import { getHealthState } from "lib/character/health/health-utils"
 import { DbStatus } from "lib/character/status/status.types"
 
 import Playable from "../Playable"
-
-export const getEffectLengthInMs = (char: Playable, effect: EffectData) => {
-  const isChemReliant = char.traits?.some(t => t.id === "chemReliant")
-  if (!effect.length) return null
-  const isWithdrawal = effect.type === "withdrawal"
-  const lengthInH = isWithdrawal && isChemReliant ? effect.length * 0.5 : effect.length
-  return lengthInH * 60 * 60 * 1000
-}
+import getEffectsUseCases, { getEffectLengthInMs } from "./effects-use-cases"
 
 export const getExpiringEffects = (char: Playable, refDate: Date) =>
   char.effects.filter(effect => {
@@ -57,10 +50,7 @@ export const getFollowingEffects = (
 export const handleLimbsEffects = (
   character: Playable,
   newStatus: DbStatus,
-  effectsUseCases: {
-    add: (char: Playable, effectId: EffectId) => Promise<void>
-    remove: (charId: string, effect: Effect) => Promise<void>
-  }
+  effectsUseCases: ReturnType<typeof getEffectsUseCases>
 ): Promise<void>[] => {
   const promises: Promise<void>[] = []
 
@@ -68,11 +58,13 @@ export const handleLimbsEffects = (
     const currValue = character.health.limbsHp[id]
     const newValue = newStatus[id]
 
+    const charType = character.isEnemy ? "enemies" : "characters"
+
     if (newValue !== currValue) {
       const currCripledEffect: Effect | undefined = character?.effectsRecord[cripledEffect]
       // remove cripled effect if the new value is greater than 0
       if (currCripledEffect && newValue > 0) {
-        promises.push(effectsUseCases.remove(character.charId, currCripledEffect))
+        promises.push(effectsUseCases.remove(charType, character.charId, currCripledEffect))
       }
       // add cripled effect if the new value is less than or equal to 0
       if (!currCripledEffect && newValue <= 0) {
@@ -87,12 +79,11 @@ export const handleLimbsEffects = (
 export const handleHealthStatusEffects = (
   character: Playable,
   newStatus: DbStatus,
-  effectsUseCases: {
-    add: (char: Playable, effectId: EffectId) => Promise<void>
-    remove: (charId: string, effect: Effect) => Promise<void>
-  }
+  effectsUseCases: ReturnType<typeof getEffectsUseCases>
 ): Promise<void>[] => {
   const promises: Promise<void>[] = []
+
+  const charType = character.isEnemy ? "enemies" : "characters"
 
   const { hp, maxHp } = character.health
   const currHealthState = getHealthState(hp, maxHp)
@@ -108,7 +99,7 @@ export const handleHealthStatusEffects = (
   }
   // remove current health state effect if the new health state is different from the current one
   if (currHealthStateEffect && newHealthState !== currHealthStateEffect.id) {
-    promises.push(effectsUseCases.remove(character.charId, currHealthStateEffect))
+    promises.push(effectsUseCases.remove(charType, character.charId, currHealthStateEffect))
   }
 
   return promises
@@ -117,12 +108,11 @@ export const handleHealthStatusEffects = (
 export const handleRadsEffects = (
   character: Playable,
   newStatus: DbStatus,
-  effectsUseCases: {
-    add: (char: Playable, effectId: EffectId) => Promise<void>
-    remove: (charId: string, effect: Effect) => Promise<void>
-  }
+  effectsUseCases: ReturnType<typeof getEffectsUseCases>
 ): Promise<void>[] => {
   const promises: Promise<void>[] = []
+
+  const charType = character.isEnemy ? "enemies" : "characters"
 
   const { rads } = character.health
   const newRads = newStatus.rads
@@ -136,7 +126,7 @@ export const handleRadsEffects = (
   }
   // remove current rads state effect if the new rads state is different from the current one
   if (radsStateEffect && newRadsState?.id !== radsStateEffect.id) {
-    promises.push(effectsUseCases.remove(character.charId, radsStateEffect))
+    promises.push(effectsUseCases.remove(charType, character.charId, radsStateEffect))
   }
 
   return promises

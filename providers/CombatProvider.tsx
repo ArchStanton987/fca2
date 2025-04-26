@@ -67,8 +67,7 @@ export default function CombatProvider({ children }: { children: React.ReactNode
     Object.entries(enemiesData).forEach(([key, value]) => {
       const combatData = combat.enemies[key]
       if ("abilities" in value) {
-        const s = { date: squad.date, squadId: combat.title }
-        const char = new Character(key, value, s, createdElements)
+        const char = new Character(key, value, squad, createdElements)
         const currMaxAp = char.secAttr.curr.actionPoints
         foes[key] = { ...char.status, ...combatData, currMaxAp }
         return

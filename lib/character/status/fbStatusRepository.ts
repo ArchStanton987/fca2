@@ -1,24 +1,26 @@
 import dbKeys from "db/db-keys"
 import { DbStatus, UpdatableDbStatus } from "lib/character/status/status.types"
 import { getRtdbSub } from "lib/common/utils/rtdb-utils"
+import { CharType } from "lib/shared/db/api-rtdb"
 
 import { groupUpdateValue, updateValue } from "api/api-rtdb"
 
 import Playable from "../Playable"
 
-const getContainerPath = (charId: string) => dbKeys.char(charId).status.index
-const getFieldPath = (charId: string, id: keyof UpdatableDbStatus) =>
-  getContainerPath(charId).concat("/", id)
+const getContainerPath = (charType: CharType, charId: string) =>
+  dbKeys.char(charType, charId).status.index
+const getFieldPath = (charType: CharType, charId: string, id: keyof UpdatableDbStatus) =>
+  getContainerPath(charType, charId).concat("/", id)
 const getSquadExpPath = (character: Playable) =>
   dbKeys.squad(character.squadId).members.concat("/", character.charId, "/exp")
 
 const fbStatusRepository = {
-  get: <T extends keyof UpdatableDbStatus>(charId: string, field: T) => {
-    const path = getFieldPath(charId, field)
+  get: <T extends keyof UpdatableDbStatus>(charType: CharType, charId: string, field: T) => {
+    const path = getFieldPath(charType, charId, field)
     return getRtdbSub<keyof UpdatableDbStatus[T]>(path)
   },
-  getAll: (charId: string) => {
-    const path = getContainerPath(charId)
+  getAll: (charType: CharType, charId: string) => {
+    const path = getContainerPath(charType, charId)
     return getRtdbSub<DbStatus>(path)
   },
   updateElement: <T extends keyof UpdatableDbStatus>(
@@ -26,7 +28,8 @@ const fbStatusRepository = {
     field: T,
     data: UpdatableDbStatus[T]
   ) => {
-    const path = getFieldPath(char.charId, field)
+    const charType = char.isEnemy ? "enemies" : "characters"
+    const path = getFieldPath(charType, char.charId, field)
     const promises = []
     // update character exp in squad object in db
     if (field === "exp") {
@@ -38,8 +41,9 @@ const fbStatusRepository = {
   },
   groupUpdate: (char: Playable, updates: Partial<UpdatableDbStatus>) => {
     const promises = []
+    const charType = char.isEnemy ? "enemies" : "characters"
     const payload = Object.entries(updates).map(([key, value]) => ({
-      url: getFieldPath(char.charId, key as keyof UpdatableDbStatus),
+      url: getFieldPath(charType, char.charId, key as keyof UpdatableDbStatus),
       data: value
     }))
     // update character exp in squad object in db

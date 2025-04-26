@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import dbKeys from "db/db-keys"
 import { DbEffect, DbEffects, Effect } from "lib/character/effects/effects.types"
+import { CharType } from "lib/shared/db/api-rtdb"
 
 import {
   addCollectible,
@@ -13,31 +14,32 @@ import {
 
 import { getRtdbSub } from "../../common/utils/rtdb-utils"
 
-const getContainerPath = (charId: string) => dbKeys.char(charId).effects
-const getElementPath = (charId: string, dbKey: Effect["dbKey"]) =>
-  getContainerPath(charId).concat("/", dbKey)
+const getContainerPath = (charType: CharType, charId: string) =>
+  dbKeys.char(charType, charId).effects
+const getElementPath = (charType: CharType, charId: string, dbKey: Effect["dbKey"]) =>
+  getContainerPath(charType, charId).concat("/", dbKey)
 
 const fbEffectsRepository = {
-  get: (charId: string, dbKey: Effect["dbKey"]) => {
+  get: (charType: CharType, charId: string, dbKey: Effect["dbKey"]) => {
     if (dbKey === undefined) throw new Error("Effect has no dbKey")
-    const path = getElementPath(charId, dbKey)
+    const path = getElementPath(charType, charId, dbKey)
     const sub = getRtdbSub<DbEffect>(path)
     return sub
   },
 
-  getAll: (charId: string) => {
-    const path = getContainerPath(charId)
+  getAll: (charType: CharType, charId: string) => {
+    const path = getContainerPath(charType, charId)
     const sub = getRtdbSub<DbEffects>(path)
     return sub
   },
 
-  add: async (charId: string, dbEffect: DbEffect) => {
-    const path = getContainerPath(charId)
+  add: async (charType: CharType, charId: string, dbEffect: DbEffect) => {
+    const path = getContainerPath(charType, charId)
     return addCollectible(path, dbEffect)
   },
 
-  groupAdd: (charId: string, dbEffects: DbEffect[]) => {
-    const containerUrl = getContainerPath(charId)
+  groupAdd: (charType: CharType, charId: string, dbEffects: DbEffect[]) => {
+    const containerUrl = getContainerPath(charType, charId)
     const payload = dbEffects.map(dbEffect => ({
       containerUrl,
       data: dbEffect
@@ -45,26 +47,35 @@ const fbEffectsRepository = {
     return groupAddCollectible(payload)
   },
 
-  update: async (charId: string, dbKey: Effect["dbKey"], updatedEffect: DbEffect) => {
-    const path = getElementPath(charId, dbKey)
+  update: async (
+    charType: CharType,
+    charId: string,
+    dbKey: Effect["dbKey"],
+    updatedEffect: DbEffect
+  ) => {
+    const path = getElementPath(charType, charId, dbKey)
     return updateValue(path, updatedEffect)
   },
 
-  groupUpdate: (charId: string, updates: { dbKey: Effect["dbKey"]; updatedEffect: DbEffect }[]) => {
+  groupUpdate: (
+    charType: CharType,
+    charId: string,
+    updates: { dbKey: Effect["dbKey"]; updatedEffect: DbEffect }[]
+  ) => {
     const payload = updates.map(({ dbKey, updatedEffect }) => ({
-      url: getElementPath(charId, dbKey),
+      url: getElementPath(charType, charId, dbKey),
       data: updatedEffect
     }))
     return groupUpdateValue(payload)
   },
 
-  remove: async (charId: string, effect: Effect) => {
-    const path = getElementPath(charId, effect.dbKey)
+  remove: async (charType: CharType, charId: string, effect: Effect) => {
+    const path = getElementPath(charType, charId, effect.dbKey)
     return removeCollectible(path)
   },
 
-  groupRemove: (charId: string, effects: Effect[]) => {
-    const urls = effects.map(effect => getElementPath(charId, effect.dbKey))
+  groupRemove: (charType: CharType, charId: string, effects: Effect[]) => {
+    const urls = effects.map(effect => getElementPath(charType, charId, effect.dbKey))
     return groupRemoveCollectible(urls)
   }
 }

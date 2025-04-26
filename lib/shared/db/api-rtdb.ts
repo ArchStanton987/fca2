@@ -1,10 +1,11 @@
 import { DbChar } from "lib/character/Character"
+import { DbEffect } from "lib/character/effects/effects.types"
 import { DbStatus } from "lib/character/status/status.types"
 import { Action, DbCombatEntry } from "lib/combat/combats.types"
 import { DbEnemy } from "lib/enemy/enemy.types"
 import { DbSquad } from "lib/squad/squad-types"
 
-type CharType = "characters" | "enemies"
+export type CharType = "characters" | "enemies"
 type CharParams = { charId: string; charType: CharType }
 type Child<T> = { childKey?: T }
 
@@ -29,6 +30,7 @@ export type ActionParams = {
 export type EnemiesParams = { id?: string; childKey?: keyof DbEnemy }
 export type CharacterParams = { charType: CharType; id?: string; childKey?: keyof DbChar }
 export type StatusParams = CharParams & { childKey?: keyof DbStatus }
+export type EffectsParams = CharParams & { dbKey?: string; childKey?: keyof DbEffect }
 //
 export type SquadParams = { id?: string; childKey?: keyof DbSquad }
 
@@ -60,6 +62,11 @@ const rtdb = {
 
   getStatus: ({ charId, charType, childKey }: StatusParams) =>
     `v2/${charType}/${charId}/status/${childKey ?? ""}`,
+
+  getEffects: ({ charId, charType, dbKey, childKey }: EffectsParams) =>
+    dbKey
+      ? `v2/${charType}/${charId}/effects/${dbKey}/${childKey ?? ""}`
+      : `v2/${charType}/${charId}/effects/`,
 
   getSquad: ({ id, childKey }: SquadParams) =>
     childKey ? `v2/squads/${id}/${childKey}` : `v2/squads/${id ?? ""}`

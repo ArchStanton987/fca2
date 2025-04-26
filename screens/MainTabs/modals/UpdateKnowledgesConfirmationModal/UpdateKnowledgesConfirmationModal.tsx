@@ -28,7 +28,8 @@ type ModifiedKnowledges = Record<KnowledgeId, KnowledgeLevelValue>
 
 export default function UpdateKnowledgesConfirmationModal() {
   const useCases = useGetUseCases()
-  const { charId } = useCharacter()
+  const { charId, isEnemy } = useCharacter()
+  const charType = isEnemy ? "enemies" : "characters"
   const params = useLocalSearchParams<Params>()
   const modifiedKnowledges = (JSON.parse(params.modifiedKnowledges) ?? {}) as ModifiedKnowledges
 
@@ -41,7 +42,7 @@ export default function UpdateKnowledgesConfirmationModal() {
     if (Object.keys(modifiedKnowledges).length === 0) {
       throw new Error("No modified knowledges")
     }
-    await useCases.abilities.updateKnowledges(charId, modifiedKnowledges)
+    await useCases.abilities.updateKnowledges(charType, charId, modifiedKnowledges)
     router.dismiss(2)
   }
 
