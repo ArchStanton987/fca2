@@ -14,12 +14,10 @@ import { getInitSkillsPoints, getSkillPointsPerLevel } from "lib/character/progr
 import { getExpForLevel } from "lib/character/status/status-calc"
 import { BackgroundId, DbStatus } from "lib/character/status/status.types"
 import { getRandomArbitrary } from "lib/common/utils/dice-calc"
-import clothingsMap from "lib/objects/data/clothings/clothings"
 import { DbEquipedObjects, DbInventory } from "lib/objects/data/objects.types"
-import weaponsMap from "lib/objects/data/weapons/weapons"
 import { getRandomWeightedIndex } from "lib/shared/utils/math-utils"
 
-import humanTemplates, { HumanTemplate } from "../const/human-templates"
+import humanTemplates from "../const/human-templates"
 
 export const getSpecialFromTemplate = (specialTemplate: keyof typeof humanTemplates) => {
   const { special } = humanTemplates[specialTemplate]
@@ -99,37 +97,39 @@ export const getUpSkillsScores = (
   return skills
 }
 
-export const getEquipedObjects = (
-  level: number,
-  calcTagSkills: SkillId[],
-  { weaponTags }: HumanTemplate
-): DbEquipedObjects => {
-  const equipedObjects = {} as DbEquipedObjects
-  const tierAccess = Math.max(1, Math.round(level / 2.5))
-  const skillsWithWeapons = ["melee", "smallGuns", "bigGuns", "unarmed"]
-  const firstMartialSkill = calcTagSkills.find(s => skillsWithWeapons.includes(s))
-  if (firstMartialSkill) {
-    const tags = weaponTags ?? []
-    const weapons = Object.values(weaponsMap)
-      .filter(w => calcTagSkills.includes(w.skill))
-      .filter(w => 6 - w.frequency <= tierAccess)
-      .filter(w => w.tags.some(t => tags.includes(t)))
+// export const getEquipedObjects = (
+//   level: number,
+//   calcTagSkills: SkillId[],
+//   { weaponTags }: HumanTemplate
+// ): DbEquipedObjects => {
+//   const equipedObjects = {} as DbEquipedObjects
+//   const tierAccess = Math.max(1, Math.round(level / 2.5))
+//   const skillsWithWeapons = ["melee", "smallGuns", "bigGuns", "unarmed"]
+//   const firstMartialSkill = calcTagSkills.find(s => skillsWithWeapons.includes(s))
+//   if (firstMartialSkill) {
+//     const tags = weaponTags ?? []
+//     const weapons = Object.values(weaponsMap)
+//       .filter(w => calcTagSkills.includes(w.skill))
+//       .filter(w => 6 - w.frequency <= tierAccess)
+//       .filter(w => w.tags.some(t => tags.includes(t)))
 
-    const weapon = weapons[getRandomArbitrary(0, weapons.length - 1)] ?? { id: "unarmed" }
-    const inMagazine = weapon?.magazine ?? undefined
-    const dbWeapon = inMagazine ? { id: weapon.id, inMagazine } : { id: weapon.id }
-    equipedObjects.weapons = { main: dbWeapon }
-  }
+//     const weapon = weapons[getRandomArbitrary(0, weapons.length - 1)] ?? { id: "unarmed" }
+//     const inMagazine = weapon?.magazine ?? undefined
+//     const dbWeapon = inMagazine ? { id: weapon.id, inMagazine } : { id: weapon.id }
+//     equipedObjects.weapons = { main: dbWeapon }
+//   }
 
-  const clothings = Object.values(clothingsMap)
-    .filter(c => c.tier <= tierAccess)
-    .filter(c => c.protects.includes("torso"))
-  const clothing = clothings[getRandomArbitrary(0, clothings.length - 1)]
-  if (clothing) {
-    equipedObjects.clothings = { main: { id: clothing.id } }
-  }
-  return equipedObjects
-}
+//   const clothings = Object.values(clothingsMap)
+//     .filter(c => c.tier <= tierAccess)
+//     .filter(c => c.protects.includes("torso"))
+//   const clothing = clothings[getRandomArbitrary(0, clothings.length - 1)]
+//   if (clothing) {
+//     equipedObjects.clothings = { main: { id: clothing.id } }
+//   }
+//   return equipedObjects
+// }
+export const getEquipedObjects = (): DbEquipedObjects =>
+  ({ weapons: {}, clothings: {} } as DbEquipedObjects)
 
 export const getStatus = (level: number, special: Special, background?: BackgroundId): DbStatus => {
   const currAp = secAttrMap.actionPoints.calc(special)
@@ -153,7 +153,8 @@ export const generateDbHuman = (
   const traits = getTraitsFromTemplate(template)
   const tagSkills = getTagSkillsFromTemplate(level, template)
   const upSkills = getUpSkillsScores(level, tagSkills, baseSPECIAL, traits)
-  const equipedObj = getEquipedObjects(level, tagSkills, humanTemplates[template])
+  // const equipedObj = getEquipedObjects(level, tagSkills, humanTemplates[template])
+  const equipedObj = getEquipedObjects()
   const status = getStatus(level, baseSPECIAL)
   return {
     abilities: {
