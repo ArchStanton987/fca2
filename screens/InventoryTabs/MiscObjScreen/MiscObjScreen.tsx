@@ -32,7 +32,7 @@ function MiscObjScreen() {
   const [selectedItem, setSelectedItem] = useState<MiscObject | null>(null)
   const [isAscSort, setIsAscSort] = useState(true)
   const { isEnemy } = useCharacter()
-  const charType = isEnemy ? "enemies" : "characters"
+  const charType = isEnemy ? "npcs" : "characters"
 
   const { groupedMiscObjects } = useInventory()
 

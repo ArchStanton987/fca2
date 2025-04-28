@@ -36,7 +36,7 @@ function ConsumablesScreen() {
 
   const { groupedConsumables } = useInventory()
   const character = useCharacter()
-  const charType = character.isEnemy ? "enemies" : "characters"
+  const charType = character.isEnemy ? "npcs" : "characters"
 
   const onPressAdd = () =>
     router.push({

@@ -29,7 +29,7 @@ type ModifiedKnowledges = Record<KnowledgeId, KnowledgeLevelValue>
 export default function UpdateKnowledgesConfirmationModal() {
   const useCases = useGetUseCases()
   const { charId, isEnemy } = useCharacter()
-  const charType = isEnemy ? "enemies" : "characters"
+  const charType = isEnemy ? "npcs" : "characters"
   const params = useLocalSearchParams<Params>()
   const modifiedKnowledges = (JSON.parse(params.modifiedKnowledges) ?? {}) as ModifiedKnowledges
 

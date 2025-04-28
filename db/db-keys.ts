@@ -5,7 +5,7 @@ const dbKeys = {
     members: `/v2/squads/${squadId}/members`,
     datetime: `/v2/squads/${squadId}/datetime`
   }),
-  char: (charType: "enemies" | "characters", charId: string) => ({
+  char: (charType: "npcs" | "characters", charId: string) => ({
     index: `/v2/${charType}/${charId}`,
     abilities: {
       index: `/v2/${charType}/${charId}/abilities`,

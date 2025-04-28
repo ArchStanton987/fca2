@@ -38,7 +38,7 @@ export default function createFight(dbType: keyof typeof repositoryMap = "rtdb")
       Object.entries({ players: params.players, enemies: params.enemies }).forEach(
         ([type, contenders]) => {
           Object.entries(contenders).forEach(([charId, { currMaxAp }]) => {
-            const charType = type === "players" ? ("characters" as const) : ("enemies" as const)
+            const charType = type === "players" ? ("characters" as const) : ("npcs" as const)
             const s = { combatStatus: "active" as const, currentCombatId: id, currAp: currMaxAp }
             promises.push(statusRepo.patch({ charId, charType }, s))
           })

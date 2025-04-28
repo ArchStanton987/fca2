@@ -22,7 +22,7 @@ export default function waitAction(dbType: keyof typeof repositoryMap = "rtdb") 
   return (params: WaitActionParams) => {
     const { action, players, enemies, combatId, roundId, actionId } = params
     const charId = action.actorId
-    const charType = players[charId] ? "characters" : "enemies"
+    const charType = players[charId] ? "characters" : "npcs"
 
     const promises = []
 

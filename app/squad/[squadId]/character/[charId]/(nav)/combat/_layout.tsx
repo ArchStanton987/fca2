@@ -22,7 +22,7 @@ export default function CombatLayout() {
   const { charId } = useLocalSearchParams<{ charId: string }>()
 
   const { combat, players, enemies } = useCombat()
-  const charType = players && players[charId] ? "characters" : "enemies"
+  const charType = players && players[charId] ? "characters" : "npcs"
   const params = useMemo(
     () => ({ charId, combatId: combat?.id, charType }),
     [charId, charType, combat?.id]

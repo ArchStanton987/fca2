@@ -35,7 +35,7 @@ const getEquipedObjectsUseCases = (
 
     toggle: async (char: Playable, object: Weapon | Clothing) => {
       const { charId, equipedObjects, isEnemy } = char
-      const charType = isEnemy ? "enemies" : "characters"
+      const charType = isEnemy ? "npcs" : "characters"
       const category = getObjectCategory(object)
       const { weapons, clothings } = equipedObjects
       const { dbKey } = object

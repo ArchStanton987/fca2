@@ -32,7 +32,7 @@ function getStatusUseCases(
     groupUpdate: (
       character: Playable,
       data: Partial<UpdatableDbStatus>,
-      charType: "enemies" | "characters" = "characters"
+      charType: "npcs" | "characters" = "characters"
     ) => statusRepo.patch({ charId: character.charId, charType }, data)
   }
 }

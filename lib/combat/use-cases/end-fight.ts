@@ -19,7 +19,7 @@
 //     Object.entries({ players: params.players, enemies: params.enemies }).forEach(
 //       ([type, contenders]) => {
 //         Object.entries(contenders).forEach(([id, { currMaxAp }]) => {
-//           const charType = type === "players" ? ("characters" as const) : ("enemies" as const)
+//           const charType = type === "players" ? ("characters" as const) : ("npcs" as const)
 //           const patchedStatus: Partial<DbStatus> = {
 //             combatStatus: undefined,
 //             currentCombatId: undefined,

@@ -48,7 +48,7 @@ function EffectsScreen() {
   const useCases = useGetUseCases()
   const { squadId } = useSquad()
   const { effects, charId, isEnemy } = useCharacter()
-  const charType = isEnemy ? "enemies" : "characters"
+  const charType = isEnemy ? "npcs" : "characters"
 
   const [selectedId, setSelectedId] = useState<Effect["id"] | null>(null)
 

@@ -5,7 +5,7 @@ import { Action, DbCombatEntry } from "lib/combat/combats.types"
 import { DbNpc } from "lib/npc/npc.types"
 import { DbSquad } from "lib/squad/squad-types"
 
-export type CharType = "characters" | "enemies"
+export type CharType = "characters" | "npcs"
 type CharParams = { charId: string; charType: CharType }
 type Child<T> = { childKey?: T }
 

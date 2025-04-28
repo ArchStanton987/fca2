@@ -21,7 +21,7 @@ export default function addEffects(
   return ({ char, effects }: AddEffectsParams) => {
     const promises: (Promise<void> | ThenableReference)[] = []
     const { charId, isEnemy } = char
-    const charType = isEnemy ? "enemies" : "characters"
+    const charType = isEnemy ? "npcs" : "characters"
 
     effects.forEach(({ effectId, startDate, lengthInMs }) => {
       const dbEffect = EffectsMappers.toDb(char, effectId, startDate, lengthInMs, newEffects)

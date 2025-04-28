@@ -58,7 +58,7 @@ export const handleLimbsEffects = (
     const currValue = character.health.limbsHp[id]
     const newValue = newStatus[id]
 
-    const charType = character.isEnemy ? "enemies" : "characters"
+    const charType = character.isEnemy ? "npcs" : "characters"
 
     if (newValue !== currValue) {
       const currCripledEffect: Effect | undefined = character?.effectsRecord[cripledEffect]
@@ -83,7 +83,7 @@ export const handleHealthStatusEffects = (
 ): Promise<void>[] => {
   const promises: Promise<void>[] = []
 
-  const charType = character.isEnemy ? "enemies" : "characters"
+  const charType = character.isEnemy ? "npcs" : "characters"
 
   const { hp, maxHp } = character.health
   const currHealthState = getHealthState(hp, maxHp)
@@ -112,7 +112,7 @@ export const handleRadsEffects = (
 ): Promise<void>[] => {
   const promises: Promise<void>[] = []
 
-  const charType = character.isEnemy ? "enemies" : "characters"
+  const charType = character.isEnemy ? "npcs" : "characters"
 
   const { rads } = character.health
   const newRads = newStatus.rads
