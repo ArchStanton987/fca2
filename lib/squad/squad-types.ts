@@ -9,6 +9,7 @@ export type DbSquad = {
   label: string
   members: Record<string, DbSquadMember>
   enemies: Record<string, string>
+  combats?: Record<string, string>
 }
 
 export type SquadMember = {
