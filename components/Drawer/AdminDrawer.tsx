@@ -12,7 +12,7 @@ import { useSquad } from "contexts/SquadContext"
 
 import styles from "./Drawer.styles"
 
-type SectionId = "creation" | "enemies" | "combats"
+type SectionId = "creation" | "npc" | "combats"
 type DrawerProps = {
   sectionId: SectionId
   navElements: { path: string; label: string }[]

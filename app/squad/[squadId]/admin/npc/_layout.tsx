@@ -20,7 +20,7 @@ export default function EnemiesLayout() {
 
   return (
     <View style={styles.drawerLayout}>
-      <AdminDrawer sectionId="enemies" navElements={navElements} />
+      <AdminDrawer sectionId="npc" navElements={navElements} />
       <Spacer x={layout.globalPadding} />
       <Slot />
     </View>

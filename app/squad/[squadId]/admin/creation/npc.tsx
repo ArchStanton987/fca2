@@ -99,7 +99,6 @@ export default function EnemyCreation() {
       Toast.show({ type: "custom", text1: "L'ennemi a été créé" })
       setForm(defaultForm)
     } catch (err) {
-      console.log("err", err)
       Toast.show({ type: "error", text1: "Erreur lors de la création de l'ennemi" })
     }
   }

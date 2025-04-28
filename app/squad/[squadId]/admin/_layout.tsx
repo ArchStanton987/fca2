@@ -74,7 +74,7 @@ export default function AdminLayout() {
         >
           <Tabs.Screen name="datetime" options={{ title: "Horloge" }} />
           <Tabs.Screen name="combats" options={{ title: "Combats" }} />
-          <Tabs.Screen name="enemies" options={{ title: "Ennemis" }} />
+          <Tabs.Screen name="npc" options={{ title: "PNJs" }} />
           <Tabs.Screen name="creation" options={{ title: "Creation" }} />
         </Tabs>
       </View>

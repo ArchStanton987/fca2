@@ -11,18 +11,18 @@ import { useAdmin } from "contexts/AdminContext"
 import layout from "styles/layout"
 
 export default function EnemyScreen() {
-  const { enemyId, squadId } = useLocalSearchParams<{ enemyId: string; squadId: string }>()
+  const { npcId, squadId } = useLocalSearchParams<{ npcId: string; squadId: string }>()
 
   const { enemies } = useAdmin()
 
   const play = () => {
     router.push({
       pathname: "/squad/[squadId]/character/[charId]/main/recap",
-      params: { charId: enemyId, squadId }
+      params: { charId: npcId, squadId }
     })
   }
 
-  if (!enemies[enemyId]) {
+  if (!enemies[npcId]) {
     return (
       <DrawerPage>
         <Section style={{ flex: 1 }} title="informations">
@@ -32,7 +32,7 @@ export default function EnemyScreen() {
     )
   }
 
-  const enemy = enemies[enemyId]
+  const enemy = enemies[npcId]
 
   const { firstname, description, templateId } = enemy.meta
 
