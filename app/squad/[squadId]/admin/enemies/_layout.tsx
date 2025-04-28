@@ -12,7 +12,7 @@ import layout from "styles/layout"
 export default function EnemiesLayout() {
   const useCases = useGetUseCases()
 
-  const enemies = useRtdbSub(useCases.enemy.subAll())
+  const enemies = useRtdbSub(useCases.npc.subAll())
   const navElements = Object.entries(enemies ?? {}).map(([id, entry]) => ({
     path: id,
     label: entry.meta.firstname

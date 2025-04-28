@@ -4,7 +4,7 @@ import { View } from "react-native"
 import { Tabs } from "expo-router"
 
 import Character from "lib/character/Character"
-import NonHuman from "lib/enemy/NonHuman"
+import NonHuman from "lib/npc/NonHuman"
 
 import Header from "components/Header/Header"
 import { HeaderElementId } from "components/Header/Header.utils"
@@ -38,7 +38,7 @@ export default function AdminLayout() {
   const currSquad = useMemo(() => squad, [squad])
   const characters = useGetSquadCharacters(squadMembersIds || [], currSquad, createdElements)
 
-  const allEnemies = useRtdbSub(useCases.enemy.subAll())
+  const allEnemies = useRtdbSub(useCases.npc.subAll())
 
   const enemies = useMemo(() => {
     if (!allEnemies) return {}

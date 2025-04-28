@@ -4,7 +4,7 @@ import { Stack, useLocalSearchParams } from "expo-router"
 
 import { NativeStackNavigationOptions } from "@react-navigation/native-stack"
 import Character from "lib/character/Character"
-import NonHuman from "lib/enemy/NonHuman"
+import NonHuman from "lib/npc/NonHuman"
 import Inventory from "lib/objects/Inventory"
 import Toast from "react-native-toast-message"
 

@@ -2,7 +2,7 @@ import { createContext, useContext, useMemo } from "react"
 
 import Character from "lib/character/Character"
 import { DbCombatEntry, PlayerData } from "lib/combat/combats.types"
-import NonHuman from "lib/enemy/NonHuman"
+import NonHuman from "lib/npc/NonHuman"
 
 import { useCharacter } from "contexts/CharacterContext"
 import { useSquad } from "contexts/SquadContext"
@@ -56,7 +56,7 @@ export default function CombatProvider({ children }: { children: React.ReactNode
 
   const enemiesIds = useMemo(() => Object.keys(combat?.enemies ?? {}), [combat])
   const enemiesSubs = useMemo(
-    () => useCases.enemy.subEnemies(enemiesIds).map((s, i) => ({ ...s, id: enemiesIds[i] })),
+    () => useCases.npc.subNpcs(enemiesIds).map((s, i) => ({ ...s, id: enemiesIds[i] })),
     [enemiesIds, useCases]
   )
   const enemiesData = useRtdbSubs(enemiesSubs)

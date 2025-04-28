@@ -30,8 +30,8 @@ import { computed, makeObservable, observable } from "mobx"
 
 import { isKeyOf } from "utils/ts-utils"
 
-import enemyTemplates from "./const/enemy-templates"
-import { NonHumanEnemyTemplate } from "./enemy.types"
+import enemyTemplates from "./const/npc-templates"
+import { NonHumanNpcTemplate } from "./npc.types"
 
 export default class NonHuman implements Playable {
   charId: string
@@ -99,7 +99,7 @@ export default class NonHuman implements Playable {
     })
   }
 
-  get data(): NonHumanEnemyTemplate {
+  get data(): NonHumanNpcTemplate {
     if (this.meta.speciesId === "human") throw new Error("Human enemy is not a non-human enemy")
     if (!isKeyOf(this.meta.speciesId, enemyTemplates))
       throw new Error(`${this.meta.speciesId} not in templates`)

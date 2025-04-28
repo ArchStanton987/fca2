@@ -16,10 +16,10 @@ import subFight, { SubFightParams } from "./combat/use-cases/sub-fight"
 import updateContender, { UpdateContenderParams } from "./combat/use-cases/update-contender"
 import updateFight, { UpdateFightParams } from "./combat/use-cases/update-fight"
 import waitAction, { WaitActionParams } from "./combat/use-cases/wait-action"
-import createEnemy, { CreateEnemyParams } from "./enemy/use-cases/create-enemy"
-import subAllEnemies from "./enemy/use-cases/sub-all-enemies"
-import subEnemies from "./enemy/use-cases/sub-enemies"
-import subEnemy from "./enemy/use-cases/sub-enemy"
+import createNpc, { CreateNpcParams } from "./npc/use-cases/create-npc"
+import subAllNpcs from "./npc/use-cases/sub-all-npcs"
+import subNpc from "./npc/use-cases/sub-npc"
+import subNpcs from "./npc/use-cases/sub-npcs"
 import { defaultCreatedElements } from "./objects/created-elements"
 import addAdditionalClothing from "./objects/data/clothings/add-additional-clothings"
 import { DbClothingData } from "./objects/data/clothings/clothings.types"
@@ -79,11 +79,11 @@ export default function getUseCases(
       // addNewRound: (data: AddRoundParams) => addNewRound(dbType)(data),
       // addAction: (data: AddActionParams) => addAction(dbType)(data)
     },
-    enemy: {
-      subAll: () => subAllEnemies(dbType)(),
-      subEnemies: (ids: string[]) => subEnemies(dbType)(ids),
-      sub: (id: string) => subEnemy(dbType)(id),
-      create: (data: CreateEnemyParams) => createEnemy(dbType)(data)
+    npc: {
+      subAll: () => subAllNpcs(dbType)(),
+      subNpcs: (ids: string[]) => subNpcs(dbType)(ids),
+      sub: (id: string) => subNpc(dbType)(id),
+      create: (data: CreateNpcParams) => createNpc(dbType)(data)
     },
     character: {
       subCharacters: (ids: string[]) => subCharacters(dbType)(ids),

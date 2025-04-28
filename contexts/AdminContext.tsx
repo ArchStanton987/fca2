@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react"
 
 import Character from "lib/character/Character"
-import NonHuman from "lib/enemy/NonHuman"
+import NonHuman from "lib/npc/NonHuman"
 
 export type AdminContextType = {
   characters: Record<string, Character>

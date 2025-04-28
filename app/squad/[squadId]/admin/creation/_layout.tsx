@@ -13,7 +13,7 @@ const navElements = [
   { path: "misc-objects", label: "Divers" },
   { path: "effects", label: "Effets" },
   { path: "combat", label: "Combat" },
-  { path: "enemy", label: "Ennemi" }
+  { path: "npc", label: "PNJ" }
 ]
 
 export default function AdminCreationLayout() {
