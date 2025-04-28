@@ -34,6 +34,7 @@ type EnemyForm = {
   lastname: string
   description?: string
   level: string
+  isEnemy: boolean
 }
 
 export default function EnemyCreation() {
@@ -48,7 +49,8 @@ export default function EnemyCreation() {
     description: "",
     firstname: "",
     lastname: "",
-    level: ""
+    level: "",
+    isEnemy: true
   }
 
   const [form, setForm] = useState(defaultForm)
@@ -77,7 +79,7 @@ export default function EnemyCreation() {
     let payload
     const { level, ...rest } = form
     const finalLevel = Number.isNaN(parseInt(level, 10)) ? 1 : parseInt(level, 10)
-    const meta: DbCharMeta = rest
+    const meta: DbCharMeta = { isNpc: true, ...rest }
     if (form.speciesId === "human") {
       payload = { ...generateDbHuman(finalLevel, form.templateId), meta }
     } else {
@@ -93,7 +95,7 @@ export default function EnemyCreation() {
       payload = { meta, status }
     }
     try {
-      await useCases.enemy.create(payload)
+      await useCases.npc.create(payload)
       Toast.show({ type: "custom", text1: "L'ennemi a été créé" })
       setForm(defaultForm)
     } catch (err) {
@@ -132,14 +134,20 @@ export default function EnemyCreation() {
             <Txt>{enemyTemplates[form.speciesId][form.templateId].label}</Txt>
           </Col>
           <Spacer x={layout.globalPadding} />
-          {form.speciesId === "human" ? (
-            <Col style={{ flex: 1 }}>
-              <Txt>LEVEL</Txt>
-              <TxtInput value={form.level} onChangeText={e => handleSetForm("level", e)} />
-            </Col>
-          ) : (
-            <Spacer fullspace />
-          )}
+          <Col style={{ flex: 1 }}>
+            <Txt>HOSTILE</Txt>
+            <SelectorButton
+              isSelected={false}
+              onPress={() => handleSetForm("isEnemy", !form.isEnemy)}
+              label={form.isEnemy ? "ENEMY" : "ALLY"}
+            />
+            {form.speciesId === "human" ? (
+              <>
+                <Txt>LEVEL</Txt>
+                <TxtInput value={form.level} onChangeText={e => handleSetForm("level", e)} />
+              </>
+            ) : null}
+          </Col>
         </Row>
 
         <Spacer y={15} />

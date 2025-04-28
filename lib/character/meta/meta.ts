@@ -18,4 +18,6 @@ export type DbCharMeta = {
   firstname: string
   lastname: string
   description?: string
+  isNpc: boolean
+  isEnemy: boolean
 }
