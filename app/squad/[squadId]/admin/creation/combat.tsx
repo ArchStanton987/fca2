@@ -42,14 +42,14 @@ export default function CombatCreation() {
   const useCases = useGetUseCases()
   const squad = useSquad()
 
-  const { characters, enemies } = useAdmin()
+  const { characters, npc } = useAdmin()
 
   const squadPlayers: Record<string, { currMaxAp: number }> = {}
   Object.entries(characters ?? {}).forEach(([id, player]) => {
     squadPlayers[id] = { currMaxAp: player.secAttr.curr.actionPoints }
   })
 
-  const enemyList = Object.entries(enemies ?? {}).map(([id, enemy]) => ({ id, ...enemy }))
+  const enemyList = Object.entries(npc ?? {}).map(([id, enemy]) => ({ id, ...enemy }))
 
   const [form, setForm] = useState<Form>({ ...defaultForm, players: squadPlayers })
   const [isStartingNow, setIsStartingNow] = useState(true)
@@ -59,7 +59,7 @@ export default function CombatCreation() {
   }
 
   const toggleChar = (type: "players" | "enemies", id: string) => {
-    if (!enemies) return
+    if (!npc) return
     if (id in form[type]) {
       setForm(prev => {
         const prevType = { ...prev[type] }
@@ -69,7 +69,7 @@ export default function CombatCreation() {
       return
     }
     let currMaxAp = 0
-    const curr = type === "players" ? characters[id] : enemies[id]
+    const curr = type === "players" ? characters[id] : npc[id]
     if (curr instanceof Character) {
       currMaxAp = curr.secAttr.curr.actionPoints
     } else {
@@ -168,7 +168,7 @@ export default function CombatCreation() {
             <SelectorButton
               onPress={() => toggleChar("enemies", item)}
               isSelected={item in form.enemies}
-              label={enemies[item].meta.firstname}
+              label={npc[item].meta.firstname}
             />
           )}
         />

@@ -13,7 +13,7 @@ import { AdminContext } from "contexts/AdminContext"
 import { useSquad } from "contexts/SquadContext"
 import useCreatedElements from "hooks/context/useCreatedElements"
 import useGetSquadCharacters from "hooks/db/useGetSquadCharacters"
-import useRtdbSub from "hooks/db/useRtdbSub"
+import useRtdbSubs from "hooks/db/useRtdbSubs"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import LoadingScreen from "screens/LoadingScreen"
 import colors from "styles/colors"
@@ -38,25 +38,29 @@ export default function AdminLayout() {
   const currSquad = useMemo(() => squad, [squad])
   const characters = useGetSquadCharacters(squadMembersIds || [], currSquad, createdElements)
 
-  const allEnemies = useRtdbSub(useCases.npc.subAll())
+  const npcSubs = useMemo(
+    () => useCases.npc.subNpcs(squad.npc).map((s, i) => ({ ...s, id: squad.npc[i] })),
+    [squad, useCases]
+  )
+  const npcDatas = useRtdbSubs(npcSubs)
 
-  const enemies = useMemo(() => {
-    if (!allEnemies) return {}
-    const foes: Record<string, NonHuman | Character> = {}
-    Object.entries(allEnemies).forEach(([id, value]) => {
+  const npc = useMemo(() => {
+    if (!npcDatas) return {}
+    const result: Record<string, NonHuman | Character> = {}
+    Object.entries(npcDatas).forEach(([id, value]) => {
       if ("abilities" in value) {
-        foes[id] = new Character(id, value, squad, createdElements)
+        result[id] = new Character(id, value, squad, createdElements)
         return
       }
-      foes[id] = new NonHuman(id, value, squad)
+      result[id] = new NonHuman(id, value, squad)
     })
-    return foes
-  }, [allEnemies, squad, createdElements])
+    return result
+  }, [npcDatas, squad, createdElements])
 
   const context = useMemo(() => {
     if (!characters) return null
-    return { characters, enemies }
-  }, [characters, enemies])
+    return { characters, npc }
+  }, [characters, npc])
 
   if (!context) return <LoadingScreen />
 

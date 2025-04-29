@@ -25,7 +25,7 @@ import layout from "styles/layout"
 
 const enemyTypes = Object.keys(enemyTemplates) as ReadonlyArray<keyof typeof enemyTemplates>
 
-type EnemyForm = {
+type NpcForm = {
   speciesId: (typeof enemyTypes)[number]
   templateId: string
   background: BackgroundId
@@ -37,15 +37,15 @@ type EnemyForm = {
   isEnemy: boolean
 }
 
-export default function EnemyCreation() {
+export default function NpcCreation() {
   const useCases = useGetUseCases()
-  const { squadId } = useSquad()
+  const squad = useSquad()
 
-  const defaultForm: EnemyForm = {
+  const defaultForm: NpcForm = {
     speciesId: "human",
     templateId: "gunner",
     background: "other",
-    squadId,
+    squadId: squad.squadId,
     description: "",
     firstname: "",
     lastname: "",
@@ -55,7 +55,7 @@ export default function EnemyCreation() {
 
   const [form, setForm] = useState(defaultForm)
 
-  const handleSetForm = <T extends keyof EnemyForm>(key: T, value: EnemyForm[T]) => {
+  const handleSetForm = <T extends keyof NpcForm>(key: T, value: NpcForm[T]) => {
     setForm({ ...form, [key]: value })
   }
 
@@ -95,11 +95,11 @@ export default function EnemyCreation() {
       payload = { meta, status }
     }
     try {
-      await useCases.npc.create(payload)
-      Toast.show({ type: "custom", text1: "L'ennemi a été créé" })
+      await useCases.npc.create({ npc: payload, squad })
+      Toast.show({ type: "custom", text1: "Le PNJ a été créé" })
       setForm(defaultForm)
     } catch (err) {
-      Toast.show({ type: "error", text1: "Erreur lors de la création de l'ennemi" })
+      Toast.show({ type: "error", text1: "Erreur lors de la création du PNJ" })
     }
   }
 

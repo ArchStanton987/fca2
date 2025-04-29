@@ -4,16 +4,14 @@ import { Slot } from "expo-router"
 
 import AdminDrawer from "components/Drawer/AdminDrawer"
 import Spacer from "components/Spacer"
-import useRtdbSub from "hooks/db/useRtdbSub"
-import { useGetUseCases } from "providers/UseCasesProvider"
+import { useAdmin } from "contexts/AdminContext"
 import styles from "styles/DrawerLayout.styles"
 import layout from "styles/layout"
 
 export default function EnemiesLayout() {
-  const useCases = useGetUseCases()
+  const { npc } = useAdmin()
 
-  const enemies = useRtdbSub(useCases.npc.subAll())
-  const navElements = Object.entries(enemies ?? {}).map(([id, entry]) => ({
+  const navElements = Object.entries(npc ?? {}).map(([id, entry]) => ({
     path: id,
     label: entry.meta.firstname
   }))

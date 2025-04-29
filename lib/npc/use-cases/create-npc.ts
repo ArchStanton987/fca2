@@ -1,11 +1,23 @@
+import Squad from "lib/character/Squad"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import { DbNpc } from "../npc.types"
 
-export type CreateNpcParams = DbNpc
+export type CreateNpcParams = {
+  npc: DbNpc
+  squad: Squad
+}
 
 export default function createNpc(dbType: keyof typeof repositoryMap = "rtdb") {
   const npcRepo = repositoryMap[dbType].npcRepository
+  const squadRepo = repositoryMap[dbType].squadRepository
 
-  return (payload: CreateNpcParams) => npcRepo.add({}, payload)
+  return async ({ npc, squad }: CreateNpcParams) => {
+    const result = await npcRepo.add({}, npc)
+    const key = result?.key
+    if (!key) throw new Error("Failed to create NPC")
+    const prevNpcs = squad.npcRecord
+    const newNpcs = { ...prevNpcs, [key]: key }
+    return squadRepo.patchChild({ id: squad.squadId, childKey: "npc" }, newNpcs)
+  }
 }

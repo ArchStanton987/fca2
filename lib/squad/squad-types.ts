@@ -8,7 +8,7 @@ export type DbSquad = {
   datetime: string
   label: string
   members: Record<string, DbSquadMember>
-  enemies: Record<string, string>
+  npc: Record<string, string>
   combats?: Record<string, string>
 }
 

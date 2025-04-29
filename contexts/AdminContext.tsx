@@ -5,7 +5,7 @@ import NonHuman from "lib/npc/NonHuman"
 
 export type AdminContextType = {
   characters: Record<string, Character>
-  enemies: Record<string, Character | NonHuman>
+  npc: Record<string, Character | NonHuman>
 }
 export const AdminContext = createContext<AdminContextType | null>(null)
 export const useAdmin = () => {

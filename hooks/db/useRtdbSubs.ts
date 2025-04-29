@@ -23,19 +23,29 @@ export default function useRtdbSubs<T>(stores: RTDBStore<T>[]): UseDynamicSubscr
     const fetchData = (store: RTDBStore<T>, index: number) => {
       const snapshot = store.getSnapshot()
       if (snapshot !== undefined) {
-        setData(prevData => ({
-          ...prevData,
-          [store?.id ?? index]: snapshot
-        }))
+        setData(prevData => {
+          const newData = { ...prevData }
+          if (snapshot === null) {
+            delete newData[store?.id ?? index]
+          } else {
+            newData[store?.id ?? index] = snapshot
+          }
+          return newData
+        })
       }
 
       const unsubscribe = store.subscribe(() => {
         const updatedSnapshot = store.getSnapshot()
         if (updatedSnapshot !== undefined) {
-          setData(prevData => ({
-            ...prevData,
-            [store?.id ?? index]: updatedSnapshot
-          }))
+          setData(prevData => {
+            const newData = { ...prevData }
+            if (updatedSnapshot === null) {
+              delete newData[store?.id ?? index]
+            } else {
+              newData[store?.id ?? index] = updatedSnapshot
+            }
+            return newData
+          })
         }
       })
 

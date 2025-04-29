@@ -15,8 +15,8 @@ export default class Squad {
       members: computed,
       membersRecord: computed,
       //
-      enemies: computed,
-      enemiesRecord: computed,
+      npc: computed,
+      npcRecord: computed,
       //
       date: computed,
       //
@@ -25,7 +25,7 @@ export default class Squad {
   }
 
   get members() {
-    return Object.entries(this.dbSquad.members).map(([id, member]) => ({ id, ...member }))
+    return Object.entries(this.dbSquad.members ?? {}).map(([id, member]) => ({ id, ...member }))
   }
 
   get membersRecord(): Record<string, SquadMember> {
@@ -36,14 +36,14 @@ export default class Squad {
     return res
   }
 
-  get enemies() {
-    return Object.entries(this.dbSquad.enemies).map(([id]) => ({ id }))
+  get npc() {
+    return Object.keys(this.dbSquad.npc ?? {}).map(id => id)
   }
 
-  get enemiesRecord(): Record<string, string> {
+  get npcRecord(): Record<string, string> {
     const res: Record<string, string> = {}
-    this.enemies.forEach(enemy => {
-      res[enemy.id] = enemy.id
+    this.npc.forEach(id => {
+      res[id] = id
     })
     return res
   }

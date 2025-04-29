@@ -8,33 +8,41 @@ import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useAdmin } from "contexts/AdminContext"
+import { useSquad } from "contexts/SquadContext"
+import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
 
 export default function EnemyScreen() {
-  const { npcId, squadId } = useLocalSearchParams<{ npcId: string; squadId: string }>()
+  const useCases = useGetUseCases()
+  const { npcId } = useLocalSearchParams<{ npcId: string }>()
 
-  const { enemies } = useAdmin()
+  const squad = useSquad()
+  const { npc } = useAdmin()
 
   const play = () => {
     router.push({
       pathname: "/squad/[squadId]/character/[charId]/main/recap",
-      params: { charId: npcId, squadId }
+      params: { charId: npcId, squadId: squad.squadId }
     })
   }
 
-  if (!enemies[npcId]) {
+  const deleteNpc = () => {
+    useCases.npc.delete({ squad, playable: npc[npcId] })
+  }
+
+  if (!npc[npcId]) {
     return (
       <DrawerPage>
         <Section style={{ flex: 1 }} title="informations">
-          <Txt>Aucun ennemi sélectionné</Txt>
+          <Txt>Aucun PNJ sélectionné</Txt>
         </Section>
       </DrawerPage>
     )
   }
 
-  const enemy = enemies[npcId]
-
-  const { firstname, description, templateId } = enemy.meta
+  const currNpc = npc[npcId]
+  const isFighting = !!currNpc.status.currentCombatId
+  const { firstname, description, templateId } = currNpc.meta
 
   return (
     <DrawerPage>
@@ -51,9 +59,13 @@ export default function EnemyScreen() {
           <Txt>INCARNER</Txt>
         </TouchableOpacity>
 
-        {/* <TouchableOpacity>
-          <Txt>SUPPRIMER</Txt>
-        </TouchableOpacity> */}
+        <Spacer y={layout.globalPadding} />
+
+        {!isFighting && (
+          <TouchableOpacity onPress={deleteNpc}>
+            <Txt>SUPPRIMER</Txt>
+          </TouchableOpacity>
+        )}
       </ScrollSection>
     </DrawerPage>
   )
