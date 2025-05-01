@@ -6,7 +6,7 @@ import {
   KnowledgeId,
   KnowledgeLevelValue
 } from "lib/character/abilities/knowledges/knowledge-types"
-import { secAttrArray } from "lib/character/abilities/sec-attr/sec-attr"
+import { nonHumanSecAttrArray } from "lib/character/abilities/sec-attr/non-human-sec-attr"
 import { SecAttrsValues } from "lib/character/abilities/sec-attr/sec-attr-types"
 import skillsMap, { skillsArray } from "lib/character/abilities/skills/skills"
 import { SkillsValues } from "lib/character/abilities/skills/skills.types"
@@ -192,10 +192,10 @@ export default class NonHuman implements Playable {
       mod: SecAttrsValues
       curr: SecAttrsValues
     }
-    const { special, innateSymptoms } = this
-    secAttrArray.forEach(({ id, calc }) => {
-      result.base[id] = getModAttribute(innateSymptoms, id, calc(special.base))
-      const currWithInnate = getModAttribute(innateSymptoms, id, calc(special.curr))
+    const { innateSymptoms, data } = this
+    nonHumanSecAttrArray.forEach(({ id, calc }) => {
+      result.base[id] = getModAttribute(innateSymptoms, id, calc(data))
+      const currWithInnate = getModAttribute(innateSymptoms, id, calc(data))
       result.curr[id] = getModAttribute(this.symptoms, id, currWithInnate)
       result.mod[id] = result.curr[id] - result.base[id]
     })
