@@ -21,14 +21,14 @@ const { initiative, waitingInitiative } = routes.modal
 export default function CombatLayout() {
   const { charId } = useLocalSearchParams<{ charId: string }>()
 
-  const { combat, players, enemies } = useCombat()
+  const { combat, players, npcs } = useCombat()
   const charType = players && players[charId] ? "characters" : "npcs"
   const params = useMemo(
     () => ({ charId, combatId: combat?.id, charType }),
     [charId, charType, combat?.id]
   )
 
-  const prompts = getInitiativePrompts(charId, players ?? {}, enemies ?? {})
+  const prompts = getInitiativePrompts(charId, players ?? {}, npcs ?? {})
 
   useEffect(() => {
     if (prompts.playerShouldRollInitiative) {

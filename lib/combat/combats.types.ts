@@ -8,7 +8,7 @@ type ItemActionType = "drop" | "equip" | "unequip" | "use" | "search"
 type PrepareActionType = "dangerAwareness" | "visualize"
 
 type CharId = string
-type EnemyId = string
+type NpcId = string
 type ItemId = string
 type AimZone = "torso" | "legs" | "arms" | "head" | "groin" | "eyes"
 
@@ -110,7 +110,6 @@ export type DoneAction =
   | PrepareAction
 
 export type DbCombatEntry = {
-  id: string
   squadId: string
   timestamp: string
   location?: string
@@ -118,6 +117,25 @@ export type DbCombatEntry = {
   description?: string
   currActorId: string
   players: Record<CharId, PlayerCombatData>
-  enemies: Record<EnemyId, PlayerCombatData>
+  npcs: Record<NpcId, PlayerCombatData>
   rounds?: Record<number, Record<number, Action>>
+}
+
+// export type DbArchivedCombat = {
+//   squadId: string
+//   timestamp: string
+//   location?: string
+//   title: string
+//   description?: string
+//   rounds?: Record<number, Record<number, DoneAction>>
+// }
+
+// export type DbCombatEntry = DbActiveCombat | DbArchivedCombat
+
+export type DbPlayableCombatRecap = {
+  id: string
+  title: string
+  date: string
+  location?: string
+  description?: string
 }

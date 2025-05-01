@@ -20,6 +20,7 @@ import { Health } from "lib/character/health/health-types"
 import { DbCharMeta } from "lib/character/meta/meta"
 import { Progress } from "lib/character/progress/progress.types"
 import { DbStatus } from "lib/character/status/status.types"
+import { DbPlayableCombatRecap } from "lib/combat/combats.types"
 import { getModAttribute } from "lib/common/utils/char-calc"
 import { getRemainingTime } from "lib/common/utils/time-calc"
 import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
@@ -41,13 +42,19 @@ export default class NonHuman implements Playable {
   date: Date
   squadId: Squad["squadId"]
   meta: DbCharMeta
+  combats: Record<string, DbPlayableCombatRecap>
   dbEffects: DbEffects
   allEffects: Record<EffectId, EffectData>
   dbAbilities: DbAbilities
 
   constructor(
     id: string,
-    payload: { status: DbStatus; meta: DbCharMeta; effects?: DbEffects },
+    payload: {
+      status: DbStatus
+      meta: DbCharMeta
+      effects?: DbEffects
+      combats?: Record<string, DbPlayableCombatRecap>
+    },
     game: { date: Date; squadId: string; membersRecord: Record<string, any> },
     newElements: CreatedElements = defaultCreatedElements
   ) {
@@ -61,6 +68,7 @@ export default class NonHuman implements Playable {
     this.date = game.date
     this.squadId = game.squadId
     this.meta = payload.meta
+    this.combats = payload.combats ?? {}
     this.dbEffects = payload.effects ?? {}
     this.allEffects = { ...effectsMap, ...newEffects }
     this.dbAbilities = {

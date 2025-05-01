@@ -13,10 +13,10 @@ import { useCombat } from "providers/CombatProvider"
 import colors from "styles/colors"
 
 export default function WaitOtherInitiativeModal() {
-  const { players, enemies } = useCombat()
+  const { players, npcs } = useCombat()
   const { charId } = useCharacter()
 
-  const { shouldWaitOthers } = getInitiativePrompts(charId, players ?? {}, enemies ?? {})
+  const { shouldWaitOthers } = getInitiativePrompts(charId, players ?? {}, npcs ?? {})
 
   useEffect(() => {
     if (!shouldWaitOthers) {

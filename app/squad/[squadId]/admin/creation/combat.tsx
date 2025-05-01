@@ -28,14 +28,14 @@ type Form = {
   title: string
   description?: string
   players: Record<string, { currMaxAp: number }>
-  enemies: Record<string, { currMaxAp: number }>
+  npcs: Record<string, { currMaxAp: number }>
 }
 const defaultForm: Form = {
   location: "",
   title: "",
   description: "",
   players: {},
-  enemies: {}
+  npcs: {}
 }
 
 export default function CombatCreation() {
@@ -58,7 +58,7 @@ export default function CombatCreation() {
     setForm({ ...form, [key]: value })
   }
 
-  const toggleChar = (type: "players" | "enemies", id: string) => {
+  const toggleChar = (type: "players" | "npcs", id: string) => {
     if (!npc) return
     if (id in form[type]) {
       setForm(prev => {
@@ -80,7 +80,7 @@ export default function CombatCreation() {
 
   const submit = async () => {
     const hasPlayers = Object.keys(form.players).length > 0
-    const hasEnemies = Object.keys(form.enemies).length > 0
+    const hasEnemies = Object.keys(form.npcs).length > 0
     const hasTitle = form.title.length > 0
 
     if (!hasPlayers || !hasEnemies || !hasTitle) {
@@ -98,7 +98,6 @@ export default function CombatCreation() {
       Toast.show({ type: "custom", text1: "Le combat a été créé" })
       setForm({ ...defaultForm, players: squadPlayers })
     } catch (err) {
-      console.error(err)
       Toast.show({ type: "error", text1: "Erreur lors de la création du combat" })
     }
   }
@@ -157,17 +156,17 @@ export default function CombatCreation() {
 
         <Spacer y={layout.globalPadding} />
 
-        <Txt>ENNEMIS</Txt>
+        <Txt>PNJs</Txt>
         <Spacer y={5} />
         <List
           horizontal
-          data={Object.keys(form.enemies)}
+          data={Object.keys(form.npcs)}
           keyExtractor={item => item}
           separator={<Spacer x={layout.globalPadding} />}
           renderItem={({ item }) => (
             <SelectorButton
-              onPress={() => toggleChar("enemies", item)}
-              isSelected={item in form.enemies}
+              onPress={() => toggleChar("npcs", item)}
+              isSelected={item in form.npcs}
               label={npc[item].meta.firstname}
             />
           )}
@@ -179,17 +178,17 @@ export default function CombatCreation() {
       <Spacer x={layout.globalPadding} />
 
       <View style={{ width: 160 }}>
-        <ScrollSection style={{ flex: 1 }} title="enemis">
+        <ScrollSection style={{ flex: 1 }} title="PNJs">
           <List
             data={enemyList}
             keyExtractor={item => item.id}
             separator={<Spacer y={10} />}
             renderItem={({ item }) => {
-              const isSelected = Object.keys(form.enemies).some(e => e === item.id)
+              const isSelected = Object.keys(form.npcs).some(e => e === item.id)
               return (
                 <Txt
                   style={isSelected && { backgroundColor: colors.terColor, color: colors.secColor }}
-                  onPress={() => toggleChar("enemies", item.id)}
+                  onPress={() => toggleChar("npcs", item.id)}
                 >
                   {item.meta.firstname}
                 </Txt>

@@ -11,6 +11,7 @@ import subCharacterChild, {
 } from "./character/use-cases/sub-character-child"
 import subCharacters from "./character/use-cases/sub-characters"
 import createFight, { CreateFightParams } from "./combat/use-cases/create-fight"
+import startFight, { StartFightParams } from "./combat/use-cases/start-fight"
 import subAllFights from "./combat/use-cases/sub-all-fights"
 import subFight, { SubFightParams } from "./combat/use-cases/sub-fight"
 import updateContender, { UpdateContenderParams } from "./combat/use-cases/update-contender"
@@ -73,6 +74,7 @@ export default function getUseCases(
     combat: {
       sub: (data: SubFightParams) => subFight(dbType)(data),
       subAll: () => subAllFights(dbType)(),
+      startFight: (data: StartFightParams) => startFight(dbType)(data),
       create: (data: CreateFightParams) => createFight(dbType)(data),
       update: (data: UpdateFightParams) => updateFight(dbType)(data),
       updateContender: (data: UpdateContenderParams) => updateContender(dbType)(data),

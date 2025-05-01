@@ -1,7 +1,8 @@
 import { createContext, useContext, useMemo } from "react"
 
 import Character from "lib/character/Character"
-import { DbCombatEntry, PlayerData } from "lib/combat/combats.types"
+import Combat from "lib/combat/Combat"
+import { PlayerData } from "lib/combat/combats.types"
 import NonHuman from "lib/npc/NonHuman"
 
 import { useCharacter } from "contexts/CharacterContext"
@@ -13,15 +14,15 @@ import useRtdbSubs from "hooks/db/useRtdbSubs"
 import { useGetUseCases } from "./UseCasesProvider"
 
 type CombatContextType = {
-  combat: DbCombatEntry | null
+  combat: Combat | null
   players: Record<string, PlayerData> | null
-  enemies: Record<string, PlayerData> | null
+  npcs: Record<string, PlayerData> | null
 }
 
 const defaultCombatContext: CombatContextType = {
   combat: null,
   players: null,
-  enemies: null
+  npcs: null
 }
 
 const CombatContext = createContext<CombatContextType>(defaultCombatContext)
@@ -33,9 +34,9 @@ export default function CombatProvider({ children }: { children: React.ReactNode
   const { status } = useCharacter()
 
   const combatId = status.currentCombatId ?? ""
-  const combat = useRtdbSub(useCases.combat.sub({ id: combatId }))
+  const dbCombat = useRtdbSub(useCases.combat.sub({ id: combatId }))
 
-  const playersIds = useMemo(() => Object.keys(combat?.players ?? {}), [combat])
+  const playersIds = useMemo(() => Object.keys(dbCombat?.players ?? {}), [dbCombat])
   const playersSubs = useMemo(
     () => useCases.character.subCharacters(playersIds).map((s, i) => ({ ...s, id: playersIds[i] })),
     [playersIds, useCases]
@@ -43,45 +44,47 @@ export default function CombatProvider({ children }: { children: React.ReactNode
   const playersData = useRtdbSubs(playersSubs)
 
   const players = useMemo(() => {
-    if (!playersData || !combat) return null
+    if (!playersData || !dbCombat) return null
     const characters: Record<string, PlayerData> = {}
     Object.entries(playersData).forEach(([key, value]) => {
       const char = new Character(key, value, squad, createdElements)
-      const combatData = combat.players[key]
+      const combatData = dbCombat.players[key]
       const currMaxAp = char.secAttr.curr.actionPoints
       characters[key] = { ...char.status, ...combatData, currMaxAp }
     })
     return characters
-  }, [playersData, combat, squad, createdElements])
+  }, [playersData, dbCombat, squad, createdElements])
 
-  const enemiesIds = useMemo(() => Object.keys(combat?.enemies ?? {}), [combat])
-  const enemiesSubs = useMemo(
-    () => useCases.npc.subNpcs(enemiesIds).map((s, i) => ({ ...s, id: enemiesIds[i] })),
-    [enemiesIds, useCases]
+  const npcIds = useMemo(() => Object.keys(dbCombat?.npcs ?? {}), [dbCombat])
+  const npcSubs = useMemo(
+    () => useCases.npc.subNpcs(npcIds).map((s, i) => ({ ...s, id: npcIds[i] })),
+    [npcIds, useCases]
   )
-  const enemiesData = useRtdbSubs(enemiesSubs)
+  const npcsDatas = useRtdbSubs(npcSubs)
 
-  const enemies = useMemo(() => {
-    if (!enemiesData || !combat) return null
-    const foes: Record<string, PlayerData> = {}
-    Object.entries(enemiesData).forEach(([key, value]) => {
-      const combatData = combat.enemies[key]
+  const npcs = useMemo(() => {
+    if (!npcsDatas || !dbCombat) return null
+    const result: Record<string, PlayerData> = {}
+    Object.entries(npcsDatas).forEach(([key, value]) => {
+      const combatData = dbCombat.npcs[key]
       if ("abilities" in value) {
         const char = new Character(key, value, squad, createdElements)
         const currMaxAp = char.secAttr.curr.actionPoints
-        foes[key] = { ...char.status, ...combatData, currMaxAp }
+        result[key] = { ...char.status, ...combatData, currMaxAp }
         return
       }
       const nonHuman = new NonHuman(key, value, squad)
-      foes[key] = { ...value.status, ...combatData, currMaxAp: nonHuman.data.actionPoints }
+      result[key] = { ...value.status, ...combatData, currMaxAp: nonHuman.data.actionPoints }
     })
-    return foes
-  }, [enemiesData, combat, squad, createdElements])
+    return result
+  }, [npcsDatas, dbCombat, squad, createdElements])
 
-  const value = useMemo(
-    () => ({ combat: combat ?? null, players, enemies }),
-    [combat, players, enemies]
-  )
+  const combat = useMemo(() => {
+    if (!dbCombat) return null
+    return new Combat({ ...dbCombat, id: combatId })
+  }, [dbCombat, combatId])
+
+  const value = useMemo(() => ({ combat: combat ?? null, players, npcs }), [combat, players, npcs])
 
   return <CombatContext.Provider value={value}>{children}</CombatContext.Provider>
 }

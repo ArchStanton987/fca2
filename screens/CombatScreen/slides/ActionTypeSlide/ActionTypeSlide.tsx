@@ -47,14 +47,14 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
   }
 
   const onPressWait = async () => {
-    const { players, enemies, combat } = combatContext
-    if (!combat || !players || !enemies || actionType !== "pause") return
+    const { players, npcs, combat } = combatContext
+    if (!combat || !players || !npcs || actionType !== "pause") return
     const payload = {
       combatId: combat.id,
       roundId: getCurrentRoundId(combat),
       actionId: getCurrentActionId(combat),
       players,
-      enemies,
+      npcs,
       action: { actionType, actorId: charId }
     }
     try {

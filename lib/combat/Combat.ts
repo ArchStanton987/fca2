@@ -19,10 +19,10 @@ export default class Combat {
   description: string
   currActorId: string
   players: Record<string, PlayerCombatData>
-  enemies: Record<string, PlayerCombatData>
+  npcs: Record<string, PlayerCombatData>
   rounds: Record<number, Record<number, Action>>
 
-  constructor(payload: DbCombatEntry) {
+  constructor(payload: DbCombatEntry & { id: string }) {
     this.id = payload.id
     this.squadId = payload.squadId
     this.timestamp = new Date(payload.timestamp)
@@ -31,7 +31,7 @@ export default class Combat {
     this.description = payload.description || ""
     this.currActorId = payload.currActorId
     this.players = payload.players
-    this.enemies = payload.enemies
+    this.npcs = payload.npcs
     if (payload.rounds) {
       this.rounds = payload.rounds
     } else {

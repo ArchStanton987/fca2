@@ -11,7 +11,7 @@ export type WaitActionParams = {
   roundId: number
   actionId: number
   players: Record<string, PlayerData>
-  enemies: Record<string, PlayerData>
+  npcs: Record<string, PlayerData>
   action: PauseAction
 }
 
@@ -20,21 +20,21 @@ export default function waitAction(dbType: keyof typeof repositoryMap = "rtdb") 
   const statusRepo = repositoryMap[dbType].statusRepository
   const actionRepo = repositoryMap[dbType].actionRepository
   return (params: WaitActionParams) => {
-    const { action, players, enemies, combatId, roundId, actionId } = params
+    const { action, players, npcs, combatId, roundId, actionId } = params
     const charId = action.actorId
     const charType = players[charId] ? "characters" : "npcs"
 
     const promises = []
 
     // check if fight is not over
-    if (getIsFightOver(params.players, params.enemies)) throw new Error("Fight is over")
+    if (getIsFightOver(params.players, params.npcs)) throw new Error("Fight is over")
 
     // if no other player has AP, throw error as you can't wait for others
-    const activePlayersWithAp = getActivePlayersWithAp(players, enemies)
+    const activePlayersWithAp = getActivePlayersWithAp(players, npcs)
     if (activePlayersWithAp.length <= 1) throw new Error("No other players with AP")
 
     // set next actor in combat
-    const nextActorId = getNextActorId({ ...players, ...enemies }, charId)
+    const nextActorId = getNextActorId({ ...players, ...npcs }, charId)
     promises.push(combatRepo.setChild({ id: combatId, childKey: "currActorId" }, nextActorId))
 
     // set actor new status

@@ -57,12 +57,12 @@ const styles = StyleSheet.create({
 })
 
 export default function InitiativeModal() {
-  const { charId, combatId, charType = "players" } = useLocalSearchParams<InitiativeModalParams>()
+  const { charId, combatId } = useLocalSearchParams<InitiativeModalParams>()
 
   const useCases = useGetUseCases()
 
   const character = useCharacter()
-  const { skills } = character
+  const { skills, meta } = character
   const { perceptionSkill } = skills.curr
 
   const [initStr, setInitiative] = useState("")
@@ -77,7 +77,7 @@ export default function InitiativeModal() {
     await useCases.combat.updateContender({
       id: combatId,
       playerId: charId,
-      charType,
+      charType: meta.isNpc ? "npcs" : "players",
       initiative: finalScore
     })
     router.dismiss()

@@ -1,3 +1,4 @@
+import { DbPlayableCombatRecap } from "lib/combat/combats.types"
 import { ClothingData, ClothingId } from "lib/objects/data/clothings/clothings.types"
 import { DbEquipedObjects } from "lib/objects/data/objects.types"
 import { Weapon, WeaponData, WeaponId } from "lib/objects/data/weapons/weapons.types"
@@ -24,6 +25,7 @@ export default interface Playable {
   date: Date
   squadId: string
   meta: DbCharMeta
+  combats: Record<string, DbPlayableCombatRecap>
 
   // abilities
   dbAbilities: DbAbilities
