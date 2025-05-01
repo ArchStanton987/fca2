@@ -21,14 +21,13 @@ import { useSquad } from "contexts/SquadContext"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
-import { getDDMMYYYY, getHHMM } from "utils/date"
 
 type Form = {
   location?: string
   title: string
   description?: string
-  players: Record<string, { currMaxAp: number }>
-  npcs: Record<string, { currMaxAp: number }>
+  players: Record<string, string>
+  npcs: Record<string, string>
 }
 const defaultForm: Form = {
   location: "",
@@ -42,14 +41,15 @@ export default function CombatCreation() {
   const useCases = useGetUseCases()
   const squad = useSquad()
 
-  const { characters, npc } = useAdmin()
+  const { characters, npcs } = useAdmin()
+  const allPlayable = { ...characters, ...npcs }
 
-  const squadPlayers: Record<string, { currMaxAp: number }> = {}
-  Object.entries(characters ?? {}).forEach(([id, player]) => {
-    squadPlayers[id] = { currMaxAp: player.secAttr.curr.actionPoints }
+  const squadPlayers: Record<string, string> = {}
+  Object.keys(characters ?? {}).forEach(id => {
+    squadPlayers[id] = id
   })
 
-  const enemyList = Object.entries(npc ?? {}).map(([id, enemy]) => ({ id, ...enemy }))
+  const npcList = Object.entries(npcs ?? {}).map(([id, npc]) => ({ id, ...npc }))
 
   const [form, setForm] = useState<Form>({ ...defaultForm, players: squadPlayers })
   const [isStartingNow, setIsStartingNow] = useState(true)
@@ -59,7 +59,7 @@ export default function CombatCreation() {
   }
 
   const toggleChar = (type: "players" | "npcs", id: string) => {
-    if (!npc) return
+    if (!npcs) return
     if (id in form[type]) {
       setForm(prev => {
         const prevType = { ...prev[type] }
@@ -69,7 +69,7 @@ export default function CombatCreation() {
       return
     }
     let currMaxAp = 0
-    const curr = type === "players" ? characters[id] : npc[id]
+    const curr = type === "players" ? characters[id] : npcs[id]
     if (curr instanceof Character) {
       currMaxAp = curr.secAttr.curr.actionPoints
     } else {
@@ -89,10 +89,16 @@ export default function CombatCreation() {
     }
 
     const { date, squadId } = squad
-    const d = getDDMMYYYY(date, "-")
-    const h = getHHMM(date, "-")
-    const id = `${squad.squadId}_${d}_${h}`
-    const payload = { id, ...form, timestamp: date.toJSON(), isStartingNow, squadId }
+    const contendersIds = Object.keys({ ...form.players, ...form.npcs })
+    const contenders = Object.fromEntries(
+      contendersIds.map(id => {
+        const playable = allPlayable[id]
+        if (!playable) throw new Error(`Playable with id ${id} not found`)
+        return [id, playable]
+      })
+    )
+
+    const payload = { ...form, date: date.toJSON(), isStartingNow, squadId, contenders }
     try {
       await useCases.combat.create(payload)
       Toast.show({ type: "custom", text1: "Le combat a été créé" })
@@ -167,7 +173,7 @@ export default function CombatCreation() {
             <SelectorButton
               onPress={() => toggleChar("npcs", item)}
               isSelected={item in form.npcs}
-              label={npc[item].meta.firstname}
+              label={npcs[item].meta.firstname}
             />
           )}
         />
@@ -180,7 +186,7 @@ export default function CombatCreation() {
       <View style={{ width: 160 }}>
         <ScrollSection style={{ flex: 1 }} title="PNJs">
           <List
-            data={enemyList}
+            data={npcList}
             keyExtractor={item => item.id}
             separator={<Spacer y={10} />}
             renderItem={({ item }) => {

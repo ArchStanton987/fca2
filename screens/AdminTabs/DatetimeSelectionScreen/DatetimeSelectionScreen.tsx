@@ -27,7 +27,7 @@ const selectors = [1, 5, 20, 60]
 function DatetimeSelectionScreen() {
   const useCases = useGetUseCases()
   const squad = useSquad()
-  const { characters, npc } = useAdmin()
+  const { characters, npcs } = useAdmin()
 
   const [newDate, setNewDate] = useState<Date>(squad.date)
   const [selectedTimespan, setSelectedTimespan] = useState<Timespan>("MIN")
@@ -61,7 +61,7 @@ function DatetimeSelectionScreen() {
       await useCases.squad.updateDate(
         squad.squadId,
         newDate,
-        Object.values({ ...characters, ...npc })
+        Object.values({ ...characters, ...npcs })
       )
       Toast.show({
         type: "custom",

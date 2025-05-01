@@ -13,7 +13,7 @@ const defaultAction = {
 export default class Combat {
   id: string
   squadId: string
-  timestamp: Date
+  date: Date
   location?: string
   title: string
   description: string
@@ -25,7 +25,7 @@ export default class Combat {
   constructor(payload: DbCombatEntry & { id: string }) {
     this.id = payload.id
     this.squadId = payload.squadId
-    this.timestamp = new Date(payload.timestamp)
+    this.date = new Date(payload.date)
     this.location = payload.location
     this.title = payload.title
     this.description = payload.description || ""

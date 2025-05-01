@@ -5,7 +5,7 @@ import NonHuman from "lib/npc/NonHuman"
 
 export type AdminContextType = {
   characters: Record<string, Character>
-  npc: Record<string, Character | NonHuman>
+  npcs: Record<string, Character | NonHuman>
 }
 export const AdminContext = createContext<AdminContextType | null>(null)
 export const useAdmin = () => {

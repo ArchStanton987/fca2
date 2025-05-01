@@ -1,16 +1,17 @@
+import Playable from "lib/character/Playable"
 import repositoryMap from "lib/shared/db/get-repository"
 
+import { PlayerCombatData } from "../combats.types"
 import { DEFAULT_INITIATIVE } from "../const/combat-const"
 import startFight from "./start-fight"
 
 export type CreateFightParams = {
   squadId: string
-  timestamp: string
+  date: string
   location?: string
   title: string
   description?: string
-  players: Record<string, { currMaxAp: number }>
-  npcs: Record<string, { currMaxAp: number }>
+  contenders: Record<string, Playable>
   isStartingNow: boolean
 }
 
@@ -19,23 +20,24 @@ const defaultContenderData = { initiative: DEFAULT_INITIATIVE, nextActionBonus: 
 export default function createFight(dbType: keyof typeof repositoryMap = "rtdb") {
   const combatRepo = repositoryMap[dbType].combatRepository
 
-  return async (params: CreateFightParams) => {
-    const { isStartingNow, ...rest } = params
-    const promises: Promise<void | void[]>[] = []
-
-    const playersIds = Object.keys(rest.players)
-    const players = Object.fromEntries(playersIds.map(pId => [pId, defaultContenderData]))
-    const npcsIds = Object.keys(rest.npcs)
-    const npcs = Object.fromEntries(npcsIds.map(eId => [eId, defaultContenderData]))
-    const payload = { ...rest, players, npcs, currActorId: "", rounds: {} }
+  return async ({ contenders, isStartingNow, ...rest }: CreateFightParams) => {
+    const players: Record<string, PlayerCombatData> = {}
+    const npcs: Record<string, PlayerCombatData> = {}
+    Object.entries(contenders).forEach(([id, contender]) => {
+      const { isNpc } = contender.meta
+      if (isNpc) {
+        npcs[id] = { ...defaultContenderData }
+      } else {
+        players[id] = { ...defaultContenderData }
+      }
+    })
+    const payload = { ...rest, currActorId: "", players, npcs, rounds: {} }
     const creationRef = await combatRepo.add({}, payload)
     const combatId = creationRef?.key
     if (!combatId) throw new Error("Failed to create combat")
-
     if (isStartingNow) {
-      promises.push(startFight(dbType)({ combatId, players: params.players, npcs: params.npcs }))
+      await startFight(dbType)({ combatId, contenders })
     }
-
-    return Promise.all(promises)
+    return combatId
   }
 }

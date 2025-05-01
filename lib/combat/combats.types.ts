@@ -111,7 +111,7 @@ export type DoneAction =
 
 export type DbCombatEntry = {
   squadId: string
-  timestamp: string
+  date: string
   location?: string
   title: string
   description?: string

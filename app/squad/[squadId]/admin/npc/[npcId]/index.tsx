@@ -17,7 +17,7 @@ export default function EnemyScreen() {
   const { npcId } = useLocalSearchParams<{ npcId: string }>()
 
   const squad = useSquad()
-  const { npc } = useAdmin()
+  const { npcs } = useAdmin()
 
   const play = () => {
     router.push({
@@ -27,10 +27,10 @@ export default function EnemyScreen() {
   }
 
   const deleteNpc = () => {
-    useCases.npc.delete({ squad, playable: npc[npcId] })
+    useCases.npc.delete({ squad, playable: npcs[npcId] })
   }
 
-  if (!npc[npcId]) {
+  if (!npcs[npcId]) {
     return (
       <DrawerPage>
         <Section style={{ flex: 1 }} title="informations">
@@ -40,7 +40,7 @@ export default function EnemyScreen() {
     )
   }
 
-  const currNpc = npc[npcId]
+  const currNpc = npcs[npcId]
   const isFighting = !!currNpc.status.currentCombatId
   const { firstname, description, templateId } = currNpc.meta
 

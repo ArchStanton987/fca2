@@ -1,3 +1,20 @@
+x création combat (sans début)
+  (création combat entry)
+  - activation du combat
+    (set combat status pour tous les contenders)
+x création combat (avec début)
+
+- clôturer combat (commande admin)
+  (reset combat status pour tous les contenders)
+  (ajoute une entrée combats pour tous les contenders)
+  ?(conversion combat en archive)
+  ?(suppression pnj)
+? clôturer combat (commande joueur)
+  (reset combat status)
+  (ajoute une entrée combats pour le personnage)
+? clôturer combat (commande npc)
+
+
     // Clôturer un combat :
     // 1. POV joueur : affichage indique que le combat est terminé, à la validation :
     //  - reset currFightId

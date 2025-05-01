@@ -14,6 +14,8 @@ export default function CombatsLayout() {
   const useCases = useGetUseCases()
   const { squadId } = useSquad()
 
+  // TODO get only non archived squad combats
+
   const combats = useRtdbSub(useCases.combat.subAll())
   const navElements = Object.entries(combats ?? {})
     .filter(([, entry]) => entry.squadId === squadId)

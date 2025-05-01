@@ -44,7 +44,7 @@ export default function AdminLayout() {
   )
   const npcDatas = useRtdbSubs(npcSubs)
 
-  const npc = useMemo(() => {
+  const npcs = useMemo(() => {
     if (!npcDatas) return {}
     const result: Record<string, NonHuman | Character> = {}
     Object.entries(npcDatas).forEach(([id, value]) => {
@@ -59,8 +59,8 @@ export default function AdminLayout() {
 
   const context = useMemo(() => {
     if (!characters) return null
-    return { characters, npc }
-  }, [characters, npc])
+    return { characters, npcs }
+  }, [characters, npcs])
 
   if (!context) return <LoadingScreen />
 

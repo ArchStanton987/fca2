@@ -9,9 +9,9 @@ import styles from "styles/DrawerLayout.styles"
 import layout from "styles/layout"
 
 export default function EnemiesLayout() {
-  const { npc } = useAdmin()
+  const { npcs } = useAdmin()
 
-  const navElements = Object.entries(npc ?? {}).map(([id, entry]) => ({
+  const navElements = Object.entries(npcs ?? {}).map(([id, entry]) => ({
     path: id,
     label: entry.meta.firstname
   }))
