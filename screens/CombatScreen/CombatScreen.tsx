@@ -22,7 +22,7 @@ function CombatScreen() {
   const equWeapons = equipedObjects.weapons
   const { currAp } = status
   const maxAp = secAttr.curr.actionPoints
-  const weapons = equWeapons.map(eW => inventory.weaponsRecord[eW.dbKey])
+  const weapons = equWeapons.map(eW => inventory?.weaponsRecord?.[eW.dbKey] ?? eW)
 
   const [prevAp, setPrevAp] = useState(currAp)
 

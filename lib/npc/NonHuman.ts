@@ -230,12 +230,7 @@ export default class NonHuman implements Playable {
   }
 
   get equipedObjects() {
-    const weapons = this.data.attacks.map(attack => ({
-      id: attack.name as WeaponId,
-      inMagazine: 0,
-      dbKey: attack.name,
-      data: attackToWeapon(attack).data
-    }))
+    const weapons = this.data.attacks.map(attack => attackToWeapon(attack))
     return { weapons, clothings: [] }
   }
 
