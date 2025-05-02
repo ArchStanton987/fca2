@@ -251,7 +251,10 @@ export default class NonHuman implements Playable {
   }
 
   get equipedObjectsRecord() {
-    return { weapons: {}, clothings: {} }
+    const weapons: Record<string, Weapon> = Object.fromEntries(
+      this.equipedObjects.weapons.map(attack => [attack.id, attack])
+    )
+    return { weapons, clothings: {} }
   }
 
   get effectsRecord() {

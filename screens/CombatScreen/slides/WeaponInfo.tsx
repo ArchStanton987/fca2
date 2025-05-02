@@ -1,6 +1,7 @@
 import { StyleSheet, View } from "react-native"
 
 import { Image } from "expo-image"
+import Character from "lib/character/Character"
 import secAttrMap from "lib/character/abilities/sec-attr/sec-attr"
 import { getHasStrengthMalus } from "lib/objects/data/weapons/weapons-utils"
 
@@ -28,7 +29,10 @@ export default function WeaponInfo({ selectedWeapon }: { selectedWeapon?: string
   const inv = useInventory()
   let weapon = char.unarmed
   if (selectedWeapon) {
-    weapon = inv.weaponsRecord[selectedWeapon] ?? char.unarmed
+    const isHuman = char instanceof Character
+    weapon = isHuman
+      ? inv.weaponsRecord[selectedWeapon] ?? char.unarmed
+      : char.equipedObjectsRecord.weapons[selectedWeapon]
   }
 
   if (!weapon) return null
