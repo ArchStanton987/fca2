@@ -7,7 +7,7 @@ import {
   KnowledgeLevelValue
 } from "lib/character/abilities/knowledges/knowledge-types"
 import { nonHumanSecAttrArray } from "lib/character/abilities/sec-attr/non-human-sec-attr"
-import { SecAttrsValues } from "lib/character/abilities/sec-attr/sec-attr-types"
+import { SecAttrId, SecAttrsValues } from "lib/character/abilities/sec-attr/sec-attr-types"
 import skillsMap, { skillsArray } from "lib/character/abilities/skills/skills"
 import { SkillsValues } from "lib/character/abilities/skills/skills.types"
 import { specialArray } from "lib/character/abilities/special/special"
@@ -194,10 +194,10 @@ export default class NonHuman implements Playable {
     }
     const { innateSymptoms, data } = this
     nonHumanSecAttrArray.forEach(({ id, calc }) => {
-      result.base[id] = getModAttribute(innateSymptoms, id, calc(data))
-      const currWithInnate = getModAttribute(innateSymptoms, id, calc(data))
-      result.curr[id] = getModAttribute(this.symptoms, id, currWithInnate)
-      result.mod[id] = result.curr[id] - result.base[id]
+      result.base[id as SecAttrId] = getModAttribute(innateSymptoms, id as SecAttrId, calc(data))
+      const currWithInnate = getModAttribute(innateSymptoms, id as SecAttrId, calc(data))
+      result.curr[id as SecAttrId] = getModAttribute(this.symptoms, id as SecAttrId, currWithInnate)
+      result.mod[id as SecAttrId] = result.curr[id as SecAttrId] - result.base[id as SecAttrId]
     })
     return result
   }

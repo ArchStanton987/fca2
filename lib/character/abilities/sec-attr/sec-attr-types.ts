@@ -1,5 +1,3 @@
-import { NonHumanNpcTemplate } from "lib/npc/npc.types"
-
 import { Special } from "../special/special.types"
 
 export type SecAttrId =
@@ -23,13 +21,6 @@ export type SecAttr = {
   short: string
   unit?: string
   calc: (specialValues: Special) => number
-}
-export type NonHumanSecAttr = {
-  id: SecAttrId
-  label: string
-  short: string
-  unit?: string
-  calc: (template: NonHumanNpcTemplate) => number
 }
 
 export type SecAttrsValues = {

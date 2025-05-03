@@ -1,6 +1,4 @@
-import { NonHumanSecAttr, SecAttrId } from "./sec-attr-types"
-
-const nonHumanSecAttrMap: Record<SecAttrId, NonHumanSecAttr> = {
+const nonHumanSecAttrMap = {
   critChance: {
     id: "critChance",
     label: "Chance de critique",
@@ -12,7 +10,7 @@ const nonHumanSecAttrMap: Record<SecAttrId, NonHumanSecAttr> = {
     id: "armorClass",
     label: "Classe d'armure",
     short: "CA",
-    calc: t => t.armorClass
+    calc: (t: { armorClass: number }) => t.armorClass
   },
   meleeDamage: {
     id: "meleeDamage",
@@ -30,7 +28,7 @@ const nonHumanSecAttrMap: Record<SecAttrId, NonHumanSecAttr> = {
     id: "actionPoints",
     label: "Points d'action",
     short: "PA",
-    calc: t => t.actionPoints
+    calc: (t: { actionPoints: number }) => t.actionPoints
   },
   range: {
     id: "range",
@@ -44,14 +42,14 @@ const nonHumanSecAttrMap: Record<SecAttrId, NonHumanSecAttr> = {
     label: "Résistance au poison",
     short: "resPoi",
     unit: "%",
-    calc: t => t.resistances.poisResist
+    calc: (t: { resistances: { poisResist: number } }) => t.resistances.poisResist
   },
   radsResist: {
     id: "radsResist",
     label: "Résistance aux radiations",
     short: "resRad",
     unit: "%",
-    calc: t => t.resistances.radsResist
+    calc: (t: { resistances: { radsResist: number } }) => t.resistances.radsResist
   },
   healHpPerHour: {
     id: "healHpPerHour",
