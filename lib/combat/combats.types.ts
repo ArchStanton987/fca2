@@ -1,6 +1,6 @@
+import Playable from "lib/character/Playable"
 import { EffectId } from "lib/character/effects/effects.types"
 import { LimbsHp } from "lib/character/health/health-types"
-import { DbStatus } from "lib/character/status/status.types"
 
 type WeaponActionSubtypeId = "basicAttack" | "aim" | "burst" | "reload" | "unload" | "hit" | "throw"
 type MovementType = "crawl" | "walk" | "run" | "sprint" | "jump" | "climb" | "getUp"
@@ -20,7 +20,10 @@ export type PlayerCombatData = {
   nextActionBonus: number
 }
 
-export type PlayerData = DbStatus & PlayerCombatData & { currMaxAp: number }
+export type PlayerData = {
+  char: Playable
+  combatData: PlayerCombatData
+}
 
 export type SimpleRoll = {
   actorSkillScore: number

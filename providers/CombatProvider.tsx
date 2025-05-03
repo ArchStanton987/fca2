@@ -49,8 +49,7 @@ export default function CombatProvider({ children }: { children: React.ReactNode
     Object.entries(playersData).forEach(([key, value]) => {
       const char = new Character(key, value, squad, createdElements)
       const combatData = dbCombat.players[key]
-      const currMaxAp = char.secAttr.curr.actionPoints
-      characters[key] = { ...char.status, ...combatData, currMaxAp }
+      characters[key] = { char, combatData }
     })
     return characters
   }, [playersData, dbCombat, squad, createdElements])
@@ -69,12 +68,11 @@ export default function CombatProvider({ children }: { children: React.ReactNode
       const combatData = dbCombat.npcs[key]
       if ("abilities" in value) {
         const char = new Character(key, value, squad, createdElements)
-        const currMaxAp = char.secAttr.curr.actionPoints
-        result[key] = { ...char.status, ...combatData, currMaxAp }
+        result[key] = { char, combatData }
         return
       }
-      const nonHuman = new NonHuman(key, value, squad)
-      result[key] = { ...value.status, ...combatData, currMaxAp: nonHuman.data.actionPoints }
+      const char = new NonHuman(key, value, squad)
+      result[key] = { char, combatData }
     })
     return result
   }, [npcsDatas, dbCombat, squad, createdElements])
