@@ -1,17 +1,13 @@
-import { DbStatus } from "lib/character/status/status.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
-import { PauseAction, PlayerCombatData } from "../combats.types"
+import { PauseAction, PlayerData } from "../combats.types"
 import { getActivePlayersWithAp, getIsFightOver, getNextActorId } from "../utils/combat-utils"
-
-type PlayerData = DbStatus & PlayerCombatData & { currMaxAp: number }
 
 export type WaitActionParams = {
   combatId: string
   roundId: number
   actionId: number
-  players: Record<string, PlayerData>
-  npcs: Record<string, PlayerData>
+  contenders: Record<string, PlayerData>
   action: PauseAction
 }
 
@@ -20,24 +16,26 @@ export default function waitAction(dbType: keyof typeof repositoryMap = "rtdb") 
   const statusRepo = repositoryMap[dbType].statusRepository
   const actionRepo = repositoryMap[dbType].actionRepository
   return (params: WaitActionParams) => {
-    const { action, players, npcs, combatId, roundId, actionId } = params
+    // const { action, players, npcs, combatId, roundId, actionId } = params
+    const { action, contenders, combatId, roundId, actionId } = params
     const charId = action.actorId
-    const charType = players[charId] ? "characters" : "npcs"
+    // const charType = players[charId] ? "characters" : "npcs"
 
     const promises = []
 
     // check if fight is not over
-    if (getIsFightOver(params.players, params.npcs)) throw new Error("Fight is over")
+    if (getIsFightOver(contenders)) throw new Error("Fight is over")
 
     // if no other player has AP, throw error as you can't wait for others
-    const activePlayersWithAp = getActivePlayersWithAp(players, npcs)
+    const activePlayersWithAp = getActivePlayersWithAp(contenders)
     if (activePlayersWithAp.length <= 1) throw new Error("No other players with AP")
 
     // set next actor in combat
-    const nextActorId = getNextActorId({ ...players, ...npcs }, charId)
+    const nextActorId = getNextActorId(contenders, charId)
     promises.push(combatRepo.setChild({ id: combatId, childKey: "currActorId" }, nextActorId))
 
     // set actor new status
+    const charType = contenders[charId].char.meta.isNpc ? "npcs" : "characters"
     promises.push(statusRepo.setChild({ charId, charType, childKey: "combatStatus" }, "wait"))
 
     // save action in combat

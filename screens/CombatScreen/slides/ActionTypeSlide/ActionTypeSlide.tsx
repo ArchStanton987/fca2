@@ -53,8 +53,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
       combatId: combat.id,
       roundId: getCurrentRoundId(combat),
       actionId: getCurrentActionId(combat),
-      players,
-      npcs,
+      contenders: { ...players, ...npcs },
       action: { actionType, actorId: charId }
     }
     try {
