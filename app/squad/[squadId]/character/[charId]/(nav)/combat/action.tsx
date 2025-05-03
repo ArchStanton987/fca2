@@ -1,13 +1,18 @@
 import { useCallback, useRef } from "react"
 import { ScrollView, useWindowDimensions } from "react-native"
 
-import { useFocusEffect } from "expo-router"
+import { useFocusEffect, useLocalSearchParams } from "expo-router"
+
+import { getInitiativePrompts } from "lib/combat/utils/combat-utils"
 
 import DrawerPage from "components/DrawerPage"
 import List from "components/List"
 import { SlideProps } from "components/Slides/Slide.types"
 import { getSlideWidth } from "components/Slides/slide.utils"
 import { useActionApi } from "providers/ActionProvider"
+import { useCombat } from "providers/CombatProvider"
+import InitiativeScreen from "screens/CombatScreen/InitiativeScreen"
+import WaitInitiativeScreen from "screens/CombatScreen/WaitInitiativeScreen"
 import ActionTypeSlide from "screens/CombatScreen/slides/ActionTypeSlide/ActionTypeSlide"
 
 const getSlides = () => [
@@ -18,7 +23,10 @@ const getSlides = () => [
 ]
 
 export default function ActionScreen() {
+  const { charId } = useLocalSearchParams<{ charId: string }>()
+
   const { reset } = useActionApi()
+  const { players, npcs } = useCombat()
 
   const scrollRef = useRef<ScrollView>(null)
   const { width } = useWindowDimensions()
@@ -36,6 +44,11 @@ export default function ActionScreen() {
       reset()
     }, [reset])
   )
+
+  const prompts = getInitiativePrompts(charId, players ?? {}, npcs ?? {})
+
+  if (prompts.playerShouldRollInitiative) return <InitiativeScreen />
+  if (prompts.shouldWaitOthers) return <WaitInitiativeScreen />
 
   return (
     <DrawerPage>
