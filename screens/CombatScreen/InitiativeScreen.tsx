@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react"
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from "react-native"
 
-import { router, useFocusEffect, useLocalSearchParams } from "expo-router"
+import { useFocusEffect, useLocalSearchParams } from "expo-router"
 
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
 import skillsMap from "lib/character/abilities/skills/skills"
@@ -15,6 +15,7 @@ import Section from "components/Section"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
+import { useCombat } from "providers/CombatProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -53,11 +54,13 @@ const styles = StyleSheet.create({
 })
 
 export default function InitiativeScreen() {
-  const { charId, combatId } = useLocalSearchParams<InitiativeScreenParams>()
+  const { charId } = useLocalSearchParams<InitiativeScreenParams>()
 
   const useCases = useGetUseCases()
 
+  const { combat } = useCombat()
   const character = useCharacter()
+  const { isNpc } = character.meta
   const { skills, meta } = character
   const { perceptionSkill } = skills.curr
 
@@ -68,21 +71,24 @@ export default function InitiativeScreen() {
   const finalScoreStr = Number.isNaN(finalScore) ? "" : finalScore.toString()
 
   const onPressConfirm = async () => {
-    if (Number.isNaN(finalScore)) return
+    if (Number.isNaN(finalScore) || combat === null) return
     await useCases.combat.updateContender({
-      id: combatId,
+      id: combat?.id,
       playerId: charId,
       charType: meta.isNpc ? "npcs" : "players",
       initiative: finalScore
     })
-    router.dismiss()
   }
 
   const onPressDice = async () => {
+    const newValue = getRandomArbitrary(1, 101)
+    if (isNpc) {
+      setScore(newValue.toString())
+      return
+    }
     setIsLoading(true)
     setTimeout(() => {
       setIsLoading(false)
-      const newValue = getRandomArbitrary(1, 101)
       setScore(newValue.toString())
     }, 3000)
   }
@@ -94,6 +100,14 @@ export default function InitiativeScreen() {
   )
 
   const isValid = scoreStr.length > 0 && !isLoading
+
+  if (combat === null)
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Txt>Impossible de récupérer le combat en cours</Txt>
+      </View>
+    )
+
   return (
     <DrawerPage>
       <Section title="score aux dés" contentContainerStyle={{ flex: 1, height: "100%" }}>
