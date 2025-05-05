@@ -22,37 +22,22 @@ export const getCurrentActionId = (combat: CombatEntry | null) => {
   return keys.length > 0 ? Math.max(...keys) : 1
 }
 
-export const getNextActorId = (contenders: Record<string, PlayerData>, idToExclude?: string) => {
-  const needsRollInitiative = Object.values(contenders).some(
-    c => c.combatData.initiative === DEFAULT_INITIATIVE
-  )
-  if (needsRollInitiative) throw new Error("All players must roll initiative")
-
-  const contendersWithAp = Object.entries(contenders)
-    .filter(
-      ([, c]) => c.char.status.combatStatus !== "inactive" && c.char.status.combatStatus !== "dead"
-    )
-    .filter(([, c]) => c.char.status.currAp > 0)
-    .filter(([id]) => id !== idToExclude)
-
-  const activeContenders = contendersWithAp.filter(
-    ([, s]) => s.char.status.combatStatus === "active"
-  )
-  const waitingContenders = contendersWithAp.filter(
-    ([, s]) => s.char.status.combatStatus === "wait"
-  )
-  const chars = activeContenders.length > 0 ? activeContenders : waitingContenders
-
-  if (chars.length === 0) throw new Error("No contenders with AP")
-
-  const sortedChars = chars
-    .sort(([, a], [, b]) => {
+export const getPlayingOrder = (contenders: Record<string, PlayerData>) => {
+  // sort contenders by initiative and current ap, then combat status inactive, then dead
+  const sortedContenders = Object.values(contenders)
+    .filter(c => c.char.status.combatStatus !== "inactive" && c.char.status.combatStatus !== "dead")
+    .sort((a, b) => {
       if (a.char.status.currAp === b.char.status.currAp)
         return a.combatData.initiative - b.combatData.initiative
       return b.char.status.currAp - a.char.status.currAp
     })
-    .map(([id]) => id)
-  return sortedChars[0]
+  const inactiveContenders = Object.values(contenders).filter(
+    c => c.char.status.combatStatus === "inactive"
+  )
+  const deadContenders = Object.values(contenders).filter(
+    c => c.char.status.combatStatus === "dead"
+  )
+  return [...sortedContenders, ...inactiveContenders, ...deadContenders]
 }
 
 export const getIsFightOver = (contenders: Record<string, PlayerData>) => {

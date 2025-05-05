@@ -1,5 +1,8 @@
 import { StyleSheet } from "react-native"
 
+import { Redirect } from "expo-router"
+
+import { getPlayingOrder } from "lib/combat/utils/combat-utils"
 import Animated, { FadingTransition } from "react-native-reanimated"
 
 import DrawerPage from "components/DrawerPage"
@@ -7,6 +10,8 @@ import List from "components/List"
 import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
+import routes from "constants/routes"
+import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
 import colors from "styles/colors"
 
@@ -87,26 +92,24 @@ function OrderRow(props: OrderRowProps) {
 
 export default function GMCombatScreen() {
   const { combat, players, npcs } = useCombat()
+  const { meta, charId } = useCharacter()
+
+  if (!meta.isNpc)
+    return (
+      <Redirect
+        href={{ pathname: routes.combat.index, params: { charId, squadId: meta.squadId } }}
+      />
+    )
 
   if (!combat || !players || !npcs) return <Txt>Impossible de récupérer le combat</Txt>
 
-  const contenders = Object.values({ ...players, ...npcs }).sort((a, b) => {
-    const aCurrAp = a.char.status.currAp
-    const bCurrAp = b.char.status.currAp
-    const aInit = a.combatData.initiative
-    const bInit = b.combatData.initiative
-    if (aCurrAp === bCurrAp) {
-      if (aInit === bInit) return 0
-      return aInit > bInit ? -1 : 1
-    }
-    return aCurrAp > bCurrAp ? -1 : 1
-  })
+  const contenders = getPlayingOrder({ ...players, ...npcs })
 
   const defaultPlayingId =
     contenders.find(c => c.char.status.combatStatus === "active")?.char.charId ??
     contenders.find(c => c.char.status.combatStatus === "wait")?.char.charId
 
-  const playingId = combat.currActorId ?? defaultPlayingId
+  const playingId = combat.currActorId || defaultPlayingId
 
   return (
     <DrawerPage>
