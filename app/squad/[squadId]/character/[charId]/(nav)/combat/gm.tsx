@@ -102,6 +102,12 @@ export default function GMCombatScreen() {
     return aCurrAp > bCurrAp ? -1 : 1
   })
 
+  const defaultPlayingId =
+    contenders.find(c => c.char.status.combatStatus === "active")?.char.charId ??
+    contenders.find(c => c.char.status.combatStatus === "wait")?.char.charId
+
+  const playingId = combat.currActorId ?? defaultPlayingId
+
   return (
     <DrawerPage>
       <ScrollSection title="ordre" style={{ flex: 1 }}>
@@ -114,6 +120,8 @@ export default function GMCombatScreen() {
               name={item.char.meta.firstname}
               ap={item.char.status.currAp}
               initiative={item.combatData.initiative}
+              isWaiting={item.char.status.combatStatus === "wait"}
+              isPlaying={item.char.charId === playingId}
             />
           )}
         />
