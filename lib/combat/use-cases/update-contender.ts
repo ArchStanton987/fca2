@@ -5,15 +5,16 @@ export type UpdateContenderParams = {
   playerId: string
   charType: "players" | "npcs"
   initiative: number
-  nextActionBonus?: number
+  actionBonus?: number
+  acBonus?: number
 }
 
 export default function updateContender(dbType: keyof typeof repositoryMap = "rtdb") {
   const combatRepo = repositoryMap[dbType].combatRepository
 
-  return ({ id, playerId, charType, initiative, nextActionBonus }: UpdateContenderParams) =>
+  return ({ id, playerId, charType, initiative, actionBonus, acBonus }: UpdateContenderParams) =>
     combatRepo.patchChild(
       { id, childKey: charType },
-      { [playerId]: { initiative, nextActionBonus: nextActionBonus ?? 0 } }
+      { [playerId]: { initiative, actionBonus: actionBonus ?? 0, acBonus: acBonus ?? 0 } }
     )
 }

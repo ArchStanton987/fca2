@@ -2,6 +2,7 @@ import { TouchableOpacity, View } from "react-native"
 
 import Ionicons from "@expo/vector-icons/Ionicons"
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
+import { PrepareActionType } from "lib/combat/combats.types"
 import actions from "lib/combat/const/actions"
 import { getCurrentActionId, getCurrentRoundId } from "lib/combat/utils/combat-utils"
 import getUseCases from "lib/get-use-cases"
@@ -30,8 +31,9 @@ const actionTypes = Object.values(actions).map(a => ({ id: a.id, label: a.label 
 
 export default function ActionTypeSlide({ scrollNext }: SlideProps) {
   const useCases = getUseCases()
-  const combatContext = useCombat()
-  const { equipedObjects, unarmed, charId } = useCharacter()
+  const { players, npcs, combat } = useCombat()
+  const char = useCharacter()
+  const { equipedObjects, unarmed, charId, status } = char
   const weapons = equipedObjects.weapons.length > 0 ? equipedObjects.weapons : [unarmed]
 
   const form = useActionForm()
@@ -47,7 +49,6 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
   }
 
   const onPressWait = async () => {
-    const { players, npcs, combat } = combatContext
     if (!combat || !players || !npcs || actionType !== "pause") return
     const payload = {
       combatId: combat.id,
@@ -60,9 +61,27 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
       await useCases.combat.waitAction(payload)
       Toast.show({ type: "custom", text1: "Pigé ! On se tient prêt !" })
     } catch (error) {
-      console.log("error", error)
       Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement de l'action" })
     }
+  }
+
+  const onPressPrepare = () => {
+    if (!combat || !players || !npcs || actionType !== "prepare") return null
+    const action = {
+      actionType,
+      actionSubtype: actionSubtype as PrepareActionType,
+      actorId: charId,
+      apCost: status.currAp
+    }
+    return useCases.combat.prepareAction({ action, combat, actor: char })
+  }
+
+  const submit = async () => {
+    if (form.actionType === "pause") return onPressWait()
+    if (form.actionType === "prepare") return onPressPrepare()
+    if (!scrollNext) return null
+    scrollNext()
+    return null
   }
 
   const isCombinedAction = nextActorId === charId
@@ -132,11 +151,11 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
           <Section title={isPause || isPrepare ? "valider" : "suivant"} style={{ flex: 1 }}>
             <Row style={{ justifyContent: "center" }}>
               {isPause ? (
-                <TouchableOpacity onPress={() => onPressWait()}>
+                <TouchableOpacity onPress={() => submit()}>
                   <Ionicons name="pause-circle" size={36} color={colors.secColor} />
                 </TouchableOpacity>
               ) : (
-                <NextButton disabled={!canGoNext} onPress={scrollNext} />
+                <NextButton disabled={!canGoNext} onPress={() => submit()} />
               )}
             </Row>
           </Section>

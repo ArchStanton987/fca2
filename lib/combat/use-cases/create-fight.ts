@@ -15,7 +15,7 @@ export type CreateFightParams = {
   isStartingNow: boolean
 }
 
-const defaultContenderData = { initiative: DEFAULT_INITIATIVE, nextActionBonus: 0 }
+const defaultContenderData = { initiative: DEFAULT_INITIATIVE, actionBonus: 0, acBonus: 0 }
 
 export default function createFight(dbType: keyof typeof repositoryMap = "rtdb") {
   const combatRepo = repositoryMap[dbType].combatRepository

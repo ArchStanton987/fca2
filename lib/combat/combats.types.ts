@@ -5,7 +5,7 @@ import { LimbsHp } from "lib/character/health/health-types"
 type WeaponActionSubtypeId = "basicAttack" | "aim" | "burst" | "reload" | "unload" | "hit" | "throw"
 type MovementType = "crawl" | "walk" | "run" | "sprint" | "jump" | "climb" | "getUp"
 type ItemActionType = "drop" | "equip" | "unequip" | "use" | "search"
-type PrepareActionType = "dangerAwareness" | "visualize"
+export type PrepareActionType = "dangerAwareness" | "visualize"
 
 type CharId = string
 type NpcId = string
@@ -17,7 +17,8 @@ type InactiveRecord = Record<number, { inactiveRoundStart: number; inactiveRound
 export type PlayerCombatData = {
   initiative: number
   inactiveRecord?: InactiveRecord
-  nextActionBonus: number
+  actionBonus: number
+  acBonus: number
 }
 
 export type PlayerData = {

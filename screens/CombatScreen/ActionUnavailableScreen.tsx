@@ -71,7 +71,7 @@ function InactiveScreen() {
 function NoAp() {
   return (
     <Txt>
-      Vous n&pos;avez plus de point d&apos;action, il va falloir attendre le prochain round.
+      Vous n&apos;avez plus de point d&apos;action, il va falloir attendre le prochain round.
     </Txt>
   )
 }
