@@ -22,18 +22,26 @@ export default function WaitScreen() {
 
   return (
     <DrawerPage>
-      <Section style={{ flex: 1 }}>
+      <Section
+        style={{ flex: 1 }}
+        contentContainerStyle={{ flexGrow: 1, justifyContent: "center", alignItems: "center" }}
+      >
         <Txt>Vous avez choisi d&apos;attendre le bon moment pour agir au cours de ce round.</Txt>
         <Spacer y={layout.globalPadding} />
         <Txt>Vous pouvez intervenir quand vous le souhaitez au cours du round.</Txt>
         <Spacer y={layout.globalPadding} />
-        <Txt>Pour cela il faut appuyer là :</Txt>
-        <Spacer y={layout.globalPadding} />
+        <Txt>Pour cela il faut prévenir le MJ, puis appuyer là :</Txt>
+        <Spacer y={30} />
         <TouchableHighlight
-          style={{ borderWidth: 2, borderColor: colors.secColor }}
+          style={{
+            borderWidth: 2,
+            backgroundColor: colors.secColor,
+            paddingVertical: 15,
+            paddingHorizontal: 20
+          }}
           onPress={onPressEnd}
         >
-          <Txt>ACTION</Txt>
+          <Txt style={{ color: colors.primColor }}>ACTION</Txt>
         </TouchableHighlight>
       </Section>
     </DrawerPage>
