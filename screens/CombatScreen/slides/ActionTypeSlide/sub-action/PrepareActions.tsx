@@ -7,7 +7,8 @@ import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 
-const title = [{ title: "action", containerStyle: { flex: 1 } }, { title: "pa" }]
+// const title = [{ title: "action", containerStyle: { flex: 1 } }, { title: "pa" }]
+const title = "pa"
 
 export default function PrepareActions() {
   const { status } = useCharacter()

@@ -12,8 +12,6 @@ import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 
-const title = [{ title: "action", containerStyle: { flex: 1 } }, { title: "pa" }]
-
 export default function WeaponActions() {
   const { itemId, actionSubtype } = useActionForm()
   const { setActionSubtype } = useActionApi()
@@ -29,7 +27,7 @@ export default function WeaponActions() {
   const actions = getAvailableWeaponActions(weapon, char)
 
   return (
-    <ScrollSection style={{ flex: 1 }} title={title}>
+    <ScrollSection style={{ flex: 1 }} title="action - pa">
       <List
         data={actions}
         keyExtractor={item => item}

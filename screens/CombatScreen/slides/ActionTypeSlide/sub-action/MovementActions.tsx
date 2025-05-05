@@ -6,7 +6,7 @@ import ScrollSection from "components/Section/ScrollSection"
 import Txt from "components/Txt"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 
-const title = [{ title: "action", containerStyle: { flex: 1 } }, { title: "pa" }, { title: "dist" }]
+const title = "action / pa / dist"
 
 export default function MovementActions() {
   const { actionSubtype } = useActionForm()

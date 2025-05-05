@@ -17,6 +17,7 @@ type ScrollableSectionProps = {
   onPressTitle?: () => void
 }
 
+// TODO: fix title as array
 export default function ScrollSection({
   style,
   contentContainerStyle,
