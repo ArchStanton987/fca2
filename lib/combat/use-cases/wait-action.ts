@@ -1,7 +1,7 @@
 import repositoryMap from "lib/shared/db/get-repository"
 
 import { PauseAction, PlayerData } from "../combats.types"
-import { getActivePlayersWithAp, getIsFightOver, getNextActorId } from "../utils/combat-utils"
+import { getActivePlayersWithAp, getIsFightOver } from "../utils/combat-utils"
 
 export type WaitActionParams = {
   combatId: string
@@ -12,7 +12,6 @@ export type WaitActionParams = {
 }
 
 export default function waitAction(dbType: keyof typeof repositoryMap = "rtdb") {
-  const combatRepo = repositoryMap[dbType].combatRepository
   const statusRepo = repositoryMap[dbType].statusRepository
   const actionRepo = repositoryMap[dbType].actionRepository
   return (params: WaitActionParams) => {
@@ -29,10 +28,6 @@ export default function waitAction(dbType: keyof typeof repositoryMap = "rtdb") 
     // if no other player has AP, throw error as you can't wait for others
     const activePlayersWithAp = getActivePlayersWithAp(contenders)
     if (activePlayersWithAp.length <= 1) throw new Error("No other players with AP")
-
-    // set next actor in combat
-    const nextActorId = getNextActorId(contenders, charId)
-    promises.push(combatRepo.setChild({ id: combatId, childKey: "currActorId" }, nextActorId))
 
     // set actor new status
     const charType = contenders[charId].char.meta.isNpc ? "npcs" : "characters"

@@ -1,9 +1,3 @@
-x création combat (sans début)
-  (création combat entry)
-  - activation du combat
-    (set combat status pour tous les contenders)
-x création combat (avec début)
-
 - clôturer combat (commande admin)
   (reset combat status pour tous les contenders)
   (ajoute une entrée combats pour tous les contenders)
@@ -27,19 +21,6 @@ x création combat (avec début)
     //    - reset currFightId
     //    - reset combatStatus
     //    - reset AP
-
-=> updateDate : inclure les ennemis
-
-TODO: accéder à la nav depuis un ennemi
-- créer page "ennemis" depuis espace admin, lister ennemis dans drawer
-- si onLongPress => nav vers layout/[charId]
-- lors "activation" du combat, ajouter ennemis dans Squad en DB
-- à la fin du combat, retirer ennemis dans squad en DB
-- dans layout "character/[charId] : détecter si "characters" ou "enemies"
-- ajouter le charType en paramètre des subs pour récupérer les data personnage
-- créer classes Robot et Animal
-- créer factory pour création Character, Robot, Animal
-
 
 
 TODO: remove trap / thrown weapon after usage

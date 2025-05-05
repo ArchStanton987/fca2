@@ -9,10 +9,12 @@ import DrawerPage from "components/DrawerPage"
 import List from "components/List"
 import { SlideProps } from "components/Slides/Slide.types"
 import { getSlideWidth } from "components/Slides/slide.utils"
+import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
 import InitiativeScreen from "screens/CombatScreen/InitiativeScreen"
 import WaitInitiativeScreen from "screens/CombatScreen/WaitInitiativeScreen"
+import WaitScreen from "screens/CombatScreen/WaitScreen"
 import ActionTypeSlide from "screens/CombatScreen/slides/ActionTypeSlide/ActionTypeSlide"
 
 const getSlides = () => [
@@ -27,6 +29,7 @@ export default function ActionScreen() {
 
   const { reset } = useActionApi()
   const { players, npcs } = useCombat()
+  const character = useCharacter()
 
   const scrollRef = useRef<ScrollView>(null)
   const { width } = useWindowDimensions()
@@ -46,9 +49,11 @@ export default function ActionScreen() {
   )
 
   const prompts = getInitiativePrompts(charId, players ?? {}, npcs ?? {})
-
   if (prompts.playerShouldRollInitiative) return <InitiativeScreen />
   if (prompts.shouldWaitOthers) return <WaitInitiativeScreen />
+
+  const isWaiting = character.status.combatStatus === "wait"
+  if (isWaiting) return <WaitScreen />
 
   return (
     <DrawerPage>
