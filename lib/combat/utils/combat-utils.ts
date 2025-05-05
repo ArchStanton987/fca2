@@ -23,11 +23,10 @@ export const getCurrentActionId = (combat: CombatEntry | null) => {
 }
 
 export const getNextActorId = (contenders: Record<string, PlayerData>, idToExclude?: string) => {
-  // check if has rolled initiative
-  const hasInit = Object.values(contenders).some(
+  const needsRollInitiative = Object.values(contenders).some(
     c => c.combatData.initiative === DEFAULT_INITIATIVE
   )
-  if (!hasInit) throw new Error("All players must roll initiative")
+  if (needsRollInitiative) throw new Error("All players must roll initiative")
 
   const contendersWithAp = Object.entries(contenders)
     .filter(
