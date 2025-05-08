@@ -19,12 +19,13 @@ export type AdditionalMiscParams = Child<string>
 export type CombatParams = { id?: string; childKey?: keyof DbCombatEntry }
 export type RoundParams = {
   combatId: string
-  roundId?: number
+  id?: number
+  childKey?: number
 }
 export type ActionParams = {
   combatId: string
   roundId: number
-  actionId?: number
+  id?: number
   childKey?: keyof Action
 }
 export type NpcParams = { id?: string; childKey?: keyof DbNpc }
@@ -47,11 +48,12 @@ const rtdb = {
   getCombat: ({ id, childKey }: CombatParams) =>
     childKey ? `v2/combat/${id}/${childKey}` : `v2/combat/${id ?? ""}`,
 
-  getRound: ({ combatId, roundId }: RoundParams) => `v2/combat/${combatId}/rounds/${roundId ?? ""}`,
+  getRound: ({ combatId, id, childKey }: RoundParams) =>
+    id ? `v2/combat/${combatId}/rounds/${id}/${childKey ?? ""}` : `v2/combat/${combatId}/rounds/`,
 
-  getAction: ({ combatId, roundId, actionId, childKey }: ActionParams) =>
-    actionId
-      ? `v2/combat/${combatId}/rounds/${roundId}/${actionId}/${childKey ?? ""}`
+  getAction: ({ combatId, roundId, id, childKey }: ActionParams) =>
+    id
+      ? `v2/combat/${combatId}/rounds/${roundId}/${id}/${childKey ?? ""}`
       : `v2/combat/${combatId}/rounds/${roundId}/`,
 
   getEnemy: ({ id, childKey }: NpcParams) =>

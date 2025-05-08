@@ -1,6 +1,7 @@
 // import { DbStatus } from "lib/character/status/status.types"
 import { isKeyOf } from "utils/ts-utils"
 
+import Combat from "../Combat"
 import { Action, PlayerData } from "../combats.types"
 import { DEFAULT_INITIATIVE } from "../const/combat-const"
 
@@ -8,18 +9,29 @@ interface CombatEntry {
   rounds?: Record<string, Record<string, Action>>
 }
 
+const getIsDefaultAction = (action: Action) =>
+  action.actionType === "" &&
+  action.actionSubtype === "" &&
+  action.actorId === "" &&
+  action.apCost === 0 &&
+  action.itemId === "" &&
+  action.targetName === ""
+
+export const getNewRoundId = (combat: Combat) => Object.keys(combat.rounds ?? {}).length + 1
 export const getCurrentRoundId = (combat: CombatEntry | null) => {
   if (!combat) return 1
   const keys = Object.keys(combat.rounds ?? {}).map(Number)
   return keys.length > 0 ? Math.max(...keys) : 1
 }
-
-export const getCurrentActionId = (combat: CombatEntry | null) => {
-  if (!combat) return 1
+export const getNewActionId = (combat: Combat) => {
   const roundId = getCurrentRoundId(combat)
   const rounds = combat.rounds ?? {}
-  const keys = Object.keys(rounds[roundId]).map(Number)
-  return keys.length > 0 ? Math.max(...keys) : 1
+  const actions = Object.values(rounds[roundId] ?? {})
+  if (actions.length === 0) return 1
+  const isDefaultAction = getIsDefaultAction(actions[0])
+  if (isDefaultAction) return 1
+  const keys = Object.keys(rounds[roundId] ?? {}).map(Number)
+  return keys.length > 0 ? Math.max(...keys) + 1 : 1
 }
 
 export const getPlayingOrder = (contenders: Record<string, PlayerData>) => {
@@ -58,18 +70,19 @@ export const getActivePlayersWithAp = (contenders: Record<string, PlayerData>) =
     .filter(([, c]) => c.char.status.currAp > 0)
     .map(([id, status]) => ({ id, status }))
 
-// export const getShouldCreateNewRound = (
-//   players: Record<string, DbStatus>,
-//   enemies: Record<string, DbStatus>,
-//   action: { actorId: string; apCost: number }
-// ): boolean => {
-//   const charsWithAp = getActivePlayersWithAp(players, enemies)
-//   if (charsWithAp.length !== 1) return false
-//   if (charsWithAp[0].id !== action.actorId) return false
-//   const actorAp = charsWithAp[0].status.currAp
-//   const willSpendAllAp = actorAp - action.apCost <= 0
-//   return willSpendAllAp
-// }
+export const getIsActionEndingRound = (
+  contenders: Record<string, PlayerData>,
+  action: { apCost: number; actorId: string }
+) => {
+  const actor = contenders[action.actorId]
+  if (!actor) return false
+  const validContenders = Object.values(contenders)
+    .filter(c => c.char.status.combatStatus !== "inactive")
+    .filter(c => c.char.status.combatStatus !== "dead")
+    .filter(c => c.char.status.currAp > 0)
+  if (validContenders.length > 1) return false
+  return actor.char.status.currAp - action.apCost <= 0
+}
 
 export const getInitiativePrompts = (
   charId: string,

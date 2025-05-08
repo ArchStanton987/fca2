@@ -1,6 +1,6 @@
 import { Action, DbCombatEntry, PlayerCombatData } from "./combats.types"
 
-const defaultAction = {
+export const defaultAction = {
   actionType: "",
   actionSubtype: "",
   actorId: "",
@@ -32,10 +32,17 @@ export default class Combat {
     this.currActorId = payload.currActorId
     this.players = payload.players
     this.npcs = payload.npcs
-    if (payload.rounds) {
-      this.rounds = payload.rounds
-    } else {
-      this.rounds = { 1: { 1: defaultAction } }
-    }
+    this.rounds = Object.fromEntries(
+      Object.entries(payload.rounds ?? {}).map(([rId, round]) => {
+        const roundId = Number(rId)
+        const actions = Object.fromEntries(
+          Object.entries(round ?? {}).map(([aId, action]) => {
+            const actionId = Number(aId)
+            return [actionId, action as Action]
+          })
+        )
+        return [roundId, actions]
+      })
+    )
   }
 }

@@ -4,7 +4,6 @@ import Ionicons from "@expo/vector-icons/Ionicons"
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import { PrepareActionType } from "lib/combat/combats.types"
 import actions from "lib/combat/const/actions"
-import { getCurrentActionId, getCurrentRoundId } from "lib/combat/utils/combat-utils"
 import getUseCases from "lib/get-use-cases"
 import Toast from "react-native-toast-message"
 
@@ -50,15 +49,10 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
 
   const onPressWait = async () => {
     if (!combat || !players || !npcs || actionType !== "pause") return
-    const payload = {
-      combatId: combat.id,
-      roundId: getCurrentRoundId(combat),
-      actionId: getCurrentActionId(combat),
-      contenders: { ...players, ...npcs },
-      action: { actionType, actorId: charId }
-    }
+    const action = { actionType, actorId: charId }
+    const contenders = { ...players, ...npcs }
     try {
-      await useCases.combat.waitAction(payload)
+      await useCases.combat.waitAction({ combat, contenders, action })
       Toast.show({ type: "custom", text1: "Pigé ! On se tient prêt !" })
     } catch (error) {
       Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement de l'action" })
@@ -67,13 +61,14 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
 
   const onPressPrepare = () => {
     if (!combat || !players || !npcs || actionType !== "prepare") return null
+    const contenders = { ...players, ...npcs }
     const action = {
       actionType,
       actionSubtype: actionSubtype as PrepareActionType,
       actorId: charId,
       apCost: status.currAp
     }
-    return useCases.combat.prepareAction({ action, combat, actor: char })
+    return useCases.combat.prepareAction({ action, combat, contenders })
   }
 
   const submit = async () => {

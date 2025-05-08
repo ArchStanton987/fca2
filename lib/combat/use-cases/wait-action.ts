@@ -1,12 +1,11 @@
 import repositoryMap from "lib/shared/db/get-repository"
 
+import Combat from "../Combat"
 import { PauseAction, PlayerData } from "../combats.types"
-import { getActivePlayersWithAp, getIsFightOver } from "../utils/combat-utils"
+import { getActivePlayersWithAp, getCurrentRoundId, getNewActionId } from "../utils/combat-utils"
 
 export type WaitActionParams = {
-  combatId: string
-  roundId: number
-  actionId: number
+  combat: Combat
   contenders: Record<string, PlayerData>
   action: PauseAction
 }
@@ -14,16 +13,11 @@ export type WaitActionParams = {
 export default function waitAction(dbType: keyof typeof repositoryMap = "rtdb") {
   const statusRepo = repositoryMap[dbType].statusRepository
   const actionRepo = repositoryMap[dbType].actionRepository
-  return (params: WaitActionParams) => {
-    // const { action, players, npcs, combatId, roundId, actionId } = params
-    const { action, contenders, combatId, roundId, actionId } = params
+  return async (params: WaitActionParams) => {
+    const { action, contenders, combat } = params
     const charId = action.actorId
-    // const charType = players[charId] ? "characters" : "npcs"
 
     const promises = []
-
-    // check if fight is not over
-    if (getIsFightOver(contenders)) throw new Error("Fight is over")
 
     // if no other player has AP, throw error as you can't wait for others
     const activePlayersWithAp = getActivePlayersWithAp(contenders)
@@ -34,7 +28,9 @@ export default function waitAction(dbType: keyof typeof repositoryMap = "rtdb") 
     promises.push(statusRepo.setChild({ charId, charType, childKey: "combatStatus" }, "wait"))
 
     // save action in combat
-    promises.push(actionRepo.set({ combatId, roundId, actionId }, action))
+    const roundId = getCurrentRoundId(combat)
+    const actionId = getNewActionId(combat)
+    promises.push(actionRepo.add({ combatId: combat.id, roundId, id: actionId }, action))
 
     return Promise.all(promises)
   }
