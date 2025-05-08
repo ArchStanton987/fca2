@@ -3,13 +3,13 @@ import { Pressable } from "react-native"
 import actions from "lib/combat/const/actions"
 
 import Txt from "components/Txt"
-import HealthFigure from "components/draws/HealthFigure/HealthFigure"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { isKeyOf } from "utils/ts-utils"
 
 import WeaponInfo from "../../WeaponInfo"
 import ItemsActionInfo from "./ItemsActionInfo"
+import MovementInfo from "./MovementInfo"
 
 export default function ActionInfo() {
   const { equipedObjects, unarmed } = useCharacter()
@@ -41,7 +41,7 @@ export default function ActionInfo() {
       </Pressable>
     )
   }
-  if (actionType === "movement") return <HealthFigure />
+  if (actionType === "movement") return <MovementInfo />
   if (actionType === "item") return <ItemsActionInfo />
   if (actionType === "pause") return <Txt>{actions.pause.description}</Txt>
   return null
