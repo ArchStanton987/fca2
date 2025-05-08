@@ -18,6 +18,7 @@ import prepareAction, { PrepareActionParams } from "./combat/use-cases/prepare-a
 import startFight, { StartFightParams } from "./combat/use-cases/start-fight"
 import subAllFights from "./combat/use-cases/sub-all-fights"
 import subFight, { SubFightParams } from "./combat/use-cases/sub-fight"
+import updateAction, { UpdateActionParams } from "./combat/use-cases/update-action"
 import updateContender, { UpdateContenderParams } from "./combat/use-cases/update-contender"
 import updateFight, { UpdateFightParams } from "./combat/use-cases/update-fight"
 import waitAction, { WaitActionParams } from "./combat/use-cases/wait-action"
@@ -86,7 +87,8 @@ export default function getUseCases(
       updateContender: (data: UpdateContenderParams) => updateContender(dbType)(data),
       waitAction: (data: WaitActionParams) => waitAction(dbType)(data),
       endWait: (data: EndWaitParams) => endWait(dbType)(data),
-      prepareAction: (data: PrepareActionParams) => prepareAction(dbType)(data)
+      prepareAction: (data: PrepareActionParams) => prepareAction(dbType)(data),
+      updateAction: (data: UpdateActionParams) => updateAction(dbType)(data)
       // addNewRound: (data: AddRoundParams) => addNewRound(dbType)(data),
       // addAction: (data: AddActionParams) => addAction(dbType)(data)
     },

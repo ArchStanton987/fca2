@@ -36,6 +36,17 @@ export const getNewActionId = (combat: Combat) => {
   const keys = Object.keys(rounds[roundId] ?? {}).map(Number)
   return keys.length > 0 ? Math.max(...keys) + 1 : 1
 }
+export const getCurrentActionId = (combat: Combat | null) => {
+  if (!combat) return 1
+  const roundId = getCurrentRoundId(combat)
+  const rounds = combat.rounds ?? {}
+  const actions = Object.values(rounds[roundId] ?? {})
+  if (actions.length === 0) return 1
+  const isDefaultAction = getIsDefaultAction(actions[0])
+  if (isDefaultAction) return 1
+  const keys = Object.keys(rounds[roundId] ?? {}).map(Number)
+  return keys.length > 0 ? Math.max(...keys) : 1
+}
 
 export const getPlayingOrder = (contenders: Record<string, PlayerData>) => {
   // sort contenders by initiative and current ap, then combat status inactive, then dead

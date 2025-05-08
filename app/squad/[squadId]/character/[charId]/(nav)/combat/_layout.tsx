@@ -13,9 +13,10 @@ const navElements = [
   { path: "action", label: "Action" }
 ]
 const dmNavElements = [
+  { path: "gm", label: "MJ" },
+  { path: "action-order", label: "Ordre" },
   { path: "recap", label: "Bagarre" },
-  { path: "action", label: "Action" },
-  { path: "gm", label: "MJ" }
+  { path: "action", label: "Action" }
 ]
 
 export default function CombatLayout() {

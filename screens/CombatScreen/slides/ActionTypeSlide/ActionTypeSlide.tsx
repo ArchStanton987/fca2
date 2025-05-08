@@ -1,6 +1,6 @@
 import { TouchableOpacity, View } from "react-native"
 
-import Ionicons from "@expo/vector-icons/Ionicons"
+import AntDesign from "@expo/vector-icons/AntDesign"
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import { PrepareActionType } from "lib/combat/combats.types"
 import actions from "lib/combat/const/actions"
@@ -39,6 +39,8 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
   const { actionType, actionSubtype, nextActorId } = form
   const { setForm, setActionType } = useActionApi()
 
+  const currAction = { actionType, actionSubtype, actorId: charId }
+
   const onPressActionType = (id: keyof typeof actions) => {
     if (id === "weapon") {
       setActionType({ actionType: id, itemId: weapons[0].dbKey })
@@ -48,7 +50,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
   }
 
   const onPressWait = async () => {
-    if (!combat || !players || !npcs || actionType !== "pause") return
+    if (!combat || !players || !npcs || actionType !== "pause") throw new Error("No combat found")
     const action = { actionType, actorId: charId }
     const contenders = { ...players, ...npcs }
     try {
@@ -60,7 +62,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
   }
 
   const onPressPrepare = () => {
-    if (!combat || !players || !npcs || actionType !== "prepare") return null
+    if (!combat || !players || !npcs || actionType !== "prepare") throw new Error("No combat found")
     const contenders = { ...players, ...npcs }
     const action = {
       actionType,
@@ -71,10 +73,18 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
     return useCases.combat.prepareAction({ action, combat, contenders })
   }
 
+  const onPressMovement = () => {
+    if (!combat || !players || !npcs) throw new Error("No combat found")
+    useCases.combat.updateAction({ combat, payload: currAction })
+    if (!scrollNext) throw new Error("No scrollNext function found")
+    scrollNext()
+  }
+
   const submit = async () => {
     if (form.actionType === "pause") return onPressWait()
     if (form.actionType === "prepare") return onPressPrepare()
-    if (!scrollNext) return null
+    if (form.actionType === "movement") return onPressMovement()
+    if (!scrollNext) throw new Error("No scrollNext function found")
     scrollNext()
     return null
   }
@@ -127,7 +137,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
 
       <Spacer x={layout.globalPadding} />
 
-      <View style={{ width: 170 }}>
+      <View style={{ width: 175 }}>
         <ScrollSection style={{ flex: 1 }} title="info">
           <ActionInfo />
         </ScrollSection>
@@ -145,9 +155,9 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
 
           <Section title={isPause || isPrepare ? "valider" : "suivant"} style={{ flex: 1 }}>
             <Row style={{ justifyContent: "center" }}>
-              {isPause ? (
+              {isPrepare || isPause ? (
                 <TouchableOpacity onPress={() => submit()}>
-                  <Ionicons name="pause-circle" size={36} color={colors.secColor} />
+                  <AntDesign name="playcircleo" size={36} color={colors.secColor} />
                 </TouchableOpacity>
               ) : (
                 <NextButton disabled={!canGoNext} onPress={() => submit()} />

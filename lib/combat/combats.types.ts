@@ -22,8 +22,8 @@ export type PlayerCombatData = {
 }
 
 export type SimpleRoll = {
-  actorSkillScore: number
-  actorDiceScore: number
+  actorSkillScore?: number
+  actorDiceScore?: number
   difficultyModifier: number
 }
 type OppositionRoll = SimpleRoll & {
@@ -45,10 +45,11 @@ export type Action = {
   actionSubtype?: string
   actorId: CharId
   apCost?: number
-  roll?: Roll
+  roll?: Roll | null
   healthChangeEntries?: HealthChangeEntries
   itemId?: ItemId
   targetName?: string
+  isDone?: boolean
 }
 
 export type WeaponAction = {
@@ -61,6 +62,7 @@ export type WeaponAction = {
   apCost: number
   roll: Roll
   healthChangeEntries?: HealthChangeEntries
+  isDone?: boolean
 }
 
 export type MovementAction = {
@@ -68,8 +70,9 @@ export type MovementAction = {
   actionSubtype: MovementType
   actorId: CharId
   apCost: number
-  roll?: SimpleRoll
+  roll?: SimpleRoll | null
   healthChangeEntries?: HealthChangeEntries
+  isDone?: boolean
 }
 
 export type ItemAction = {
@@ -78,19 +81,21 @@ export type ItemAction = {
   itemId: ItemId
   actorId: CharId
   apCost: number
-  roll?: SimpleRoll
+  roll?: SimpleRoll | null
   healthChangeEntries?: HealthChangeEntries
+  isDone?: boolean
 }
 
-export type PauseAction = { actionType: "pause"; actorId: CharId }
+export type PauseAction = { actionType: "pause"; actorId: CharId; isDone?: boolean }
 
 export type OtherAction = {
   actionType: "other"
   actionSubtype: string
   actorId: CharId
   apCost: number
-  roll?: SimpleRoll
+  roll?: SimpleRoll | null
   healthChangeEntries?: HealthChangeEntries
+  isDone?: boolean
 }
 
 export type PrepareAction = {
@@ -98,6 +103,7 @@ export type PrepareAction = {
   actionSubtype: PrepareActionType
   actorId: CharId
   apCost: number
+  isDone?: boolean
 }
 
 export type DoneAction =

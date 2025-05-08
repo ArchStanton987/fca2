@@ -10,19 +10,38 @@ import List from "components/List"
 import { SlideProps } from "components/Slides/Slide.types"
 import { getSlideWidth } from "components/Slides/slide.utils"
 import Txt from "components/Txt"
-import { useActionApi } from "providers/ActionProvider"
+import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
 import ActionUnavailableScreen from "screens/CombatScreen/ActionUnavailableScreen"
 import InitiativeScreen from "screens/CombatScreen/InitiativeScreen"
 import WaitInitiativeScreen from "screens/CombatScreen/WaitInitiativeScreen"
 import ActionTypeSlide from "screens/CombatScreen/slides/ActionTypeSlide/ActionTypeSlide"
+import DiceResultSlide from "screens/CombatScreen/slides/DiceResultSlide"
+import DiceRollSlide from "screens/CombatScreen/slides/DiceRollSlide"
 
-const getSlides = () => [
-  {
-    id: "actionType",
-    renderSlide: ({ scrollNext }: SlideProps) => <ActionTypeSlide scrollNext={scrollNext} />
+const initSlide = {
+  id: "actionType",
+  renderSlide: (props: SlideProps) => <ActionTypeSlide {...props} />
+}
+
+const getSlides = (form: { actionType: string; actionSubType: string }) => {
+  const { actionType } = form
+  if (actionType === "movement") {
+    return [
+      initSlide,
+      {
+        id: "diceRoll",
+        renderSlide: (props: SlideProps) => <DiceRollSlide skillId="physical" {...props} />
+      },
+      {
+        id: "diceResult",
+        renderSlide: (props: SlideProps) => <DiceResultSlide skillId="physical" {...props} />
+      }
+    ]
   }
-]
+
+  return [initSlide]
+}
 
 export default function ActionScreen() {
   const { charId } = useLocalSearchParams<{ charId: string }>()
@@ -39,7 +58,8 @@ export default function ActionScreen() {
     scrollRef.current.scrollTo({ x: index * slideWidth, animated: true })
   }
 
-  const slides = getSlides()
+  const form = useActionForm()
+  const slides = getSlides(form)
 
   useFocusEffect(
     useCallback(() => {
@@ -72,14 +92,17 @@ export default function ActionScreen() {
         disableIntervalMomentum
         ref={scrollRef}
         bounces={false}
-        // scrollEnabled={false}
+        scrollEnabled={false}
       >
         <List
           data={slides}
           horizontal
           keyExtractor={item => item.id}
           renderItem={({ item, index }) =>
-            item.renderSlide({ scrollNext: () => scrollTo(index + 1) })
+            item.renderSlide({
+              scrollNext: () => scrollTo(index + 1),
+              scrollPrevious: () => scrollTo(index - 1)
+            })
           }
         />
       </ScrollView>

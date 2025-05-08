@@ -1,134 +1,164 @@
-import { StyleSheet } from "react-native"
+import { useState } from "react"
+import { TouchableOpacity } from "react-native"
 
-import { Redirect } from "expo-router"
-
-import { getPlayingOrder } from "lib/combat/utils/combat-utils"
-import Animated, { FadingTransition } from "react-native-reanimated"
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
+import Slider from "@react-native-community/slider"
+import {
+  getCurrentActionId,
+  getCurrentRoundId,
+  getPlayingOrder
+} from "lib/combat/utils/combat-utils"
 
 import DrawerPage from "components/DrawerPage"
-import List from "components/List"
-import ScrollSection from "components/Section/ScrollSection"
+import Row from "components/Row"
+import Section from "components/Section"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import routes from "constants/routes"
-import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
+import { useGetUseCases } from "providers/UseCasesProvider"
+import { difficultyArray } from "screens/CombatScreen/slides/ActionTypeSlide/info/DifficultyInfo"
+import GoBackButton from "screens/CombatScreen/slides/GoBackButton"
+import NextButton from "screens/CombatScreen/slides/NextButton"
 import colors from "styles/colors"
+import layout from "styles/layout"
 
-type OrderRowProps = {
-  name?: string
-  ap?: number
-  initiative?: number
-  isWaiting?: boolean
-  isPlaying?: boolean
-  isDone?: boolean
-}
-
-const styles = StyleSheet.create({
-  row: {
-    borderWidth: 2,
-    borderColor: "transparent",
-    padding: 5,
-    flexDirection: "row"
-  },
-  nameCol: {
-    flex: 1
-  },
-  dataCol: {
-    width: 90
-  },
-  playing: {
-    borderColor: colors.secColor
-  },
-  waiting: {
-    color: colors.terColor
-  },
-  done: {
-    textDecorationLine: "line-through"
-  }
-})
-
-function OrderRow(props: OrderRowProps) {
-  const { name, ap, initiative, isPlaying, isDone, isWaiting } = props
-  return (
-    <Animated.View layout={FadingTransition} style={[styles.row, isPlaying && styles.playing]}>
-      {name && (
-        <Txt
-          style={[
-            styles.nameCol,
-            isPlaying && styles.playing,
-            isWaiting && styles.waiting,
-            isDone && styles.done
-          ]}
-        >
-          {name}
-        </Txt>
-      )}
-      <Txt
-        style={[
-          styles.dataCol,
-          isPlaying && styles.playing,
-          isWaiting && styles.waiting,
-          isDone && styles.done
-        ]}
-      >
-        {ap ?? 0}
-      </Txt>
-      {initiative && (
-        <Txt
-          style={[
-            styles.dataCol,
-            isPlaying && styles.playing,
-            isWaiting && styles.waiting,
-            isDone && styles.done
-          ]}
-        >
-          {initiative ?? 1000}
-        </Txt>
-      )}
-    </Animated.View>
-  )
-}
-
-export default function GMCombatScreen() {
+export default function GMActionsScreen() {
+  const useCases = useGetUseCases()
   const { combat, players, npcs } = useCombat()
-  const { meta, charId } = useCharacter()
 
-  if (!meta.isNpc)
+  const [hasRoll, setHasRoll] = useState(false)
+  const [difficulty, setDifficulty] = useState(0)
+
+  const submit = () => {
+    if (!combat) return
+    const roll = hasRoll ? { difficultyModifier: difficulty } : null
+    useCases.combat.updateAction({ combat, payload: { roll } })
+  }
+
+  const resetDifficulty = async () => {
+    if (!combat) return
+    setDifficulty(0)
+    const roundId = getCurrentRoundId(combat)
+    const actionId = getCurrentActionId(combat)
+    const prev = { ...combat.rounds?.[roundId]?.[actionId] }
+    delete prev.roll
+    // TODO: FIX, not working
+    const res = await useCases.combat.updateAction({ combat, payload: prev })
+    console.log("res", res)
+  }
+
+  if (combat === null)
     return (
-      <Redirect
-        href={{ pathname: routes.combat.index, params: { charId, squadId: meta.squadId } }}
-      />
+      <DrawerPage>
+        <Txt>Impossible de récupérer le combat en cours</Txt>
+      </DrawerPage>
     )
 
-  if (!combat || !players || !npcs) return <Txt>Impossible de récupérer le combat</Txt>
-
   const contenders = getPlayingOrder({ ...players, ...npcs })
-
   const defaultPlayingId =
     contenders.find(c => c.char.status.combatStatus === "active")?.char.charId ??
     contenders.find(c => c.char.status.combatStatus === "wait")?.char.charId
-
   const playingId = combat.currActorId || defaultPlayingId
+  const currPlayer = contenders.find(c => c.char.charId === playingId)
+
+  if (!currPlayer) return <Txt>Impossible de récupérer le joueur</Txt>
+
+  const roundId = getCurrentRoundId(combat)
+  const actionId = getCurrentActionId(combat)
+  const currActionRoll = combat?.rounds?.[roundId]?.[actionId]?.roll
+  const isAwaitingDifficulty = currActionRoll === undefined
+
+  if (!isAwaitingDifficulty)
+    return (
+      <DrawerPage>
+        <Section style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
+          <Txt>Rien à faire pour le moment</Txt>
+          <Spacer y={50} />
+          <TouchableOpacity onPress={resetDifficulty}>
+            <Txt>RESET DIFF</Txt>
+          </TouchableOpacity>
+        </Section>
+      </DrawerPage>
+    )
+
+  const difficultyLvl = difficultyArray.find(e => difficulty <= e.threshold)
 
   return (
-    <DrawerPage>
-      <ScrollSection title="ordre" style={{ flex: 1 }}>
-        <List
-          data={contenders}
-          keyExtractor={item => item.char.charId}
-          separator={<Spacer y={10} />}
-          renderItem={({ item }) => (
-            <OrderRow
-              name={item.char.meta.firstname}
-              ap={item.char.status.currAp}
-              initiative={item.combatData.initiative}
-              isWaiting={item.char.status.combatStatus === "wait"}
-              isPlaying={item.char.charId === playingId}
-            />
-          )}
+    <DrawerPage style={{ flexDirection: "column" }}>
+      <Section>
+        <Row style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+          <Txt
+            style={{
+              color: hasRoll ? difficultyLvl?.color ?? colors.secColor : colors.terColor,
+              fontSize: 25
+            }}
+          >
+            {difficulty} :{" "}
+          </Txt>
+          <Txt
+            style={{
+              color: hasRoll ? difficultyLvl?.color ?? colors.secColor : colors.terColor,
+              fontSize: 25
+            }}
+          >
+            {difficultyLvl?.label}
+          </Txt>
+        </Row>
+
+        <Spacer y={20} />
+
+        <Slider
+          style={{ flex: 1 }}
+          minimumValue={-99}
+          disabled={!hasRoll}
+          minimumTrackTintColor={hasRoll ? colors.quadColor : colors.terColor}
+          maximumTrackTintColor={hasRoll ? colors.quadColor : colors.terColor}
+          maximumValue={120}
+          step={1}
+          thumbTintColor={hasRoll ? colors.secColor : colors.terColor}
+          value={difficulty}
+          onValueChange={value => setDifficulty(value)}
         />
-      </ScrollSection>
+
+        <Spacer y={20} />
+      </Section>
+
+      <Spacer y={layout.globalPadding} />
+
+      <Row style={{ flex: 1 }}>
+        <Section
+          contentContainerStyle={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          title="reset difficulty"
+        >
+          <GoBackButton onPress={resetDifficulty} size={45} />
+        </Section>
+        <Spacer x={layout.globalPadding} />
+        <Section
+          style={{ flex: 1 }}
+          contentContainerStyle={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Row style={{ alignItems: "center" }}>
+            <Txt>Doit effectuer un jet de dés ?</Txt>
+            <Spacer x={10} />
+            <TouchableOpacity onPress={() => setHasRoll(prev => !prev)}>
+              <MaterialCommunityIcons
+                name={hasRoll ? "check-decagram-outline" : "decagram-outline"}
+                size={50}
+                color={hasRoll ? colors.secColor : colors.terColor}
+              />
+            </TouchableOpacity>
+          </Row>
+        </Section>
+
+        <Spacer x={layout.globalPadding} />
+
+        <Section
+          contentContainerStyle={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          title="valider"
+        >
+          <NextButton onPress={submit} size={45} />
+        </Section>
+      </Row>
     </DrawerPage>
   )
 }
