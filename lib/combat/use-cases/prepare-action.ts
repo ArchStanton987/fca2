@@ -1,7 +1,8 @@
+import Playable from "lib/character/Playable"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import Combat from "../Combat"
-import { PlayerData, PrepareAction } from "../combats.types"
+import { PlayerCombatData, PrepareAction } from "../combats.types"
 import { AC_BONUS_PER_AP_SPENT, SCORE_BONUS_PER_AP_SPENT } from "../const/combat-const"
 import { getCurrentRoundId, getIsActionEndingRound, getNewActionId } from "../utils/combat-utils"
 import setNewRound from "./set-new-round"
@@ -10,7 +11,7 @@ import updateContender from "./update-contender"
 export type PrepareActionParams = {
   combat: Combat
   action: PrepareAction
-  contenders: Record<string, PlayerData>
+  contenders: Record<string, { char: Playable; combatData: PlayerCombatData }>
 }
 
 export default function prepareAction(dbType: keyof typeof repositoryMap = "rtdb") {

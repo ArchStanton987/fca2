@@ -1,13 +1,16 @@
 // import { DbStatus } from "lib/character/status/status.types"
+import Playable from "lib/character/Playable"
+
 import { isKeyOf } from "utils/ts-utils"
 
 import Combat from "../Combat"
-import { Action, PlayerData } from "../combats.types"
+import { Action, PlayerCombatData } from "../combats.types"
 import { DEFAULT_INITIATIVE } from "../const/combat-const"
 
 interface CombatEntry {
   rounds?: Record<string, Record<string, Action>>
 }
+type PlayerData = { char: Playable; combatData: PlayerCombatData }
 
 const getIsDefaultAction = (action: Action) =>
   action.actionType === "" &&

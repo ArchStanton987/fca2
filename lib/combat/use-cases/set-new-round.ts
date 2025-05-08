@@ -1,11 +1,12 @@
+import Playable from "lib/character/Playable"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import Combat, { defaultAction } from "../Combat"
-import { PlayerData } from "../combats.types"
+import { PlayerCombatData } from "../combats.types"
 import { getCurrentRoundId } from "../utils/combat-utils"
 
 export type SetNewRoundParams = {
-  contenders: Record<string, PlayerData>
+  contenders: Record<string, { char: Playable; combatData: PlayerCombatData }>
   combat: Combat
 }
 

@@ -1,12 +1,13 @@
+import Playable from "lib/character/Playable"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import Combat from "../Combat"
-import { PauseAction, PlayerData } from "../combats.types"
+import { PauseAction, PlayerCombatData } from "../combats.types"
 import { getActivePlayersWithAp, getCurrentRoundId, getNewActionId } from "../utils/combat-utils"
 
 export type WaitActionParams = {
   combat: Combat
-  contenders: Record<string, PlayerData>
+  contenders: Record<string, { char: Playable; combatData: PlayerCombatData }>
   action: PauseAction
 }
 

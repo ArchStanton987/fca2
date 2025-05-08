@@ -1,4 +1,3 @@
-import Playable from "lib/character/Playable"
 import { EffectId } from "lib/character/effects/effects.types"
 import { LimbsHp } from "lib/character/health/health-types"
 
@@ -13,17 +12,13 @@ type ItemId = string
 type AimZone = "torso" | "legs" | "arms" | "head" | "groin" | "eyes"
 
 type InactiveRecord = Record<number, { inactiveRoundStart: number; inactiveRoundEnd: number }>
+type ArmorClassBonusRecord = Record<number, number>
 
 export type PlayerCombatData = {
   initiative: number
   inactiveRecord?: InactiveRecord
   actionBonus: number
-  acBonus: number
-}
-
-export type PlayerData = {
-  char: Playable
-  combatData: PlayerCombatData
+  acBonusRecord: ArmorClassBonusRecord
 }
 
 export type SimpleRoll = {

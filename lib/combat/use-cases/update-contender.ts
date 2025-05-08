@@ -1,12 +1,13 @@
+import Playable from "lib/character/Playable"
 import repositoryMap from "lib/shared/db/get-repository"
 
+import Combat from "../Combat"
+import { PlayerCombatData } from "../combats.types"
+
 export type UpdateContenderParams = {
-  id: string
-  playerId: string
-  charType: "players" | "npcs"
-  initiative: number
-  actionBonus?: number
-  acBonus?: number
+  char: Playable
+  combat: Combat
+  payload: Partial<PlayerCombatData>
 }
 
 export default function updateContender(dbType: keyof typeof repositoryMap = "rtdb") {
