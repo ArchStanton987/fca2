@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react"
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from "react-native"
 
-import { useFocusEffect, useLocalSearchParams } from "expo-router"
+import { useFocusEffect } from "expo-router"
 
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
 import skillsMap from "lib/character/abilities/skills/skills"
@@ -21,12 +21,6 @@ import colors from "styles/colors"
 import layout from "styles/layout"
 
 import NextButton from "./slides/NextButton"
-
-type InitiativeScreenParams = {
-  charId: string
-  combatId: string
-  charType: "players" | "enemies"
-}
 
 const styles = StyleSheet.create({
   digit: {
@@ -54,14 +48,12 @@ const styles = StyleSheet.create({
 })
 
 export default function InitiativeScreen() {
-  const { charId } = useLocalSearchParams<InitiativeScreenParams>()
-
   const useCases = useGetUseCases()
 
   const { combat } = useCombat()
   const character = useCharacter()
   const { isNpc } = character.meta
-  const { skills, meta } = character
+  const { skills } = character
   const { perceptionSkill } = skills.curr
 
   const { scoreStr, onPressKeypad, setScore } = useNumPad()
@@ -73,10 +65,9 @@ export default function InitiativeScreen() {
   const onPressConfirm = async () => {
     if (Number.isNaN(finalScore) || combat === null) return
     await useCases.combat.updateContender({
-      id: combat?.id,
-      playerId: charId,
-      charType: meta.isNpc ? "npcs" : "players",
-      initiative: finalScore
+      combat,
+      char: character,
+      payload: { initiative: finalScore }
     })
   }
 

@@ -19,36 +19,37 @@ export default function prepareAction(dbType: keyof typeof repositoryMap = "rtdb
   const statusRepo = repositoryMap[dbType].statusRepository
 
   return ({ combat, action, contenders }: PrepareActionParams) => {
-    const { id } = combat
     const { apCost, actionSubtype, actorId } = action
     const { charId, meta, status } = contenders[actorId].char
     const { isNpc } = meta
 
+    const roundId = getCurrentRoundId(combat)
+
     const promises = []
 
     //  calc new bonus
-    const childKey = isNpc ? "npcs" : "players"
+    const contenderType = isNpc ? "npcs" : "players"
     const isVisualize = actionSubtype === "visualize"
     const multiplier = isVisualize ? SCORE_BONUS_PER_AP_SPENT : AC_BONUS_PER_AP_SPENT
     const bonus = apCost * multiplier
-    const prevChar = { ...combat[childKey][charId] }
-    const category = isVisualize ? "actionBonus" : "acBonus"
-    const newBonus = prevChar[category] + bonus
+    const prevChar = { ...combat[contenderType][charId] }
+    let newContender = { ...prevChar }
+    if (isVisualize) {
+      newContender = { ...prevChar, actionBonus: prevChar.actionBonus + bonus }
+    } else {
+      const prevAcRecord = { ...prevChar.acBonusRecord }
+      const newAcRecord = { ...prevAcRecord, [roundId + 1]: bonus }
+      newContender = { ...prevChar, acBonusRecord: newAcRecord }
+    }
 
     // update char new bonus in combat
     promises.push(
-      updateContender(dbType)({
-        id,
-        playerId: charId,
-        charType: childKey,
-        ...prevChar,
-        [category]: newBonus
-      })
+      updateContender(dbType)({ char: contenders[actorId].char, combat, payload: newContender })
     )
 
     // add new action
     const actionId = getNewActionId(combat)
-    const roundId = getCurrentRoundId(combat)
+
     promises.push(actionRepo.add({ combatId: combat.id, roundId, id: actionId }, action))
 
     // handle char status reset & new round creation

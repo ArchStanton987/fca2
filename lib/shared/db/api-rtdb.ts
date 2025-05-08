@@ -1,7 +1,7 @@
 import { DbChar } from "lib/character/Character"
 import { DbEffect } from "lib/character/effects/effects.types"
 import { DbStatus } from "lib/character/status/status.types"
-import { Action, DbCombatEntry } from "lib/combat/combats.types"
+import { Action, DbCombatEntry, PlayerCombatData } from "lib/combat/combats.types"
 import { DbNpc } from "lib/npc/npc.types"
 import { DbSquad } from "lib/squad/squad-types"
 
@@ -17,6 +17,12 @@ export type AdditionalEffectsParams = Child<string>
 export type AdditionalMiscParams = Child<string>
 //
 export type CombatParams = { id?: string; childKey?: keyof DbCombatEntry }
+export type ContenderParams = {
+  combatId: string
+  contenderType: "players" | "npcs"
+  id?: string
+  childKey?: keyof PlayerCombatData
+}
 export type RoundParams = {
   combatId: string
   id?: number
@@ -48,6 +54,10 @@ const rtdb = {
   getCombat: ({ id, childKey }: CombatParams) =>
     childKey ? `v2/combat/${id}/${childKey}` : `v2/combat/${id ?? ""}`,
 
+  getContender: ({ combatId, contenderType, id, childKey }: ContenderParams) =>
+    id
+      ? `v2/combat/${combatId}/${contenderType}/${id}/${childKey ?? ""}`
+      : `v2/combat/${combatId}/${contenderType}/`,
   getRound: ({ combatId, id, childKey }: RoundParams) =>
     id ? `v2/combat/${combatId}/rounds/${id}/${childKey ?? ""}` : `v2/combat/${combatId}/rounds/`,
 

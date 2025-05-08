@@ -11,11 +11,12 @@ export type UpdateContenderParams = {
 }
 
 export default function updateContender(dbType: keyof typeof repositoryMap = "rtdb") {
-  const combatRepo = repositoryMap[dbType].combatRepository
+  const contenderRepo = repositoryMap[dbType].contenderRepository
 
-  return ({ id, playerId, charType, initiative, actionBonus, acBonus }: UpdateContenderParams) =>
-    combatRepo.patchChild(
-      { id, childKey: charType },
-      { [playerId]: { initiative, actionBonus: actionBonus ?? 0, acBonus: acBonus ?? 0 } }
-    )
+  return ({ char, combat, payload }: UpdateContenderParams) => {
+    const contenderType = char.meta.isNpc ? "npcs" : "players"
+    const combatId = combat.id
+    const id = char.charId
+    return contenderRepo.patch({ combatId, contenderType, id }, payload)
+  }
 }
