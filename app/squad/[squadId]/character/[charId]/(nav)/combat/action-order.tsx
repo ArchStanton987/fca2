@@ -1,7 +1,8 @@
-import { StyleSheet } from "react-native"
+import { StyleSheet, View } from "react-native"
 
 import { Redirect } from "expo-router"
 
+import { DbStatus } from "lib/character/status/status.types"
 import { getPlayingOrder } from "lib/combat/utils/combat-utils"
 import Animated, { FadingTransition } from "react-native-reanimated"
 
@@ -15,15 +16,6 @@ import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
 import colors from "styles/colors"
 
-type OrderRowProps = {
-  name?: string
-  ap?: number
-  initiative?: number
-  isWaiting?: boolean
-  isPlaying?: boolean
-  isDone?: boolean
-}
-
 const styles = StyleSheet.create({
   row: {
     borderWidth: 2,
@@ -34,58 +26,71 @@ const styles = StyleSheet.create({
   nameCol: {
     flex: 1
   },
-  dataCol: {
-    width: 90
+  dataRow: {
+    width: 70,
+    alignItems: "flex-end"
   },
   playing: {
     borderColor: colors.secColor
   },
   waiting: {
-    color: colors.terColor
+    color: colors.difficulty.easy
   },
   done: {
+    color: colors.terColor
+  },
+  dead: {
     textDecorationLine: "line-through"
   }
 })
 
+type TextProps = {
+  children: React.ReactNode
+  status: DbStatus["combatStatus"]
+  hasFinishedRound?: boolean
+}
+
+function CombatOrderText({ children, status, hasFinishedRound }: TextProps) {
+  const isWaiting = status === "wait"
+  const isDead = status === "dead"
+  const isInactive = status === "inactive"
+  return (
+    <Txt
+      style={[
+        isWaiting && styles.waiting,
+        (hasFinishedRound || isInactive) && styles.done,
+        isDead && styles.dead
+      ]}
+    >
+      {children}
+    </Txt>
+  )
+}
+
+type OrderRowProps = {
+  name?: string
+  ap?: number
+  initiative?: number
+  status: DbStatus["combatStatus"]
+  isPlaying?: boolean
+  hasFinishedRound?: boolean
+}
+
 function OrderRow(props: OrderRowProps) {
-  const { name, ap, initiative, isPlaying, isDone, isWaiting } = props
+  const { name, ap, isPlaying, status, initiative, hasFinishedRound } = props
+  const textProps = { isPlaying, status, hasFinishedRound }
   return (
     <Animated.View layout={FadingTransition} style={[styles.row, isPlaying && styles.playing]}>
-      {name && (
-        <Txt
-          style={[
-            styles.nameCol,
-            isPlaying && styles.playing,
-            isWaiting && styles.waiting,
-            isDone && styles.done
-          ]}
-        >
-          {name}
-        </Txt>
-      )}
-      <Txt
-        style={[
-          styles.dataCol,
-          isPlaying && styles.playing,
-          isWaiting && styles.waiting,
-          isDone && styles.done
-        ]}
-      >
-        {ap ?? 0}
-      </Txt>
-      {initiative && (
-        <Txt
-          style={[
-            styles.dataCol,
-            isPlaying && styles.playing,
-            isWaiting && styles.waiting,
-            isDone && styles.done
-          ]}
-        >
-          {initiative ?? 1000}
-        </Txt>
-      )}
+      <View style={styles.nameCol}>
+        <CombatOrderText {...textProps}>{name ?? ""}</CombatOrderText>
+      </View>
+      <View style={styles.dataRow}>
+        <CombatOrderText {...textProps}>{ap ?? 0}</CombatOrderText>
+      </View>
+      <View style={styles.dataRow}>
+        <CombatOrderText {...textProps}>{initiative ?? 1000}</CombatOrderText>
+      </View>
+      <Spacer x={80} />
     </Animated.View>
   )
 }
@@ -113,7 +118,7 @@ export default function GMCombatScreen() {
 
   return (
     <DrawerPage>
-      <ScrollSection title="ordre" style={{ flex: 1 }}>
+      <ScrollSection title="ordre / PA / initiative" style={{ flex: 1 }}>
         <List
           data={contenders}
           keyExtractor={item => item.char.charId}
@@ -123,8 +128,9 @@ export default function GMCombatScreen() {
               name={item.char.meta.firstname}
               ap={item.char.status.currAp}
               initiative={item.combatData.initiative}
-              isWaiting={item.char.status.combatStatus === "wait"}
+              status={item.char.status.combatStatus}
               isPlaying={item.char.charId === playingId}
+              hasFinishedRound={item.char.status.currAp === 0}
             />
           )}
         />
