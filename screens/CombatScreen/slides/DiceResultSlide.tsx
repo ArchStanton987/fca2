@@ -38,11 +38,10 @@ const styles = StyleSheet.create({
 })
 
 type DiceResultSlideProps = {
-  scrollNext?: () => void
   skillId: SkillId
 }
 
-export default function DiceResultSlide({ skillId, scrollNext }: DiceResultSlideProps) {
+export default function DiceResultSlide({ skillId }: DiceResultSlideProps) {
   const { meta, charId } = useCharacter()
   const { combat } = useCombat()
   const roundId = getCurrentRoundId(combat)
@@ -123,11 +122,11 @@ export default function DiceResultSlide({ skillId, scrollNext }: DiceResultSlide
       <Spacer x={layout.globalPadding} />
       <Col style={{ width: 100 }}>
         <Section style={{ flex: 1 }} contentContainerStyle={styles.centeredSection}>
-          {finalScore > 0 ? <Txt>Bravo!</Txt> : <Txt>Échec</Txt>}
+          {finalScore > 0 ? <Txt>Réussite !</Txt> : <Txt>Échec</Txt>}
         </Section>
         <Spacer y={layout.globalPadding} />
         <Section title="suivant" contentContainerStyle={styles.centeredSection}>
-          <NextButton onPress={submit} />
+          <NextButton size={45} onPress={submit} />
         </Section>
       </Col>
     </DrawerSlide>

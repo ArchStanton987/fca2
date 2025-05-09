@@ -16,6 +16,7 @@ import ActionUnavailableScreen from "screens/CombatScreen/ActionUnavailableScree
 import InitiativeScreen from "screens/CombatScreen/InitiativeScreen"
 import WaitInitiativeScreen from "screens/CombatScreen/WaitInitiativeScreen"
 import ActionTypeSlide from "screens/CombatScreen/slides/ActionTypeSlide/ActionTypeSlide"
+import ApAssignment from "screens/CombatScreen/slides/ApAssignmentSlide"
 import DiceResultSlide from "screens/CombatScreen/slides/DiceResultSlide"
 import DiceRollSlide from "screens/CombatScreen/slides/DiceRollSlide"
 
@@ -29,6 +30,10 @@ const getSlides = (form: { actionType: string; actionSubType: string }) => {
   if (actionType === "movement") {
     return [
       initSlide,
+      {
+        id: "apAssignment",
+        renderSlide: (props: SlideProps) => <ApAssignment {...props} />
+      },
       {
         id: "diceRoll",
         renderSlide: (props: SlideProps) => <DiceRollSlide skillId="physical" {...props} />
