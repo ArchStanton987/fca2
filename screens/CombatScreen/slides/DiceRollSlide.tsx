@@ -14,6 +14,7 @@ import DrawerSlide from "components/Slides/DrawerSlide"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
+import { useActionApi } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
@@ -56,17 +57,17 @@ export default function DiceRollSlide({ skillId, scrollNext }: DiceRollSlideProp
   const useCases = useGetUseCases()
 
   const { combat } = useCombat()
-  const character = useCharacter()
-  // const { isNpc } = character.meta
-  const { skills } = character
+  const { skills } = useCharacter()
   const actorSkillScore = skills.curr[skillId]
+
+  const { setForm } = useActionApi()
 
   const { scoreStr, onPressKeypad } = useNumPad()
 
   const onPressConfirm = async (r: Roll) => {
-    if (combat === null) return
+    if (combat === null || !scrollNext) return
+    setForm({ roll: r })
     await useCases.combat.updateAction({ combat, payload: { roll: r } })
-    if (!scrollNext) return
     scrollNext()
   }
 

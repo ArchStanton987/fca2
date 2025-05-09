@@ -49,7 +49,6 @@ export default function prepareAction(dbType: keyof typeof repositoryMap = "rtdb
 
     // add new action
     const actionId = getNewActionId(combat)
-
     promises.push(actionRepo.add({ combatId: combat.id, roundId, id: actionId }, action))
 
     // handle char status reset & new round creation

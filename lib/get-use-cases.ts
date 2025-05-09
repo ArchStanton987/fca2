@@ -14,6 +14,7 @@ import adminEndFight, { AdminEndFightParams } from "./combat/use-cases/admin-end
 import createFight, { CreateFightParams } from "./combat/use-cases/create-fight"
 import deleteFight, { DeleteFightParams } from "./combat/use-cases/delete-fight"
 import endWait, { EndWaitParams } from "./combat/use-cases/end-wait"
+import movementAction, { MovementActionParams } from "./combat/use-cases/movement-action"
 import prepareAction, { PrepareActionParams } from "./combat/use-cases/prepare-action"
 import startFight, { StartFightParams } from "./combat/use-cases/start-fight"
 import subAllFights from "./combat/use-cases/sub-all-fights"
@@ -88,6 +89,7 @@ export default function getUseCases(
       waitAction: (data: WaitActionParams) => waitAction(dbType)(data),
       endWait: (data: EndWaitParams) => endWait(dbType)(data),
       prepareAction: (data: PrepareActionParams) => prepareAction(dbType)(data),
+      movementAction: (data: MovementActionParams) => movementAction(dbType)(data),
       updateAction: (data: UpdateActionParams) => updateAction(dbType)(data)
       // addNewRound: (data: AddRoundParams) => addNewRound(dbType)(data),
       // addAction: (data: AddActionParams) => addAction(dbType)(data)

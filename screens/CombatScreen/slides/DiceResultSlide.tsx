@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native"
 import skillsMap from "lib/character/abilities/skills/skills"
 import { SkillId } from "lib/character/abilities/skills/skills.types"
 import { getCurrentActionId, getCurrentRoundId } from "lib/combat/utils/combat-utils"
+import Toast from "react-native-toast-message"
 
 import Col from "components/Col"
 import Row from "components/Row"
@@ -11,7 +12,9 @@ import DrawerSlide from "components/Slides/DrawerSlide"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
+import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
 
 import NextButton from "./NextButton"
@@ -42,8 +45,11 @@ type DiceResultSlideProps = {
 }
 
 export default function DiceResultSlide({ skillId }: DiceResultSlideProps) {
+  const useCases = useGetUseCases()
   const { meta, charId } = useCharacter()
-  const { combat } = useCombat()
+  const { combat, npcs, players } = useCombat()
+  const form = useActionForm()
+  const { reset } = useActionApi()
   const roundId = getCurrentRoundId(combat)
   const actionId = getCurrentActionId(combat)
 
@@ -61,7 +67,21 @@ export default function DiceResultSlide({ skillId }: DiceResultSlideProps) {
   const score = actorSkillScore - actorDiceScore + actionBonus
   const finalScore = score - difficultyModifier
 
-  const submit = () => {}
+  const submit = async () => {
+    try {
+      if (form.actionType === "movement") {
+        await useCases.combat.movementAction({
+          combat,
+          contenders: { ...players, ...npcs },
+          action: JSON.parse(JSON.stringify(form))
+        })
+        reset()
+        Toast.show({ type: "custom", text1: "Action réalisée !" })
+      }
+    } catch (error) {
+      Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement de l'action" })
+    }
+  }
 
   return (
     <DrawerSlide>
