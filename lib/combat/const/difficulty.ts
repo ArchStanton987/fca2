@@ -1,10 +1,6 @@
-import Col from "components/Col"
-import List from "components/List"
-import Section from "components/Section"
-import Txt from "components/Txt"
 import colors from "styles/colors"
 
-export const difficultyArray = [
+const difficultyArray = [
   {
     id: "veryEasy",
     threshold: -61,
@@ -55,31 +51,4 @@ export const difficultyArray = [
   }
 ]
 
-type DifficultyInfoProps = {}
-
-export default function DifficultyInfo(props: DifficultyInfoProps) {
-  return (
-    <Section title="difficulté">
-      <List
-        horizontal
-        data={difficultyArray}
-        keyExtractor={e => e.id}
-        style={{ justifyContent: "space-between" }}
-        renderItem={({ item }) => (
-          <Col
-            style={{
-              flex: 1,
-              alignItems: "center",
-              // borderWidth: 1,
-              // borderColor: colors.secColor,
-              padding: 5
-            }}
-          >
-            <Txt style={{ color: item.color }}>{item.label}</Txt>
-            <Txt style={{ color: item.color }}>{item.modLabel}</Txt>
-          </Col>
-        )}
-      />
-    </Section>
-  )
-}
+export default difficultyArray

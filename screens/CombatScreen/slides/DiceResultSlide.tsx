@@ -1,3 +1,5 @@
+import { StyleSheet } from "react-native"
+
 import skillsMap from "lib/character/abilities/skills/skills"
 import { SkillId } from "lib/character/abilities/skills/skills.types"
 import { getCurrentActionId, getCurrentRoundId } from "lib/combat/utils/combat-utils"
@@ -13,6 +15,27 @@ import { useCombat } from "providers/CombatProvider"
 import layout from "styles/layout"
 
 import NextButton from "./NextButton"
+
+const styles = StyleSheet.create({
+  centeredSection: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  scoreContainer: {
+    alignItems: "center"
+  },
+  score: {
+    fontSize: 35
+  },
+  finalScore: {
+    fontSize: 45
+  },
+  scoreDetailRow: {
+    justifyContent: "center",
+    alignItems: "flex-end"
+  }
+})
 
 type DiceResultSlideProps = {
   scrollNext?: () => void
@@ -30,7 +53,7 @@ export default function DiceResultSlide({ skillId, scrollNext }: DiceResultSlide
   const roll = combat.rounds?.[roundId]?.[actionId]?.roll
 
   if (roll === undefined) return <Txt>En attente du MJ</Txt>
-  if (roll === null) return <Txt>Pa de jet</Txt>
+  if (roll === null) return <Txt>Pas de jet</Txt>
 
   const { actorDiceScore = 0, actorSkillScore = 0, difficultyModifier = 0 } = roll ?? {}
   const contenderType = meta.isNpc ? "npcs" : "players"
@@ -44,72 +67,66 @@ export default function DiceResultSlide({ skillId, scrollNext }: DiceResultSlide
   return (
     <DrawerSlide>
       <Section title="résultats" style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
-        <Row style={{ justifyContent: "center", alignItems: "flex-end" }}>
-          <Col style={{ alignItems: "center" }}>
+        <Row style={styles.scoreDetailRow}>
+          <Col style={styles.scoreContainer}>
             <Txt>Compétence</Txt>
             <Txt>{skillsMap[skillId].label}</Txt>
-            <Txt style={{ fontSize: 35 }}>{actorSkillScore}</Txt>
+            <Txt style={styles.score}>{actorSkillScore}</Txt>
           </Col>
           <Spacer x={10} />
-          <Txt style={{ fontSize: 35 }}>-</Txt>
+          <Txt style={styles.score}>-</Txt>
           <Spacer x={10} />
-          <Col style={{ alignItems: "center" }}>
+          <Col style={styles.scoreContainer}>
             <Txt>Jet de dé</Txt>
-            <Txt style={{ fontSize: 35 }}>{actorDiceScore}</Txt>
+            <Txt style={styles.score}>{actorDiceScore}</Txt>
           </Col>
           <Spacer x={10} />
-          <Txt style={{ fontSize: 35 }}>+</Txt>
+          <Txt style={styles.score}>+</Txt>
           <Spacer x={10} />
-          <Col style={{ alignItems: "center" }}>
+          <Col style={styles.scoreContainer}>
             <Txt>Bonus / Malus</Txt>
-            <Txt style={{ fontSize: 35 }}>{actionBonus}</Txt>
+            <Txt style={styles.score}>{actionBonus}</Txt>
           </Col>
           <Spacer x={10} />
-          <Txt style={{ fontSize: 35 }}>=</Txt>
+          <Txt style={styles.score}>=</Txt>
           <Spacer x={10} />
-          <Col style={{ alignItems: "center" }}>
+          <Col style={styles.scoreContainer}>
             <Txt>Score</Txt>
-            <Txt style={{ fontSize: 35 }}>{score}</Txt>
+            <Txt style={styles.score}>{score}</Txt>
           </Col>
         </Row>
 
         <Spacer y={20} />
 
-        <Row style={{ justifyContent: "center", alignItems: "flex-end" }}>
-          <Col style={{ alignItems: "center" }}>
+        <Row style={styles.scoreDetailRow}>
+          <Col style={styles.scoreContainer}>
             <Txt>Score</Txt>
-            <Txt style={{ fontSize: 35 }}>{score}</Txt>
+            <Txt style={styles.score}>{score}</Txt>
           </Col>
           <Spacer x={10} />
-          <Txt style={{ fontSize: 35 }}>+</Txt>
+          <Txt style={styles.score}>+</Txt>
           <Spacer x={10} />
-          <Col style={{ alignItems: "center" }}>
+          <Col style={styles.scoreContainer}>
             <Txt>Difficulté</Txt>
-            <Txt style={{ fontSize: 35 }}>{difficultyModifier}</Txt>
+            <Txt style={styles.score}>{difficultyModifier}</Txt>
           </Col>
           <Spacer x={10} />
-          <Txt style={{ fontSize: 35 }}>=</Txt>
+          <Txt style={styles.score}>=</Txt>
           <Spacer x={10} />
-          <Col style={{ alignItems: "center" }}>
+          <Col style={styles.scoreContainer}>
             <Txt>Score final</Txt>
-            <Txt style={{ fontSize: 45 }}>{finalScore}</Txt>
+            <Txt style={styles.finalScore}>{finalScore}</Txt>
           </Col>
         </Row>
       </Section>
 
       <Spacer x={layout.globalPadding} />
       <Col style={{ width: 100 }}>
-        <Section
-          style={{ flex: 1 }}
-          contentContainerStyle={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
+        <Section style={{ flex: 1 }} contentContainerStyle={styles.centeredSection}>
           {finalScore > 0 ? <Txt>Bravo!</Txt> : <Txt>Échec</Txt>}
         </Section>
         <Spacer y={layout.globalPadding} />
-        <Section
-          title="suivant"
-          contentContainerStyle={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
+        <Section title="suivant" contentContainerStyle={styles.centeredSection}>
           <NextButton onPress={submit} />
         </Section>
       </Col>

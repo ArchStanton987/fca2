@@ -3,6 +3,7 @@ import { TouchableOpacity } from "react-native"
 
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import Slider from "@react-native-community/slider"
+import difficultyArray from "lib/combat/const/difficulty"
 import {
   getCurrentActionId,
   getCurrentRoundId,
@@ -16,8 +17,7 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCombat } from "providers/CombatProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
-import { difficultyArray } from "screens/CombatScreen/slides/ActionTypeSlide/info/DifficultyInfo"
-import GoBackButton from "screens/CombatScreen/slides/GoBackButton"
+// import GoBackButton from "screens/CombatScreen/slides/GoBackButton"
 import NextButton from "screens/CombatScreen/slides/NextButton"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -35,17 +35,16 @@ export default function GMActionsScreen() {
     useCases.combat.updateAction({ combat, payload: { roll } })
   }
 
-  const resetDifficulty = async () => {
-    if (!combat) return
-    setDifficulty(0)
-    const roundId = getCurrentRoundId(combat)
-    const actionId = getCurrentActionId(combat)
-    const prev = { ...combat.rounds?.[roundId]?.[actionId] }
-    delete prev.roll
-    // TODO: FIX, not working
-    const res = await useCases.combat.updateAction({ combat, payload: prev })
-    console.log("res", res)
-  }
+  // const resetDifficulty = async () => {
+  //   if (!combat) return
+  //   setDifficulty(0)
+  //   const roundId = getCurrentRoundId(combat)
+  //   const actionId = getCurrentActionId(combat)
+  //   const prev = { ...combat.rounds?.[roundId]?.[actionId] }
+  //   delete prev.roll
+  //   // TODO: FIX, not working
+  //   const res = await useCases.combat.updateAction({ combat, payload: prev })
+  // }
 
   if (combat === null)
     return (
@@ -74,9 +73,9 @@ export default function GMActionsScreen() {
         <Section style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
           <Txt>Rien à faire pour le moment</Txt>
           <Spacer y={50} />
-          <TouchableOpacity onPress={resetDifficulty}>
+          {/* <TouchableOpacity onPress={resetDifficulty}>
             <Txt>RESET DIFF</Txt>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </Section>
       </DrawerPage>
     )
@@ -126,12 +125,12 @@ export default function GMActionsScreen() {
       <Spacer y={layout.globalPadding} />
 
       <Row style={{ flex: 1 }}>
-        <Section
+        {/* <Section
           contentContainerStyle={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           title="reset difficulty"
         >
           <GoBackButton onPress={resetDifficulty} size={45} />
-        </Section>
+        </Section> */}
         <Spacer x={layout.globalPadding} />
         <Section
           style={{ flex: 1 }}

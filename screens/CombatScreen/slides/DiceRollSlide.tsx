@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native"
 import skillsMap from "lib/character/abilities/skills/skills"
 import { SkillId } from "lib/character/abilities/skills/skills.types"
 import { Roll } from "lib/combat/combats.types"
+import difficultyArray from "lib/combat/const/difficulty"
 import { getCurrentActionId, getCurrentRoundId } from "lib/combat/utils/combat-utils"
 
 import Col from "components/Col"
@@ -18,7 +19,6 @@ import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
 
-import { difficultyArray } from "./ActionTypeSlide/info/DifficultyInfo"
 import AwaitGmSlide from "./AwaitGmSlide"
 import NextButton from "./NextButton"
 
