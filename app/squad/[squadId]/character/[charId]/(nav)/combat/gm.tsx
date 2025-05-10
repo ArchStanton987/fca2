@@ -41,8 +41,8 @@ export default function GMActionsScreen() {
 
   const submit = () => {
     if (!combat) return
-    const roll = hasRoll ? { difficultyModifier: difficulty } : null
-    useCases.combat.updateAction({ combat, payload: { roll } })
+    const roll = hasRoll ? { difficultyModifier: difficulty } : false
+    useCases.combat.setAction({ combat, payload: { childKey: "roll", data: roll } })
   }
 
   const resetDifficulty = () => {
@@ -81,7 +81,7 @@ export default function GMActionsScreen() {
   const actionId = getActionId(combat)
   const action = combat?.rounds?.[roundId]?.[actionId]
   const actionHasDifficulty = withRollActionsTypes.includes(action?.actionType as ActionTypeId)
-  const isDifficultySet = action?.roll?.difficultyModifier !== undefined
+  const isDifficultySet = action.roll === false || action?.roll?.difficultyModifier !== undefined
 
   if (!actionHasDifficulty)
     return (

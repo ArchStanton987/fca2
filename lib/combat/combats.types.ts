@@ -45,7 +45,7 @@ export type Action = {
   actionSubtype?: string
   actorId: CharId
   apCost?: number
-  roll?: Roll | null
+  roll?: Roll | false
   healthChangeEntries?: HealthChangeEntries
   itemId?: ItemId
   targetName?: string

@@ -23,7 +23,7 @@ export default function saveAction(dbType: keyof typeof repositoryMap = "rtdb") 
     const actionId = getActionId(combat)
 
     // if has rolled dices, reset action bonus
-    if (typeof action?.roll?.actorDiceScore === "number") {
+    if (action.roll !== false && typeof action?.roll?.actorDiceScore === "number") {
       const { char } = contenders[actorId]
       promises.push(updateContender(dbType)({ char, combat, payload: { actionBonus: 0 } }))
     }

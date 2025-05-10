@@ -79,9 +79,17 @@ export default function DiceRollSlide({ skillId, scrollNext }: DiceRollSlideProp
     )
   const roundId = getCurrentRoundId(combat)
   const actionId = getActionId(combat)
-  const currActionRoll = combat?.rounds?.[roundId]?.[actionId]?.roll
-  const isAwaitingGm = currActionRoll === undefined
-  const difficultyScore = currActionRoll?.difficultyModifier ?? 0
+  const currRoll = combat?.rounds?.[roundId]?.[actionId]?.roll
+
+  if (currRoll === false)
+    return (
+      <DrawerSlide>
+        <Txt>Pas de jet</Txt>
+      </DrawerSlide>
+    )
+
+  const isAwaitingGm = currRoll === undefined
+  const difficultyScore = currRoll?.difficultyModifier ?? 0
   const difficultyLvl = difficultyArray.find(e => difficultyScore <= e.threshold)
 
   const diceScore = parseInt(scoreStr, 10)

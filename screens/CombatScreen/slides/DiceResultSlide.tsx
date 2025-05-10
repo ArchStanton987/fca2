@@ -57,7 +57,7 @@ export default function DiceResultSlide({ skillId }: DiceResultSlideProps) {
 
   const roll = combat.rounds?.[roundId]?.[actionId]?.roll
 
-  if (roll === undefined) return <Txt>En attente du MJ</Txt>
+  if (roll === undefined || roll === false) return <Txt>En attente du MJ</Txt>
   if (roll === null) return <Txt>Pas de jet</Txt>
 
   const { actorDiceScore = 0, actorSkillScore = 0, difficultyModifier = 0 } = roll ?? {}

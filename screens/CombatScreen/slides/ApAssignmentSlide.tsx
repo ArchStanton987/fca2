@@ -1,5 +1,7 @@
 import { StyleSheet } from "react-native"
 
+import { getActionId, getCurrentRoundId } from "lib/combat/utils/combat-utils"
+
 import CheckBox from "components/CheckBox/CheckBox"
 import Col from "components/Col"
 import List from "components/List"
@@ -38,8 +40,10 @@ type DiceResultSlideProps = {
 export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) {
   const useCases = useGetUseCases()
   const { status, secAttr } = useCharacter()
-  const { combat } = useCombat()
-  const { apCost } = useActionForm()
+  const { combat, npcs, players } = useCombat()
+  const contenders = { ...players, ...npcs }
+  const form = useActionForm()
+  const { apCost } = form
   const { setForm } = useActionApi()
 
   const maxAp = secAttr.curr.actionPoints
@@ -65,6 +69,14 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
   const onPressNext = async () => {
     if (!combat || !scrollNext) return
     await useCases.combat.updateAction({ combat, payload: { apCost } })
+    const roundId = getCurrentRoundId(combat)
+    const actionId = getActionId(combat)
+    const roll = combat.rounds?.[roundId]?.[actionId]?.roll
+    // if player doesn't need to roll, we can save the action
+    if (form.actionType === "movement" && roll === false) {
+      await useCases.combat.movementAction({ combat, contenders, action: form })
+      return
+    }
     scrollNext()
   }
 
