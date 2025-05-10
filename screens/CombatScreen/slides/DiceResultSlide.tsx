@@ -2,6 +2,7 @@ import { StyleSheet } from "react-native"
 
 import skillsMap from "lib/character/abilities/skills/skills"
 import { SkillId } from "lib/character/abilities/skills/skills.types"
+import { getCritFailureThreshold } from "lib/combat/const/crit"
 import { getActionId, getCurrentRoundId } from "lib/combat/utils/combat-utils"
 import Toast from "react-native-toast-message"
 
@@ -15,6 +16,7 @@ import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
+import colors from "styles/colors"
 import layout from "styles/layout"
 
 import NextButton from "./NextButton"
@@ -37,8 +39,45 @@ const styles = StyleSheet.create({
   scoreDetailRow: {
     justifyContent: "center",
     alignItems: "flex-end"
+  },
+  outcome: {
+    textAlign: "center"
+  },
+  critSuccess: {
+    color: colors.difficulty.veryEasy
+  },
+  critFail: {
+    color: colors.difficulty.veryHard
+  },
+  success: {
+    color: colors.difficulty.easy
+  },
+  fail: {
+    color: colors.difficulty.hard
   }
 })
+
+function Outcome({
+  isCritSuccess,
+  isCritFail,
+  finalScore
+}: {
+  finalScore: number
+  isCritSuccess: boolean
+  isCritFail: boolean
+}) {
+  if (isCritSuccess) {
+    return <Txt style={[styles.outcome, styles.critSuccess]}>Réussite critique !</Txt>
+  }
+  if (isCritFail) {
+    return <Txt style={[styles.outcome, styles.critFail]}>Échec critique !</Txt>
+  }
+  return (
+    <Txt style={[styles.outcome, finalScore > 0 ? styles.success : styles.fail]}>
+      {finalScore > 0 ? "Réussite !" : "Échec"}
+    </Txt>
+  )
+}
 
 type DiceResultSlideProps = {
   skillId: SkillId
@@ -46,7 +85,7 @@ type DiceResultSlideProps = {
 
 export default function DiceResultSlide({ skillId }: DiceResultSlideProps) {
   const useCases = useGetUseCases()
-  const { meta, charId } = useCharacter()
+  const { meta, charId, secAttr, special } = useCharacter()
   const { combat, npcs, players } = useCombat()
   const form = useActionForm()
   const { reset } = useActionApi()
@@ -57,12 +96,15 @@ export default function DiceResultSlide({ skillId }: DiceResultSlideProps) {
 
   const roll = combat.rounds?.[roundId]?.[actionId]?.roll
 
-  if (roll === undefined || roll === false) return <Txt>En attente du MJ</Txt>
-  if (roll === null) return <Txt>Pas de jet</Txt>
+  if (roll === undefined) return <Txt>En attente du MJ</Txt>
+  if (roll === false) return <Txt>Pas de jet</Txt>
 
   const { actorDiceScore = 0, actorSkillScore = 0, difficultyModifier = 0 } = roll ?? {}
   const contenderType = meta.isNpc ? "npcs" : "players"
   const actionBonus = combat[contenderType][charId]?.actionBonus ?? 0
+
+  const isCritSuccess = actorDiceScore !== 0 && actorDiceScore <= secAttr.curr.critChance
+  const isCritFail = actorDiceScore !== 0 && actorDiceScore >= getCritFailureThreshold(special.curr)
 
   const score = actorSkillScore - actorDiceScore + actionBonus
   const finalScore = score - difficultyModifier
@@ -73,7 +115,7 @@ export default function DiceResultSlide({ skillId }: DiceResultSlideProps) {
         await useCases.combat.movementAction({
           combat,
           contenders: { ...players, ...npcs },
-          action: JSON.parse(JSON.stringify(form))
+          action: form
         })
         reset()
         Toast.show({ type: "custom", text1: "Action réalisée !" })
@@ -97,7 +139,15 @@ export default function DiceResultSlide({ skillId }: DiceResultSlideProps) {
           <Spacer x={10} />
           <Col style={styles.scoreContainer}>
             <Txt>Jet de dé</Txt>
-            <Txt style={styles.score}>{actorDiceScore}</Txt>
+            <Txt
+              style={[
+                styles.score,
+                isCritSuccess && styles.critSuccess,
+                isCritFail && styles.critFail
+              ]}
+            >
+              {actorDiceScore}
+            </Txt>
           </Col>
           <Spacer x={10} />
           <Txt style={styles.score}>+</Txt>
@@ -142,7 +192,7 @@ export default function DiceResultSlide({ skillId }: DiceResultSlideProps) {
       <Spacer x={layout.globalPadding} />
       <Col style={{ width: 100 }}>
         <Section style={{ flex: 1 }} contentContainerStyle={styles.centeredSection}>
-          {finalScore > 0 ? <Txt>Réussite !</Txt> : <Txt>Échec</Txt>}
+          <Outcome isCritFail={isCritFail} isCritSuccess={isCritSuccess} finalScore={finalScore} />
         </Section>
         <Spacer y={layout.globalPadding} />
         <Section title="suivant" contentContainerStyle={styles.centeredSection}>
