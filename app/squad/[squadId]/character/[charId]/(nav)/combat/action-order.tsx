@@ -74,15 +74,19 @@ type OrderRowProps = {
   status: DbStatus["combatStatus"]
   isPlaying?: boolean
   hasFinishedRound?: boolean
+  isCombinedAction?: boolean
 }
 
 function OrderRow(props: OrderRowProps) {
-  const { name, ap, isPlaying, status, initiative, hasFinishedRound } = props
+  const { name, ap, isPlaying, status, initiative, hasFinishedRound, isCombinedAction } = props
   const textProps = { isPlaying, status, hasFinishedRound }
   return (
     <Animated.View layout={FadingTransition} style={[styles.row, isPlaying && styles.playing]}>
       <View style={styles.nameCol}>
-        <CombatOrderText {...textProps}>{name ?? ""}</CombatOrderText>
+        <CombatOrderText {...textProps}>
+          {name ?? ""}
+          {isCombinedAction ? " C" : ""}
+        </CombatOrderText>
       </View>
       <View style={styles.dataRow}>
         <CombatOrderText {...textProps}>{ap ?? 0}</CombatOrderText>
@@ -115,6 +119,7 @@ export default function GMCombatScreen() {
     contenders.find(c => c.char.status.combatStatus === "wait")?.char.charId
 
   const playingId = combat.currActorId || defaultPlayingId
+  const isCombinedAction = playingId === combat.currActorId
 
   return (
     <DrawerPage>
@@ -131,6 +136,7 @@ export default function GMCombatScreen() {
               status={item.char.status.combatStatus}
               isPlaying={item.char.charId === playingId}
               hasFinishedRound={item.char.status.currAp === 0}
+              isCombinedAction={isCombinedAction}
             />
           )}
         />

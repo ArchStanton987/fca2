@@ -14,13 +14,21 @@ export type SaveActionParams = {
 
 export default function saveAction(dbType: keyof typeof repositoryMap = "rtdb") {
   const actionRepo = repositoryMap[dbType].actionRepository
+  const combatRepo = repositoryMap[dbType].combatRepository
 
   return async ({ action, combat, contenders }: SaveActionParams) => {
     const promises = []
 
-    const { actorId } = action
+    const { actorId, isCombinedAction } = action
     const roundId = getCurrentRoundId(combat)
     const actionId = getActionId(combat)
+
+    // if is part of a combined action, set current actor id in combat, else reset it
+    if (isCombinedAction) {
+      promises.push(combatRepo.patch({ id: combat.id }, { currActorId: actorId }))
+    } else {
+      promises.push(combatRepo.deleteChild({ id: combat.id, childKey: "currActorId" }))
+    }
 
     // if has rolled dices, reset action bonus
     if (action.roll !== false && typeof action?.roll?.actorDiceScore === "number") {

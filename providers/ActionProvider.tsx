@@ -10,7 +10,7 @@ export type ActionStateContext = Form<{
   actionType: ActionTypeId
   actionSubtype: string
   actorId: string
-  nextActorId: string
+  isCombinedAction: boolean
   apCost: number
   roll?: Roll
   healthChangeEntries: HealthChangeEntries
@@ -35,7 +35,7 @@ export const defaultActionForm = {
   actionType: "",
   actionSubtype: "",
   actorId: "",
-  nextActorId: "",
+  isCombinedAction: false,
   apCost: 0,
   roll: undefined,
   healthChangeEntries: {},
@@ -62,18 +62,24 @@ type Action =
 const reducer = (state: ActionStateContext, { type, payload }: Action): ActionStateContext => {
   switch (type) {
     case "SET_ACTION_TYPE": {
-      const { nextActorId, actorId } = state
+      const { isCombinedAction, actorId } = state
       const { actionType } = payload
-      const newState = { ...defaultActionForm, nextActorId, actorId, actionType }
+      const newState = { ...defaultActionForm, isCombinedAction, actorId, actionType }
       if ("itemId" in payload) return { ...newState, itemId: payload.itemId }
       if (actionType === "prepare" || actionType === "pause")
-        return { ...newState, nextActorId: "" }
+        return { ...newState, isCombinedAction: false }
       return newState
     }
 
     case "SET_ACTION_SUBTYPE": {
-      const { actionType, actorId, itemId } = state
-      const newState = { ...defaultActionForm, actionType, actorId, actionSubtype: payload }
+      const { actionType, actorId, itemId, isCombinedAction } = state
+      const newState = {
+        ...defaultActionForm,
+        isCombinedAction,
+        actionType,
+        actorId,
+        actionSubtype: payload
+      }
       if (actionType === "weapon") return { ...newState, itemId }
       return newState
     }

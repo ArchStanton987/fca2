@@ -37,7 +37,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
   const weapons = equipedObjects.weapons.length > 0 ? equipedObjects.weapons : [unarmed]
 
   const form = useActionForm()
-  const { actionType, actionSubtype, nextActorId } = form
+  const { actionType, actionSubtype, isCombinedAction } = form
   const { setForm, setActionType } = useActionApi()
 
   const currAction = { actionType, actionSubtype, actorId: charId }
@@ -92,8 +92,6 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
     return null
   }
 
-  const isCombinedAction = nextActorId === charId
-
   const isPause = actionType === "pause"
   const isPrepare = actionType === "prepare"
   const canGoNext = !!actionType && !!actionSubtype
@@ -102,7 +100,8 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
 
   const toggleCombinedAction = () => {
     if (!canCombineAction) return
-    setForm({ nextActorId: nextActorId === charId ? "" : charId })
+    const newValue = !isCombinedAction
+    setForm({ isCombinedAction: newValue })
   }
 
   return (

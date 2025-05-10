@@ -44,6 +44,7 @@ export type Action = {
   actionType: string
   actionSubtype?: string
   actorId: CharId
+  isCombinedAction?: boolean
   apCost?: number
   roll?: Roll | false
   healthChangeEntries?: HealthChangeEntries
@@ -56,6 +57,7 @@ export type WeaponAction = {
   actionType: "weapon"
   actionSubtype: WeaponActionSubtypeId
   actorId: CharId
+  isCombinedAction?: boolean
   itemId: ItemId
   targetName: string
   aimZone?: AimZone
@@ -69,6 +71,7 @@ export type MovementAction = {
   actionType: "movement"
   actionSubtype: MovementType
   actorId: CharId
+  isCombinedAction?: boolean
   apCost: number
   roll?: SimpleRoll | null
   healthChangeEntries?: HealthChangeEntries
@@ -80,6 +83,7 @@ export type ItemAction = {
   actionSubtype: ItemActionType
   itemId: ItemId
   actorId: CharId
+  isCombinedAction?: boolean
   apCost: number
   roll?: SimpleRoll | null
   healthChangeEntries?: HealthChangeEntries
@@ -92,6 +96,7 @@ export type OtherAction = {
   actionType: "other"
   actionSubtype: string
   actorId: CharId
+  isCombinedAction?: boolean
   apCost: number
   roll?: SimpleRoll | null
   healthChangeEntries?: HealthChangeEntries

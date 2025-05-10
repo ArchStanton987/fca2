@@ -44,7 +44,7 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
   const contenders = { ...players, ...npcs }
   const form = useActionForm()
   const { apCost } = form
-  const { setForm } = useActionApi()
+  const { setForm, reset } = useActionApi()
 
   const maxAp = secAttr.curr.actionPoints
   const { currAp } = status
@@ -74,7 +74,8 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
     const roll = combat.rounds?.[roundId]?.[actionId]?.roll
     // if player doesn't need to roll, we can save the action
     if (form.actionType === "movement" && roll === false) {
-      await useCases.combat.movementAction({ combat, contenders, action: form })
+      await useCases.combat.movementAction({ combat, contenders, action: { ...form, roll } })
+      reset()
       return
     }
     scrollNext()
