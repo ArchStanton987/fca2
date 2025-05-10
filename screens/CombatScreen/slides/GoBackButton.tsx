@@ -10,7 +10,7 @@ type NextButtonProps = TouchableOpacityProps & {
 
 export default function GoBackButton({ size, disabled, ...rest }: NextButtonProps) {
   return (
-    <TouchableOpacity {...rest}>
+    <TouchableOpacity disabled={disabled} {...rest}>
       <Ionicons
         name="chevron-back-circle"
         size={size ?? 36}

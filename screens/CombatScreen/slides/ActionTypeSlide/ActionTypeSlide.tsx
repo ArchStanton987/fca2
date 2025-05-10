@@ -1,9 +1,9 @@
 import { TouchableOpacity, View } from "react-native"
 
-import AntDesign from "@expo/vector-icons/AntDesign"
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import { Action, PrepareActionType } from "lib/combat/combats.types"
 import actions from "lib/combat/const/actions"
+import { getActivePlayersWithAp } from "lib/combat/utils/combat-utils"
 import getUseCases from "lib/get-use-cases"
 import Toast from "react-native-toast-message"
 
@@ -22,6 +22,7 @@ import colors from "styles/colors"
 import layout from "styles/layout"
 
 import NextButton from "../NextButton"
+import PlayButton from "../PlayButton"
 import ActionInfo from "./info/ActionInfo"
 import ApInfo from "./info/ApInfo"
 import SubActionList from "./sub-action/SubActionList"
@@ -41,6 +42,10 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
 
   const currAction = { actionType, actionSubtype, actorId: charId }
 
+  const contenders = { ...players, ...npcs }
+  const activePlayersWithAp = getActivePlayersWithAp(contenders)
+  const isLastPlayer = activePlayersWithAp.length === 1
+
   const onPressActionType = (id: keyof typeof actions) => {
     if (id === "weapon") {
       setActionType({ actionType: id, itemId: weapons[0].dbKey })
@@ -52,7 +57,6 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
   const onPressWait = async () => {
     if (!combat || !players || !npcs) throw new Error("No combat found")
     const action: Action = { actionType, actorId: charId }
-    const contenders = { ...players, ...npcs }
     try {
       await useCases.combat.waitAction({ combat, contenders, action })
       Toast.show({ type: "custom", text1: "Pigé ! On se tient prêt !" })
@@ -63,7 +67,6 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
 
   const onPressPrepare = () => {
     if (!combat || !players || !npcs || actionType !== "prepare") throw new Error("No combat found")
-    const contenders = { ...players, ...npcs }
     const action = {
       actionType,
       actionSubtype: actionSubtype as PrepareActionType,
@@ -156,9 +159,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
           <Section title={isPause || isPrepare ? "valider" : "suivant"} style={{ flex: 1 }}>
             <Row style={{ justifyContent: "center" }}>
               {isPrepare || isPause ? (
-                <TouchableOpacity onPress={() => submit()}>
-                  <AntDesign name="playcircleo" size={36} color={colors.secColor} />
-                </TouchableOpacity>
+                <PlayButton onPress={() => submit()} disabled={isPause && isLastPlayer} />
               ) : (
                 <NextButton disabled={!canGoNext} onPress={() => submit()} />
               )}
