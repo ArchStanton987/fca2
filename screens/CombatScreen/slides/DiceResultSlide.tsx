@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native"
 
 import skillsMap from "lib/character/abilities/skills/skills"
 import { SkillId } from "lib/character/abilities/skills/skills.types"
-import { getCurrentActionId, getCurrentRoundId } from "lib/combat/utils/combat-utils"
+import { getActionId, getCurrentRoundId } from "lib/combat/utils/combat-utils"
 import Toast from "react-native-toast-message"
 
 import Col from "components/Col"
@@ -51,7 +51,7 @@ export default function DiceResultSlide({ skillId }: DiceResultSlideProps) {
   const form = useActionForm()
   const { reset } = useActionApi()
   const roundId = getCurrentRoundId(combat)
-  const actionId = getCurrentActionId(combat)
+  const actionId = getActionId(combat)
 
   if (!combat) return <Txt>Impossible de récupérer le combat en cours</Txt>
 

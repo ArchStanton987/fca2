@@ -4,11 +4,7 @@ import { TouchableOpacity } from "react-native"
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import Slider from "@react-native-community/slider"
 import difficultyArray from "lib/combat/const/difficulty"
-import {
-  getCurrentActionId,
-  getCurrentRoundId,
-  getPlayingOrder
-} from "lib/combat/utils/combat-utils"
+import { getActionId, getCurrentRoundId, getPlayingOrder } from "lib/combat/utils/combat-utils"
 
 import DrawerPage from "components/DrawerPage"
 import Row from "components/Row"
@@ -63,7 +59,8 @@ export default function GMActionsScreen() {
   if (!currPlayer) return <Txt>Impossible de récupérer le joueur</Txt>
 
   const roundId = getCurrentRoundId(combat)
-  const actionId = getCurrentActionId(combat)
+  const actionId = getActionId(combat)
+  const action = combat?.rounds?.[roundId]?.[actionId]
   const currActionRoll = combat?.rounds?.[roundId]?.[actionId]?.roll
   const isAwaitingDifficulty = currActionRoll === undefined
 
@@ -125,6 +122,12 @@ export default function GMActionsScreen() {
       <Spacer y={layout.globalPadding} />
 
       <Row style={{ flex: 1 }}>
+        <Section style={{ width: 100 }}>
+          <Txt>{currPlayer.char.meta.firstname}</Txt>
+          <Txt>{action?.actionType}</Txt>
+          <Txt>{action?.actionSubtype}</Txt>
+        </Section>
+
         {/* <Section
           contentContainerStyle={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           title="reset difficulty"

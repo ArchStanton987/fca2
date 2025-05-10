@@ -16,6 +16,7 @@ import deleteFight, { DeleteFightParams } from "./combat/use-cases/delete-fight"
 import endWait, { EndWaitParams } from "./combat/use-cases/end-wait"
 import movementAction, { MovementActionParams } from "./combat/use-cases/movement-action"
 import prepareAction, { PrepareActionParams } from "./combat/use-cases/prepare-action"
+import saveAction, { SaveActionParams } from "./combat/use-cases/save-action"
 import startFight, { StartFightParams } from "./combat/use-cases/start-fight"
 import subAllFights from "./combat/use-cases/sub-all-fights"
 import subFight, { SubFightParams } from "./combat/use-cases/sub-fight"
@@ -86,13 +87,14 @@ export default function getUseCases(
       update: (data: UpdateFightParams) => updateFight(dbType)(data),
       delete: (data: DeleteFightParams) => deleteFight(dbType)(data),
       updateContender: (data: UpdateContenderParams) => updateContender(dbType)(data),
+      // ACTIONS
       waitAction: (data: WaitActionParams) => waitAction(dbType)(data),
       endWait: (data: EndWaitParams) => endWait(dbType)(data),
       prepareAction: (data: PrepareActionParams) => prepareAction(dbType)(data),
       movementAction: (data: MovementActionParams) => movementAction(dbType)(data),
-      updateAction: (data: UpdateActionParams) => updateAction(dbType)(data)
-      // addNewRound: (data: AddRoundParams) => addNewRound(dbType)(data),
-      // addAction: (data: AddActionParams) => addAction(dbType)(data)
+      // ACTION HELPERS
+      updateAction: (data: UpdateActionParams) => updateAction(dbType)(data),
+      saveAction: (data: SaveActionParams) => saveAction(dbType)(data)
     },
     npc: {
       subAll: () => subAllNpcs(dbType)(),

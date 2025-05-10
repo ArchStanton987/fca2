@@ -4,7 +4,7 @@ import skillsMap from "lib/character/abilities/skills/skills"
 import { SkillId } from "lib/character/abilities/skills/skills.types"
 import { Roll } from "lib/combat/combats.types"
 import difficultyArray from "lib/combat/const/difficulty"
-import { getCurrentActionId, getCurrentRoundId } from "lib/combat/utils/combat-utils"
+import { getActionId, getCurrentRoundId } from "lib/combat/utils/combat-utils"
 
 import Col from "components/Col"
 import NumPad from "components/NumPad/NumPad"
@@ -78,7 +78,7 @@ export default function DiceRollSlide({ skillId, scrollNext }: DiceRollSlideProp
       </DrawerSlide>
     )
   const roundId = getCurrentRoundId(combat)
-  const actionId = getCurrentActionId(combat)
+  const actionId = getActionId(combat)
   const currActionRoll = combat?.rounds?.[roundId]?.[actionId]?.roll
   const isAwaitingGm = currActionRoll === undefined
   const difficultyScore = currActionRoll?.difficultyModifier ?? 0

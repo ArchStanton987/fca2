@@ -12,40 +12,24 @@ interface CombatEntry {
 }
 type PlayerData = { char: Playable; combatData: PlayerCombatData }
 
-const getIsDefaultAction = (action: Action) =>
-  action.actionType === "" &&
-  action.actionSubtype === "" &&
-  action.actorId === "" &&
-  action.apCost === 0 &&
-  action.itemId === "" &&
-  action.targetName === ""
-
 export const getNewRoundId = (combat: Combat) => Object.keys(combat.rounds ?? {}).length + 1
 export const getCurrentRoundId = (combat: CombatEntry | null) => {
   if (!combat) return 1
   const keys = Object.keys(combat.rounds ?? {}).map(Number)
   return keys.length > 0 ? Math.max(...keys) : 1
 }
-export const getNewActionId = (combat: Combat) => {
-  const roundId = getCurrentRoundId(combat)
-  const rounds = combat.rounds ?? {}
-  const actions = Object.values(rounds[roundId] ?? {})
-  if (actions.length === 0) return 1
-  const isDefaultAction = getIsDefaultAction(actions[0])
-  if (isDefaultAction) return 1
-  const keys = Object.keys(rounds[roundId] ?? {}).map(Number)
-  return keys.length > 0 ? Math.max(...keys) + 1 : 1
-}
-export const getCurrentActionId = (combat: Combat | null) => {
+export const getActionId = (combat: Combat | null) => {
   if (!combat) return 1
   const roundId = getCurrentRoundId(combat)
   const rounds = combat.rounds ?? {}
-  const actions = Object.values(rounds[roundId] ?? {})
+  const actions = Object.entries(rounds[roundId] ?? {})
   if (actions.length === 0) return 1
-  const isDefaultAction = getIsDefaultAction(actions[0])
-  if (isDefaultAction) return 1
-  const keys = Object.keys(rounds[roundId] ?? {}).map(Number)
-  return keys.length > 0 ? Math.max(...keys) : 1
+  const action = actions.find(([, a]) => !a?.isDone)
+  if (action) {
+    const [actionId] = action
+    return Number(actionId)
+  }
+  return actions.length + 1
 }
 
 export const getPlayingOrder = (contenders: Record<string, PlayerData>) => {

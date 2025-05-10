@@ -3,18 +3,18 @@ import repositoryMap from "lib/shared/db/get-repository"
 
 import Combat from "../Combat"
 import { Action, PlayerCombatData } from "../combats.types"
-import { getCurrentRoundId, getIsActionEndingRound, getNewActionId } from "../utils/combat-utils"
+import { getIsActionEndingRound } from "../utils/combat-utils"
+import saveAction from "./save-action"
 import setNewRound from "./set-new-round"
 
 export type MovementActionParams = {
+  action: Action
   combat: Combat
   contenders: Record<string, { char: Playable; combatData: PlayerCombatData }>
-  action: Action
 }
 
 export default function movementAction(dbType: keyof typeof repositoryMap = "rtdb") {
   const statusRepo = repositoryMap[dbType].statusRepository
-  const actionRepo = repositoryMap[dbType].actionRepository
   return async (params: MovementActionParams) => {
     const { action, contenders, combat } = params
     const charId = action.actorId
@@ -25,9 +25,8 @@ export default function movementAction(dbType: keyof typeof repositoryMap = "rtd
 
     if (apCost > status.currAp) throw new Error("Not enough AP to perform this action")
 
-    const actionId = getNewActionId(combat)
-    const roundId = getCurrentRoundId(combat)
-    promises.push(actionRepo.set({ combatId: combat.id, roundId, id: actionId }, action))
+    // save action in combat
+    promises.push(saveAction(dbType)({ action, combat }))
 
     // handle char status reset & new round creation
     const isActionEndingRound = getIsActionEndingRound(contenders, { apCost, ...action })

@@ -7,7 +7,7 @@ import { RtdbReturnTypes } from "./api-rtdb.types"
 import getSub from "./get-sub"
 import updateValue from "./update-value"
 
-type Collectible = { id?: string }
+type Collectible = { id?: string | number }
 type Child<T> = { childKey: T }
 type CollectibleChild<T> = Collectible & Child<T>
 

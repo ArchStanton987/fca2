@@ -11,7 +11,6 @@ export type SetNewRoundParams = {
 }
 
 export default function setNewRound(dbType: keyof typeof repositoryMap = "rtdb") {
-  // const combatRepo = repositoryMap[dbType].combatRepository
   const statusRepo = repositoryMap[dbType].statusRepository
   const roundRepo = repositoryMap[dbType].roundRepository
 
@@ -38,7 +37,7 @@ export default function setNewRound(dbType: keyof typeof repositoryMap = "rtdb")
       }
     })
     // create new round
-    promises.push(roundRepo.add({ combatId: combat.id, id: nextRoundId }, { 1: defaultAction }))
+    promises.push(roundRepo.set({ combatId: combat.id, id: nextRoundId }, { 1: defaultAction }))
 
     return Promise.all(promises)
   }

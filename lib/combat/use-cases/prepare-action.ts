@@ -4,18 +4,18 @@ import repositoryMap from "lib/shared/db/get-repository"
 import Combat from "../Combat"
 import { PlayerCombatData, PrepareAction } from "../combats.types"
 import { AC_BONUS_PER_AP_SPENT, SCORE_BONUS_PER_AP_SPENT } from "../const/combat-const"
-import { getCurrentRoundId, getIsActionEndingRound, getNewActionId } from "../utils/combat-utils"
+import { getCurrentRoundId, getIsActionEndingRound } from "../utils/combat-utils"
+import saveAction from "./save-action"
 import setNewRound from "./set-new-round"
 import updateContender from "./update-contender"
 
 export type PrepareActionParams = {
-  combat: Combat
   action: PrepareAction
+  combat: Combat
   contenders: Record<string, { char: Playable; combatData: PlayerCombatData }>
 }
 
 export default function prepareAction(dbType: keyof typeof repositoryMap = "rtdb") {
-  const actionRepo = repositoryMap[dbType].actionRepository
   const statusRepo = repositoryMap[dbType].statusRepository
 
   return ({ combat, action, contenders }: PrepareActionParams) => {
@@ -48,8 +48,7 @@ export default function prepareAction(dbType: keyof typeof repositoryMap = "rtdb
     )
 
     // add new action
-    const actionId = getNewActionId(combat)
-    promises.push(actionRepo.add({ combatId: combat.id, roundId, id: actionId }, action))
+    promises.push(saveAction(dbType)({ action, combat }))
 
     // handle char status reset & new round creation
     const isActionEndingRound = getIsActionEndingRound(contenders, action)

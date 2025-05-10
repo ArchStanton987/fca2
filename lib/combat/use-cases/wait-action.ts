@@ -2,18 +2,18 @@ import Playable from "lib/character/Playable"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import Combat from "../Combat"
-import { PauseAction, PlayerCombatData } from "../combats.types"
-import { getActivePlayersWithAp, getCurrentRoundId, getNewActionId } from "../utils/combat-utils"
+import { Action, PlayerCombatData } from "../combats.types"
+import { getActivePlayersWithAp } from "../utils/combat-utils"
+import saveAction from "./save-action"
 
 export type WaitActionParams = {
   combat: Combat
   contenders: Record<string, { char: Playable; combatData: PlayerCombatData }>
-  action: PauseAction
+  action: Action
 }
 
 export default function waitAction(dbType: keyof typeof repositoryMap = "rtdb") {
   const statusRepo = repositoryMap[dbType].statusRepository
-  const actionRepo = repositoryMap[dbType].actionRepository
   return async (params: WaitActionParams) => {
     const { action, contenders, combat } = params
     const charId = action.actorId
@@ -29,9 +29,7 @@ export default function waitAction(dbType: keyof typeof repositoryMap = "rtdb") 
     promises.push(statusRepo.setChild({ charId, charType, childKey: "combatStatus" }, "wait"))
 
     // save action in combat
-    const roundId = getCurrentRoundId(combat)
-    const actionId = getNewActionId(combat)
-    promises.push(actionRepo.add({ combatId: combat.id, roundId, id: actionId }, action))
+    promises.push(saveAction(dbType)({ action, combat }))
 
     return Promise.all(promises)
   }

@@ -2,7 +2,7 @@ import { TouchableOpacity, View } from "react-native"
 
 import AntDesign from "@expo/vector-icons/AntDesign"
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
-import { PrepareActionType } from "lib/combat/combats.types"
+import { Action, PrepareActionType } from "lib/combat/combats.types"
 import actions from "lib/combat/const/actions"
 import getUseCases from "lib/get-use-cases"
 import Toast from "react-native-toast-message"
@@ -50,8 +50,8 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
   }
 
   const onPressWait = async () => {
-    if (!combat || !players || !npcs || actionType !== "pause") throw new Error("No combat found")
-    const action = { actionType, actorId: charId }
+    if (!combat || !players || !npcs) throw new Error("No combat found")
+    const action: Action = { actionType, actorId: charId }
     const contenders = { ...players, ...npcs }
     try {
       await useCases.combat.waitAction({ combat, contenders, action })

@@ -25,7 +25,7 @@ const initSlide = {
   renderSlide: (props: SlideProps) => <ActionTypeSlide {...props} />
 }
 
-const getSlides = (form: { actionType: string; actionSubType: string }) => {
+const getSlides = (form: { actionType: string; actionSubType?: string }) => {
   const { actionType } = form
   if (actionType === "movement") {
     return [
