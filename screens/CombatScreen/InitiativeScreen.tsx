@@ -54,7 +54,7 @@ export default function InitiativeScreen() {
   const contenders = { ...npcs, ...players }
   const character = useCharacter()
   const { isNpc } = character.meta
-  const { skills, charId } = character
+  const { skills } = character
   const { perceptionSkill } = skills.curr
 
   const { scoreStr, onPressKeypad, setScore } = useNumPad()
@@ -65,8 +65,8 @@ export default function InitiativeScreen() {
 
   const onPressConfirm = async () => {
     if (Number.isNaN(finalScore) || combat === null) return
-    const isScoreUnique = Object.entries(contenders).every(
-      ([id, c]) => id !== charId && c.combatData.initiative !== finalScore
+    const isScoreUnique = Object.values(contenders).every(
+      c => c.combatData.initiative !== finalScore
     )
     if (!isScoreUnique) {
       Toast.show({
