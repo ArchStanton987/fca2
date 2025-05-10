@@ -20,12 +20,9 @@ const styles = StyleSheet.create({
   selectedText: {
     color: colors.secColor
   },
-  disabled: {
-    backgroundColor: colors.quadColor,
-    borderColor: colors.quadColor
-  },
+  disabled: {},
   disabledText: {
-    color: colors.primColor
+    color: colors.terColor
   }
 })
 
@@ -45,6 +42,7 @@ export default function ListItemSelectable({
         isSelected && styles.selected,
         disabled && styles.disabled
       ]}
+      disabled={disabled}
       {...rest}
     >
       {label ? (

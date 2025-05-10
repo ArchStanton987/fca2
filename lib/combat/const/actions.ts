@@ -30,9 +30,8 @@ const actions = {
       drop: { id: "drop", label: "Lâcher", apCost: 2 },
       equip: { id: "equip", label: "Équiper", apCost: 2 },
       unequip: { id: "unequip", label: "Désequiper", apCost: 2 },
-      use: { id: "use", label: "Utiliser", apCost: 3 },
-      search: { id: "search", label: "Chercher", apCost: 4 },
-      throw: { id: "throw", label: "Lancer", apCost: 3 },
+      use: { id: "use", label: "Utiliser", apCost: 4 },
+      throw: { id: "throw", label: "Lancer", apCost: 4 },
       pickUp: { id: "pickUp", label: "Ramasser", apCost: 3 }
     }
   },

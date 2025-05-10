@@ -3,6 +3,7 @@ import { ScrollView, useWindowDimensions } from "react-native"
 
 import { useFocusEffect, useLocalSearchParams } from "expo-router"
 
+import { ActionTypeId } from "lib/combat/const/actions"
 import { getInitiativePrompts, getPlayingOrder } from "lib/combat/utils/combat-utils"
 
 import DrawerPage from "components/DrawerPage"
@@ -25,7 +26,7 @@ const initSlide = {
   renderSlide: (props: SlideProps) => <ActionTypeSlide {...props} />
 }
 
-const getSlides = (form: { actionType: string; actionSubType?: string }) => {
+const getSlides = (form: { actionType: ActionTypeId | ""; actionSubType?: string }) => {
   const { actionType } = form
   if (actionType === "movement") {
     return [
@@ -41,6 +42,15 @@ const getSlides = (form: { actionType: string; actionSubType?: string }) => {
       {
         id: "diceResult",
         renderSlide: (props: SlideProps) => <DiceResultSlide skillId="physical" {...props} />
+      }
+    ]
+  }
+  if (actionType === "item") {
+    return [
+      initSlide,
+      {
+        id: "apAssignment",
+        renderSlide: (props: SlideProps) => <ApAssignment {...props} />
       }
     ]
   }

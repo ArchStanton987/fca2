@@ -8,6 +8,7 @@ import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import colors from "styles/colors"
 
 const title = "action / pa / dist"
 
@@ -31,17 +32,25 @@ export default function MovementActions() {
       <List
         data={Object.values(actions.movement.subtypes)}
         keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <ListItemSelectable
-            isSelected={actionSubtype === item.id}
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-            onPress={() => onPressElement(item.id)}
-          >
-            <Txt style={{ flex: 1 }}>{item.label}</Txt>
-            <Txt>{item.apCost ?? "-"}</Txt>
-            <Txt style={{ width: 60, textAlign: "right" }}>{item.distance}</Txt>
-          </ListItemSelectable>
-        )}
+        renderItem={({ item }) => {
+          const disabled = typeof item.apCost === "number" && status.currAp < item.apCost
+          return (
+            <ListItemSelectable
+              isSelected={actionSubtype === item.id}
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+              onPress={() => onPressElement(item.id)}
+              disabled={disabled}
+            >
+              <Txt style={[{ flex: 1 }, disabled && { color: colors.terColor }]}>{item.label}</Txt>
+              <Txt style={disabled && { color: colors.terColor }}>{item.apCost ?? "-"}</Txt>
+              <Txt
+                style={[{ width: 60, textAlign: "right" }, disabled && { color: colors.terColor }]}
+              >
+                {item.distance}
+              </Txt>
+            </ListItemSelectable>
+          )
+        }}
       />
     </ScrollSection>
   )

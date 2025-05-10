@@ -14,28 +14,27 @@ import colors from "styles/colors"
 
 const getItemList = (
   actionSubtype: string,
-  inventory: Inventory,
-  equipedObjects: Playable["equipedObjects"]
+  char: Playable,
+  inventory: Inventory
 ): { title: string; data: any[] }[] => {
   switch (actionSubtype) {
     case "drop":
       return [
-        { title: "Armes", data: equipedObjects.weapons },
-        { title: "Equipements", data: equipedObjects.clothings }
+        { title: "Armes", data: char.equipedObjects.weapons },
+        { title: "Equipements", data: char.equipedObjects.clothings }
       ]
     case "equip":
       return [
-        { title: "Armes", data: inventory.weapons },
-        { title: "Equipements", data: inventory.clothings }
+        { title: "Armes", data: inventory.weapons.filter(w => !w.isEquiped) },
+        { title: "Equipements", data: inventory.clothings.filter(c => !c.isEquiped) }
       ]
     case "unequip":
       return [
-        { title: "armes", data: equipedObjects.weapons },
-        { title: "équipements", data: equipedObjects.clothings }
+        { title: "armes", data: char.equipedObjects.weapons },
+        { title: "équipements", data: char.equipedObjects.clothings }
       ]
     case "use":
       return [{ title: "consommables", data: inventory.groupedConsumables }]
-    case "search":
     case "throw":
       return [
         { title: "armes", data: inventory.weapons },
@@ -59,7 +58,7 @@ const styles = StyleSheet.create({
 
 export default function ItemsActionInfo() {
   const inventory = useInventory()
-  const { equipedObjects } = useCharacter()
+  const character = useCharacter()
 
   const { setForm } = useActionApi()
   const { itemId, actionSubtype } = useActionForm()
@@ -68,7 +67,7 @@ export default function ItemsActionInfo() {
     setForm({ itemId: itemDbKey })
   }
 
-  const itemLists = getItemList(actionSubtype, inventory, equipedObjects)
+  const itemLists = getItemList(actionSubtype, character, inventory)
 
   return (
     <View>
