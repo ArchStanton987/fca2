@@ -48,7 +48,7 @@ export default function prepareAction(dbType: keyof typeof repositoryMap = "rtdb
     )
 
     // add new action
-    promises.push(saveAction(dbType)({ action, combat }))
+    promises.push(saveAction(dbType)({ action, combat, contenders }))
 
     // handle char status reset & new round creation
     const isActionEndingRound = getIsActionEndingRound(contenders, action)

@@ -29,7 +29,7 @@ export default function waitAction(dbType: keyof typeof repositoryMap = "rtdb") 
     promises.push(statusRepo.setChild({ charId, charType, childKey: "combatStatus" }, "wait"))
 
     // save action in combat
-    promises.push(saveAction(dbType)({ action, combat }))
+    promises.push(saveAction(dbType)({ action, combat, contenders }))
 
     return Promise.all(promises)
   }

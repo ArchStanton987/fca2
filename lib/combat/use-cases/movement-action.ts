@@ -26,7 +26,7 @@ export default function movementAction(dbType: keyof typeof repositoryMap = "rtd
     if (apCost > status.currAp) throw new Error("Not enough AP to perform this action")
 
     // save action in combat
-    promises.push(saveAction(dbType)({ action, combat }))
+    promises.push(saveAction(dbType)({ action, combat, contenders }))
 
     // handle char status reset & new round creation
     const isActionEndingRound = getIsActionEndingRound(contenders, { apCost, ...action })

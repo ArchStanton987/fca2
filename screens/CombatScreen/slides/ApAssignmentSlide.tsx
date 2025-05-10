@@ -48,7 +48,7 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
   const incApCost = (type: "add" | "remove") => {
     let newApCost
     if (type === "add") {
-      newApCost = apCost + 1 > maxAp ? maxAp : apCost + 1
+      newApCost = apCost + 1 > currAp ? currAp : apCost + 1
     } else {
       newApCost = apCost - 1 < 0 ? 0 : apCost - 1
     }
@@ -71,7 +71,7 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
   const apArr = []
   for (let i = 0; i < maxAp; i += 1) {
     const isChecked = i < currAp
-    const isPreview = i >= currAp - apCost
+    const isPreview = i >= currAp - apCost && i < currAp
     apArr.push({ id: i.toString(), isChecked, isPreview })
   }
 

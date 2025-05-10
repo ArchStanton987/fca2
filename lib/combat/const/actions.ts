@@ -72,3 +72,5 @@ export default actions
 
 export type ActionTypeId = keyof typeof actions
 export type ActionSubtype<T extends ActionTypeId> = keyof (typeof actions)[T]["subtypes"]
+
+export const withRollActionsTypes: ActionTypeId[] = ["movement", "item", "weapon"]
