@@ -81,7 +81,7 @@ export default function GMActionsScreen() {
   const actionId = getActionId(combat)
   const action = combat?.rounds?.[roundId]?.[actionId]
   const actionHasDifficulty = withRollActionsTypes.includes(action?.actionType as ActionTypeId)
-  const isDifficultySet = action.roll === false || action?.roll?.difficultyModifier !== undefined
+  const isDifficultySet = action?.roll === false || action?.roll?.difficultyModifier !== undefined
 
   if (!actionHasDifficulty)
     return (
