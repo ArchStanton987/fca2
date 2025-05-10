@@ -50,10 +50,11 @@ const styles = StyleSheet.create({
 export default function InitiativeScreen() {
   const useCases = useGetUseCases()
 
-  const { combat } = useCombat()
+  const { combat, npcs, players } = useCombat()
+  const contenders = { ...npcs, ...players }
   const character = useCharacter()
   const { isNpc } = character.meta
-  const { skills } = character
+  const { skills, charId } = character
   const { perceptionSkill } = skills.curr
 
   const { scoreStr, onPressKeypad, setScore } = useNumPad()
@@ -64,6 +65,16 @@ export default function InitiativeScreen() {
 
   const onPressConfirm = async () => {
     if (Number.isNaN(finalScore) || combat === null) return
+    const isScoreUnique = Object.entries(contenders).every(
+      ([id, c]) => id !== charId && c.combatData.initiative !== finalScore
+    )
+    if (!isScoreUnique) {
+      Toast.show({
+        type: "custom",
+        text1: "Un autre personnage a déjà ce score, il faut relancer les dés !"
+      })
+      return
+    }
     await useCases.combat.updateContender({
       combat,
       char: character,
