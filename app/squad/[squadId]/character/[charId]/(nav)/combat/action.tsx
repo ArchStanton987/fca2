@@ -82,7 +82,7 @@ export default function ActionScreen() {
     }, [reset])
   )
 
-  if (!combat) return <Txt>Aucun combat trouvé</Txt>
+  if (!combat) return <SlideError error={slideErrors.noCombatError} />
 
   const prompts = getInitiativePrompts(charId, players ?? {}, npcs ?? {})
   if (prompts.playerShouldRollInitiative) return <InitiativeScreen />

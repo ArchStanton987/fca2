@@ -22,6 +22,7 @@ import layout from "styles/layout"
 
 import AwaitGmSlide from "./AwaitGmSlide"
 import NextButton from "./NextButton"
+import SlideError, { slideErrors } from "./SlideError"
 
 const styles = StyleSheet.create({
   digit: {
@@ -71,22 +72,13 @@ export default function DiceRollSlide({ skillId, scrollNext }: DiceRollSlideProp
     scrollNext()
   }
 
-  if (combat === null)
-    return (
-      <DrawerSlide>
-        <Txt>Impossible de récupérer le combat en cours</Txt>
-      </DrawerSlide>
-    )
+  if (combat === null) return <SlideError error={slideErrors.noCombatError} />
+
   const roundId = getCurrentRoundId(combat)
   const actionId = getActionId(combat)
   const currRoll = combat?.rounds?.[roundId]?.[actionId]?.roll
 
-  if (currRoll === false)
-    return (
-      <DrawerSlide>
-        <Txt>Pas de jet</Txt>
-      </DrawerSlide>
-    )
+  if (currRoll === false) return <SlideError error={slideErrors.noDiceRollError} />
 
   const isAwaitingGm = currRoll === undefined
   const difficultyScore = currRoll?.difficultyModifier ?? 0

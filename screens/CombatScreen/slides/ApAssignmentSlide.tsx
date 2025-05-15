@@ -20,6 +20,7 @@ import colors from "styles/colors"
 import layout from "styles/layout"
 
 import NextButton from "./NextButton"
+import SlideError, { slideErrors } from "./SlideError"
 
 const styles = StyleSheet.create({
   checkboxContainer: {
@@ -88,7 +89,7 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
     apArr.push({ id: i.toString(), isChecked, isPreview })
   }
 
-  if (!combat) return <Txt>Impossible de récupérer le combat en cours</Txt>
+  if (!combat) return <SlideError error={slideErrors.noCombatError} />
 
   return (
     <DrawerSlide>

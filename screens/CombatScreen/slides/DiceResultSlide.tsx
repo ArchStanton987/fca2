@@ -19,7 +19,9 @@ import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
 
+import AwaitGmSlide from "./AwaitGmSlide"
 import NextButton from "./NextButton"
+import SlideError, { slideErrors } from "./SlideError"
 
 const styles = StyleSheet.create({
   centeredSection: {
@@ -92,12 +94,12 @@ export default function DiceResultSlide({ skillId }: DiceResultSlideProps) {
   const roundId = getCurrentRoundId(combat)
   const actionId = getActionId(combat)
 
-  if (!combat) return <Txt>Impossible de récupérer le combat en cours</Txt>
+  if (!combat) return <SlideError error={slideErrors.noCombatError} />
 
   const roll = combat.rounds?.[roundId]?.[actionId]?.roll
 
-  if (roll === undefined) return <Txt>En attente du MJ</Txt>
-  if (roll === false) return <Txt>Pas de jet</Txt>
+  if (roll === undefined) return <AwaitGmSlide />
+  if (roll === false) return <SlideError error={slideErrors.noDiceRollError} />
 
   const { actorDiceScore = 0, actorSkillScore = 0, difficultyModifier = 0 } = roll ?? {}
   const contenderType = meta.isNpc ? "npcs" : "players"
