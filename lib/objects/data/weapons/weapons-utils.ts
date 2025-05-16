@@ -33,7 +33,7 @@ const getCanBasicUseFirearm = (weapon: Weapon) => {
 }
 
 export const getCanBasicUseWeapon = (weapon: Weapon, char: Playable) => {
-  if (weapon.data.skill === "trap") {
+  if (weapon.data.skillId === "trap") {
     return char.status.currAp >= char.secAttr.curr.actionPoints
   }
   if (weapon.data.damageBasic === null) return false
@@ -77,10 +77,13 @@ export const getCanUnload = ({ data, inMagazine = 0 }: Weapon, char: Playable) =
 }
 
 export const getCanHitWith = (weapon: Weapon, char: Playable) => {
-  if (weapon.data.skill === "melee" || weapon.data.skill === "unarmed") return false
+  if (weapon.data.skillId === "melee" || weapon.data.skillId === "unarmed") return false
   return char.status.currAp >= HIT_WITH_AP_COST
 }
-export const getCanThrow = (weapon: Weapon, char: Playable) => char.status.currAp >= THROW_AP_COST
+export const getCanThrow = (weapon: Weapon, char: Playable) => {
+  if (weapon.id === "unarmed") return false
+  return char.status.currAp >= THROW_AP_COST
+}
 
 export const weaponActionsMap: {
   actionId: WeaponActionId
@@ -106,7 +109,7 @@ export const getWeaponActionLabel = (weapon: Weapon, actionId: WeaponActionId) =
   if (actionId === "throw") return "Lancer"
 
   let verb = "Utiliser"
-  switch (weapon.data.skill) {
+  switch (weapon.data.skillId) {
     case "unarmed":
       verb = "Frapper"
       break

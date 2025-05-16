@@ -18,7 +18,7 @@ export const dbToWeapon = (
   dbAmmo: DbInventory["ammo"]
 ): Weapon => {
   const { id } = dbWeapon
-  const weaponSkill = weaponsMap[id].skill
+  const weaponSkill = weaponsMap[id].skillId
   const weaponKnowledges = weaponsMap[id].knowledges
   const { ammoType, minStrength, isTwoHanded } = weaponsMap[id]
   const inMagazine = ammoType !== null ? dbWeapon.inMagazine || 0 : undefined
@@ -82,7 +82,7 @@ export const attackToWeapon = (
       weight: 0,
       value: 0,
       frequency: 0,
-      skill: "unarmed",
+      skillId: "unarmed",
       knowledges: [],
       tags: [],
       isTwoHanded: false

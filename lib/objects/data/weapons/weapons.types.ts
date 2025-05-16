@@ -74,7 +74,7 @@ export type WeaponData = {
   weight: number
   value: number
   frequency: number
-  skill: SkillId
+  skillId: SkillId
   knowledges: KnowledgeId[]
   tags: WeaponTagId[]
   isTwoHanded: boolean
