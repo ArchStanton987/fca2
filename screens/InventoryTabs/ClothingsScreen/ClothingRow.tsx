@@ -67,7 +67,7 @@ export default function ClothingRow({ clothing, isSelected, onPress, ...rest }: 
       <Spacer x={5} />
       <DeleteInput
         isSelected={isSelected}
-        onPress={() => useCases.inventory.throw(charType, character.charId, clothing)}
+        onPress={() => useCases.inventory.drop(charType, character.charId, clothing)}
       />
     </Selectable>
   )

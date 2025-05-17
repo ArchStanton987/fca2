@@ -54,7 +54,7 @@ export default function WeaponRow({ weapon, isSelected, onPress, ...rest }: Weap
       <Spacer x={5} />
       <DeleteInput
         isSelected={isSelected}
-        onPress={() => useCases.inventory.throw(charType, character.charId, weapon)}
+        onPress={() => useCases.inventory.drop(charType, character.charId, weapon)}
       />
     </Selectable>
   )

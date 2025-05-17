@@ -66,7 +66,7 @@ function MiscObjScreen() {
               count={item.count}
               isSelected={item.id === selectedItem?.id}
               onPress={() => setSelectedItem(prev => (prev?.id === item.id ? null : item))}
-              onPressDelete={() => useCases.inventory.throw(charType, charId, item)}
+              onPressDelete={() => useCases.inventory.drop(charType, charId, item)}
             />
           )}
         />

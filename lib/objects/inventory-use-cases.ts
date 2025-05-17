@@ -123,7 +123,7 @@ const getInventoryUseCases = (
       return Promise.all(promises)
     },
 
-    throw: (
+    drop: (
       charType: CharType,
       charId: string,
       object: Weapon | Clothing | Consumable | MiscObject
@@ -166,7 +166,7 @@ const getInventoryUseCases = (
       // handle object in inventory
       const shouldRemoveObject = remainingUse === undefined || remainingUse <= 1
       if (shouldRemoveObject) {
-        promises.push(getInventoryUseCases(db, createdElements).throw(charType, charId, consumable))
+        promises.push(getInventoryUseCases(db, createdElements).drop(charType, charId, consumable))
       } else {
         repository.updateCollectible(
           charType,
