@@ -38,10 +38,10 @@ export default function CharStack() {
   const useCases = useGetUseCases()
 
   const squad = useSquad()
-  const isEnemy = !(charId in squad.membersRecord)
+  const isNpc = !(charId in squad.membersRecord)
   const subParams = {
     id: charId,
-    charType: isEnemy ? ("npcs" as const) : ("characters" as const)
+    charType: isNpc ? ("npcs" as const) : ("characters" as const)
   }
 
   const [currDatetime, setCurrDatetime] = useState(squad.date.toJSON())

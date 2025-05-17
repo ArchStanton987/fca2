@@ -16,8 +16,8 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
       weapon: Weapon,
       apCostOverride: number | undefined = undefined
     ) => {
-      const { charId, isEnemy } = char
-      const charType = isEnemy ? "npcs" : "characters"
+      const { charId, meta } = char
+      const charType = meta.isNpc ? "npcs" : "characters"
       const { data, ammo, inMagazine = 0 } = weapon
       const { ammoType, magazine } = data
       const apCost = apCostOverride || LOAD_AP_COST
@@ -59,8 +59,8 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
       weapon: Weapon,
       apCostOverride: number | undefined = undefined
     ) => {
-      const { charId, isEnemy } = char
-      const charType = isEnemy ? "npcs" : "characters"
+      const { charId, meta } = char
+      const charType = meta.isNpc ? "npcs" : "characters"
       const { inMagazine = 0, data } = weapon
       const { ammoType } = data
       const apCost = apCostOverride || UNLOAD_AP_COST
@@ -97,8 +97,8 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
       actionId: WeaponActionId,
       apCostOverride: number | undefined = undefined
     ) => {
-      const { charId, status, isEnemy } = char
-      const charType = isEnemy ? "npcs" : "characters"
+      const { charId, status, meta } = char
+      const charType = meta.isNpc ? "npcs" : "characters"
       const { data, inMagazine = 0 } = weapon
       const { ammoType, ammoPerBurst, ammoPerShot } = data
       const apCost = apCostOverride || getApCost(weapon, char, actionId)

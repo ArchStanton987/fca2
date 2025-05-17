@@ -62,8 +62,8 @@ const getInventoryUseCases = (
     getAll: (charType: CharType, charId: string) => repository.getAll(charType, charId),
 
     exchange: (character: Playable, payload: ExchangeState, inventory: Inventory) => {
-      const { charId, isEnemy } = character
-      const charType = isEnemy ? "npcs" : "characters"
+      const { charId, meta } = character
+      const charType = meta.isNpc ? "npcs" : "characters"
       const recordsUpdates: {
         category: RecordInventoryCategory
         id?: AmmoType
@@ -139,8 +139,8 @@ const getInventoryUseCases = (
     },
 
     consume: (character: Playable, consumable: Consumable) => {
-      const { charId, isEnemy } = character
-      const charType = isEnemy ? "npcs" : "characters"
+      const { charId, meta } = character
+      const charType = meta.isNpc ? "npcs" : "characters"
       const { data, remainingUse } = consumable
       const { effectId, modifiers } = data
 

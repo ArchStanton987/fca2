@@ -28,7 +28,7 @@ const fbStatusRepository = {
     field: T,
     data: UpdatableDbStatus[T]
   ) => {
-    const charType = char.isEnemy ? "npcs" : "characters"
+    const charType = char.meta.isNpc ? "npcs" : "characters"
     const path = getFieldPath(charType, char.charId, field)
     const promises = []
     // update character exp in squad object in db
@@ -41,7 +41,7 @@ const fbStatusRepository = {
   },
   groupUpdate: (char: Playable, updates: Partial<UpdatableDbStatus>) => {
     const promises = []
-    const charType = char.isEnemy ? "npcs" : "characters"
+    const charType = char.meta.isNpc ? "npcs" : "characters"
     const payload = Object.entries(updates).map(([key, value]) => ({
       url: getFieldPath(charType, char.charId, key as keyof UpdatableDbStatus),
       data: value

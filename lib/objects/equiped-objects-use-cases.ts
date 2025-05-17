@@ -34,8 +34,8 @@ const getEquipedObjectsUseCases = (
     getAll: (charType: CharType, charId: string) => repository.getAll(charType, charId),
 
     toggle: async (char: Playable, object: Weapon | Clothing) => {
-      const { charId, equipedObjects, isEnemy } = char
-      const charType = isEnemy ? "npcs" : "characters"
+      const { charId, equipedObjects, meta } = char
+      const charType = meta.isNpc ? "npcs" : "characters"
       const category = getObjectCategory(object)
       const { weapons, clothings } = equipedObjects
       const { dbKey } = object

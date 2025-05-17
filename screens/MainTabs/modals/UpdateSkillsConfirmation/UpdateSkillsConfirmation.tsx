@@ -21,8 +21,8 @@ type SkillsConfirmationModalParams = DrawerParams & {
 
 export default function UpdateSkillsConfirmation() {
   const useCases = useGetUseCases()
-  const { charId, skills, isEnemy } = useCharacter()
-  const charType = isEnemy ? "npcs" : "characters"
+  const { charId, skills, meta } = useCharacter()
+  const charType = meta.isNpc ? "npcs" : "characters"
   const { up } = skills
   const params = useLocalSearchParams<SkillsConfirmationModalParams>()
   const newUpSkills: SkillsValues = JSON.parse(params.newUpSkills as string)

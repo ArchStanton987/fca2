@@ -25,7 +25,7 @@ export default function WeaponRow({ weapon, isSelected, onPress, ...rest }: Weap
   const character = useCharacter()
   const { isEquiped, skill, ammo, data } = weapon
   const { label, damageBasic, damageBurst, ammoType } = data
-  const charType = character.isEnemy ? "npcs" : "characters"
+  const charType = character.meta.isNpc ? "npcs" : "characters"
 
   const handleEquip = async () => {
     try {

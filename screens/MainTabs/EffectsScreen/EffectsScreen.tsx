@@ -47,8 +47,8 @@ const title: ComposedTitleProps = [
 function EffectsScreen() {
   const useCases = useGetUseCases()
   const { squadId } = useSquad()
-  const { effects, charId, isEnemy } = useCharacter()
-  const charType = isEnemy ? "npcs" : "characters"
+  const { effects, charId, meta } = useCharacter()
+  const charType = meta.isNpc ? "npcs" : "characters"
 
   const [selectedId, setSelectedId] = useState<Effect["id"] | null>(null)
 

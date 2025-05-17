@@ -24,7 +24,7 @@ export default function TabBar(props: BottomTabBarProps & { tabBarId: TabBarId }
   const localParams = useLocalSearchParams() as SearchParams<DrawerParams>
   const { charId, squadId } = localParams
   const squad = useSquad()
-  const isEnemy = charId && !(charId in squad.membersRecord)
+  const isNpc = charId && !(charId in squad.membersRecord)
 
   const onPressTab = (routeName: string) => {
     if (tabBarId === "char") {
@@ -35,7 +35,7 @@ export default function TabBar(props: BottomTabBarProps & { tabBarId: TabBarId }
   }
 
   const toHome = () => {
-    if (!isEnemy) return router.push("/")
+    if (!isNpc) return router.push("/")
     return router.push({ pathname: adminRoute, params: { squadId } })
   }
 

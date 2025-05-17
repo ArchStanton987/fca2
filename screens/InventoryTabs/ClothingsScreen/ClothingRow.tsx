@@ -23,7 +23,7 @@ export default function ClothingRow({ clothing, isSelected, onPress, ...rest }: 
   const useCases = useGetUseCases()
 
   const character = useCharacter()
-  const charType = character.isEnemy ? "npcs" : "characters"
+  const charType = character.meta.isNpc ? "npcs" : "characters"
   const { isEquiped, data } = clothing
   const {
     label,

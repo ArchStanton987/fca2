@@ -47,7 +47,7 @@ function getEffectsUseCases(
     add: async (char: Playable, effectId: EffectId, refDate?: Date, lengthInMs?: number) => {
       const dbEffect = createDbEffect(char, effectId, refDate, lengthInMs, allEffects)
       const existingEffect = char.effectsRecord[effectId]
-      const charType = char.isEnemy ? "npcs" : "characters"
+      const charType = char.meta.isNpc ? "npcs" : "characters"
       if (existingEffect) {
         return repository.update(charType, char.charId, existingEffect.dbKey, dbEffect)
       }
@@ -70,7 +70,7 @@ function getEffectsUseCases(
           newDbEffects.push(dbEffect)
         }
       })
-      const charType = char.isEnemy ? "npcs" : "characters"
+      const charType = char.meta.isNpc ? "npcs" : "characters"
       const promises = [
         repository.groupAdd(charType, char.charId, newDbEffects),
         repository.groupUpdate(charType, char.charId, updatedDbEffects)
@@ -82,7 +82,7 @@ function getEffectsUseCases(
       repository.remove(charType, charId, effect),
 
     groupRemove: (char: Playable, effects: Effect[]) => {
-      const charType = char.isEnemy ? "npcs" : "characters"
+      const charType = char.meta.isNpc ? "npcs" : "characters"
 
       return repository.groupRemove(charType, char.charId, effects)
     }

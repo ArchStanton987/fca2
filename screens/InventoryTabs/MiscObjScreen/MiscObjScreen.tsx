@@ -31,8 +31,8 @@ function MiscObjScreen() {
   const { squadId, charId } = useLocalSearchParams() as SearchParams<DrawerParams>
   const [selectedItem, setSelectedItem] = useState<MiscObject | null>(null)
   const [isAscSort, setIsAscSort] = useState(true)
-  const { isEnemy } = useCharacter()
-  const charType = isEnemy ? "npcs" : "characters"
+  const { meta } = useCharacter()
+  const charType = meta.isNpc ? "npcs" : "characters"
 
   const { groupedMiscObjects } = useInventory()
 
