@@ -2,25 +2,21 @@ import Playable from "lib/character/Playable"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import Combat from "../Combat"
-import { PlayerCombatData, PrepareAction } from "../combats.types"
+import { Action, PlayerCombatData } from "../combats.types"
 import { AC_BONUS_PER_AP_SPENT, SCORE_BONUS_PER_AP_SPENT } from "../const/combat-const"
-import { getCurrentRoundId, getIsActionEndingRound } from "../utils/combat-utils"
-import saveAction from "./save-action"
-import setNewRound from "./set-new-round"
+import { getCurrentRoundId } from "../utils/combat-utils"
 import updateContender from "./update-contender"
 
 export type PrepareActionParams = {
-  action: PrepareAction
+  action: Action
   combat: Combat
   contenders: Record<string, { char: Playable; combatData: PlayerCombatData }>
 }
 
 export default function prepareAction(dbType: keyof typeof repositoryMap = "rtdb") {
-  const statusRepo = repositoryMap[dbType].statusRepository
-
   return ({ combat, action, contenders }: PrepareActionParams) => {
-    const { apCost, actionSubtype, actorId } = action
-    const { charId, meta, status } = contenders[actorId].char
+    const { apCost = 0, actionSubtype, actorId } = action
+    const { charId, meta } = contenders[actorId].char
     const { isNpc } = meta
 
     const roundId = getCurrentRoundId(combat)
@@ -46,19 +42,6 @@ export default function prepareAction(dbType: keyof typeof repositoryMap = "rtdb
     promises.push(
       updateContender(dbType)({ char: contenders[actorId].char, combat, payload: newContender })
     )
-
-    // add new action
-    promises.push(saveAction(dbType)({ action, combat, contenders }))
-
-    // handle char status reset & new round creation
-    const isActionEndingRound = getIsActionEndingRound(contenders, action)
-    if (isActionEndingRound) {
-      promises.push(setNewRound(dbType)({ contenders, combat }))
-    } else {
-      const charType = isNpc ? "npcs" : "characters"
-      const newAp = status.currAp - apCost
-      promises.push(statusRepo.setChild({ charId, charType, childKey: "currAp" }, newAp))
-    }
 
     return Promise.all(promises)
   }

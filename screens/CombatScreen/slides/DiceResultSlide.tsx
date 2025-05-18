@@ -113,12 +113,15 @@ export default function DiceResultSlide({ skillId }: DiceResultSlideProps) {
 
   const submit = async () => {
     try {
+      const actionPayload = { combat, contenders: { ...players, ...npcs }, action: form }
       if (form.actionType === "movement") {
-        await useCases.combat.movementAction({
-          combat,
-          contenders: { ...players, ...npcs },
-          action: form
-        })
+        switch (form.actionType) {
+          case "movement":
+            await useCases.combat.doCombatAction(actionPayload)
+            break
+          default:
+            throw new Error("Action not supported")
+        }
         reset()
         Toast.show({ type: "custom", text1: "Action réalisée !" })
       }

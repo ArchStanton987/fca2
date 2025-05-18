@@ -26,8 +26,8 @@ export default function ActionInfo() {
   }
 
   let description = ""
-  if (actionType === "pause") {
-    description = actions.pause.description
+  if (actionType === "wait") {
+    description = actions.wait.description
   }
   if (actionType === "prepare" && isKeyOf(actionSubtype, actions.prepare.subtypes)) {
     description = actions.prepare.subtypes[actionSubtype].description
@@ -43,6 +43,6 @@ export default function ActionInfo() {
   }
   if (actionType === "movement") return <MovementInfo />
   if (actionType === "item") return <ItemsActionInfo />
-  if (actionType === "pause") return <Txt>{actions.pause.description}</Txt>
+  if (actionType === "wait") return <Txt>{actions.wait.description}</Txt>
   return null
 }

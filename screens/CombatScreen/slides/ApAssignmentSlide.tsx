@@ -73,13 +73,23 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
     const roundId = getCurrentRoundId(combat)
     const actionId = getActionId(combat)
     const roll = combat.rounds?.[roundId]?.[actionId]?.roll
-    // if player doesn't need to roll, we can save the action
-    if (form.actionType === "movement" && roll === false) {
-      await useCases.combat.movementAction({ combat, contenders, action: { ...form, roll } })
-      reset()
+
+    // if player must roll dices, go to next slide
+    if (roll !== false) {
+      scrollNext()
       return
     }
-    scrollNext()
+
+    // if action doesn't require additional step, save it
+    const shouldSaveAction =
+      form.actionType === "movement" ||
+      (form.actionType === "item" && form.actionSubtype !== "pickUp") ||
+      (form.actionType === "item" && form.actionSubtype !== "throw")
+
+    if (!shouldSaveAction) throw new Error("Action not supported")
+
+    await useCases.combat.doCombatAction({ contenders, combat, action: { ...form, roll } })
+    reset()
   }
 
   const apArr = []

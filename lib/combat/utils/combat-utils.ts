@@ -1,10 +1,18 @@
 // import { DbStatus } from "lib/character/status/status.types"
 import Playable from "lib/character/Playable"
+import { KnowledgeId } from "lib/character/abilities/knowledges/knowledge-types"
+import { getKnowledgesBonus } from "lib/character/abilities/knowledges/knowledge-utils"
+import skillsMap from "lib/character/abilities/skills/skills"
+import { Skill, SkillId } from "lib/character/abilities/skills/skills.types"
+import Inventory from "lib/objects/Inventory"
+import { Consumable } from "lib/objects/data/consumables/consumables.types"
+import { Weapon } from "lib/objects/data/weapons/weapons.types"
 
 import { isKeyOf } from "utils/ts-utils"
 
 import Combat from "../Combat"
 import { Action, PlayerCombatData } from "../combats.types"
+import actions from "../const/actions"
 import { DEFAULT_INITIATIVE } from "../const/combat-const"
 
 interface CombatEntry {
@@ -22,14 +30,14 @@ export const getActionId = (combat: Combat | null) => {
   if (!combat) return 1
   const roundId = getCurrentRoundId(combat)
   const rounds = combat.rounds ?? {}
-  const actions = Object.entries(rounds[roundId] ?? {})
-  if (actions.length === 0) return 1
-  const action = actions.find(([, a]) => !a?.isDone)
+  const roundActions = Object.entries(rounds[roundId] ?? {})
+  if (roundActions.length === 0) return 1
+  const action = roundActions.find(([, a]) => !a?.isDone)
   if (action) {
     const [actionId] = action
     return Number(actionId)
   }
-  return actions.length + 1
+  return roundActions.length + 1
 }
 
 export const getPlayingOrder = (contenders: Record<string, PlayerData>) => {
@@ -38,7 +46,7 @@ export const getPlayingOrder = (contenders: Record<string, PlayerData>) => {
     .filter(c => c.char.status.combatStatus !== "inactive" && c.char.status.combatStatus !== "dead")
     .sort((a, b) => {
       if (a.char.status.currAp === b.char.status.currAp)
-        return a.combatData.initiative - b.combatData.initiative
+        return b.combatData.initiative - a.combatData.initiative
       return b.char.status.currAp - a.char.status.currAp
     })
   const inactiveContenders = Object.values(contenders).filter(
@@ -97,4 +105,84 @@ export const getInitiativePrompts = (
     !playerShouldRollInitiative
 
   return { playerShouldRollInitiative, shouldWaitOthers }
+}
+
+interface ActionForm<T extends keyof typeof actions> {
+  actionType: T | ""
+  actionSubType?: keyof (typeof actions)[T]["subtypes"] | ""
+  item?: Consumable | Weapon
+}
+
+export const getSkillFromAction = <T extends keyof typeof actions>({
+  actionType,
+  actionSubType,
+  item
+}: ActionForm<T>): Skill | null => {
+  switch (actionType) {
+    case "movement":
+      return skillsMap.physical
+    case "item":
+      if (actionSubType === "use" && item?.data?.skillId) return skillsMap[item.data.skillId]
+      if (actionSubType === "throw") return skillsMap.throw
+      return null
+    case "weapon":
+      if (actionSubType === "throw") return skillsMap.throw
+      if (actionSubType === "hit") return skillsMap.melee
+      if (!item?.data?.skillId) throw new Error("No skill id found for given item")
+      return skillsMap[item.data.skillId]
+    default:
+      return null
+  }
+}
+
+// TODO: refactor, use in const as object factory
+const getKnowledgesFromAction = <T extends keyof typeof actions>({
+  actionType,
+  actionSubType,
+  item
+}: ActionForm<T>): KnowledgeId[] => {
+  // MOVEMENT
+  if (actionSubType === "run" || actionSubType === "sprint") return ["kRunning"]
+  if (actionSubType === "jump") return ["kStunt"]
+  if (actionSubType === "climb") return ["kClimbing"]
+
+  // ITEMS
+  if (actionType === "item" && actionSubType === "use" && item) {
+    return item.data.knowledges ?? []
+  }
+
+  // WEAPON
+  if (actionType === "weapon" && actionSubType === "hit") return ["kBluntWeapons"]
+  if (actionType === "weapon" && item) return item.data.knowledges ?? []
+
+  return []
+}
+
+export const getDiceRollData = <T extends keyof typeof actions>(
+  { actionType, actionSubType, item }: ActionForm<T>,
+  char: Playable
+): { skillId: SkillId; skillLabel: string; totalSkillScore: number } => {
+  if (actionType === "weapon" && item) {
+    if (actionSubType !== "hit" && actionSubType !== "throw") {
+      if (!("skill" in item)) throw new Error("Item is not a weapon")
+      const { skillId } = item.data
+      return { skillId, skillLabel: skillsMap[skillId].label, totalSkillScore: item.skill }
+    }
+  }
+  const skill = getSkillFromAction({ actionType, actionSubType, item })
+  if (!skill) throw new Error("No skill found")
+  const knowledges = getKnowledgesFromAction({ actionType, actionSubType, item })
+  const knowledgeBonus = getKnowledgesBonus(knowledges, char)
+  const totalSkillScore = char.skills.curr[skill.id] + knowledgeBonus
+  return { skillId: skill.id, skillLabel: skill.label, totalSkillScore }
+}
+
+export const getItemWithSkillFromId = (itemId: string | undefined, inventory: Inventory) => {
+  if (!itemId) return undefined
+  let item
+  if (itemId) {
+    if (inventory.weaponsRecord[itemId]) item = inventory.weaponsRecord[itemId]
+    if (inventory.consumablesRecord[itemId]) item = inventory.consumablesRecord[itemId]
+  }
+  return item
 }

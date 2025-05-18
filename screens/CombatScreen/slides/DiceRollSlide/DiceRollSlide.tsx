@@ -1,10 +1,13 @@
 import { StyleSheet, View } from "react-native"
 
-import skillsMap from "lib/character/abilities/skills/skills"
-import { SkillId } from "lib/character/abilities/skills/skills.types"
 import { Roll } from "lib/combat/combats.types"
 import difficultyArray from "lib/combat/const/difficulty"
-import { getActionId, getCurrentRoundId } from "lib/combat/utils/combat-utils"
+import {
+  getActionId,
+  getCurrentRoundId,
+  getDiceRollData,
+  getItemWithSkillFromId
+} from "lib/combat/utils/combat-utils"
 
 import Col from "components/Col"
 import NumPad from "components/NumPad/NumPad"
@@ -14,15 +17,17 @@ import DrawerSlide from "components/Slides/DrawerSlide"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
-import { useActionApi } from "providers/ActionProvider"
+import { useInventory } from "contexts/InventoryContext"
+import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
 
-import AwaitGmSlide from "./AwaitGmSlide"
-import NextButton from "./NextButton"
-import SlideError, { slideErrors } from "./SlideError"
+import AwaitGmSlide from "../AwaitGmSlide"
+import NextButton from "../NextButton"
+import SlideError, { slideErrors } from "../SlideError"
+import NoRollSlide from "./NoRollSlide"
 
 const styles = StyleSheet.create({
   digit: {
@@ -51,17 +56,19 @@ const styles = StyleSheet.create({
 
 type DiceRollSlideProps = {
   scrollNext?: () => void
-  skillId: SkillId
 }
 
-export default function DiceRollSlide({ skillId, scrollNext }: DiceRollSlideProps) {
+export default function DiceRollSlide({ scrollNext }: DiceRollSlideProps) {
   const useCases = useGetUseCases()
 
+  const char = useCharacter()
+  const inventory = useInventory()
   const { combat } = useCombat()
-  const { skills } = useCharacter()
-  const actorSkillScore = skills.curr[skillId]
 
   const { setForm } = useActionApi()
+  const form = useActionForm()
+  const item = getItemWithSkillFromId(form.itemId, inventory)
+  const { skillLabel, totalSkillScore } = getDiceRollData({ ...form, item }, char)
 
   const { scoreStr, onPressKeypad } = useNumPad()
 
@@ -77,10 +84,11 @@ export default function DiceRollSlide({ skillId, scrollNext }: DiceRollSlideProp
   const roundId = getCurrentRoundId(combat)
   const actionId = getActionId(combat)
   const currRoll = combat?.rounds?.[roundId]?.[actionId]?.roll
-
-  if (currRoll === false) return <SlideError error={slideErrors.noDiceRollError} />
-
   const isAwaitingGm = currRoll === undefined
+
+  if (isAwaitingGm) return <AwaitGmSlide />
+  if (currRoll === false) return <NoRollSlide />
+
   const difficultyScore = currRoll?.difficultyModifier ?? 0
   const difficultyLvl = difficultyArray.find(e => difficultyScore <= e.threshold)
 
@@ -91,10 +99,8 @@ export default function DiceRollSlide({ skillId, scrollNext }: DiceRollSlideProp
     ...prevRoll,
     difficultyModifier: difficultyScore,
     actorDiceScore: diceScore,
-    actorSkillScore
+    actorSkillScore: totalSkillScore
   }
-
-  if (isAwaitingGm) return <AwaitGmSlide />
 
   return (
     <DrawerSlide>
@@ -115,10 +121,10 @@ export default function DiceRollSlide({ skillId, scrollNext }: DiceRollSlideProp
         <Spacer y={layout.globalPadding} />
         <Section
           style={{ flex: 1 }}
-          title={skillsMap[skillId].label}
+          title={skillLabel}
           contentContainerStyle={styles.scoreContainer}
         >
-          <Txt style={styles.score}>{actorSkillScore}</Txt>
+          <Txt style={styles.score}>{totalSkillScore}</Txt>
         </Section>
       </Col>
 

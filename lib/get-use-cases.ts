@@ -14,8 +14,8 @@ import { Action } from "./combat/combats.types"
 import adminEndFight, { AdminEndFightParams } from "./combat/use-cases/admin-end-fight"
 import createFight, { CreateFightParams } from "./combat/use-cases/create-fight"
 import deleteFight, { DeleteFightParams } from "./combat/use-cases/delete-fight"
+import doCombatAction, { CombatActionParams } from "./combat/use-cases/do-combat-action"
 import endWait, { EndWaitParams } from "./combat/use-cases/end-wait"
-import movementAction, { MovementActionParams } from "./combat/use-cases/movement-action"
 import prepareAction, { PrepareActionParams } from "./combat/use-cases/prepare-action"
 import saveAction, { SaveActionParams } from "./combat/use-cases/save-action"
 import setAction, { SetActionParams } from "./combat/use-cases/set-action"
@@ -90,10 +90,10 @@ export default function getUseCases(
       delete: (data: DeleteFightParams) => deleteFight(dbType)(data),
       updateContender: (data: UpdateContenderParams) => updateContender(dbType)(data),
       // ACTIONS
+      doCombatAction: (data: CombatActionParams) => doCombatAction(dbType)(data),
       waitAction: (data: WaitActionParams) => waitAction(dbType)(data),
       endWait: (data: EndWaitParams) => endWait(dbType)(data),
       prepareAction: (data: PrepareActionParams) => prepareAction(dbType)(data),
-      movementAction: (data: MovementActionParams) => movementAction(dbType)(data),
       // ACTION HELPERS
       updateAction: (data: UpdateActionParams) => updateAction(dbType)(data),
       setAction: <K extends keyof Action>(data: SetActionParams<K>) => setAction(dbType)(data),

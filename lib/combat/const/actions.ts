@@ -6,8 +6,10 @@ const actions = {
       basic: { id: "basic", label: "Attaque simple" },
       aim: { id: "aim", label: "Attaque avec visée" },
       burst: { id: "burst", label: "Rafale" },
-      reload: { id: "reload", label: "Recharger" },
-      unload: { id: "unload", label: "Décharger" }
+      reload: { id: "load", label: "Recharger" },
+      unload: { id: "unload", label: "Décharger" },
+      throw: { id: "throw", label: "Lancer" },
+      hit: { id: "hit", label: "Frapper" }
     }
   },
   movement: {
@@ -27,12 +29,12 @@ const actions = {
     id: "item",
     label: "Objets / Inv.",
     subtypes: {
-      drop: { id: "drop", label: "Lâcher", apCost: 2 },
+      use: { id: "use", label: "Utiliser", apCost: 4 },
       equip: { id: "equip", label: "Équiper", apCost: 2 },
       unequip: { id: "unequip", label: "Désequiper", apCost: 2 },
-      use: { id: "use", label: "Utiliser", apCost: 4 },
-      throw: { id: "throw", label: "Lancer", apCost: 4 },
-      pickUp: { id: "pickUp", label: "Ramasser", apCost: 3 }
+      pickUp: { id: "pickUp", label: "Ramasser", apCost: 3 },
+      drop: { id: "drop", label: "Lâcher", apCost: 2 },
+      throw: { id: "throw", label: "Lancer", apCost: 4 }
     }
   },
   other: {
@@ -40,8 +42,8 @@ const actions = {
     label: "Autre",
     subtypes: {}
   },
-  pause: {
-    id: "pause",
+  wait: {
+    id: "wait",
     label: "Attendre",
     subtypes: {},
     description:

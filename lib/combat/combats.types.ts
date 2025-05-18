@@ -2,7 +2,7 @@ import { EffectId } from "lib/character/effects/effects.types"
 import { LimbsHp } from "lib/character/health/health-types"
 
 type WeaponActionSubtypeId = "basicAttack" | "aim" | "burst" | "reload" | "unload" | "hit" | "throw"
-type MovementType = "crawl" | "walk" | "run" | "sprint" | "jump" | "climb" | "getUp"
+export type MovementType = "crawl" | "walk" | "run" | "sprint" | "jump" | "climb" | "getUp"
 type ItemActionType = "drop" | "equip" | "unequip" | "use" | "search"
 export type PrepareActionType = "dangerAwareness" | "visualize"
 

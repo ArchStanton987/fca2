@@ -3,14 +3,13 @@ import { ScrollView, useWindowDimensions } from "react-native"
 
 import { useFocusEffect, useLocalSearchParams } from "expo-router"
 
-import { ActionTypeId } from "lib/combat/const/actions"
+import actions from "lib/combat/const/actions"
 import { getInitiativePrompts, getPlayingOrder } from "lib/combat/utils/combat-utils"
 
 import DrawerPage from "components/DrawerPage"
 import List from "components/List"
 import { SlideProps } from "components/Slides/Slide.types"
 import { getSlideWidth } from "components/Slides/slide.utils"
-import Txt from "components/Txt"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
 import ActionUnavailableScreen from "screens/CombatScreen/ActionUnavailableScreen"
@@ -19,15 +18,19 @@ import WaitInitiativeScreen from "screens/CombatScreen/WaitInitiativeScreen"
 import ActionTypeSlide from "screens/CombatScreen/slides/ActionTypeSlide/ActionTypeSlide"
 import ApAssignment from "screens/CombatScreen/slides/ApAssignmentSlide"
 import DiceResultSlide from "screens/CombatScreen/slides/DiceResultSlide"
-import DiceRollSlide from "screens/CombatScreen/slides/DiceRollSlide"
+import DiceRollSlide from "screens/CombatScreen/slides/DiceRollSlide/DiceRollSlide"
+import SlideError, { slideErrors } from "screens/CombatScreen/slides/SlideError"
 
 const initSlide = {
   id: "actionType",
   renderSlide: (props: SlideProps) => <ActionTypeSlide {...props} />
 }
 
-const getSlides = (form: { actionType: ActionTypeId | ""; actionSubType?: string }) => {
-  const { actionType } = form
+const getSlides = <T extends keyof typeof actions>(form: {
+  actionType: T | ""
+  actionSubType?: keyof (typeof actions)[T]["subtypes"] | ""
+}) => {
+  const { actionType, actionSubType } = form
   if (actionType === "movement") {
     return [
       initSlide,
@@ -37,7 +40,7 @@ const getSlides = (form: { actionType: ActionTypeId | ""; actionSubType?: string
       },
       {
         id: "diceRoll",
-        renderSlide: (props: SlideProps) => <DiceRollSlide skillId="physical" {...props} />
+        renderSlide: (props: SlideProps) => <DiceRollSlide {...props} />
       },
       {
         id: "diceResult",
@@ -46,6 +49,19 @@ const getSlides = (form: { actionType: ActionTypeId | ""; actionSubType?: string
     ]
   }
   if (actionType === "item") {
+    if (actionSubType === "use") {
+      return [
+        initSlide,
+        {
+          id: "apAssignment",
+          renderSlide: (props: SlideProps) => <ApAssignment {...props} />
+        },
+        {
+          id: "use",
+          renderSlide: (props: SlideProps) => <DiceRollSlide {...props} />
+        }
+      ]
+    }
     return [
       initSlide,
       {

@@ -58,14 +58,15 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
     if (!combat || !players || !npcs) throw new Error("No combat found")
     const action: Action = { actionType, actorId: charId }
     try {
-      await useCases.combat.waitAction({ combat, contenders, action })
+      await useCases.combat.doCombatAction({ combat, contenders, action })
       Toast.show({ type: "custom", text1: "Pigé ! On se tient prêt !" })
     } catch (error) {
+      console.log("error", error)
       Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement de l'action" })
     }
   }
 
-  const onPressPrepare = () => {
+  const onPressPrepare = async () => {
     if (!combat || !players || !npcs || actionType !== "prepare") throw new Error("No combat found")
     const action = {
       actionType,
@@ -73,7 +74,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
       actorId: charId,
       apCost: status.currAp
     }
-    return useCases.combat.prepareAction({ action, combat, contenders })
+    await useCases.combat.doCombatAction({ combat, contenders, action })
   }
 
   const onPressMovement = () => {
@@ -84,7 +85,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
   }
 
   const submit = async () => {
-    if (form.actionType === "pause") return onPressWait()
+    if (form.actionType === "wait") return onPressWait()
     if (form.actionType === "prepare") return onPressPrepare()
     if (form.actionType === "movement") return onPressMovement()
     if (!scrollNext) throw new Error("No scrollNext function found")
@@ -92,14 +93,14 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
     return null
   }
 
-  const isPause = actionType === "pause"
+  const isPause = actionType === "wait"
   const isPrepare = actionType === "prepare"
   const canGoNext =
     actionType === "item"
       ? !!actionType && !!actionSubtype && !!itemId
       : !!actionType && !!actionSubtype
 
-  const canCombineAction = actionType !== "pause" && actionType !== "prepare"
+  const canCombineAction = actionType !== "wait" && actionType !== "prepare"
 
   const toggleCombinedAction = () => {
     if (!canCombineAction) return

@@ -66,7 +66,7 @@ const reducer = (state: ActionStateContext, { type, payload }: Action): ActionSt
       const { actionType } = payload
       const newState = { ...defaultActionForm, isCombinedAction, actorId, actionType }
       if ("itemId" in payload) return { ...newState, itemId: payload.itemId }
-      if (actionType === "prepare" || actionType === "pause")
+      if (actionType === "prepare" || actionType === "wait")
         return { ...newState, isCombinedAction: false }
       return newState
     }
