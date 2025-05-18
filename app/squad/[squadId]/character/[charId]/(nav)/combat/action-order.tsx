@@ -3,11 +3,13 @@ import { StyleSheet, View } from "react-native"
 import { Redirect } from "expo-router"
 
 import { DbStatus } from "lib/character/status/status.types"
-import { getPlayingOrder } from "lib/combat/utils/combat-utils"
+import { getActionId, getCurrentRoundId, getPlayingOrder } from "lib/combat/utils/combat-utils"
 import Animated, { FadingTransition } from "react-native-reanimated"
 
+import Col from "components/Col"
 import DrawerPage from "components/DrawerPage"
 import List from "components/List"
+import Section from "components/Section"
 import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
@@ -15,8 +17,19 @@ import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
 import colors from "styles/colors"
+import layout from "styles/layout"
 
 const styles = StyleSheet.create({
+  centeredSection: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  combatStep: {
+    color: colors.secColor,
+    fontSize: 42,
+    lineHeight: 50
+  },
   row: {
     borderWidth: 2,
     borderColor: "transparent",
@@ -85,7 +98,7 @@ function OrderRow(props: OrderRowProps) {
       <View style={styles.nameCol}>
         <CombatOrderText {...textProps}>
           {name ?? ""}
-          {isCombinedAction ? " C" : ""}
+          {isCombinedAction && isPlaying ? " C" : ""}
         </CombatOrderText>
       </View>
       <View style={styles.dataRow}>
@@ -121,8 +134,24 @@ export default function GMCombatScreen() {
   const playingId = combat.currActorId || defaultPlayingId
   const isCombinedAction = playingId === combat.currActorId
 
+  const currRound = getCurrentRoundId(combat)
+  const currAction = getActionId(combat)
+
   return (
     <DrawerPage>
+      <Col>
+        <Section contentContainerStyle={styles.centeredSection} title="round" style={{ flex: 1 }}>
+          <Txt style={styles.combatStep}>{currRound}</Txt>
+        </Section>
+
+        <Spacer y={layout.globalPadding} />
+        <Section contentContainerStyle={styles.centeredSection} title="action" style={{ flex: 1 }}>
+          <Txt style={styles.combatStep}>{currAction}</Txt>
+        </Section>
+      </Col>
+
+      <Spacer x={layout.globalPadding} />
+
       <ScrollSection title="ordre / PA / initiative" style={{ flex: 1 }}>
         <List
           data={contenders}
