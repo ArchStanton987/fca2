@@ -39,7 +39,7 @@ export const defaultActionForm = {
   apCost: 0,
   roll: undefined,
   healthChangeEntries: {},
-  targetName: "",
+  targetName: undefined,
   attackType: undefined,
   aimZone: undefined,
   itemId: undefined

@@ -16,6 +16,8 @@ export default function updateAction(dbType: keyof typeof repositoryMap = "rtdb"
     const roundId = getCurrentRoundId(combat)
     const actionId = getActionId(combat)
 
-    return actionRepo.patch({ combatId: combat.id, roundId, id: actionId }, payload)
+    const updatedAction = JSON.parse(JSON.stringify(payload)) // sanitize payload, removes undefined
+
+    return actionRepo.patch({ combatId: combat.id, roundId, id: actionId }, updatedAction)
   }
 }

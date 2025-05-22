@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native"
 
-import { getActionId, getCurrentRoundId } from "lib/combat/utils/combat-utils"
+import { getItemWithSkillFromId } from "lib/combat/utils/combat-utils"
+import { isConsumableItem } from "lib/objects/data/consumables/consumables.utils"
 
 import CheckBox from "components/CheckBox/CheckBox"
 import Col from "components/Col"
@@ -13,6 +14,7 @@ import Txt from "components/Txt"
 import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import { useCharacter } from "contexts/CharacterContext"
+import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
@@ -41,6 +43,7 @@ type DiceResultSlideProps = {
 export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) {
   const useCases = useGetUseCases()
   const { status, secAttr } = useCharacter()
+  const inventory = useInventory()
   const { combat, npcs, players } = useCombat()
   const contenders = { ...players, ...npcs }
   const form = useActionForm()
@@ -70,26 +73,33 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
   const onPressNext = async () => {
     if (!combat || !scrollNext) return
     await useCases.combat.updateAction({ combat, payload: { apCost } })
-    const roundId = getCurrentRoundId(combat)
-    const actionId = getActionId(combat)
-    const roll = combat.rounds?.[roundId]?.[actionId]?.roll
 
-    // if player must roll dices, go to next slide
-    if (roll !== false) {
-      scrollNext()
-      return
+    switch (form.actionType) {
+      // TODO: case weapon
+      // TODO: case other
+      case "movement":
+        scrollNext()
+        return
+      case "item": {
+        // checks if requires further action (throw, pickup & use when object has challenge label)
+        let hasFurtherAction = form.actionSubtype === "throw" || form.actionSubtype === "pickUp"
+        const item = getItemWithSkillFromId(form.itemId, inventory)
+        const isConsumable = isConsumableItem(item)
+        const hasChallenge = isConsumable && item.data.challengeLabel !== null
+        if (form.actionSubtype === "use" && !hasChallenge) {
+          hasFurtherAction = false
+        }
+        if (!hasFurtherAction) {
+          await useCases.combat.doCombatAction({ contenders, combat, action: form, item })
+          reset()
+          break
+        }
+        scrollNext()
+        break
+      }
+      default:
+        throw new Error("Action not supported")
     }
-
-    // if action doesn't require additional step, save it
-    const shouldSaveAction =
-      form.actionType === "movement" ||
-      (form.actionType === "item" && form.actionSubtype !== "pickUp") ||
-      (form.actionType === "item" && form.actionSubtype !== "throw")
-
-    if (!shouldSaveAction) throw new Error("Action not supported")
-
-    await useCases.combat.doCombatAction({ contenders, combat, action: { ...form, roll } })
-    reset()
   }
 
   const apArr = []

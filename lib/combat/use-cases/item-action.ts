@@ -2,6 +2,7 @@ import Playable from "lib/character/Playable"
 import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
 import { Clothing } from "lib/objects/data/clothings/clothings.types"
 import { Consumable } from "lib/objects/data/consumables/consumables.types"
+import { isConsumableItem } from "lib/objects/data/consumables/consumables.utils"
 import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
 import getEquipedObjectsUseCases from "lib/objects/equiped-objects-use-cases"
@@ -16,12 +17,7 @@ export type CombatActionParams = {
   action: Action
   combat: Combat
   contenders: Record<string, { char: Playable; combatData: PlayerCombatData }>
-  item: Clothing | Consumable | MiscObject | Weapon
-}
-
-// TODO: REFACTOR, create class for objects
-function isConsumableItem(obj: Clothing | Consumable | MiscObject | Weapon): obj is Consumable {
-  return "maxUsage" in obj.data
+  item?: Clothing | Consumable | MiscObject | Weapon
 }
 
 export default function itemAction(
@@ -37,16 +33,19 @@ export default function itemAction(
     const { charId, meta } = char
     const charType = meta.isNpc ? "npcs" : "characters"
 
-    if (!(actionSubtype in actions.item)) throw new Error(`Wrong subtype: ${actionSubtype}`)
+    if (!(actionSubtype in actions.item.subtypes))
+      throw new Error(`Wrong subtype: ${actionSubtype}`)
 
     switch (actionSubtype) {
       case "use": {
+        if (!item) throw new Error("Item not found")
         const isConsumable = isConsumableItem(item)
         if (!isConsumable) throw new Error("Item is not consumable")
         return consume(char, item)
       }
       case "equip":
       case "unequip": {
+        if (!item) throw new Error("Item not found")
         const isEquipable = "isEquiped" in item
         if (!isEquipable) throw new Error("Item is not equipable")
         return toggle(char, item)
@@ -55,9 +54,11 @@ export default function itemAction(
         // no op, handled in add object modal
         break
       case "drop":
+        if (!item) throw new Error("Item not found")
         return drop(charType, charId, item)
       case "throw": {
         // TODO: manage aim & health change
+        if (!item) throw new Error("Item not found")
         return drop(charType, charId, item)
       }
       default:
