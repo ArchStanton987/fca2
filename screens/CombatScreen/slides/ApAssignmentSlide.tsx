@@ -2,6 +2,7 @@ import { StyleSheet } from "react-native"
 
 import { getItemWithSkillFromId } from "lib/combat/utils/combat-utils"
 import { isConsumableItem } from "lib/objects/data/consumables/consumables.utils"
+import Toast from "react-native-toast-message"
 
 import CheckBox from "components/CheckBox/CheckBox"
 import Col from "components/Col"
@@ -73,8 +74,9 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
   const onPressNext = async () => {
     if (!combat || !scrollNext) return
     await useCases.combat.updateAction({ combat, payload: { apCost } })
+    const { actionType, actionSubtype } = form
 
-    switch (form.actionType) {
+    switch (actionType) {
       // TODO: case weapon
       // TODO: case other
       case "movement":
@@ -82,19 +84,24 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
         return
       case "item": {
         // checks if requires further action (throw, pickup & use when object has challenge label)
-        let hasFurtherAction = form.actionSubtype === "throw" || form.actionSubtype === "pickUp"
         const item = getItemWithSkillFromId(form.itemId, inventory)
         const isConsumable = isConsumableItem(item)
         const hasChallenge = isConsumable && item.data.challengeLabel !== null
-        if (form.actionSubtype === "use" && !hasChallenge) {
-          hasFurtherAction = false
-        }
-        if (!hasFurtherAction) {
-          await useCases.combat.doCombatAction({ contenders, combat, action: form, item })
-          reset()
+        const hasFurtherAction =
+          actionSubtype === "throw" ||
+          actionSubtype === "pickUp" ||
+          (actionSubtype === "use" && hasChallenge)
+        if (hasFurtherAction) {
+          scrollNext()
           break
         }
-        scrollNext()
+        try {
+          await useCases.combat.doCombatAction({ contenders, combat, action: form, item })
+          Toast.show({ type: "custom", text1: "Action réalisée" })
+          reset()
+        } catch (error) {
+          Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement de l'action" })
+        }
         break
       }
       default:
