@@ -1,7 +1,6 @@
 import { TouchableOpacity, View } from "react-native"
 
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
-import { Action } from "lib/combat/combats.types"
 import actions from "lib/combat/const/actions"
 import { getActivePlayersWithAp } from "lib/combat/utils/combat-utils"
 import getUseCases from "lib/get-use-cases"
@@ -29,11 +28,16 @@ import SubActionList from "./sub-action/SubActionList"
 
 const actionTypes = Object.values(actions).map(a => ({ id: a.id, label: a.label }))
 
+const toastMessages = {
+  wait: "OK ! On attends le bon moment !",
+  prepare: "OK ! On se prépare !"
+} as const
+
 export default function ActionTypeSlide({ scrollNext }: SlideProps) {
   const useCases = getUseCases()
   const { players, npcs, combat } = useCombat()
   const char = useCharacter()
-  const { equipedObjects, unarmed, charId, status } = char
+  const { equipedObjects, unarmed } = char
   const weapons = equipedObjects.weapons.length > 0 ? equipedObjects.weapons : [unarmed]
 
   const form = useActionForm()
@@ -52,52 +56,23 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
     setActionType({ actionType: id })
   }
 
-  const onPressWait = async () => {
-    if (!combat || !players || !npcs) throw new Error("No combat found")
-    const action: Action = { actionType, actorId: charId }
-    try {
-      await useCases.combat.doCombatAction({ combat, contenders, action })
-      Toast.show({ type: "custom", text1: "Pigé ! On attends le bon moment !" })
-      reset()
-    } catch (error) {
-      Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement de l'action" })
-    }
-  }
-
-  const onPressPrepare = async () => {
-    if (!combat || !players || !npcs || actionType !== "prepare") throw new Error("No combat found")
-    const action = { actionType, actionSubtype, actorId: charId, apCost: status.currAp }
-    try {
-      await useCases.combat.doCombatAction({ combat, contenders, action })
-      Toast.show({ type: "custom", text1: "Pigé ! On se prépare !" })
-      reset()
-    } catch (error) {
-      Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement de l'action" })
-    }
-  }
-
-  const onPressMovement = async () => {
-    if (!combat || !players || !npcs) throw new Error("No combat found")
-    await useCases.combat.updateAction({ combat, payload: form })
-    if (!scrollNext) throw new Error("No scrollNext function found")
-    scrollNext()
-  }
-
-  const onPressItem = async () => {
-    if (!combat || !players || !npcs) throw new Error("No combat found")
-    await useCases.combat.updateAction({ combat, payload: form })
-    if (!scrollNext) throw new Error("No scrollNext function found")
-    scrollNext()
-  }
-
   const submit = async () => {
-    if (form.actionType === "wait") return onPressWait()
-    if (form.actionType === "prepare") return onPressPrepare()
-    if (form.actionType === "movement") return onPressMovement()
-    if (form.actionType === "item") return onPressItem()
+    if (!combat || !players || !npcs) throw new Error("No combat found")
+
+    if (form.actionType === "wait" || form.actionType === "prepare") {
+      try {
+        await useCases.combat.doCombatAction({ combat, contenders, action: form })
+        Toast.show({ type: "custom", text1: toastMessages[form.actionType] })
+        reset()
+      } catch (error) {
+        Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement de l'action" })
+      }
+      return
+    }
+
+    await useCases.combat.updateAction({ combat, payload: form })
     if (!scrollNext) throw new Error("No scrollNext function found")
     scrollNext()
-    return null
   }
 
   const isPause = actionType === "wait"

@@ -24,7 +24,7 @@ type ActionApiContext = {
   setActionType: (
     payload: { actionType: ActionTypeId } | { actionType: "weapon"; itemId: string }
   ) => void
-  setActionSubtype: (actionSubtype: string) => void
+  setActionSubtype: (actionSubtype: string, apCost?: number) => void
   setForm: (payload: Partial<ActionStateContext>) => void
   addHealthEntry: (charId: string, entry: HealthChangeEntry) => void
   removeHealthEntry: (charId: string) => void
@@ -53,7 +53,7 @@ type Action =
       type: "SET_ACTION_TYPE"
       payload: { actionType: ActionTypeId } | { actionType: "weapon"; itemId: string }
     }
-  | { type: "SET_ACTION_SUBTYPE"; payload: string }
+  | { type: "SET_ACTION_SUBTYPE"; payload: { actionSubtype: string; apCost?: number } }
   | { type: "SET_FORM"; payload: Partial<ActionStateContext> }
   | { type: "ADD_HEALTH_ENTRY"; payload: { charId: string; entry: HealthChangeEntry } }
   | { type: "REMOVE_HEALTH_ENTRY"; payload: { charId: string } }
@@ -73,12 +73,14 @@ const reducer = (state: ActionStateContext, { type, payload }: Action): ActionSt
 
     case "SET_ACTION_SUBTYPE": {
       const { actionType, actorId, itemId, isCombinedAction } = state
+      const { actionSubtype, apCost = defaultActionForm.apCost } = payload
       const newState = {
         ...defaultActionForm,
         isCombinedAction,
         actionType,
         actorId,
-        actionSubtype: payload
+        actionSubtype,
+        apCost
       }
       if (actionType === "weapon") return { ...newState, itemId }
       return newState
@@ -121,8 +123,8 @@ export function ActionProvider({ children }: { children: React.ReactNode }) {
         dispatch({ type: "SET_ACTION_TYPE", payload })
       },
 
-      setActionSubtype: (actionSubtype: string) => {
-        dispatch({ type: "SET_ACTION_SUBTYPE", payload: actionSubtype })
+      setActionSubtype: (actionSubtype: string, apCost?: number) => {
+        dispatch({ type: "SET_ACTION_SUBTYPE", payload: { actionSubtype, apCost } })
       },
 
       setForm: (payload: Partial<ActionStateContext>) => {

@@ -23,7 +23,7 @@ export default function PrepareActions() {
           <ListItemSelectable
             isSelected={actionSubtype === item.id}
             style={{ flexDirection: "row", justifyContent: "space-between" }}
-            onPress={() => setActionSubtype(item.id)}
+            onPress={() => setActionSubtype(item.id, status.currAp)}
           >
             <Txt>{item.label}</Txt>
             <Txt>{status.currAp}</Txt>
