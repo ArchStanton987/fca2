@@ -77,10 +77,17 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
 
   const isPause = actionType === "wait"
   const isPrepare = actionType === "prepare"
-  const canGoNext =
-    actionType === "item"
-      ? !!actionType && !!actionSubtype && !!itemId
-      : !!actionType && !!actionSubtype
+
+  const getCanGoNext = () => {
+    const defaultRes = !!actionType && !!actionSubtype
+    if (actionType === "item") {
+      if (actionSubtype === "pickUp") return defaultRes
+      return defaultRes && !!itemId
+    }
+    return defaultRes
+  }
+
+  const canGoNext = getCanGoNext()
 
   const canCombineAction = actionType !== "wait" && actionType !== "prepare"
 

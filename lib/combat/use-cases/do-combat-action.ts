@@ -25,7 +25,7 @@ export default function doCombatAction(dbType: keyof typeof repositoryMap = "rtd
   const statusRepo = repositoryMap[dbType].statusRepository
 
   return async ({ action, combat, contenders, item }: CombatActionParams) => {
-    const { apCost = 0, actorId, actionType } = action
+    const { apCost = 0, actorId, actionType, actionSubtype } = action
     const { charId, status, meta } = contenders[actorId].char
 
     if (apCost > status.currAp) throw new Error("Not enough AP to perform this action")
@@ -53,7 +53,9 @@ export default function doCombatAction(dbType: keyof typeof repositoryMap = "rtd
         break
 
       case "item":
-        if (!item) throw new Error("Item is required for item action")
+        if (actionSubtype !== "pickUp") {
+          if (!item) throw new Error("Item is required for item action")
+        }
         promises.push(itemAction(dbType)({ action, contenders, combat, item }))
         break
 

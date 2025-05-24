@@ -19,56 +19,70 @@ import ActionTypeSlide from "screens/CombatScreen/slides/ActionTypeSlide/ActionT
 import ApAssignment from "screens/CombatScreen/slides/ApAssignmentSlide"
 import DiceResultSlide from "screens/CombatScreen/slides/DiceResultSlide"
 import DiceRollSlide from "screens/CombatScreen/slides/DiceRollSlide/DiceRollSlide"
+import PickUpItemSlide from "screens/CombatScreen/slides/PickUpItemSlide"
 import SlideError, { slideErrors } from "screens/CombatScreen/slides/SlideError"
 
 const initSlide = {
   id: "actionType",
   renderSlide: (props: SlideProps) => <ActionTypeSlide {...props} />
 }
+const apAssignmentSlide = {
+  id: "apAssignment",
+  renderSlide: (props: SlideProps) => <ApAssignment {...props} />
+}
 
-const getSlides = <T extends keyof typeof actions>(form: {
-  actionType: T | ""
-  actionSubType?: keyof (typeof actions)[T]["subtypes"] | ""
-}) => {
-  const { actionType, actionSubType } = form
+const diceRollSlide = {
+  id: "diceRoll",
+  renderSlide: (props: SlideProps) => <DiceRollSlide {...props} />
+}
+
+const movementSlides = [
+  initSlide,
+  apAssignmentSlide,
+  diceRollSlide,
+  {
+    id: "diceResult",
+    renderSlide: (props: SlideProps) => <DiceResultSlide skillId="physical" {...props} />
+  }
+]
+
+const baseItemSlides = [initSlide, apAssignmentSlide]
+const throwItemSlides = [
+  ...baseItemSlides,
+  diceRollSlide,
+  {
+    id: "diceResult",
+    renderSlide: (props: SlideProps) => <DiceResultSlide skillId="throw" {...props} />
+  }
+]
+const pickUpItemSlides = [
+  ...baseItemSlides,
+  {
+    id: "pickUpItem",
+    renderSlide: (props: SlideProps) => <PickUpItemSlide {...props} />
+  }
+]
+
+// cas throw
+// => pick target
+// => roll dice
+// => result
+
+// cas use + challenge
+// => affiche challenge, bouton ajout vie
+
+const getSlides = <T extends keyof typeof actions>(
+  actionType: T | "",
+  actionSubType?: keyof (typeof actions)[T]["subtypes"] | string
+) => {
   if (actionType === "movement") {
-    return [
-      initSlide,
-      {
-        id: "apAssignment",
-        renderSlide: (props: SlideProps) => <ApAssignment {...props} />
-      },
-      {
-        id: "diceRoll",
-        renderSlide: (props: SlideProps) => <DiceRollSlide {...props} />
-      },
-      {
-        id: "diceResult",
-        renderSlide: (props: SlideProps) => <DiceResultSlide skillId="physical" {...props} />
-      }
-    ]
+    return movementSlides
   }
   if (actionType === "item") {
-    if (actionSubType === "use") {
-      return [
-        initSlide,
-        {
-          id: "apAssignment",
-          renderSlide: (props: SlideProps) => <ApAssignment {...props} />
-        },
-        {
-          id: "use",
-          renderSlide: (props: SlideProps) => <DiceRollSlide {...props} />
-        }
-      ]
-    }
-    return [
-      initSlide,
-      {
-        id: "apAssignment",
-        renderSlide: (props: SlideProps) => <ApAssignment {...props} />
-      }
-    ]
+    if (actionSubType === "throw") return throwItemSlides
+    if (actionSubType === "pickUp") return pickUpItemSlides
+
+    return baseItemSlides
   }
 
   return [initSlide]
@@ -90,7 +104,7 @@ export default function ActionScreen() {
   }
 
   const form = useActionForm()
-  const slides = getSlides(form)
+  const slides = getSlides(form.actionType, form.actionSubtype)
 
   useFocusEffect(
     useCallback(() => {
