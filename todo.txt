@@ -1,3 +1,6 @@
+BUG peut pas consommer objet créé. Peut pas porter clothing créé ???
+CHECK SCROLL LORS CHOIX ACTIONS
+
 - clôturer combat (commande admin)
   (reset combat status pour tous les contenders)
   (ajoute une entrée combats pour tous les contenders)

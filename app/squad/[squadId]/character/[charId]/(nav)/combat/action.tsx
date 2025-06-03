@@ -1,7 +1,7 @@
-import { useCallback, useRef } from "react"
+import { useRef } from "react"
 import { ScrollView, useWindowDimensions } from "react-native"
 
-import { useFocusEffect, useLocalSearchParams } from "expo-router"
+import { useLocalSearchParams } from "expo-router"
 
 import actions from "lib/combat/const/actions"
 import { getInitiativePrompts, getPlayingOrder } from "lib/combat/utils/combat-utils"
@@ -10,13 +10,14 @@ import DrawerPage from "components/DrawerPage"
 import List from "components/List"
 import { SlideProps } from "components/Slides/Slide.types"
 import { getSlideWidth } from "components/Slides/slide.utils"
-import { useActionApi, useActionForm } from "providers/ActionProvider"
+import { useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
 import ActionUnavailableScreen from "screens/CombatScreen/ActionUnavailableScreen"
 import InitiativeScreen from "screens/CombatScreen/InitiativeScreen"
 import WaitInitiativeScreen from "screens/CombatScreen/WaitInitiativeScreen"
 import ActionTypeSlide from "screens/CombatScreen/slides/ActionTypeSlide/ActionTypeSlide"
 import ApAssignment from "screens/CombatScreen/slides/ApAssignmentSlide"
+import ChallengeSlide from "screens/CombatScreen/slides/ChallengeSlide"
 import DiceResultSlide from "screens/CombatScreen/slides/DiceResultSlide"
 import DiceRollSlide from "screens/CombatScreen/slides/DiceRollSlide/DiceRollSlide"
 import PickUpItemSlide from "screens/CombatScreen/slides/PickUpItemSlide"
@@ -62,14 +63,18 @@ const pickUpItemSlides = [
     renderSlide: (props: SlideProps) => <PickUpItemSlide {...props} />
   }
 ]
+const useItemSlides = [
+  ...baseItemSlides,
+  {
+    id: "useItem",
+    renderSlide: () => <ChallengeSlide />
+  }
+]
 
 // cas throw
 // => pick target
 // => roll dice
 // => result
-
-// cas use + challenge
-// => affiche challenge, bouton ajout vie
 
 const getSlides = <T extends keyof typeof actions>(
   actionType: T | "",
@@ -81,6 +86,7 @@ const getSlides = <T extends keyof typeof actions>(
   if (actionType === "item") {
     if (actionSubType === "throw") return throwItemSlides
     if (actionSubType === "pickUp") return pickUpItemSlides
+    if (actionSubType === "use") return useItemSlides
 
     return baseItemSlides
   }
@@ -91,7 +97,6 @@ const getSlides = <T extends keyof typeof actions>(
 export default function ActionScreen() {
   const { charId } = useLocalSearchParams<{ charId: string }>()
 
-  const { reset } = useActionApi()
   const { players, npcs, combat } = useCombat()
 
   const scrollRef = useRef<ScrollView>(null)
@@ -105,12 +110,6 @@ export default function ActionScreen() {
 
   const form = useActionForm()
   const slides = getSlides(form.actionType, form.actionSubtype)
-
-  useFocusEffect(
-    useCallback(() => {
-      reset()
-    }, [reset])
-  )
 
   if (!combat) return <SlideError error={slideErrors.noCombatError} />
 
@@ -137,7 +136,6 @@ export default function ActionScreen() {
         disableIntervalMomentum
         ref={scrollRef}
         bounces={false}
-        scrollEnabled={false}
       >
         <List
           data={slides}
