@@ -90,7 +90,7 @@ export default function getUseCases(
       delete: (data: DeleteFightParams) => deleteFight(dbType)(data),
       updateContender: (data: UpdateContenderParams) => updateContender(dbType)(data),
       // ACTIONS
-      doCombatAction: (data: CombatActionParams) => doCombatAction(dbType)(data),
+      doCombatAction: (data: CombatActionParams) => doCombatAction(dbType, createdElements)(data),
       waitAction: (data: WaitActionParams) => waitAction(dbType)(data),
       endWait: (data: EndWaitParams) => endWait(dbType)(data),
       prepareAction: (data: PrepareActionParams) => prepareAction(dbType)(data),

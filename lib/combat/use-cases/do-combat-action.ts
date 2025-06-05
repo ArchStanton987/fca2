@@ -1,4 +1,5 @@
 import Playable from "lib/character/Playable"
+import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
 import { Clothing } from "lib/objects/data/clothings/clothings.types"
 import { Consumable } from "lib/objects/data/consumables/consumables.types"
 import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
@@ -21,7 +22,10 @@ export type CombatActionParams = {
   item?: Clothing | Consumable | MiscObject | Weapon
 }
 
-export default function doCombatAction(dbType: keyof typeof repositoryMap = "rtdb") {
+export default function doCombatAction(
+  dbType: keyof typeof repositoryMap = "rtdb",
+  newElements: CreatedElements = defaultCreatedElements
+) {
   const statusRepo = repositoryMap[dbType].statusRepository
 
   return async ({ action, combat, contenders, item }: CombatActionParams) => {
@@ -56,7 +60,7 @@ export default function doCombatAction(dbType: keyof typeof repositoryMap = "rtd
         if (actionSubtype !== "pickUp") {
           if (!item) throw new Error("Item is required for item action")
         }
-        promises.push(itemAction(dbType)({ action, contenders, combat, item }))
+        promises.push(itemAction(dbType, newElements)({ action, contenders, combat, item }))
         break
 
       default:
