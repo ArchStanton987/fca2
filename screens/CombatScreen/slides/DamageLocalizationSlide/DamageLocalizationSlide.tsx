@@ -1,4 +1,5 @@
-import { StyleSheet, View } from "react-native"
+import { useState } from "react"
+import { ActivityIndicator, StyleSheet, View } from "react-native"
 
 import { limbsMap } from "lib/character/health/health"
 import { LimbsHp } from "lib/character/health/health-types"
@@ -10,6 +11,7 @@ import DrawerSlide from "components/Slides/DrawerSlide"
 import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
+import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
@@ -51,11 +53,14 @@ type DamageLocalizationSlideProps = SlideProps & {}
 
 export default function DamageLocalizationSlide({ scrollNext }: DamageLocalizationSlideProps) {
   const useCases = useGetUseCases()
+  const { meta } = useCharacter()
   const { combat } = useCombat()
   const form = useActionForm()
   const { damageLocalization } = form
   const { setForm } = useActionApi()
   const { scoreStr, onPressKeypad } = useNumPad()
+
+  const [isLoading, setIsLoading] = useState(false)
 
   const isScoreValid = scoreStr.length === 1 || scoreStr.length === 2
 
@@ -68,8 +73,15 @@ export default function DamageLocalizationSlide({ scrollNext }: DamageLocalizati
     if (!isScoreValid) throw new Error("invalid score")
     if (!damageLocalization) {
       const payload = { ...form, damageLocalization: getBodyPart(scoreStr) }
-      await useCases.combat.updateAction({ combat, payload })
-      setForm({ damageLocalization: getBodyPart(scoreStr) })
+      setIsLoading(true)
+      setTimeout(
+        async () => {
+          await useCases.combat.updateAction({ combat, payload })
+          setForm({ damageLocalization: getBodyPart(scoreStr) })
+          setIsLoading(false)
+        },
+        meta.isNpc ? 0 : 3000
+      )
       return
     }
     scrollNext()
@@ -91,7 +103,10 @@ export default function DamageLocalizationSlide({ scrollNext }: DamageLocalizati
 
       <View style={{ flex: 1, minWidth: 100 }}>
         <Section title="résultat" style={{ flex: 1 }} contentContainerStyle={styles.scoreContainer}>
-          {damageLocalization ? <Txt>{limbsMap[damageLocalization].label}</Txt> : null}
+          {isLoading ? <ActivityIndicator color={colors.secColor} size="large" /> : null}
+          {damageLocalization && !isLoading ? (
+            <Txt>{limbsMap[damageLocalization].label}</Txt>
+          ) : null}
         </Section>
         <Spacer y={layout.globalPadding} />
 
@@ -101,7 +116,7 @@ export default function DamageLocalizationSlide({ scrollNext }: DamageLocalizati
         >
           <NextButton
             onLongPress={() => resetField()}
-            disabled={!isScoreValid}
+            disabled={!isScoreValid || isLoading}
             onPress={() => submit()}
           />
         </Section>
