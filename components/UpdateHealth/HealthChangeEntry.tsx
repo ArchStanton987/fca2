@@ -68,7 +68,7 @@ export default function HealthChangeEntry({
     const { charId, localization, damage, entryType, id } = entry
     const contender = contenders[charId]
     const charName = contender?.char?.meta?.firstname ?? ""
-    const initHp = contender?.char?.status[localization] ?? ""
+    const initHp = contender?.char?.health.hp
 
     return (
       <Row style={[styles.container, isSelected && styles.selected]}>

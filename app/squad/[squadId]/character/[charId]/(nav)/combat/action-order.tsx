@@ -9,6 +9,7 @@ import Animated, { FadingTransition } from "react-native-reanimated"
 import Col from "components/Col"
 import DrawerPage from "components/DrawerPage"
 import List from "components/List"
+import ProgressionBar from "components/ProgressionBar/ProgressionBar"
 import Section from "components/Section"
 import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
@@ -81,6 +82,7 @@ function CombatOrderText({ children, status, hasFinishedRound }: TextProps) {
 }
 
 type OrderRowProps = {
+  charId: string
   name?: string
   ap?: number
   initiative?: number
@@ -90,8 +92,21 @@ type OrderRowProps = {
   isCombinedAction?: boolean
 }
 
+const getColor = ({ hp, maxHp }: { hp: number; maxHp: number }) => {
+  if (hp <= 0) return colors.red
+  const currHpPercent = (hp / maxHp) * 100
+  if (currHpPercent < 25) return colors.orange
+  if (currHpPercent < 50) return colors.yellow
+  return colors.secColor
+}
+
 function OrderRow(props: OrderRowProps) {
-  const { name, ap, isPlaying, status, initiative, hasFinishedRound, isCombinedAction } = props
+  const { charId, name, ap, isPlaying, status, initiative, hasFinishedRound, isCombinedAction } =
+    props
+  const { players, npcs } = useCombat()
+  const contenders = { ...players, ...npcs }
+  const contender = contenders[charId]
+
   const textProps = { isPlaying, status, hasFinishedRound }
   return (
     <Animated.View layout={FadingTransition} style={[styles.row, isPlaying && styles.playing]}>
@@ -101,6 +116,17 @@ function OrderRow(props: OrderRowProps) {
           {isCombinedAction && isPlaying ? " C" : ""}
         </CombatOrderText>
       </View>
+      {contender.char.health ? (
+        <Col>
+          <ProgressionBar
+            value={contender.char.health.hp}
+            min={0}
+            max={contender.char.health.maxHp}
+            color={getColor(contender.char.health)}
+            width={40}
+          />
+        </Col>
+      ) : null}
       <View style={styles.dataRow}>
         <CombatOrderText {...textProps}>{ap ?? 0}</CombatOrderText>
       </View>
@@ -159,6 +185,7 @@ export default function GMCombatScreen() {
           separator={<Spacer y={10} />}
           renderItem={({ item }) => (
             <OrderRow
+              charId={item.char.charId}
               name={item.char.meta.firstname}
               ap={item.char.status.currAp}
               initiative={item.combatData.initiative}
