@@ -40,7 +40,8 @@ function getSquadUseCases(
         // if character has poison or missing hp, his health might need to be updated
         if (hasPoison || isMissingHp) {
           const newLimbsHp = getNewLimbsHp(char, date)
-          promises.push(statusUseCases.groupUpdate(char, newLimbsHp))
+          const charType = char.meta.isNpc ? "npcs" : "characters"
+          promises.push(statusUseCases.groupUpdate(char, newLimbsHp, charType))
         }
       })
 

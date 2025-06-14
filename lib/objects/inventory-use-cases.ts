@@ -160,7 +160,7 @@ const getInventoryUseCases = (
           const newValue = Math.min(Math.max(calcValue, minValue), maxValue)
           updates[mod.id] = newValue
         })
-        promises.push(statusUseCases.groupUpdate(character, updates))
+        promises.push(statusUseCases.groupUpdate(character, updates, charType))
       }
 
       // handle object in inventory
