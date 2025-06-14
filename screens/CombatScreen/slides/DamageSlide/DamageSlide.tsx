@@ -107,7 +107,7 @@ export default function DamageSlide({ scrollNext }: DamageSlideProps) {
         <Spacer y={layout.globalPadding} />
         <Section title={actionType === "weapon" ? "arme" : "objet"} style={{ flex: 1 }}>
           {actionType === "weapon" ? (
-            <WeaponInfo />
+            <WeaponInfo selectedWeapon={form.itemDbKey} />
           ) : (
             <>
               <Txt>{item?.data?.label}</Txt>

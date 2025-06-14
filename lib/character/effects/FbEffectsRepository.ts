@@ -16,8 +16,8 @@ import { getRtdbSub } from "../../common/utils/rtdb-utils"
 
 const getContainerPath = (charType: CharType, charId: string) =>
   dbKeys.char(charType, charId).effects
-const getElementPath = (charType: CharType, charId: string, dbKey: Effect["dbKey"]) =>
-  getContainerPath(charType, charId).concat("/", dbKey)
+const getElementPath = (charType: CharType, charId: string, dbKey?: Effect["dbKey"]) =>
+  getContainerPath(charType, charId).concat("/", dbKey ?? "")
 
 const fbEffectsRepository = {
   get: (charType: CharType, charId: string, dbKey: Effect["dbKey"]) => {

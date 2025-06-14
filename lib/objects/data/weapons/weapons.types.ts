@@ -17,7 +17,7 @@ export type BeastAttack = {
 
 export type WeaponUseType = "basic" | "burst" | "aim" | "hit" | "throw"
 
-export type WeaponActionId = WeaponUseType | "load" | "unload"
+export type WeaponActionId = WeaponUseType | "reload" | "unload"
 
 export type DamageTypeId = "physical" | "laser" | "plasma" | "fire" | "other"
 type DamageType = {

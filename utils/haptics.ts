@@ -42,7 +42,7 @@ export const getHapticSequence = async (actionId: WeaponActionId, weapon: Weapon
       return basicHaptic()
     case "burst":
       return burstHaptic(weapon)
-    case "load":
+    case "reload":
       return loadHaptic()
     case "unload":
       return unloadHaptic()

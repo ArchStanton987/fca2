@@ -37,6 +37,7 @@ export type Limb = {
   label: string
   maxValue: number
   minValue: number | false
+  aimBonus: number
 }
 
 export const limbsMap: Record<LimbHpId, Limb> = {
@@ -45,56 +46,64 @@ export const limbsMap: Record<LimbHpId, Limb> = {
     cripledEffect: "cripledHead",
     label: "Tête",
     maxValue: 15,
-    minValue: false
+    minValue: false,
+    aimBonus: 30
   },
   leftArmHp: {
     id: "leftArmHp",
     cripledEffect: "cripledLeftArm",
     label: "Bras gauche",
     maxValue: 20,
-    minValue: false
+    minValue: false,
+    aimBonus: 10
   },
   rightArmHp: {
     id: "rightArmHp",
     cripledEffect: "cripledRightArm",
     label: "Bras droit",
     maxValue: 20,
-    minValue: false
+    minValue: false,
+    aimBonus: 10
   },
   leftTorsoHp: {
     id: "leftTorsoHp",
     cripledEffect: "cripledLeftTorso",
     label: "Torse gauche",
     maxValue: 25,
-    minValue: false
+    minValue: false,
+    aimBonus: 0
   },
   rightTorsoHp: {
     id: "rightTorsoHp",
     cripledEffect: "cripledRightTorso",
     label: "Torse droit",
     maxValue: 30,
-    minValue: false
+    minValue: false,
+    aimBonus: 0
   },
   groinHp: {
     id: "groinHp",
     cripledEffect: "cripledGroin",
     label: "Entrejambe",
     maxValue: 15,
-    minValue: false
+    minValue: false,
+    aimBonus: 30
   },
   leftLegHp: {
     id: "leftLegHp",
     cripledEffect: "cripledLeftLeg",
     label: "Jambe gauche",
     maxValue: 20,
-    minValue: false
+    minValue: false,
+    aimBonus: 10
   },
   rightLegHp: {
     id: "rightLegHp",
     cripledEffect: "cripledRightLeg",
     label: "Jambe droite",
     maxValue: 20,
-    minValue: false
+    minValue: false,
+    aimBonus: 10
   }
 }
 

@@ -18,7 +18,7 @@ export type ActionStateContext = Form<{
   healthChangeEntries?: DamageEntries
   targetId?: string
   attackType?: string
-  aimZone?: string
+  aimZone?: keyof LimbsHp
   damageLocalization?: keyof LimbsHp
   rawDamage?: number
   damageType?: DamageTypeId

@@ -9,7 +9,7 @@ export type PrepareActionType = "dangerAwareness" | "visualize"
 type CharId = string
 type NpcId = string
 type ItemId = string
-type AimZone = "torso" | "legs" | "arms" | "head" | "groin" | "eyes"
+type AimZone = keyof LimbsHp
 
 type InactiveRecord = Record<number, { inactiveRoundStart: number; inactiveRoundEnd: number }>
 type ArmorClassBonusRecord = Record<number, number>
@@ -60,6 +60,7 @@ export type Action = {
   itemDbKey?: string
   targetId?: string
   damageLocalization?: keyof LimbsHp
+  aimZone?: AimZone
   rawDamage?: number
   damageType?: DamageTypeId
   isDone?: boolean
@@ -74,9 +75,9 @@ export type WeaponAction = {
   itemDbKey?: string
   targetId: string
   damageLocalization?: keyof LimbsHp
+  aimZone?: AimZone
   rawDamage?: number
   damageType?: DamageTypeId
-  aimZone?: AimZone
   apCost: number
   roll: Roll
   healthChangeEntries?: DamageEntries

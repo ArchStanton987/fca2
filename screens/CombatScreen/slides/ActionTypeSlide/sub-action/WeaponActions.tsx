@@ -1,3 +1,4 @@
+import Character from "lib/character/Character"
 import {
   getApCost,
   getAvailableWeaponActions,
@@ -18,8 +19,11 @@ export default function WeaponActions() {
   const char = useCharacter()
   const inv = useInventory()
   let weapon = char.unarmed
+  const isHuman = char instanceof Character
   if (itemDbKey) {
-    weapon = inv.weaponsRecord[itemDbKey] ?? char.unarmed
+    weapon = isHuman
+      ? inv.weaponsRecord[itemDbKey] ?? char.unarmed
+      : char.equipedObjectsRecord.weapons[itemDbKey]
   }
 
   if (!weapon) return null
@@ -31,16 +35,19 @@ export default function WeaponActions() {
       <List
         data={actions}
         keyExtractor={item => item}
-        renderItem={({ item }) => (
-          <ListItemSelectable
-            isSelected={actionSubtype === item}
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-            onPress={() => setActionSubtype(item)}
-          >
-            <Txt>{getWeaponActionLabel(weapon, item)}</Txt>
-            <Txt>{getApCost(weapon, char, item)}</Txt>
-          </ListItemSelectable>
-        )}
+        renderItem={({ item }) => {
+          const apCost = getApCost(weapon, char, item)
+          return (
+            <ListItemSelectable
+              isSelected={actionSubtype === item}
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+              onPress={() => setActionSubtype(item, apCost)}
+            >
+              <Txt>{getWeaponActionLabel(weapon, item)}</Txt>
+              <Txt>{apCost}</Txt>
+            </ListItemSelectable>
+          )
+        }}
       />
     </ScrollSection>
   )

@@ -2,6 +2,7 @@ import { StyleSheet } from "react-native"
 
 import skillsMap from "lib/character/abilities/skills/skills"
 import { SkillId } from "lib/character/abilities/skills/skills.types"
+import { limbsMap } from "lib/character/health/health"
 import { getCritFailureThreshold } from "lib/combat/const/crit"
 import { getActionId, getCurrentRoundId, getItemFromId } from "lib/combat/utils/combat-utils"
 import Toast from "react-native-toast-message"
@@ -64,14 +65,19 @@ const styles = StyleSheet.create({
 function Outcome({
   isCritSuccess,
   isCritFail,
-  finalScore
+  finalScore,
+  isCritHit
 }: {
   finalScore: number
   isCritSuccess: boolean
   isCritFail: boolean
+  isCritHit: boolean
 }) {
   if (isCritSuccess) {
     return <Txt style={[styles.outcome, styles.critSuccess]}>Réussite critique !</Txt>
+  }
+  if (isCritHit) {
+    return <Txt style={[styles.outcome, styles.critSuccess]}>Coup critique !</Txt>
   }
   if (isCritFail) {
     return <Txt style={[styles.outcome, styles.critFail]}>Échec critique !</Txt>
@@ -89,12 +95,13 @@ type DiceResultSlideProps = SlideProps & {
 
 export default function DiceResultSlide({ skillId, scrollNext }: DiceResultSlideProps) {
   const useCases = useGetUseCases()
-  const { meta, charId, secAttr, special } = useCharacter()
+  const char = useCharacter()
+  const { meta, charId, secAttr, special } = char
   const inv = useInventory()
   const { combat, npcs, players } = useCombat()
   const contenders = { ...players, ...npcs }
   const form = useActionForm()
-  const { actionType, actionSubtype, targetId } = form
+  const { actionType, actionSubtype, targetId, aimZone } = form
   const { reset } = useActionApi()
   const roundId = getCurrentRoundId(combat)
   const actionId = getActionId(combat)
@@ -110,7 +117,11 @@ export default function DiceResultSlide({ skillId, scrollNext }: DiceResultSlide
   const contenderType = meta.isNpc ? "npcs" : "players"
   const actionBonus = combat[contenderType][charId]?.actionBonus ?? 0
 
-  const isCritSuccess = actorDiceScore !== 0 && actorDiceScore <= secAttr.curr.critChance
+  let withAimCritChance = secAttr.curr.critChance
+  if (actionType === "weapon" && aimZone) {
+    withAimCritChance += limbsMap[aimZone].aimBonus
+  }
+  const isDefaultCritSuccess = actorDiceScore !== 0 && actorDiceScore <= secAttr.curr.critChance
   const isCritFail = actorDiceScore !== 0 && actorDiceScore >= getCritFailureThreshold(special.curr)
 
   const isAgainstAc = actionType === "weapon" || actionSubtype === "throw"
@@ -122,10 +133,12 @@ export default function DiceResultSlide({ skillId, scrollNext }: DiceResultSlide
   }
   const score = actorSkillScore - actorDiceScore + actionBonus
   const finalScore = score - targetAc - difficultyModifier
-  const isSuccess = isCritSuccess || finalScore > 0
+  const isCritHit = actorDiceScore <= withAimCritChance
+  const isCrit = isCritHit || isDefaultCritSuccess
+  const isSuccess = isDefaultCritSuccess || isCritHit || finalScore > 0
 
   const submit = async () => {
-    const withDamageSubtypes = ["throw", "basic", "aim", "burst"]
+    const withDamageSubtypes = ["throw", "basic", "aim", "burst", "hit"]
     const hasNextSlide = withDamageSubtypes.includes(actionSubtype) && isSuccess
     if (hasNextSlide) {
       if (!scrollNext) throw new Error("invalid scrollNext")
@@ -139,6 +152,7 @@ export default function DiceResultSlide({ skillId, scrollNext }: DiceResultSlide
       Toast.show({ type: "custom", text1: "Action réalisée !" })
       reset()
     } catch (error) {
+      console.log("error", error)
       Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement de l'action" })
     }
   }
@@ -158,11 +172,7 @@ export default function DiceResultSlide({ skillId, scrollNext }: DiceResultSlide
           <Col style={styles.scoreContainer}>
             <Txt>Jet de dé</Txt>
             <Txt
-              style={[
-                styles.score,
-                isCritSuccess && styles.critSuccess,
-                isCritFail && styles.critFail
-              ]}
+              style={[styles.score, isCrit && styles.critSuccess, isCritFail && styles.critFail]}
             >
               {actorDiceScore}
             </Txt>
@@ -223,7 +233,12 @@ export default function DiceResultSlide({ skillId, scrollNext }: DiceResultSlide
       <Spacer x={layout.globalPadding} />
       <Col style={{ width: 100 }}>
         <Section style={{ flex: 1 }} contentContainerStyle={styles.centeredSection}>
-          <Outcome isCritFail={isCritFail} isCritSuccess={isCritSuccess} finalScore={finalScore} />
+          <Outcome
+            isCritFail={isCritFail}
+            isCritSuccess={isDefaultCritSuccess}
+            isCritHit={isCritHit}
+            finalScore={finalScore}
+          />
         </Section>
         <Spacer y={layout.globalPadding} />
         <Section title="suivant" contentContainerStyle={styles.centeredSection}>

@@ -43,19 +43,20 @@ export default function GMDamage() {
   const {
     damageType,
     damageLocalization,
+    aimZone,
     healthChangeEntries: existingHealthChangeEntries,
     rawDamage,
     targetId
   } = action
   const isDamageSet = typeof action?.rawDamage === "number"
-  const hasDamageLoc = !!damageLocalization
+  const dmgLoc = aimZone ?? damageLocalization
   const hasHealthEntry = existingHealthChangeEntries !== undefined
 
-  const showForm = isDamageSet && hasDamageLoc && !hasHealthEntry
+  const showForm = isDamageSet && !!dmgLoc && !hasHealthEntry
 
   let realDamage
-  if (rawDamage && targetId && damageType && damageLocalization) {
-    const dmgEntry = { rawDamage, damageLocalization, damageType }
+  if (rawDamage && targetId && damageType && dmgLoc) {
+    const dmgEntry = { rawDamage, damageLocalization: dmgLoc, damageType }
     if (targetId in contenders) {
       realDamage = getRealDamage(contenders[targetId].char, dmgEntry)
     }

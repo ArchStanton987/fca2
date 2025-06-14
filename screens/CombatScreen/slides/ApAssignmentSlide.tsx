@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native"
 
-import { getItemWithSkillFromId } from "lib/combat/utils/combat-utils"
+import { getItemFromId, getItemWithSkillFromId } from "lib/combat/utils/combat-utils"
 import { isConsumableItem } from "lib/objects/data/consumables/consumables.utils"
 import Toast from "react-native-toast-message"
 
@@ -77,8 +77,22 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
     const { actionType, actionSubtype } = form
 
     switch (actionType) {
-      // TODO: case weapon
       // TODO: case other
+      case "weapon": {
+        if (actionSubtype !== "reload" && actionSubtype !== "unload") {
+          scrollNext()
+          break
+        }
+        try {
+          const item = getItemFromId(inventory, form.itemDbKey)
+          await useCases.combat.doCombatAction({ contenders, combat, action: form, item })
+          Toast.show({ type: "custom", text1: "Action réalisée" })
+          reset()
+        } catch (error) {
+          Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement de l'action" })
+        }
+        break
+      }
       case "movement":
         scrollNext()
         return

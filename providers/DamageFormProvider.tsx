@@ -78,15 +78,16 @@ export function DamageFormProvider({ children }: { children: ReactNode }) {
 
   let initEntry: DamageEntriesState = {}
   if (action) {
-    const { rawDamage, damageLocalization, targetId, damageType } = action
-    if (targetId && targetId in contenders && damageLocalization && rawDamage && damageType) {
-      const newDmgEntry = { rawDamage, damageLocalization, damageType }
+    const { rawDamage, damageLocalization, targetId, damageType, aimZone } = action
+    const loc = aimZone ?? damageLocalization
+    if (targetId && targetId in contenders && loc && rawDamage && damageType) {
+      const newDmgEntry = { rawDamage, damageLocalization: loc, damageType }
       const realDamage = getRealDamage(contenders[targetId].char, newDmgEntry)
       initEntry = {
         0: {
           charId: targetId,
           entryType: "hp",
-          localization: damageLocalization,
+          localization: loc,
           damage: realDamage
         }
       }

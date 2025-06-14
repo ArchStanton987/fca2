@@ -92,7 +92,7 @@ export type DbEffectData = {
 export type Effect = {
   id: EffectId
   data: EffectData
-  dbKey: string
+  dbKey?: string
   startTs?: Date
   endTs?: Date
   timeRemaining?: string | null

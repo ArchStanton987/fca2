@@ -1,4 +1,5 @@
 import Playable from "lib/character/Playable"
+import { getHealthState } from "lib/character/health/health-utils"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import Combat from "../Combat"
@@ -27,9 +28,14 @@ export default function applyDamageEntries(dbType: keyof typeof repositoryMap = 
         const { localization, damage } = entry
         const currHp = char.status[localization]
         const newHp = currHp - damage < 0 ? 0 : currHp - damage
-        const { meta } = char
+        const { meta, health } = char
         const charType = meta.isNpc ? "npcs" : "characters"
         promises.push(statusRepo.patch({ charId, charType }, { [localization]: newHp }))
+        const hS = getHealthState(health.hp - damage, health.maxHp)
+        if (hS === "vanished" || hS === "dead" || hS === "woundedUnconscious") {
+          const newStatus = hS === "woundedUnconscious" ? "inactive" : "dead"
+          promises.push(statusRepo.patch({ charId, charType }, { combatStatus: newStatus }))
+        }
         return
       }
       // handle inactive combat status update

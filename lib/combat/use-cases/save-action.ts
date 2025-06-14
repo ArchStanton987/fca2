@@ -43,6 +43,8 @@ export default function saveAction(dbType: keyof typeof repositoryMap = "rtdb") 
 
     // save action in combat
     const actionToSave = JSON.parse(JSON.stringify(payload)) // remove undefined values (throws error)
-    return actionRepo.set({ combatId: combat.id, roundId, id: actionId }, actionToSave)
+    promises.push(actionRepo.set({ combatId: combat.id, roundId, id: actionId }, actionToSave))
+
+    return Promise.all(promises)
   }
 }

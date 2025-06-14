@@ -1,5 +1,6 @@
 import { StyleSheet, View } from "react-native"
 
+import Character from "lib/character/Character"
 import { Roll } from "lib/combat/combats.types"
 import difficultyArray from "lib/combat/const/difficulty"
 import {
@@ -67,7 +68,20 @@ export default function DiceRollSlide({ scrollNext }: DiceRollSlideProps) {
 
   const { setForm } = useActionApi()
   const form = useActionForm()
-  const item = getItemWithSkillFromId(form.itemDbKey, inventory)
+
+  let item
+  if (form.actionType === "weapon") {
+    item = char.unarmed
+    const isHuman = char instanceof Character
+    if (form.itemDbKey) {
+      item = isHuman
+        ? inventory.weaponsRecord[form.itemDbKey] ?? char.unarmed
+        : char.equipedObjectsRecord.weapons[form.itemDbKey]
+    }
+  } else {
+    item = getItemWithSkillFromId(form.itemDbKey, inventory)
+  }
+
   const { skillLabel, totalSkillScore } = getDiceRollData({ ...form, item }, char)
 
   const { scoreStr, onPressKeypad } = useNumPad()

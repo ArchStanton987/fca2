@@ -3,8 +3,10 @@ import { CreatedElements, defaultCreatedElements } from "lib/objects/created-ele
 import { Clothing } from "lib/objects/data/clothings/clothings.types"
 import { Consumable } from "lib/objects/data/consumables/consumables.types"
 import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
+import weaponsMap from "lib/objects/data/weapons/weapons"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
 import repositoryMap from "lib/shared/db/get-repository"
+import getSquadUseCases from "lib/squad/squad-use-cases"
 
 import Combat from "../Combat"
 import { Action, PlayerCombatData } from "../combats.types"
@@ -14,6 +16,7 @@ import prepareAction from "./prepare-action"
 import saveAction from "./save-action"
 import setNewRound from "./set-new-round"
 import waitAction from "./wait-action"
+import weaponAction from "./weapon-action"
 
 export type CombatActionParams = {
   action: Action
@@ -27,6 +30,7 @@ export default function doCombatAction(
   newElements: CreatedElements = defaultCreatedElements
 ) {
   const statusRepo = repositoryMap[dbType].statusRepository
+  const { updateDate } = getSquadUseCases(dbType)
 
   return async ({ action, combat, contenders, item }: CombatActionParams) => {
     const { apCost = 0, actorId, actionType, actionSubtype } = action
@@ -40,6 +44,20 @@ export default function doCombatAction(
 
     // dispatch action
     switch (actionType) {
+      case "weapon": {
+        // handle case with species which can't carry weapon
+        if (meta.speciesId === "robot" || meta.speciesId === "animal") {
+          const { currAp } = status
+          const newAp = currAp - apCost
+          promises.push(statusRepo.patch({ charId, charType: "npcs" }, { currAp: newAp }))
+          break
+        }
+        if (!item) throw new Error("Item is required for weapon action")
+        if (!(item?.data?.id in weaponsMap)) throw new Error("item is not a weapon")
+        // @ts-ignore
+        promises.push(weaponAction(dbType)({ action, contenders, item }))
+        break
+      }
       case "movement":
         // no further operations needed (handled in saveAction)
         break
@@ -77,6 +95,16 @@ export default function doCombatAction(
       const charType = meta.isNpc ? "npcs" : "characters"
       const newAp = status.currAp - apCost
       promises.push(statusRepo.setChild({ charId, charType, childKey: "currAp" }, newAp))
+    }
+
+    const result = await Promise.all(promises)
+    if (result) {
+      // advance 6 seconds
+      const characters = Object.values(contenders).map(e => e.char)
+      const refDate = characters.length > 0 ? characters[0].date : combat.date
+      const newDateTs = refDate.getTime() + 6_000
+      const newDate = new Date(newDateTs)
+      await updateDate(combat.squadId, newDate, characters)
     }
 
     return Promise.all(promises)

@@ -55,7 +55,7 @@ export default function WeaponCard({ weapon, setPrevAp }: WeaponCardProps) {
     if (!selectedAction) return
     setSelectedAction(null)
     switch (selectedAction) {
-      case "load":
+      case "reload":
         await useCases.weapons.load(char, weapon, apCostOverride)
         break
       case "unload":

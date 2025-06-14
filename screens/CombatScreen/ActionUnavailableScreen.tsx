@@ -61,7 +61,7 @@ function DeadScreen() {
 
 function InactiveScreen() {
   return (
-    <Txt>
+    <Txt style={{ textAlign: "center" }}>
       Pour des raisons que vous connaissez certainement, vous ne serez pas en mesure
       d&apos;effectuer d&apos;action pendant ce round.
     </Txt>

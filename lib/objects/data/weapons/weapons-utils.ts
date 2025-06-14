@@ -13,7 +13,7 @@ export const getApCost = (weapon: Weapon, char: Playable, actionId: WeaponAction
     basic: weapon.data.basicApCost,
     aim: weapon.data.specialApCost,
     burst: char.secAttr.curr.actionPoints,
-    load: LOAD_AP_COST,
+    reload: LOAD_AP_COST,
     unload: UNLOAD_AP_COST,
     throw: THROW_AP_COST,
     hit: HIT_WITH_AP_COST
@@ -92,7 +92,7 @@ export const weaponActionsMap: {
   { actionId: "basic", fn: getCanBasicUseWeapon },
   { actionId: "aim", fn: getCanAim },
   { actionId: "burst", fn: getCanShootBurst },
-  { actionId: "load", fn: getCanLoad },
+  { actionId: "reload", fn: getCanLoad },
   { actionId: "unload", fn: getCanUnload },
   { actionId: "throw", fn: getCanThrow },
   { actionId: "hit", fn: getCanHitWith }
@@ -103,7 +103,7 @@ export const getAvailableWeaponActions = (weapon: Weapon, char: Playable) =>
 
 export const getWeaponActionLabel = (weapon: Weapon, actionId: WeaponActionId) => {
   if (actionId === "burst") return "Tirer (rafale)"
-  if (actionId === "load") return "Recharger"
+  if (actionId === "reload") return "Recharger"
   if (actionId === "unload") return "Décharger"
   if (actionId === "hit") return "Frapper"
   if (actionId === "throw") return "Lancer"

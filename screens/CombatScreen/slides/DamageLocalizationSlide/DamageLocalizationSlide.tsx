@@ -34,15 +34,16 @@ const styles = StyleSheet.create({
 const getBodyPart = (scoreStr: string): keyof LimbsHp => {
   const score = parseInt(scoreStr, 10)
   if (Number.isNaN(score)) throw new Error("invalid score")
+  // REWORKED MAP
   if (score === 69) return "groinHp"
-  if (score <= 15) return "headHp"
-  if (score <= 25) return "leftArmHp"
-  if (score <= 35) return "rightArmHp"
-  if (score <= 45) return "leftTorsoHp"
-  if (score <= 55) return "rightTorsoHp"
-  if (score <= 65) return "groinHp"
-  if (score <= 75) return "leftLegHp"
-  if (score <= 100) return "rightLegHp"
+  if (score <= 10) return "headHp"
+  if (score <= 15) return "groinHp"
+  if (score <= 26) return "leftLegHp"
+  if (score <= 37) return "rightLegHp"
+  if (score <= 48) return "leftArmHp"
+  if (score <= 59) return "rightArmHp"
+  if (score <= 80) return "leftTorsoHp"
+  if (score <= 100) return "rightTorsoHp"
   throw new Error("invalid score")
 }
 
