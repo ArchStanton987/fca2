@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react"
+import { Platform } from "react-native"
 
 import { Stack, useLocalSearchParams } from "expo-router"
 
@@ -80,7 +81,7 @@ export default function CharStack() {
     Toast.show({
       type: "custom",
       text1: `Le temps passe ! Nous sommes le ${newDate}, il est ${newHour}.`,
-      autoHide: false
+      autoHide: Platform.OS === "web"
     })
   }
 
