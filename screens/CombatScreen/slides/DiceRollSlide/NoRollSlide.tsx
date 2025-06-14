@@ -1,10 +1,14 @@
 import { TouchableHighlight } from "react-native"
 
+import { getItemFromId } from "lib/combat/utils/combat-utils"
+import Toast from "react-native-toast-message"
+
 import Section from "components/Section"
 import DrawerSlide from "components/Slides/DrawerSlide"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { useActionForm } from "providers/ActionProvider"
+import { useInventory } from "contexts/InventoryContext"
+import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
@@ -13,13 +17,22 @@ import SlideError, { slideErrors } from "../SlideError"
 
 export default function NoRollSlide() {
   const useCases = useGetUseCases()
+  const inv = useInventory()
   const form = useActionForm()
+  const { reset } = useActionApi()
   const { combat, players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
 
   const submit = async () => {
     if (!combat) throw new Error("No combat found")
-    await useCases.combat.doCombatAction({ combat, contenders, action: form })
+    try {
+      const item = getItemFromId(inv, form.itemDbKey)
+      await useCases.combat.doCombatAction({ combat, contenders, action: form, item })
+      Toast.show({ type: "custom", text1: "Action enregistrée !" })
+      reset()
+    } catch (err) {
+      Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement de l'action. " })
+    }
   }
 
   if (!combat) return <SlideError error={slideErrors.noCombatError} />

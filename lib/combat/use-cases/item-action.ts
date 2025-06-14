@@ -57,7 +57,6 @@ export default function itemAction(
         if (!item) throw new Error("Item not found")
         return drop(charType, charId, item)
       case "throw": {
-        // TODO: manage aim & health change
         if (!item) throw new Error("Item not found")
         return drop(charType, charId, item)
       }

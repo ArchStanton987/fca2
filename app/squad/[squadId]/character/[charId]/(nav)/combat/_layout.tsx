@@ -14,8 +14,9 @@ const pNavElements = [
   { path: "action", label: "Action" }
 ]
 const gmNavElements = [
-  { path: "gm", label: "MJ" },
-  { path: "action-order", label: "Ordre" },
+  { path: "gm-difficulty", label: "MJ (diff)" },
+  { path: "gm-damage", label: "MJ (dég)" },
+  { path: "action-order", label: "MJ (ordre)" },
   { path: "recap", label: "Bagarre" },
   { path: "action", label: "Action" }
 ]

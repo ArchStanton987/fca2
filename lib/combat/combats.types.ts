@@ -1,5 +1,5 @@
-import { EffectId } from "lib/character/effects/effects.types"
 import { LimbsHp } from "lib/character/health/health-types"
+import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 
 type WeaponActionSubtypeId = "basicAttack" | "aim" | "burst" | "reload" | "unload" | "hit" | "throw"
 export type MovementType = "crawl" | "walk" | "run" | "sprint" | "jump" | "climb" | "getUp"
@@ -34,11 +34,19 @@ type OppositionRoll = SimpleRoll & {
   opponentApCost: number
 }
 export type Roll = SimpleRoll | OppositionRoll
-export type HealthChangeEntry = {
-  status: Partial<LimbsHp>
-  newEffects: { id: EffectId; duration: number }[]
+type DamageEntry = {
+  charId: string
+  entryType: "hp"
+  localization: keyof LimbsHp
+  damage: number
 }
-export type HealthChangeEntries = Record<CharId, HealthChangeEntry>
+type InactiveEntry = {
+  charId: string
+  entryType: "inactive"
+  duration: number
+}
+export type GMDamageEntry = DamageEntry | InactiveEntry
+export type DamageEntries = Record<string, GMDamageEntry>
 
 export type Action = {
   actionType: string
@@ -47,9 +55,13 @@ export type Action = {
   isCombinedAction?: boolean
   apCost?: number
   roll?: Roll | false
-  healthChangeEntries?: HealthChangeEntries
+  healthChangeEntries?: DamageEntries
   itemId?: ItemId
-  targetName?: string
+  itemDbKey?: string
+  targetId?: string
+  damageLocalization?: keyof LimbsHp
+  rawDamage?: number
+  damageType?: DamageTypeId
   isDone?: boolean
 }
 
@@ -59,11 +71,15 @@ export type WeaponAction = {
   actorId: CharId
   isCombinedAction?: boolean
   itemId: ItemId
-  targetName: string
+  itemDbKey?: string
+  targetId: string
+  damageLocalization?: keyof LimbsHp
+  rawDamage?: number
+  damageType?: DamageTypeId
   aimZone?: AimZone
   apCost: number
   roll: Roll
-  healthChangeEntries?: HealthChangeEntries
+  healthChangeEntries?: DamageEntries
   isDone?: boolean
 }
 
@@ -74,19 +90,24 @@ export type MovementAction = {
   isCombinedAction?: boolean
   apCost: number
   roll?: SimpleRoll | null
-  healthChangeEntries?: HealthChangeEntries
+  healthChangeEntries?: DamageEntries
   isDone?: boolean
 }
 
 export type ItemAction = {
   actionType: "item"
   actionSubtype: ItemActionType
-  itemId: ItemId
   actorId: CharId
+  itemId: ItemId
+  itemDbKey: string
+  targetId: string
+  damageLocalization?: keyof LimbsHp
+  rawDamage?: number
+  damageType?: DamageTypeId
   isCombinedAction?: boolean
   apCost: number
   roll?: SimpleRoll | null
-  healthChangeEntries?: HealthChangeEntries
+  healthChangeEntries?: DamageEntries
   isDone?: boolean
 }
 
@@ -99,7 +120,7 @@ export type OtherAction = {
   isCombinedAction?: boolean
   apCost: number
   roll?: SimpleRoll | null
-  healthChangeEntries?: HealthChangeEntries
+  healthChangeEntries?: DamageEntries
   isDone?: boolean
 }
 

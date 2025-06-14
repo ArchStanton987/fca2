@@ -6,7 +6,16 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import colors from "styles/colors"
 
-export default function AwaitGmSlide() {
+type AwaitGmSlideProps = {
+  messageCase: "difficulty" | "damage"
+}
+
+export default function AwaitGmSlide({ messageCase }: AwaitGmSlideProps) {
+  const message =
+    messageCase === "difficulty"
+      ? "Le MJ doit déterminer la difficulté de votre action..."
+      : "Le MJ est en train d'appliquer des dégâts..."
+
   return (
     <DrawerSlide>
       <Section
@@ -17,7 +26,7 @@ export default function AwaitGmSlide() {
         <Spacer y={30} />
         <ActivityIndicator size="large" color={colors.secColor} />
         <Spacer y={30} />
-        <Txt>Le MJ doit déterminer la difficulté de votre action...</Txt>
+        <Txt>{message}</Txt>
       </Section>
     </DrawerSlide>
   )

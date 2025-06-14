@@ -84,7 +84,7 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
         return
       case "item": {
         // checks if requires further action (throw, pickup & use when object has challenge label)
-        const item = getItemWithSkillFromId(form.itemId, inventory)
+        const item = getItemWithSkillFromId(form.itemDbKey, inventory)
         const isConsumable = isConsumableItem(item)
         const hasChallenge = isConsumable && item.data.challengeLabel !== null
         const hasFurtherAction =

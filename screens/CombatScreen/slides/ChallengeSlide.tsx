@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
 export default function ChallengeSlide() {
   const useCases = useGetUseCases()
   const form = useActionForm()
-  const { itemId } = form
+  const { itemDbKey } = form
   const { reset } = useActionApi()
   const inv = useInventory()
   const { players, npcs, combat } = useCombat()
@@ -51,10 +51,10 @@ export default function ChallengeSlide() {
     }
   }
 
-  if (!itemId) return <SlideError error={slideErrors.noItemError} />
-  const isConsumable = itemId in inv.consumablesRecord
+  if (!itemDbKey) return <SlideError error={slideErrors.noItemError} />
+  const isConsumable = itemDbKey in inv.consumablesRecord
   if (!isConsumable) return <SlideError error={slideErrors.noConsumableError} />
-  const item = inv.consumablesRecord[itemId]
+  const item = inv.consumablesRecord[itemDbKey]
 
   return (
     <DrawerSlide>

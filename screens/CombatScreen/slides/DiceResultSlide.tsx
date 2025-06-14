@@ -3,16 +3,18 @@ import { StyleSheet } from "react-native"
 import skillsMap from "lib/character/abilities/skills/skills"
 import { SkillId } from "lib/character/abilities/skills/skills.types"
 import { getCritFailureThreshold } from "lib/combat/const/crit"
-import { getActionId, getCurrentRoundId } from "lib/combat/utils/combat-utils"
+import { getActionId, getCurrentRoundId, getItemFromId } from "lib/combat/utils/combat-utils"
 import Toast from "react-native-toast-message"
 
 import Col from "components/Col"
 import Row from "components/Row"
 import Section from "components/Section"
 import DrawerSlide from "components/Slides/DrawerSlide"
+import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
+import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
@@ -81,15 +83,18 @@ function Outcome({
   )
 }
 
-type DiceResultSlideProps = {
+type DiceResultSlideProps = SlideProps & {
   skillId: SkillId
 }
 
-export default function DiceResultSlide({ skillId }: DiceResultSlideProps) {
+export default function DiceResultSlide({ skillId, scrollNext }: DiceResultSlideProps) {
   const useCases = useGetUseCases()
   const { meta, charId, secAttr, special } = useCharacter()
+  const inv = useInventory()
   const { combat, npcs, players } = useCombat()
+  const contenders = { ...players, ...npcs }
   const form = useActionForm()
+  const { actionType, actionSubtype, targetId } = form
   const { reset } = useActionApi()
   const roundId = getCurrentRoundId(combat)
   const actionId = getActionId(combat)
@@ -98,7 +103,7 @@ export default function DiceResultSlide({ skillId }: DiceResultSlideProps) {
 
   const roll = combat.rounds?.[roundId]?.[actionId]?.roll
 
-  if (roll === undefined) return <AwaitGmSlide />
+  if (roll === undefined) return <AwaitGmSlide messageCase="difficulty" />
   if (roll === false) return <SlideError error={slideErrors.noDiceRollError} />
 
   const { actorDiceScore = 0, actorSkillScore = 0, difficultyModifier = 0 } = roll ?? {}
@@ -108,23 +113,31 @@ export default function DiceResultSlide({ skillId }: DiceResultSlideProps) {
   const isCritSuccess = actorDiceScore !== 0 && actorDiceScore <= secAttr.curr.critChance
   const isCritFail = actorDiceScore !== 0 && actorDiceScore >= getCritFailureThreshold(special.curr)
 
+  const isAgainstAc = actionType === "weapon" || actionSubtype === "throw"
+  let targetAc = 0
+  if (isAgainstAc && typeof targetId === "string" && !!targetId && targetId !== "other") {
+    targetAc = contenders?.[targetId].char.secAttr.curr.armorClass ?? 0
+    const bonusAc = contenders?.[targetId]?.combatData?.acBonusRecord?.[roundId] ?? 0
+    targetAc += bonusAc
+  }
   const score = actorSkillScore - actorDiceScore + actionBonus
-  const finalScore = score - difficultyModifier
+  const finalScore = score - targetAc - difficultyModifier
+  const isSuccess = isCritSuccess || finalScore > 0
 
   const submit = async () => {
+    const withDamageSubtypes = ["throw", "basic", "aim", "burst"]
+    const hasNextSlide = withDamageSubtypes.includes(actionSubtype) && isSuccess
+    if (hasNextSlide) {
+      if (!scrollNext) throw new Error("invalid scrollNext")
+      scrollNext()
+      return
+    }
     try {
-      const actionPayload = { combat, contenders: { ...players, ...npcs }, action: form }
-      if (form.actionType === "movement") {
-        switch (form.actionType) {
-          case "movement":
-            await useCases.combat.doCombatAction(actionPayload)
-            break
-          default:
-            throw new Error("Action not supported")
-        }
-        reset()
-        Toast.show({ type: "custom", text1: "Action réalisée !" })
-      }
+      const item = getItemFromId(inv, form.itemDbKey)
+      const actionPayload = { combat, contenders, action: form, item }
+      await useCases.combat.doCombatAction(actionPayload)
+      Toast.show({ type: "custom", text1: "Action réalisée !" })
+      reset()
     } catch (error) {
       Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement de l'action" })
     }
@@ -178,6 +191,19 @@ export default function DiceResultSlide({ skillId }: DiceResultSlideProps) {
             <Txt style={styles.score}>{score}</Txt>
           </Col>
           <Spacer x={10} />
+
+          {targetAc !== 0 ? (
+            <>
+              <Txt style={styles.score}>-</Txt>
+              <Spacer x={10} />
+              <Col style={styles.scoreContainer}>
+                <Txt>CA</Txt>
+                <Txt style={styles.score}>{targetAc}</Txt>
+              </Col>
+              <Spacer x={10} />
+            </>
+          ) : null}
+
           <Txt style={styles.score}>+</Txt>
           <Spacer x={10} />
           <Col style={styles.scoreContainer}>

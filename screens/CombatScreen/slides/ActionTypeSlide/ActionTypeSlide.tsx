@@ -41,7 +41,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
   const weapons = equipedObjects.weapons.length > 0 ? equipedObjects.weapons : [unarmed]
 
   const form = useActionForm()
-  const { actionType, actionSubtype, isCombinedAction, itemId } = form
+  const { actionType, actionSubtype, isCombinedAction, itemDbKey } = form
   const { setForm, setActionType, reset } = useActionApi()
 
   const contenders = { ...players, ...npcs }
@@ -50,7 +50,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
 
   const onPressActionType = (id: keyof typeof actions) => {
     if (id === "weapon") {
-      setActionType({ actionType: id, itemId: weapons[0].dbKey })
+      setActionType({ actionType: id, itemDbKey: weapons[0].dbKey })
       return
     }
     setActionType({ actionType: id })
@@ -82,7 +82,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
     const defaultRes = !!actionType && !!actionSubtype
     if (actionType === "item") {
       if (actionSubtype === "pickUp") return defaultRes
-      return defaultRes && !!itemId
+      return defaultRes && !!itemDbKey
     }
     return defaultRes
   }

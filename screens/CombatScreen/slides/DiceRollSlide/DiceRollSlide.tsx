@@ -67,7 +67,7 @@ export default function DiceRollSlide({ scrollNext }: DiceRollSlideProps) {
 
   const { setForm } = useActionApi()
   const form = useActionForm()
-  const item = getItemWithSkillFromId(form.itemId, inventory)
+  const item = getItemWithSkillFromId(form.itemDbKey, inventory)
   const { skillLabel, totalSkillScore } = getDiceRollData({ ...form, item }, char)
 
   const { scoreStr, onPressKeypad } = useNumPad()
@@ -86,7 +86,7 @@ export default function DiceRollSlide({ scrollNext }: DiceRollSlideProps) {
   const currRoll = combat?.rounds?.[roundId]?.[actionId]?.roll
   const isAwaitingGm = currRoll === undefined
 
-  if (isAwaitingGm) return <AwaitGmSlide />
+  if (isAwaitingGm) return <AwaitGmSlide messageCase="difficulty" />
   if (currRoll === false) return <NoRollSlide />
 
   const difficultyScore = currRoll?.difficultyModifier ?? 0

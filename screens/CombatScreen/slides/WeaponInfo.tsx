@@ -28,8 +28,8 @@ export default function WeaponInfo({ selectedWeapon }: { selectedWeapon?: string
   const char = useCharacter()
   const inv = useInventory()
   let weapon = char.unarmed
+  const isHuman = char instanceof Character
   if (selectedWeapon) {
-    const isHuman = char instanceof Character
     weapon = isHuman
       ? inv.weaponsRecord[selectedWeapon] ?? char.unarmed
       : char.equipedObjectsRecord.weapons[selectedWeapon]
@@ -56,6 +56,7 @@ export default function WeaponInfo({ selectedWeapon }: { selectedWeapon?: string
       <Spacer y={10} />
 
       <View style={{ alignSelf: "center" }}>
+        {!isHuman ? <Txt>{weapon.data.label}</Txt> : null}
         <Row>
           <Txt style={styles.attr}>DEG</Txt>
           <Spacer x={10} />

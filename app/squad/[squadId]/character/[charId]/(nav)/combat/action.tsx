@@ -3,6 +3,7 @@ import { ScrollView, useWindowDimensions } from "react-native"
 
 import { useLocalSearchParams } from "expo-router"
 
+import { SkillId } from "lib/character/abilities/skills/skills.types"
 import actions from "lib/combat/const/actions"
 import { getInitiativePrompts, getPlayingOrder } from "lib/combat/utils/combat-utils"
 
@@ -18,10 +19,14 @@ import WaitInitiativeScreen from "screens/CombatScreen/WaitInitiativeScreen"
 import ActionTypeSlide from "screens/CombatScreen/slides/ActionTypeSlide/ActionTypeSlide"
 import ApAssignment from "screens/CombatScreen/slides/ApAssignmentSlide"
 import ChallengeSlide from "screens/CombatScreen/slides/ChallengeSlide"
+import DamageLocalizationSlide from "screens/CombatScreen/slides/DamageLocalizationSlide/DamageLocalizationSlide"
+import DamageSlide from "screens/CombatScreen/slides/DamageSlide/DamageSlide"
 import DiceResultSlide from "screens/CombatScreen/slides/DiceResultSlide"
 import DiceRollSlide from "screens/CombatScreen/slides/DiceRollSlide/DiceRollSlide"
+import PickTargetSlide from "screens/CombatScreen/slides/PickTargetSlide/PickTargetSlide"
 import PickUpItemSlide from "screens/CombatScreen/slides/PickUpItemSlide"
 import SlideError, { slideErrors } from "screens/CombatScreen/slides/SlideError"
+import ValidateSlide from "screens/CombatScreen/slides/ValidateSlide/ValidateSlide"
 
 const initSlide = {
   id: "actionType",
@@ -36,25 +41,41 @@ const diceRollSlide = {
   id: "diceRoll",
   renderSlide: (props: SlideProps) => <DiceRollSlide {...props} />
 }
+const damageLocalizationSlide = {
+  id: "damageLoc",
+  renderSlide: (props: SlideProps) => <DamageLocalizationSlide {...props} />
+}
 
-const movementSlides = [
-  initSlide,
-  apAssignmentSlide,
-  diceRollSlide,
-  {
-    id: "diceResult",
-    renderSlide: (props: SlideProps) => <DiceResultSlide skillId="physical" {...props} />
-  }
-]
+const getDiceResultSlide = (skillId: SkillId) => ({
+  id: "diceResult",
+  renderSlide: (props: SlideProps) => <DiceResultSlide skillId={skillId} {...props} />
+})
+
+const pickTargetSlide = {
+  id: "pickTarget",
+  renderSlide: (props: SlideProps) => <PickTargetSlide {...props} />
+}
+
+const damageSlide = {
+  id: "damageSlide",
+  renderSlide: (props: SlideProps) => <DamageSlide {...props} />
+}
+const validateSlide = {
+  id: "validateSlide",
+  renderSlide: () => <ValidateSlide />
+}
+
+const movementSlides = [initSlide, apAssignmentSlide, diceRollSlide, getDiceResultSlide("physical")]
 
 const baseItemSlides = [initSlide, apAssignmentSlide]
 const throwItemSlides = [
   ...baseItemSlides,
+  pickTargetSlide,
   diceRollSlide,
-  {
-    id: "diceResult",
-    renderSlide: (props: SlideProps) => <DiceResultSlide skillId="throw" {...props} />
-  }
+  getDiceResultSlide("throw"),
+  damageLocalizationSlide,
+  damageSlide,
+  validateSlide
 ]
 const pickUpItemSlides = [
   ...baseItemSlides,
@@ -70,11 +91,6 @@ const useItemSlides = [
     renderSlide: () => <ChallengeSlide />
   }
 ]
-
-// cas throw
-// => pick target
-// => roll dice
-// => result
 
 const getSlides = <T extends keyof typeof actions>(
   actionType: T | "",

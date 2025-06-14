@@ -36,8 +36,13 @@ export default function saveAction(dbType: keyof typeof repositoryMap = "rtdb") 
       promises.push(updateContender(dbType)({ char, combat, payload: { actionBonus: 0 } }))
     }
 
+    // TODO: check if could be merge prior player request
+    // merge damage entries
+    const healthChangeEntries = combat?.rounds?.[roundId]?.[actionId]?.healthChangeEntries ?? {}
+    const payload = { ...action, healthChangeEntries, isDone: true }
+
     // save action in combat
-    const actionToSave = JSON.parse(JSON.stringify({ ...action, isDone: true })) // remove undefined values (throws error)
+    const actionToSave = JSON.parse(JSON.stringify(payload)) // remove undefined values (throws error)
     return actionRepo.set({ combatId: combat.id, roundId, id: actionId }, actionToSave)
   }
 }

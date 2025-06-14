@@ -48,8 +48,8 @@ type Displays = "knowledges" | "effects" | "skills"
 const defaultForm: ConsumableFormType = {
   id: "" as ConsumableId,
   label: "",
-  effectId: null,
-  challengeLabel: null,
+  effectId: undefined,
+  challengeLabel: undefined,
   od: false,
   addict: false,
   value: "150",

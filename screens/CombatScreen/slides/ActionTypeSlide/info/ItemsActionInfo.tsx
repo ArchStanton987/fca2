@@ -39,7 +39,8 @@ const getItemList = (
       return [
         { title: "armes", data: inventory.weapons },
         { title: "équipements", data: inventory.clothings },
-        { title: "consommables", data: inventory.groupedConsumables }
+        { title: "consommables", data: inventory.groupedConsumables },
+        { title: "divers", data: inventory.groupedMiscObjects }
       ]
     case "pickUp":
       return [{ title: "ajouter", data: [] }]
@@ -61,10 +62,10 @@ export default function ItemsActionInfo() {
   const character = useCharacter()
 
   const { setForm } = useActionApi()
-  const { itemId, actionSubtype } = useActionForm()
+  const { itemDbKey, actionSubtype } = useActionForm()
 
-  const onPressItem = (itemDbKey: string) => {
-    setForm({ itemId: itemDbKey })
+  const onPressItem = (dbKey: string, id: string) => {
+    setForm({ itemDbKey: dbKey, itemId: id })
   }
 
   const itemLists = getItemList(actionSubtype, character, inventory)
@@ -84,9 +85,9 @@ export default function ItemsActionInfo() {
               keyExtractor={item => item.dbKey}
               renderItem={({ item }) => (
                 <ListItemSelectable
-                  isSelected={itemId === item.dbKey}
+                  isSelected={itemDbKey === item.dbKey}
                   label={"count" in item ? `${item.data.label}(${item.count})` : item.data.label}
-                  onPress={() => onPressItem(item.dbKey)}
+                  onPress={() => onPressItem(item.dbKey, item.data.id)}
                 />
               )}
             />

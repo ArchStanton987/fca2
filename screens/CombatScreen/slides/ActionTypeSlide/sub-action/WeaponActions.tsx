@@ -13,13 +13,13 @@ import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 
 export default function WeaponActions() {
-  const { itemId, actionSubtype } = useActionForm()
+  const { itemDbKey, actionSubtype } = useActionForm()
   const { setActionSubtype } = useActionApi()
   const char = useCharacter()
   const inv = useInventory()
   let weapon = char.unarmed
-  if (itemId) {
-    weapon = inv.weaponsRecord[itemId] ?? char.unarmed
+  if (itemDbKey) {
+    weapon = inv.weaponsRecord[itemDbKey] ?? char.unarmed
   }
 
   if (!weapon) return null

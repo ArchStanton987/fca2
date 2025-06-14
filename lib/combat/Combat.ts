@@ -7,7 +7,8 @@ export const defaultAction = {
   apCost: 0,
   healthChangeEntries: {},
   itemId: "",
-  targetName: ""
+  itemDbKey: "",
+  targetId: ""
 }
 
 export default class Combat {

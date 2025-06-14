@@ -4,9 +4,11 @@ import { KnowledgeId } from "lib/character/abilities/knowledges/knowledge-types"
 import { getKnowledgesBonus } from "lib/character/abilities/knowledges/knowledge-utils"
 import skillsMap from "lib/character/abilities/skills/skills"
 import { Skill, SkillId } from "lib/character/abilities/skills/skills.types"
+import { BodyPart, LimbsHp } from "lib/character/health/health-types"
 import Inventory from "lib/objects/Inventory"
+import { ClothingData } from "lib/objects/data/clothings/clothings.types"
 import { Consumable } from "lib/objects/data/consumables/consumables.types"
-import { Weapon } from "lib/objects/data/weapons/weapons.types"
+import { DamageTypeId, Weapon } from "lib/objects/data/weapons/weapons.types"
 
 import { isKeyOf } from "utils/ts-utils"
 
@@ -109,25 +111,25 @@ export const getInitiativePrompts = (
 
 interface ActionForm<T extends keyof typeof actions> {
   actionType: T | ""
-  actionSubType?: keyof (typeof actions)[T]["subtypes"] | ""
+  actionSubtype: keyof (typeof actions)[T]["subtypes"] | string
   item?: Consumable | Weapon
 }
 
 export const getSkillFromAction = <T extends keyof typeof actions>({
   actionType,
-  actionSubType,
+  actionSubtype,
   item
 }: ActionForm<T>): Skill | null => {
   switch (actionType) {
     case "movement":
       return skillsMap.physical
     case "item":
-      if (actionSubType === "use" && item?.data?.skillId) return skillsMap[item.data.skillId]
-      if (actionSubType === "throw") return skillsMap.throw
+      if (actionSubtype === "use" && item?.data?.skillId) return skillsMap[item.data.skillId]
+      if (actionSubtype === "throw") return skillsMap.throw
       return null
     case "weapon":
-      if (actionSubType === "throw") return skillsMap.throw
-      if (actionSubType === "hit") return skillsMap.melee
+      if (actionSubtype === "throw") return skillsMap.throw
+      if (actionSubtype === "hit") return skillsMap.melee
       if (!item?.data?.skillId) throw new Error("No skill id found for given item")
       return skillsMap[item.data.skillId]
     default:
@@ -138,51 +140,107 @@ export const getSkillFromAction = <T extends keyof typeof actions>({
 // TODO: refactor, use in const as object factory
 const getKnowledgesFromAction = <T extends keyof typeof actions>({
   actionType,
-  actionSubType,
+  actionSubtype,
   item
 }: ActionForm<T>): KnowledgeId[] => {
   // MOVEMENT
-  if (actionSubType === "run" || actionSubType === "sprint") return ["kRunning"]
-  if (actionSubType === "jump") return ["kStunt"]
-  if (actionSubType === "climb") return ["kClimbing"]
+  if (actionSubtype === "run" || actionSubtype === "sprint") return ["kRunning"]
+  if (actionSubtype === "jump") return ["kStunt"]
+  if (actionSubtype === "climb") return ["kClimbing"]
 
   // ITEMS
-  if (actionType === "item" && actionSubType === "use" && item) {
+  if (actionType === "item" && actionSubtype === "use" && item) {
     return item.data.knowledges ?? []
   }
 
   // WEAPON
-  if (actionType === "weapon" && actionSubType === "hit") return ["kBluntWeapons"]
+  if (actionType === "weapon" && actionSubtype === "hit") return ["kBluntWeapons"]
   if (actionType === "weapon" && item) return item.data.knowledges ?? []
 
   return []
 }
 
 export const getDiceRollData = <T extends keyof typeof actions>(
-  { actionType, actionSubType, item }: ActionForm<T>,
+  { actionType, actionSubtype, item }: ActionForm<T>,
   char: Playable
 ): { skillId: SkillId; skillLabel: string; totalSkillScore: number } => {
   if (actionType === "weapon" && item) {
-    if (actionSubType !== "hit" && actionSubType !== "throw") {
+    if (actionSubtype !== "hit" && actionSubtype !== "throw") {
       if (!("skill" in item)) throw new Error("Item is not a weapon")
       const { skillId } = item.data
       return { skillId, skillLabel: skillsMap[skillId].label, totalSkillScore: item.skill }
     }
   }
-  const skill = getSkillFromAction({ actionType, actionSubType, item })
+  const skill = getSkillFromAction({ actionType, actionSubtype, item })
   if (!skill) throw new Error("No skill found")
-  const knowledges = getKnowledgesFromAction({ actionType, actionSubType, item })
+  const knowledges = getKnowledgesFromAction({ actionType, actionSubtype, item })
   const knowledgeBonus = getKnowledgesBonus(knowledges, char)
   const totalSkillScore = char.skills.curr[skill.id] + knowledgeBonus
   return { skillId: skill.id, skillLabel: skill.label, totalSkillScore }
 }
 
-export const getItemWithSkillFromId = (itemId: string | undefined, inventory: Inventory) => {
-  if (!itemId) return undefined
+export const getItemWithSkillFromId = (itemDbKey: string | undefined, inventory: Inventory) => {
+  if (!itemDbKey) return undefined
   let item
-  if (itemId) {
-    if (inventory.weaponsRecord[itemId]) item = inventory.weaponsRecord[itemId]
-    if (inventory.consumablesRecord[itemId]) item = inventory.consumablesRecord[itemId]
+  if (itemDbKey) {
+    if (inventory.weaponsRecord[itemDbKey]) item = inventory.weaponsRecord[itemDbKey]
+    if (inventory.consumablesRecord[itemDbKey]) item = inventory.consumablesRecord[itemDbKey]
   }
   return item
+}
+
+const bodyPartMatch: Record<keyof LimbsHp, BodyPart> = {
+  headHp: "head",
+  leftArmHp: "arms",
+  rightArmHp: "arms",
+  leftTorsoHp: "torso",
+  rightTorsoHp: "torso",
+  groinHp: "groin",
+  leftLegHp: "legs",
+  rightLegHp: "legs"
+}
+
+const clothingDamageResistMatch: Record<Exclude<DamageTypeId, "other">, keyof ClothingData> = {
+  physical: "physicalDamageResist",
+  laser: "laserDamageResist",
+  plasma: "plasmaDamageResist",
+  fire: "fireDamageResist"
+}
+
+type DamageEntry = {
+  rawDamage: number
+  damageLocalization: keyof LimbsHp
+  damageType: DamageTypeId
+}
+
+export const getRealDamage = (char: Playable, damage: DamageEntry) => {
+  const { rawDamage, damageLocalization, damageType } = damage
+  let realDamage = rawDamage
+  const targetCharClothings = char.equipedObjects.clothings
+  const relatedClothings = Object.values(targetCharClothings).filter(c =>
+    c.data.protects.includes(bodyPartMatch[damageLocalization])
+  )
+
+  const threshold = relatedClothings.reduce((acc, curr) => acc + curr.data.threshold, 0)
+  if (rawDamage < threshold) {
+    realDamage = 0
+  }
+  relatedClothings.forEach(c => {
+    if (damageType === "other") return
+    const matchingResist = clothingDamageResistMatch[damageType]
+    const v = c.data[matchingResist]
+    if (typeof v !== "number") return
+    const m = (100 - v) / 100
+    realDamage *= m
+  })
+  return realDamage
+}
+
+export const getItemFromId = (inv: Inventory, itemDbKey?: string) => {
+  if (!itemDbKey) return undefined
+  if (itemDbKey in inv.weaponsRecord) return inv.weaponsRecord[itemDbKey]
+  if (itemDbKey in inv.clothingsRecord) return inv.clothingsRecord[itemDbKey]
+  if (itemDbKey in inv.consumablesRecord) return inv.consumablesRecord[itemDbKey]
+  if (itemDbKey in inv.miscObjectsRecord) return inv.miscObjectsRecord[itemDbKey]
+  return undefined
 }

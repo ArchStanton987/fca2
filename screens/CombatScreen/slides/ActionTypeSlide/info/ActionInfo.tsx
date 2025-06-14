@@ -15,14 +15,14 @@ export default function ActionInfo() {
   const { equipedObjects, unarmed } = useCharacter()
   const weapons = equipedObjects.weapons.length > 0 ? equipedObjects.weapons : [unarmed]
 
-  const { itemId, actionType, actionSubtype } = useActionForm()
+  const { itemDbKey, actionType, actionSubtype } = useActionForm()
   const { setForm } = useActionApi()
 
   const toggleWeapon = () => {
     if (weapons.length < 2) return
-    const currentIndex = weapons.findIndex(w => w.dbKey === itemId)
+    const currentIndex = weapons.findIndex(w => w.dbKey === itemDbKey)
     const nextIndex = (currentIndex + 1) % weapons.length
-    setForm({ itemId: weapons[nextIndex].dbKey })
+    setForm({ itemDbKey: weapons[nextIndex].dbKey })
   }
 
   let description = ""
@@ -34,10 +34,10 @@ export default function ActionInfo() {
   }
 
   if (description) return <Txt>{description}</Txt>
-  if (actionType === "weapon" && itemId) {
+  if (actionType === "weapon" && itemDbKey) {
     return (
       <Pressable onPress={toggleWeapon} disabled={weapons.length < 2}>
-        <WeaponInfo selectedWeapon={itemId} />
+        <WeaponInfo selectedWeapon={itemDbKey} />
       </Pressable>
     )
   }

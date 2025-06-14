@@ -1,7 +1,9 @@
 import { createContext, useContext, useMemo, useReducer } from "react"
 
-import { HealthChangeEntries, HealthChangeEntry, Roll } from "lib/combat/combats.types"
+import { LimbsHp } from "lib/character/health/health-types"
+import { DamageEntries, Roll } from "lib/combat/combats.types"
 import { ActionTypeId } from "lib/combat/const/actions"
+import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 import { Form } from "lib/shared/types/utils-types"
 
 import { useCharacter } from "contexts/CharacterContext"
@@ -13,21 +15,25 @@ export type ActionStateContext = Form<{
   isCombinedAction: boolean
   apCost: number
   roll?: Roll
-  healthChangeEntries: HealthChangeEntries
-  targetName?: string
+  healthChangeEntries?: DamageEntries
+  targetId?: string
   attackType?: string
   aimZone?: string
+  damageLocalization?: keyof LimbsHp
+  rawDamage?: number
+  damageType?: DamageTypeId
   itemId?: string
+  itemDbKey?: string
 }>
 
 type ActionApiContext = {
   setActionType: (
-    payload: { actionType: ActionTypeId } | { actionType: "weapon"; itemId: string }
+    payload:
+      | { actionType: ActionTypeId }
+      | { actionType: "weapon"; itemId: string; itemDbKey: string }
   ) => void
   setActionSubtype: (actionSubtype: string, apCost?: number) => void
   setForm: (payload: Partial<ActionStateContext>) => void
-  addHealthEntry: (charId: string, entry: HealthChangeEntry) => void
-  removeHealthEntry: (charId: string) => void
   reset: () => void
 }
 
@@ -38,11 +44,15 @@ export const defaultActionForm = {
   isCombinedAction: false,
   apCost: 0,
   roll: undefined,
-  healthChangeEntries: {},
-  targetName: undefined,
+  healthChangeEntries: undefined,
+  targetId: undefined,
   attackType: undefined,
   aimZone: undefined,
-  itemId: undefined
+  damageLocalization: undefined,
+  rawDamage: undefined,
+  damageType: undefined,
+  itemId: undefined,
+  itemDbKey: undefined
 } as const
 
 const actionContextForm = createContext<ActionStateContext>({} as ActionStateContext)
@@ -51,12 +61,12 @@ const actionContextApi = createContext<ActionApiContext>({} as ActionApiContext)
 type Action =
   | {
       type: "SET_ACTION_TYPE"
-      payload: { actionType: ActionTypeId } | { actionType: "weapon"; itemId: string }
+      payload:
+        | { actionType: ActionTypeId }
+        | { actionType: "weapon"; itemId: string; itemDbKey: string }
     }
   | { type: "SET_ACTION_SUBTYPE"; payload: { actionSubtype: string; apCost?: number } }
   | { type: "SET_FORM"; payload: Partial<ActionStateContext> }
-  | { type: "ADD_HEALTH_ENTRY"; payload: { charId: string; entry: HealthChangeEntry } }
-  | { type: "REMOVE_HEALTH_ENTRY"; payload: { charId: string } }
   | { type: "RESET"; payload: { actorId: string } }
 
 const reducer = (state: ActionStateContext, { type, payload }: Action): ActionStateContext => {
@@ -65,14 +75,15 @@ const reducer = (state: ActionStateContext, { type, payload }: Action): ActionSt
       const { isCombinedAction, actorId } = state
       const { actionType } = payload
       const newState = { ...defaultActionForm, isCombinedAction, actorId, actionType }
-      if ("itemId" in payload) return { ...newState, itemId: payload.itemId }
+      if ("itemId" in payload)
+        return { ...newState, itemId: payload.itemId, itemDbKey: payload.itemDbKey }
       if (actionType === "prepare" || actionType === "wait")
         return { ...newState, isCombinedAction: false }
       return newState
     }
 
     case "SET_ACTION_SUBTYPE": {
-      const { actionType, actorId, itemId, isCombinedAction } = state
+      const { actionType, actorId, itemId, itemDbKey, isCombinedAction } = state
       const { actionSubtype, apCost = defaultActionForm.apCost } = payload
       const newState = {
         ...defaultActionForm,
@@ -82,24 +93,12 @@ const reducer = (state: ActionStateContext, { type, payload }: Action): ActionSt
         actionSubtype,
         apCost
       }
-      if (actionType === "weapon") return { ...newState, itemId }
+      if (actionType === "weapon") return { ...newState, itemId, itemDbKey }
       return newState
     }
 
     case "SET_FORM":
       return { ...state, ...payload }
-
-    case "ADD_HEALTH_ENTRY": {
-      const { charId, entry } = payload
-      return { ...state, healthChangeEntries: { ...state.healthChangeEntries, [charId]: entry } }
-    }
-
-    case "REMOVE_HEALTH_ENTRY": {
-      const { charId } = payload
-      const newHealthEntries = { ...state.healthChangeEntries }
-      delete newHealthEntries[charId]
-      return { ...state, healthChangeEntries: newHealthEntries }
-    }
 
     case "RESET":
       return { ...defaultActionForm, actorId: payload.actorId }
@@ -118,7 +117,9 @@ export function ActionProvider({ children }: { children: React.ReactNode }) {
   const api = useMemo(
     () => ({
       setActionType: (
-        payload: { actionType: ActionTypeId } | { actionType: "weapon"; itemId: string }
+        payload:
+          | { actionType: ActionTypeId }
+          | { actionType: "weapon"; itemId: string; itemDbKey: string }
       ) => {
         dispatch({ type: "SET_ACTION_TYPE", payload })
       },
@@ -129,14 +130,6 @@ export function ActionProvider({ children }: { children: React.ReactNode }) {
 
       setForm: (payload: Partial<ActionStateContext>) => {
         dispatch({ type: "SET_FORM", payload })
-      },
-
-      addHealthEntry: (charId: string, entry: HealthChangeEntry) => {
-        dispatch({ type: "ADD_HEALTH_ENTRY", payload: { charId, entry } })
-      },
-
-      removeHealthEntry: (charId: string) => {
-        dispatch({ type: "REMOVE_HEALTH_ENTRY", payload: { charId } })
       },
 
       reset: () => {
