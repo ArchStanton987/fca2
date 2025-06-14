@@ -9,18 +9,21 @@ type SelectorButtonProps = TouchableOpacityProps & {
   isSelected: boolean
 }
 
-export default function SelectorButton({ label, isSelected, ...rest }: SelectorButtonProps) {
+export default function SelectorButton({ label, isSelected, style, ...rest }: SelectorButtonProps) {
   return (
     <TouchableOpacity
-      style={{
-        backgroundColor: isSelected ? colors.terColor : colors.primColor,
-        borderWidth: 2,
-        borderColor: colors.secColor,
-        height: 40,
-        width: 70,
-        justifyContent: "center",
-        alignItems: "center"
-      }}
+      style={[
+        {
+          backgroundColor: isSelected ? colors.terColor : colors.primColor,
+          borderWidth: 2,
+          borderColor: colors.secColor,
+          height: 40,
+          width: 70,
+          justifyContent: "center",
+          alignItems: "center"
+        },
+        style
+      ]}
       {...rest}
     >
       <Txt>{label}</Txt>
