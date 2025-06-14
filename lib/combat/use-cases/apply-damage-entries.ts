@@ -44,7 +44,7 @@ export default function applyDamageEntries(dbType: keyof typeof repositoryMap = 
       const inactiveRoundEnd = roundId + duration
       const prevInactiveRecord = combatData?.inactiveRecord
       const inactiveKeys = Object.keys(prevInactiveRecord ?? {}).map(k => Number(k))
-      const newKey = inactiveKeys.length === 0 ? Math.max(...inactiveKeys) + 1 : 0
+      const newKey = inactiveKeys.length !== 0 ? Math.max(...inactiveKeys) + 1 : 0
       const newInactiveEntry = { inactiveRoundStart: roundId, inactiveRoundEnd }
       const inactiveRecord = { ...prevInactiveRecord, [newKey]: newInactiveEntry }
       const charType = char.meta.isNpc ? "npcs" : "characters"

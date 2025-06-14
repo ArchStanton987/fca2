@@ -3,7 +3,7 @@ import DrawerSlide from "components/Slides/DrawerSlide"
 import Txt from "components/Txt"
 
 export const slideErrors = {
-  noCombatError: "Erreur lors de la récupération du combat.",
+  noCombatError: "Aucun combat en cours.",
   noItemError: "Erreur lors de la sélection de l'objet.",
   noConsumableError: "L'objet n'est pas un consommable.",
   noDiceRollError: "Erreur : pas de lancer de dés."

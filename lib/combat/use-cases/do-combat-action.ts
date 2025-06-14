@@ -6,7 +6,6 @@ import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
 import weaponsMap from "lib/objects/data/weapons/weapons"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
 import repositoryMap from "lib/shared/db/get-repository"
-import getSquadUseCases from "lib/squad/squad-use-cases"
 
 import Combat from "../Combat"
 import { Action, PlayerCombatData } from "../combats.types"
@@ -30,7 +29,6 @@ export default function doCombatAction(
   newElements: CreatedElements = defaultCreatedElements
 ) {
   const statusRepo = repositoryMap[dbType].statusRepository
-  const { updateDate } = getSquadUseCases(dbType)
 
   return async ({ action, combat, contenders, item }: CombatActionParams) => {
     const { apCost = 0, actorId, actionType, actionSubtype } = action
@@ -95,16 +93,6 @@ export default function doCombatAction(
       const charType = meta.isNpc ? "npcs" : "characters"
       const newAp = status.currAp - apCost
       promises.push(statusRepo.setChild({ charId, charType, childKey: "currAp" }, newAp))
-    }
-
-    const result = await Promise.all(promises)
-    if (result) {
-      // advance 6 seconds
-      const characters = Object.values(contenders).map(e => e.char)
-      const refDate = characters.length > 0 ? characters[0].date : combat.date
-      const newDateTs = refDate.getTime() + 6_000
-      const newDate = new Date(newDateTs)
-      await updateDate(combat.squadId, newDate, characters)
     }
 
     return Promise.all(promises)
