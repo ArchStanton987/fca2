@@ -15,6 +15,7 @@ import { Special } from "lib/character/abilities/special/special.types"
 import effectsMap from "lib/character/effects/effects"
 import { DbEffects, Effect, EffectData, EffectId } from "lib/character/effects/effects.types"
 import { Symptom } from "lib/character/effects/symptoms.type"
+import { healthStates, limbsMap, radStates } from "lib/character/health/health"
 import { getMissingHp } from "lib/character/health/health-calc"
 import { Health } from "lib/character/health/health-types"
 import { DbCharMeta } from "lib/character/meta/meta"
@@ -145,6 +146,26 @@ export default class NonHuman implements Playable {
   }
 
   get effects(): Effect[] {
+    // get all calculated effects
+    // hp effects
+    const { hp, maxHp } = this.health
+    const currHpPercent = (hp / maxHp) * 100
+    const healthState = Object.values(healthStates).find(el => currHpPercent < el.min)
+    const hpEffects = healthState ? [{ id: healthState.id, data: effectsMap[healthState.id] }] : []
+    // // cripled effects
+    const { limbsHp } = this.health
+    const noHpLimbs = Object.values(limbsMap).filter(el => limbsHp[el.id] === 0)
+    const cripledEffects = noHpLimbs.map(el => ({
+      id: limbsMap[el.id].cripledEffect,
+      data: effectsMap[limbsMap[el.id].cripledEffect]
+    }))
+    // // rads effects
+    const { rads } = this.health
+    const radsState = radStates.find(el => rads > el.threshold)
+    const radsEffects = radsState ? [{ id: radsState.id, data: this.allEffects[radsState.id] }] : []
+    // // get all calculated effects objects
+    const calculatedEffects = [...hpEffects, ...cripledEffects, ...radsEffects]
+
     // get all db stored effects
     const effectsIds = Object.entries(this.dbEffects).map(([dbKey, value]) => {
       let timeRemaining = null
@@ -164,7 +185,7 @@ export default class NonHuman implements Playable {
 
       return { ...value, timeRemaining, dbKey, data: this.allEffects[value.id], startTs, endTs }
     })
-    return effectsIds
+    return [...calculatedEffects, ...effectsIds]
   }
 
   get symptoms(): Symptom[] {
