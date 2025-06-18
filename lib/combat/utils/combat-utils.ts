@@ -168,7 +168,7 @@ export const getDiceRollData = <T extends keyof typeof actions>(
     if (actionSubtype !== "hit" && actionSubtype !== "throw") {
       if (!("skill" in item)) throw new Error("Item is not a weapon")
       const { skillId } = item.data
-      return { skillId, skillLabel: skillsMap[skillId].label, totalSkillScore: item.skill }
+      return { skillId, skillLabel: skillsMap[skillId].short, totalSkillScore: item.skill }
     }
   }
   const skill = getSkillFromAction({ actionType, actionSubtype, item })
@@ -243,4 +243,20 @@ export const getItemFromId = (inv: Inventory, itemDbKey?: string) => {
   if (itemDbKey in inv.consumablesRecord) return inv.consumablesRecord[itemDbKey]
   if (itemDbKey in inv.miscObjectsRecord) return inv.miscObjectsRecord[itemDbKey]
   return undefined
+}
+
+export const getBodyPart = (scoreStr: string): keyof LimbsHp => {
+  const score = parseInt(scoreStr, 10)
+  if (Number.isNaN(score)) throw new Error("invalid score")
+  // REWORKED MAP
+  if (score === 69) return "groinHp"
+  if (score <= 10) return "headHp"
+  if (score <= 15) return "groinHp"
+  if (score <= 26) return "leftLegHp"
+  if (score <= 37) return "rightLegHp"
+  if (score <= 48) return "leftArmHp"
+  if (score <= 59) return "rightArmHp"
+  if (score <= 80) return "leftTorsoHp"
+  if (score <= 100) return "rightTorsoHp"
+  throw new Error("invalid score")
 }

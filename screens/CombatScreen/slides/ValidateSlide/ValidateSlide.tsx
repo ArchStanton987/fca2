@@ -39,13 +39,12 @@ export default function ValidateSlide() {
   const { combat, players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
 
-  const hasDamage = typeof rawDamage === "number"
+  const isDamageRolled = typeof rawDamage === "number"
 
   const roundId = getCurrentRoundId(combat)
   const actionId = getActionId(combat)
   const action = combat?.rounds?.[roundId]?.[actionId]
-  const hasHealthEntry = action?.healthChangeEntries !== undefined
-  const isWaitingForGm = hasDamage && !hasHealthEntry
+  const isWaitingForGm = isDamageRolled && action?.healthChangeEntries === undefined
 
   const submit = async () => {
     if (!combat) return

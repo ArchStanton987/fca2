@@ -46,7 +46,7 @@ type InactiveEntry = {
   duration: number
 }
 export type GMDamageEntry = DamageEntry | InactiveEntry
-export type DamageEntries = Record<string, GMDamageEntry>
+export type DamageEntries = Record<string, GMDamageEntry> | false
 
 export type Action = {
   actionType: string

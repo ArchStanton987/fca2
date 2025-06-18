@@ -31,7 +31,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15
   },
   centeredSection: {
-    flex: 1,
     justifyContent: "center",
     alignItems: "center"
   }
@@ -159,7 +158,7 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
           <Section
             title="modifier coût d'action"
             style={{ flex: 1 }}
-            contentContainerStyle={styles.centeredSection}
+            contentContainerStyle={[styles.centeredSection, { flex: 1 }]}
           >
             <Row style={{ alignItems: "center" }}>
               <MinusIcon onPress={() => incApCost("remove")} />

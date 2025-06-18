@@ -84,7 +84,7 @@ export default function DiceRollSlide({ scrollNext }: DiceRollSlideProps) {
 
   const { skillLabel, totalSkillScore } = getDiceRollData({ ...form, item }, char)
 
-  const { scoreStr, onPressKeypad } = useNumPad()
+  const { scoreStr, onPressKeypad } = useNumPad(form.roll?.actorDiceScore?.toString())
 
   const onPressConfirm = async (r: Roll) => {
     if (combat === null || !scrollNext) return

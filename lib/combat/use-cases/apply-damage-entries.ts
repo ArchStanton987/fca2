@@ -18,8 +18,9 @@ export default function applyDamageEntries(dbType: keyof typeof repositoryMap = 
 
   return ({ combat, contenders, damageEntries }: ApplyDamageEntriesParams) => {
     const promises: Promise<void>[] = []
+    if (damageEntries === false) return null
     // loop through every entry
-    Object.values(damageEntries).forEach(entry => {
+    Object.values(damageEntries ?? {}).forEach(entry => {
       const { charId, entryType } = entry
       const { char, combatData } = contenders[charId]
       if (!char) throw new Error("could not find character")

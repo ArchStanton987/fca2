@@ -48,8 +48,9 @@ export default function DamageSlide({ scrollNext }: DamageSlideProps) {
   const { actionType, actionSubtype, itemDbKey } = form
   const { setForm } = useActionApi()
 
-  const { scoreStr, onPressKeypad } = useNumPad("", 3)
-  const isScoreValid = scoreStr.length > 0 && scoreStr.length < 4
+  const { scoreStr, onPressKeypad } = useNumPad(form.rawDamage?.toString(), 3)
+  const isScoreValid =
+    (scoreStr.length > 0 && scoreStr.length < 4) || typeof form.rawDamage === "number"
 
   if (!itemDbKey) return <SlideError error={slideErrors.noItemError} />
 
@@ -84,12 +85,13 @@ export default function DamageSlide({ scrollNext }: DamageSlideProps) {
 
   const submit = async () => {
     if (combat === null || !scrollNext) return
-    const parsedScore = parseInt(scoreStr, 10)
+    const parsedScore = form?.rawDamage ?? parseInt(scoreStr, 10)
     if (!isScoreValid || Number.isNaN(parsedScore)) throw new Error("invalid score")
     const payload = { ...form, rawDamage: parsedScore, damageType }
     await useCases.combat.updateAction({ combat, payload })
     setForm({ rawDamage: parsedScore, damageType })
     scrollNext()
+    console.log("here")
   }
 
   return (
@@ -119,9 +121,9 @@ export default function DamageSlide({ scrollNext }: DamageSlideProps) {
 
       <Spacer x={layout.globalPadding} />
 
-      <Col style={{ flex: 1, minWidth: 100 }}>
+      <Col style={{ minWidth: 100 }}>
         <Section title="résultat" style={{ flex: 1 }} contentContainerStyle={styles.scoreContainer}>
-          <Txt style={styles.score}>{scoreStr}</Txt>
+          <Txt style={styles.score}>{form?.rawDamage ?? scoreStr}</Txt>
         </Section>
         <Spacer y={layout.globalPadding} />
 

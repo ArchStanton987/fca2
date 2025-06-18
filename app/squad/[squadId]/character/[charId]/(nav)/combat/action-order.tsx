@@ -1,15 +1,12 @@
-import { StyleSheet, View } from "react-native"
+import { StyleSheet } from "react-native"
 
 import { Redirect } from "expo-router"
 
-import { DbStatus } from "lib/character/status/status.types"
 import { getActionId, getCurrentRoundId, getPlayingOrder } from "lib/combat/utils/combat-utils"
-import Animated, { FadingTransition } from "react-native-reanimated"
 
 import Col from "components/Col"
 import DrawerPage from "components/DrawerPage"
 import List from "components/List"
-import ProgressionBar from "components/ProgressionBar/ProgressionBar"
 import Section from "components/Section"
 import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
@@ -17,6 +14,7 @@ import Txt from "components/Txt"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
+import OrderRow, { OrderRowHeader } from "screens/GMActionOrder/OrderRow"
 import colors from "styles/colors"
 import layout from "styles/layout"
 
@@ -32,6 +30,7 @@ const styles = StyleSheet.create({
     lineHeight: 50
   },
   row: {
+    flex: 1,
     borderWidth: 2,
     borderColor: "transparent",
     padding: 5,
@@ -45,7 +44,8 @@ const styles = StyleSheet.create({
     alignItems: "flex-end"
   },
   playing: {
-    borderColor: colors.secColor
+    borderColor: colors.secColor,
+    backgroundColor: colors.terColor
   },
   waiting: {
     color: colors.difficulty.easy
@@ -57,86 +57,6 @@ const styles = StyleSheet.create({
     textDecorationLine: "line-through"
   }
 })
-
-type TextProps = {
-  children: React.ReactNode
-  status: DbStatus["combatStatus"]
-  hasFinishedRound?: boolean
-}
-
-function CombatOrderText({ children, status, hasFinishedRound }: TextProps) {
-  const isWaiting = status === "wait"
-  const isDead = status === "dead"
-  const isInactive = status === "inactive"
-  return (
-    <Txt
-      style={[
-        isWaiting && styles.waiting,
-        (hasFinishedRound || isInactive) && styles.done,
-        isDead && styles.dead
-      ]}
-    >
-      {children}
-    </Txt>
-  )
-}
-
-type OrderRowProps = {
-  charId: string
-  name?: string
-  ap?: number
-  initiative?: number
-  status: DbStatus["combatStatus"]
-  isPlaying?: boolean
-  hasFinishedRound?: boolean
-  isCombinedAction?: boolean
-}
-
-const getColor = ({ hp, maxHp }: { hp: number; maxHp: number }) => {
-  if (hp <= 0) return colors.red
-  const currHpPercent = (hp / maxHp) * 100
-  if (currHpPercent < 25) return colors.orange
-  if (currHpPercent < 50) return colors.yellow
-  return colors.secColor
-}
-
-function OrderRow(props: OrderRowProps) {
-  const { charId, name, ap, isPlaying, status, initiative, hasFinishedRound, isCombinedAction } =
-    props
-  const { players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
-  const contender = contenders[charId]
-
-  const textProps = { isPlaying, status, hasFinishedRound }
-  return (
-    <Animated.View layout={FadingTransition} style={[styles.row, isPlaying && styles.playing]}>
-      <View style={styles.nameCol}>
-        <CombatOrderText {...textProps}>
-          {name ?? ""}
-          {isCombinedAction && isPlaying ? " C" : ""}
-        </CombatOrderText>
-      </View>
-      {contender.char.health ? (
-        <Col>
-          <ProgressionBar
-            value={contender.char.health.hp}
-            min={0}
-            max={contender.char.health.maxHp}
-            color={getColor(contender.char.health)}
-            width={40}
-          />
-        </Col>
-      ) : null}
-      <View style={styles.dataRow}>
-        <CombatOrderText {...textProps}>{ap ?? 0}</CombatOrderText>
-      </View>
-      <View style={styles.dataRow}>
-        <CombatOrderText {...textProps}>{initiative ?? 1000}</CombatOrderText>
-      </View>
-      <Spacer x={80} />
-    </Animated.View>
-  )
-}
 
 export default function GMCombatScreen() {
   const { combat, players, npcs } = useCombat()
@@ -165,13 +85,13 @@ export default function GMCombatScreen() {
 
   return (
     <DrawerPage>
-      <Col>
-        <Section contentContainerStyle={styles.centeredSection} title="round" style={{ flex: 1 }}>
+      <Col style={{ width: 60 }}>
+        <Section contentContainerStyle={styles.centeredSection} title="RND" style={{ flex: 1 }}>
           <Txt style={styles.combatStep}>{currRound}</Txt>
         </Section>
 
         <Spacer y={layout.globalPadding} />
-        <Section contentContainerStyle={styles.centeredSection} title="action" style={{ flex: 1 }}>
+        <Section contentContainerStyle={styles.centeredSection} title="ACTN" style={{ flex: 1 }}>
           <Txt style={styles.combatStep}>{currAction}</Txt>
         </Section>
       </Col>
@@ -183,6 +103,7 @@ export default function GMCombatScreen() {
           data={contenders}
           keyExtractor={item => item.char.charId}
           separator={<Spacer y={10} />}
+          ListHeaderComponent={OrderRowHeader}
           renderItem={({ item }) => (
             <OrderRow
               charId={item.char.charId}

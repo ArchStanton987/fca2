@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     width: 100
   },
   dmgCol: {
-    width: 40
+    width: 30
   },
   input: {
     paddingRight: 5

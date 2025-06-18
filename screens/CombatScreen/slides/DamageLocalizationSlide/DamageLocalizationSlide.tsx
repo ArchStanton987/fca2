@@ -2,7 +2,7 @@ import { useState } from "react"
 import { ActivityIndicator, StyleSheet, View } from "react-native"
 
 import { limbsMap } from "lib/character/health/health"
-import { LimbsHp } from "lib/character/health/health-types"
+import { getBodyPart } from "lib/combat/utils/combat-utils"
 
 import NumPad from "components/NumPad/NumPad"
 import useNumPad from "components/NumPad/useNumPad"
@@ -33,22 +33,6 @@ const styles = StyleSheet.create({
   }
 })
 
-const getBodyPart = (scoreStr: string): keyof LimbsHp => {
-  const score = parseInt(scoreStr, 10)
-  if (Number.isNaN(score)) throw new Error("invalid score")
-  // REWORKED MAP
-  if (score === 69) return "groinHp"
-  if (score <= 10) return "headHp"
-  if (score <= 15) return "groinHp"
-  if (score <= 26) return "leftLegHp"
-  if (score <= 37) return "rightLegHp"
-  if (score <= 48) return "leftArmHp"
-  if (score <= 59) return "rightArmHp"
-  if (score <= 80) return "leftTorsoHp"
-  if (score <= 100) return "rightTorsoHp"
-  throw new Error("invalid score")
-}
-
 type DamageLocalizationSlideProps = SlideProps & {}
 
 export default function DamageLocalizationSlide({ scrollNext }: DamageLocalizationSlideProps) {
@@ -62,7 +46,7 @@ export default function DamageLocalizationSlide({ scrollNext }: DamageLocalizati
 
   const [isLoading, setIsLoading] = useState(false)
 
-  const isScoreValid = scoreStr.length === 1 || scoreStr.length === 2
+  const isScoreValid = scoreStr.length === 1 || scoreStr.length === 2 || !!damageLocalization
 
   const resetField = () => {
     setForm({ damageLocalization: undefined })
@@ -80,7 +64,7 @@ export default function DamageLocalizationSlide({ scrollNext }: DamageLocalizati
           setForm({ damageLocalization: getBodyPart(scoreStr) })
           setIsLoading(false)
         },
-        meta.isNpc ? 0 : 3000
+        meta.isNpc ? 0 : 2500
       )
       return
     }

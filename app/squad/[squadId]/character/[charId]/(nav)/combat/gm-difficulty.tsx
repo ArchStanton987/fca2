@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { StyleSheet, TouchableOpacity } from "react-native"
 
 import { Redirect } from "expo-router"
@@ -24,6 +24,10 @@ import colors from "styles/colors"
 import layout from "styles/layout"
 
 const styles = StyleSheet.create({
+  diffSection: {
+    justifyContent: "center",
+    alignItems: "center"
+  },
   centeredSection: {
     flex: 1,
     justifyContent: "center",
@@ -44,6 +48,10 @@ export default function GMActionsScreen() {
     const roll = hasRoll ? { difficultyModifier: difficulty } : false
     useCases.combat.setAction({ combat, payload: { childKey: "roll", data: roll } })
   }
+
+  const handleSetDiff = useCallback((v: number) => {
+    setDifficulty(v)
+  }, [])
 
   const resetDifficulty = () => {
     if (!combat) return
@@ -98,7 +106,7 @@ export default function GMActionsScreen() {
   return (
     <DrawerPage style={{ flexDirection: "column" }}>
       <Section>
-        <Row style={styles.centeredSection}>
+        <Row style={styles.diffSection}>
           <Txt
             style={{
               color: hasRoll ? difficultyLvl?.color ?? colors.secColor : colors.terColor,
@@ -128,8 +136,7 @@ export default function GMActionsScreen() {
           maximumValue={120}
           step={1}
           thumbTintColor={hasRoll ? colors.secColor : colors.terColor}
-          value={difficulty}
-          onValueChange={value => setDifficulty(value)}
+          onValueChange={value => handleSetDiff(value)}
         />
 
         <Spacer y={20} />

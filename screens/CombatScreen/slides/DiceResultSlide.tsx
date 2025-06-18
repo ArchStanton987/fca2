@@ -241,7 +241,10 @@ export default function DiceResultSlide({ skillId, scrollNext }: DiceResultSlide
           />
         </Section>
         <Spacer y={layout.globalPadding} />
-        <Section title="suivant" contentContainerStyle={styles.centeredSection}>
+        <Section
+          title="suivant"
+          contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}
+        >
           <NextButton size={45} onPress={submit} />
         </Section>
       </Col>

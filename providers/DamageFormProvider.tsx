@@ -82,7 +82,7 @@ export function DamageFormProvider({ children }: { children: ReactNode }) {
     const loc = aimZone ?? damageLocalization
     if (targetId && targetId in contenders && loc && rawDamage && damageType) {
       const newDmgEntry = { rawDamage, damageLocalization: loc, damageType }
-      const realDamage = getRealDamage(contenders[targetId].char, newDmgEntry)
+      const realDamage = Math.round(getRealDamage(contenders[targetId].char, newDmgEntry))
       initEntry = {
         0: {
           charId: targetId,

@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     borderColor: colors.secColor,
     justifyContent: "center",
     alignItems: "center",
-    height: "100%",
+    // height: "100%",
     width: 60
   }
 })

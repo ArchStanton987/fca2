@@ -58,7 +58,7 @@ export default function GMDamage() {
   if (rawDamage && targetId && damageType && dmgLoc) {
     const dmgEntry = { rawDamage, damageLocalization: dmgLoc, damageType }
     if (targetId in contenders) {
-      realDamage = getRealDamage(contenders[targetId].char, dmgEntry)
+      realDamage = Math.round(getRealDamage(contenders[targetId].char, dmgEntry))
     }
   }
 

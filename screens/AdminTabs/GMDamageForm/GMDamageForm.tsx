@@ -29,6 +29,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center"
+  },
+  submitSection: {
+    justifyContent: "center",
+    alignItems: "center"
   }
 })
 
@@ -72,7 +76,9 @@ export default function GMDamageForm({ rawDamage, realDamage, damageType }: GMDa
       return
     }
     try {
-      await useCases.combat.applyDamageEntries({ combat, contenders, damageEntries: form })
+      const hasEntries = Object.keys(form).length === 0
+      const damageEntries = hasEntries ? form : false
+      await useCases.combat.applyDamageEntries({ combat, contenders, damageEntries })
       await useCases.combat.updateAction({ combat, payload: { healthChangeEntries: form } })
       Toast.show({ type: "custom", text1: "Dégâts enregistrés !" })
       reset()
@@ -103,7 +109,8 @@ export default function GMDamageForm({ rawDamage, realDamage, damageType }: GMDa
 
         <Spacer y={layout.globalPadding} />
 
-        <ScrollView style={{ flex: 1 }}>
+        {/* <ScrollView style={{ flex: 1 }}> */}
+        <ScrollView>
           <Row style={{ alignItems: "center" }}>
             <Txt>ENTREES</Txt>
             <Spacer x={layout.globalPadding} />
@@ -133,7 +140,7 @@ export default function GMDamageForm({ rawDamage, realDamage, damageType }: GMDa
 
       <Spacer x={layout.globalPadding} />
 
-      <Col style={{ width: 180 }}>
+      <Col style={{ width: 100 }}>
         <ScrollSection style={{ flex: 1 }}>
           {selectedPannel === "char" ? (
             <List
@@ -160,7 +167,7 @@ export default function GMDamageForm({ rawDamage, realDamage, damageType }: GMDa
 
         <Spacer y={layout.globalPadding} />
 
-        <Section title="valider" contentContainerStyle={styles.centeredSection}>
+        <Section title="valider" contentContainerStyle={styles.submitSection}>
           <PlayButton onPress={() => submit()} />
         </Section>
       </Col>
