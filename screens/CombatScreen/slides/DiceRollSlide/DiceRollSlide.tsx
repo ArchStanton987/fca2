@@ -1,7 +1,7 @@
 import { StyleSheet, View } from "react-native"
 
 import Character from "lib/character/Character"
-import { Roll } from "lib/combat/combats.types"
+import { Roll, SimpleRoll } from "lib/combat/combats.types"
 import difficultyArray from "lib/combat/const/difficulty"
 import {
   getActionId,
@@ -86,7 +86,7 @@ export default function DiceRollSlide({ scrollNext }: DiceRollSlideProps) {
 
   const { scoreStr, onPressKeypad } = useNumPad(form.roll?.actorDiceScore?.toString())
 
-  const onPressConfirm = async (r: Roll) => {
+  const onPressConfirm = async (r: SimpleRoll) => {
     if (combat === null || !scrollNext) return
     setForm({ roll: r })
     await useCases.combat.updateAction({ combat, payload: { roll: r } })

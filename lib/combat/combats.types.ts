@@ -26,7 +26,7 @@ export type SimpleRoll = {
   actorDiceScore?: number
   difficultyModifier: number
 }
-type OppositionRoll = SimpleRoll & {
+type OppositionRoll = {
   opponentId: string
   opponentSkillScore: number
   opponentDiceScore: number
@@ -54,7 +54,8 @@ export type Action = {
   actorId: CharId
   isCombinedAction?: boolean
   apCost?: number
-  roll?: Roll | false
+  roll?: SimpleRoll | false
+  oppositionRoll?: OppositionRoll | false
   healthChangeEntries?: DamageEntries
   itemId?: ItemId
   itemDbKey?: string

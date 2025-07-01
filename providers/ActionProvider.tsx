@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, useReducer } from "react"
 
 import { LimbsHp } from "lib/character/health/health-types"
-import { DamageEntries, Roll } from "lib/combat/combats.types"
+import { DamageEntries, SimpleRoll } from "lib/combat/combats.types"
 import { ActionTypeId } from "lib/combat/const/actions"
 import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 import { Form } from "lib/shared/types/utils-types"
@@ -14,7 +14,7 @@ export type ActionStateContext = Form<{
   actorId: string
   isCombinedAction: boolean
   apCost: number
-  roll?: Roll
+  roll?: SimpleRoll
   healthChangeEntries?: DamageEntries
   targetId?: string
   attackType?: string
