@@ -14,6 +14,7 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import HealthFigure from "components/draws/HealthFigure/HealthFigure"
 import { useCharacter } from "contexts/CharacterContext"
+import colors from "styles/colors"
 import layout from "styles/layout"
 
 import ApInfo from "./ActionTypeSlide/info/ApInfo"
@@ -26,6 +27,12 @@ const styles = StyleSheet.create({
   centeredSection: {
     justifyContent: "center",
     alignItems: "center"
+  },
+  selectable: {
+    padding: 20
+  },
+  selected: {
+    borderColor: colors.secColor
   }
 })
 
@@ -49,14 +56,12 @@ export default function PickReactionSlide({ scrollNext }: SlideProps) {
 
   const [selectedReaction, setReaction] = useState<keyof typeof reactionsMap>("none")
 
-  const dodgeKnowledgeBonus =
-    knowledgeLevels.find(el => el.id === knowledgesRecord.kDodge)?.bonus ?? 0
-  const parryKnowledgeBonus =
-    knowledgeLevels.find(el => el.id === knowledgesRecord.kParry)?.bonus ?? 0
+  const dodgeKBonus = knowledgeLevels.find(el => el.id === knowledgesRecord.kDodge)?.bonus ?? 0
+  const parryKBonus = knowledgeLevels.find(el => el.id === knowledgesRecord.kParry)?.bonus ?? 0
 
-  const dodgeScore = skills.curr.physical + dodgeKnowledgeBonus
+  const dodgeScore = skills.curr.physical + dodgeKBonus
   const weaponSkill = equipedObjects.weapons[0].data.skillId
-  const parryScore = skills.curr[weaponSkill] + parryKnowledgeBonus
+  const parryScore = skills.curr[weaponSkill] + parryKBonus
 
   const onPressNext = () => {
     if (!scrollNext) throw new Error("scroll fn not provided")
@@ -65,36 +70,49 @@ export default function PickReactionSlide({ scrollNext }: SlideProps) {
 
   return (
     <DrawerSlide>
-      <Col style={{ flex: 1 }}>
+      <Col style={{ flex: 1, alignItems: "stretch" }}>
         <Row>
-          <Section title="PA">
+          <Section style={{ flex: 1 }} contentContainerStyle={{ alignItems: "center" }} title="PA">
             <ApInfo />
           </Section>
           <Spacer x={layout.globalPadding} />
-          <Section title="esquive">
-            <Txt style={styles.score}>{dodgeScore}</Txt>
+          <Section
+            style={{ flex: 1 }}
+            contentContainerStyle={{ alignItems: "center" }}
+            title="parade"
+          >
+            <Txt style={styles.score}>{parryScore}</Txt>
           </Section>
           <Spacer x={layout.globalPadding} />
-          <Section title="parade">
-            <Txt style={styles.score}>{parryScore}</Txt>
+          <Section
+            style={{ flex: 1 }}
+            contentContainerStyle={{ alignItems: "center" }}
+            title="esquive"
+          >
+            <Txt style={styles.score}>{dodgeScore}</Txt>
           </Section>
         </Row>
 
         <Spacer y={layout.globalPadding} />
 
-        <Row style={{ flex: 1 }}>
+        <Row style={{ flex: 1, justifyContent: "center" }}>
           <List
             horizontal
             data={reactions}
             keyExtractor={e => e.label}
-            renderItem={({ item }) => (
-              <Selectable
-                isSelected={selectedReaction === item.id}
-                onPress={() => setReaction(item.id)}
-              >
-                <Txt>{item.label}</Txt>
-              </Selectable>
-            )}
+            style={{ alignItems: "center" }}
+            renderItem={({ item }) => {
+              const isSelected = selectedReaction === item.id
+              return (
+                <Selectable
+                  isSelected={isSelected}
+                  onPress={() => setReaction(item.id)}
+                  style={[styles.selectable, isSelected && styles.selected]}
+                >
+                  <Txt style={styles.score}>{item.label}</Txt>
+                </Selectable>
+              )
+            }}
           />
         </Row>
       </Col>
