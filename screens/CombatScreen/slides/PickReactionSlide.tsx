@@ -39,20 +39,22 @@ const styles = StyleSheet.create({
 // opposition slides
 // recap () (HP, AP, PHY / CàC)
 // => OUI / NON
-// => ApAssignement
 // => SkillScore
 // => DiceRoll
 // => DiceResult
 
 const reactionsMap = {
-  none: { id: "none", label: "Aucune" },
-  parry: { id: "parry", label: "Parade" },
-  dodge: { id: "dodge", label: "Esquive" }
+  none: { id: "none", label: "Aucune", apCost: 0 },
+  parry: { id: "parry", label: "Parade", apCost: PARRY_AP_COST },
+  dodge: { id: "dodge", label: "Esquive", apCost: DODGE_AP_COST }
 } as const
 const reactions = Object.values(reactionsMap)
 
 export default function PickReactionSlide({ scrollNext }: SlideProps) {
-  const { skills, equipedObjects, knowledgesRecord } = useCharacter()
+  const useCases = useGetUseCases()
+  const { combat } = useCombat()
+  const char = useCharacter()
+  const { skills, equipedObjects, knowledgesRecord, status, charId } = char
 
   const [selectedReaction, setReaction] = useState<keyof typeof reactionsMap>("none")
 
@@ -63,7 +65,10 @@ export default function PickReactionSlide({ scrollNext }: SlideProps) {
   const weaponSkill = equipedObjects.weapons[0].data.skillId
   const parryScore = skills.curr[weaponSkill] + parryKBonus
 
-  const onPressNext = () => {
+  const { apCost } = reactionsMap[selectedReaction]
+  const leftAp = status.currAp - apCost
+
+  const onPressNext = async () => {
     if (!scrollNext) throw new Error("scroll fn not provided")
     scrollNext()
   }
@@ -73,7 +78,10 @@ export default function PickReactionSlide({ scrollNext }: SlideProps) {
       <Col style={{ flex: 1, alignItems: "stretch" }}>
         <Row>
           <Section style={{ flex: 1 }} contentContainerStyle={{ alignItems: "center" }} title="PA">
-            <ApInfo />
+            <Row>
+              <Txt style={[styles.score, apCost > 0 && styles.prevScore]}>{leftAp}</Txt>
+              <Txt style={styles.score}> / {status.currAp}</Txt>
+            </Row>
           </Section>
           <Spacer x={layout.globalPadding} />
           <Section
@@ -95,26 +103,30 @@ export default function PickReactionSlide({ scrollNext }: SlideProps) {
 
         <Spacer y={layout.globalPadding} />
 
-        <Row style={{ flex: 1, justifyContent: "center" }}>
-          <List
-            horizontal
-            data={reactions}
-            keyExtractor={e => e.label}
-            style={{ alignItems: "center" }}
-            renderItem={({ item }) => {
-              const isSelected = selectedReaction === item.id
-              return (
-                <Selectable
-                  isSelected={isSelected}
-                  onPress={() => setReaction(item.id)}
-                  style={[styles.selectable, isSelected && styles.selected]}
-                >
-                  <Txt style={styles.score}>{item.label}</Txt>
-                </Selectable>
-              )
-            }}
-          />
-        </Row>
+        <Col style={{ flex: 1, justifyContent: "center", alignItems: "stretch" }}>
+          <Txt style={{ textAlign: "center" }}>Choisissez une réaction : </Txt>
+          <Spacer y={20} />
+          <Row style={{ justifyContent: "center" }}>
+            <List
+              horizontal
+              data={reactions}
+              keyExtractor={e => e.label}
+              style={{ alignItems: "center" }}
+              renderItem={({ item }) => {
+                const isSelected = selectedReaction === item.id
+                return (
+                  <Selectable
+                    isSelected={isSelected}
+                    onPress={() => setReaction(item.id)}
+                    style={[styles.selectable, isSelected && styles.selected]}
+                  >
+                    <Txt style={styles.score}>{item.label}</Txt>
+                  </Selectable>
+                )
+              }}
+            />
+          </Row>
+        </Col>
       </Col>
 
       <Spacer x={layout.globalPadding} />
@@ -127,7 +139,7 @@ export default function PickReactionSlide({ scrollNext }: SlideProps) {
         <Spacer y={layout.globalPadding} />
 
         <Section title="valider" contentContainerStyle={styles.centeredSection}>
-          <NextButton size={45} onPress={onPressNext} />
+          <NextButton size={45} onPress={onPressNext} disabled={leftAp < 0} />
         </Section>
       </Col>
     </DrawerSlide>
