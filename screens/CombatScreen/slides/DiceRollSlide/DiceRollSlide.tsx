@@ -1,5 +1,3 @@
-import { StyleSheet, View } from "react-native"
-
 import Character from "lib/character/Character"
 import { Roll, SimpleRoll } from "lib/combat/combats.types"
 import difficultyArray from "lib/combat/const/difficulty"
@@ -22,38 +20,13 @@ import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
-import colors from "styles/colors"
 import layout from "styles/layout"
 
-import AwaitGmSlide from "../AwaitGmSlide"
 import NextButton from "../NextButton"
 import SlideError, { slideErrors } from "../SlideError"
+import AwaitGmSlide from "../wait-slides/AwaitGmSlide"
+import styles from "./DiceRollSlide.styles"
 import NoRollSlide from "./NoRollSlide"
-
-const styles = StyleSheet.create({
-  digit: {
-    fontSize: 20
-  },
-  digitContainer: {
-    backgroundColor: colors.primColor,
-    borderWidth: 2,
-    borderColor: colors.secColor,
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100%",
-    width: 60
-  },
-  score: {
-    color: colors.secColor,
-    fontSize: 42,
-    lineHeight: 50
-  },
-  scoreContainer: {
-    flexGrow: 1,
-    justifyContent: "center",
-    alignItems: "center"
-  }
-})
 
 type DiceRollSlideProps = {
   scrollNext?: () => void
@@ -144,7 +117,7 @@ export default function DiceRollSlide({ scrollNext }: DiceRollSlideProps) {
 
       <Spacer x={layout.globalPadding} />
 
-      <View style={{ flex: 1, minWidth: 100 }}>
+      <Col style={{ flex: 1, minWidth: 100 }}>
         <Section
           title="difficulté"
           style={{ flex: 1 }}
@@ -165,7 +138,7 @@ export default function DiceRollSlide({ scrollNext }: DiceRollSlideProps) {
         <Section title="valider" contentContainerStyle={styles.scoreContainer}>
           <NextButton onPress={() => onPressConfirm(payload)} size={55} disabled={!isValid} />
         </Section>
-      </View>
+      </Col>
     </DrawerSlide>
   )
 }
