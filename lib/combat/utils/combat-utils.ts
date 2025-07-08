@@ -260,3 +260,55 @@ export const getBodyPart = (scoreStr: string): keyof LimbsHp => {
   if (score <= 100) return "rightTorsoHp"
   throw new Error("invalid score")
 }
+
+export const getParrySkill = (weaponSkill: SkillId): SkillId => {
+  if (weaponSkill === "unarmed") return "unarmed"
+  return "melee"
+}
+
+export const getActionScores = (combat: Combat | null, contenders: Record<string, PlayerData>) => {
+  if (combat === null) return null
+  const roundId = getCurrentRoundId(combat)
+  const actionId = getActionId(combat)
+  const action = combat.rounds[roundId][actionId]
+  if (!action) return null
+  const { actorId, roll, targetId, oppositionRoll } = action
+  const actor = contenders[actorId]
+  if (!actor) return null
+  if (!targetId) return null
+  if (roll === undefined || roll === false) return null
+  const { actorSkillScore, actorDiceScore, difficultyModifier } = roll
+  if (!actorSkillScore || !actorDiceScore) return null
+  const opponentBaseAc = contenders[targetId]?.char?.secAttr.curr.armorClass
+  const opponentBonusAc = contenders?.[targetId]?.combatData?.acBonusRecord?.[roundId] ?? 0
+  const opponentAc = opponentBaseAc + opponentBonusAc
+
+  const actorActionBonus = actor.combatData?.actionBonus ?? 0
+  const actorScore = actorSkillScore - actorDiceScore + actorActionBonus
+  const actorFinalScore = actorScore - opponentAc - difficultyModifier
+  const actorScores = {
+    actorDiceScore,
+    actorSkillScore,
+    actorActionBonus,
+    actorScore,
+    difficultyModifier,
+    opponentAc,
+    actorFinalScore
+  }
+  if (!oppositionRoll) return { actorScores }
+  const { opponentDiceScore, opponentId, opponentSkillScore } = oppositionRoll
+  const opponent = contenders[opponentId]
+  if (!opponent) throw new Error("opponent not found")
+  const opponentActionBonus = opponent.combatData.actionBonus
+  const opponentScore = opponentSkillScore - opponentDiceScore + opponentActionBonus
+  const opponentReactionScore = opponentScore - actorFinalScore
+  const actorReactionScore = actorFinalScore - opponentScore
+  const opponentScores = {
+    opponentDiceScore,
+    opponentSkillScore,
+    opponentActionBonus,
+    opponentScore,
+    opponentReactionScore
+  }
+  return { actorScores: { ...actorScores, actorReactionScore }, opponentScores }
+}
