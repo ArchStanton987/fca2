@@ -31,7 +31,8 @@ const routes = {
   },
   combat: {
     index: `${combat}/recap`,
-    reaction: `${combat}/reaction`
+    reaction: `${combat}/reaction`,
+    action: `${combat}/action`
   },
   modal: {
     updateEffects: `${modal}/update-effects`,

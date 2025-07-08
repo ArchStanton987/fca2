@@ -312,3 +312,17 @@ export const getActionScores = (combat: Combat | null, contenders: Record<string
   }
   return { actorScores: { ...actorScores, actorReactionScore }, opponentScores }
 }
+
+export const getPlayerCanReact = (charId: string, combat: Combat) => {
+  const roundId = getCurrentRoundId(combat)
+  const actionId = getActionId(combat)
+  const action = combat.rounds[roundId][actionId]
+  if (!action) return false
+
+  const playerIsTarget = action.targetId === charId
+  if (!playerIsTarget) return false
+
+  const { damageLocalization, oppositionRoll } = action
+  if (!!damageLocalization && oppositionRoll === undefined) return true
+  return false
+}

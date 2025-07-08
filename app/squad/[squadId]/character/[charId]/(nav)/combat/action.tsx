@@ -2,7 +2,11 @@ import { ScrollView } from "react-native"
 
 import { Redirect, useLocalSearchParams } from "expo-router"
 
-import { getInitiativePrompts, getPlayingOrder } from "lib/combat/utils/combat-utils"
+import {
+  getInitiativePrompts,
+  getPlayerCanReact,
+  getPlayingOrder
+} from "lib/combat/utils/combat-utils"
 
 import DrawerPage from "components/DrawerPage"
 import List from "components/List"
@@ -50,8 +54,8 @@ export default function ActionScreen() {
 
   if (!isPlaying) return <ActionUnavailableScreen />
 
-  const isReaction = false
-  if (isReaction) return <Redirect href={{ pathname: routes.combat.reaction }} />
+  const canReact = getPlayerCanReact(charId, combat)
+  if (canReact) return <Redirect href={{ pathname: routes.combat.reaction }} />
 
   return (
     <DrawerPage>

@@ -1,3 +1,5 @@
+import { router } from "expo-router"
+
 import skillsMap from "lib/character/abilities/skills/skills"
 import { getCritFailureThreshold } from "lib/combat/const/crit"
 import { getActionId, getCurrentRoundId } from "lib/combat/utils/combat-utils"
@@ -8,6 +10,7 @@ import Section from "components/Section"
 import DrawerSlide from "components/Slides/DrawerSlide"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
+import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
 import { useReactionApi, useReactionForm } from "providers/ReactionProvider"
@@ -53,6 +56,7 @@ export default function ReactionScoreResultSlide() {
 
   const submit = () => {
     reset()
+    router.replace(routes.combat.action)
   }
 
   return (

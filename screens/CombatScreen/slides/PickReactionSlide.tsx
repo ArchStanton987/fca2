@@ -1,5 +1,7 @@
 import { StyleSheet } from "react-native"
 
+import { router } from "expo-router"
+
 import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-levels"
 import { DODGE_AP_COST, PARRY_AP_COST } from "lib/combat/const/combat-const"
 import { getCurrentRoundId, getParrySkill } from "lib/combat/utils/combat-utils"
@@ -14,6 +16,7 @@ import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import HealthFigure from "components/draws/HealthFigure/HealthFigure"
+import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
 import { useReactionApi, useReactionForm } from "providers/ReactionProvider"
@@ -59,7 +62,7 @@ export default function PickReactionSlide({ scrollNext }: SlideProps) {
 
   const form = useReactionForm()
   const { reaction } = form
-  const { setReactionForm, submit } = useReactionApi()
+  const { setReactionForm, submit, reset } = useReactionApi()
 
   const armorClassBonus = contenders?.[charId]?.combatData?.acBonusRecord?.[roundId] ?? 0
   const actionArmorClass = secAttr.curr.armorClass + armorClassBonus
@@ -99,6 +102,8 @@ export default function PickReactionSlide({ scrollNext }: SlideProps) {
     if (leftAp < 0) throw new Error("No enough AP")
     if (reaction === "none") {
       submit(form, combat)
+      router.replace(routes.combat.action)
+      reset()
       return
     }
     scrollNext()
