@@ -10,11 +10,11 @@ import ApAssignmentSlide from "./ApAssignmentSlide"
 import ChallengeSlide from "./ChallengeSlide"
 import DamageLocalizationSlide from "./DamageLocalizationSlide/DamageLocalizationSlide"
 import DamageSlide from "./DamageSlide/DamageSlide"
-import DiceResultSlide from "./DiceResultSlide"
 import DiceRollSlide from "./DiceRollSlide/DiceRollSlide"
 import PickTargetSlide from "./PickTargetSlide/PickTargetSlide"
 import PickUpItemSlide from "./PickUpItemSlide"
 import ValidateSlide from "./ValidateSlide/ValidateSlide"
+import ScoreResultSlide from "./score-result/ScoreResultSlide"
 
 const initSlide = {
   id: "actionType",
@@ -36,7 +36,7 @@ const damageLocalizationSlide = {
 
 const getDiceResultSlide = (skillId: SkillId) => ({
   id: "diceResult",
-  renderSlide: (props: SlideProps) => <DiceResultSlide skillId={skillId} {...props} />
+  renderSlide: (props: SlideProps) => <ScoreResultSlide skillId={skillId} {...props} />
 })
 
 const pickTargetSlide = {

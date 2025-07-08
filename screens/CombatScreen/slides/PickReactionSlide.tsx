@@ -1,7 +1,8 @@
-import { useState } from "react"
 import { StyleSheet } from "react-native"
 
 import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-levels"
+import { DODGE_AP_COST, PARRY_AP_COST } from "lib/combat/const/combat-const"
+import { getCurrentRoundId, getParrySkill } from "lib/combat/utils/combat-utils"
 
 import Col from "components/Col"
 import List from "components/List"
@@ -14,34 +15,33 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import HealthFigure from "components/draws/HealthFigure/HealthFigure"
 import { useCharacter } from "contexts/CharacterContext"
+import { useCombat } from "providers/CombatProvider"
+import { useReactionApi, useReactionForm } from "providers/ReactionProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
 
-import ApInfo from "./ActionTypeSlide/info/ApInfo"
 import NextButton from "./NextButton"
+import PlayButton from "./PlayButton"
 
 const styles = StyleSheet.create({
   score: {
     fontSize: 20
+  },
+  prevScore: {
+    color: colors.yellow
   },
   centeredSection: {
     justifyContent: "center",
     alignItems: "center"
   },
   selectable: {
-    padding: 20
+    padding: 20,
+    borderColor: colors.terColor
   },
   selected: {
     borderColor: colors.secColor
   }
 })
-
-// opposition slides
-// recap () (HP, AP, PHY / CàC)
-// => OUI / NON
-// => SkillScore
-// => DiceRoll
-// => DiceResult
 
 const reactionsMap = {
   none: { id: "none", label: "Aucune", apCost: 0 },
@@ -51,25 +51,56 @@ const reactionsMap = {
 const reactions = Object.values(reactionsMap)
 
 export default function PickReactionSlide({ scrollNext }: SlideProps) {
-  const useCases = useGetUseCases()
-  const { combat } = useCombat()
+  const { combat, players, npcs } = useCombat()
+  const contenders = { ...players, ...npcs }
+  const roundId = getCurrentRoundId(combat)
   const char = useCharacter()
-  const { skills, equipedObjects, knowledgesRecord, status, charId } = char
+  const { charId, skills, equipedObjects, knowledgesRecord, status, secAttr } = char
 
-  const [selectedReaction, setReaction] = useState<keyof typeof reactionsMap>("none")
+  const form = useReactionForm()
+  const { reaction } = form
+  const { setReactionForm, submit } = useReactionApi()
+
+  const armorClassBonus = contenders?.[charId]?.combatData?.acBonusRecord?.[roundId] ?? 0
+  const actionArmorClass = secAttr.curr.armorClass + armorClassBonus
+
+  const actionBonus = contenders?.[charId]?.combatData?.actionBonus ?? 0
 
   const dodgeKBonus = knowledgeLevels.find(el => el.id === knowledgesRecord.kDodge)?.bonus ?? 0
-  const parryKBonus = knowledgeLevels.find(el => el.id === knowledgesRecord.kParry)?.bonus ?? 0
-
   const dodgeScore = skills.curr.physical + dodgeKBonus
-  const weaponSkill = equipedObjects.weapons[0].data.skillId
-  const parryScore = skills.curr[weaponSkill] + parryKBonus
 
-  const { apCost } = reactionsMap[selectedReaction]
+  const weaponSkill = equipedObjects.weapons[0].data.skillId
+  const parryKBonus = knowledgeLevels.find(el => el.id === knowledgesRecord.kParry)?.bonus ?? 0
+  const parrySkill = getParrySkill(weaponSkill)
+  const parryScore = skills.curr[parrySkill] + parryKBonus
+
+  const { apCost } = reactionsMap[reaction]
   const leftAp = status.currAp - apCost
+
+  const onSetReaction = (newReaction: keyof typeof reactionsMap) => {
+    let skillScore = 0
+    let skillId
+    if (newReaction === "parry" || newReaction === "dodge") {
+      skillScore = newReaction === "parry" ? parryScore : dodgeScore
+      skillId = newReaction === "parry" ? parrySkill : "physical"
+    }
+    setReactionForm({
+      reaction: newReaction,
+      apCost: reactionsMap[newReaction].apCost,
+      armorClass: actionArmorClass,
+      skillScore,
+      skillId
+    })
+  }
 
   const onPressNext = async () => {
     if (!scrollNext) throw new Error("scroll fn not provided")
+    if (!combat) throw new Error("could not find combat")
+    if (leftAp < 0) throw new Error("No enough AP")
+    if (reaction === "none") {
+      submit(form, combat)
+      return
+    }
     scrollNext()
   }
 
@@ -89,7 +120,13 @@ export default function PickReactionSlide({ scrollNext }: SlideProps) {
             contentContainerStyle={{ alignItems: "center" }}
             title="parade"
           >
-            <Txt style={styles.score}>{parryScore}</Txt>
+            {actionBonus !== 0 ? (
+              <Txt style={styles.score}>
+                {parryScore} + {actionBonus}
+              </Txt>
+            ) : (
+              <Txt style={styles.score}>{parryScore}</Txt>
+            )}
           </Section>
           <Spacer x={layout.globalPadding} />
           <Section
@@ -97,7 +134,13 @@ export default function PickReactionSlide({ scrollNext }: SlideProps) {
             contentContainerStyle={{ alignItems: "center" }}
             title="esquive"
           >
-            <Txt style={styles.score}>{dodgeScore}</Txt>
+            {actionBonus !== 0 ? (
+              <Txt style={styles.score}>
+                {dodgeScore} + {actionBonus}
+              </Txt>
+            ) : (
+              <Txt style={styles.score}>{dodgeScore}</Txt>
+            )}
           </Section>
         </Row>
 
@@ -111,13 +154,13 @@ export default function PickReactionSlide({ scrollNext }: SlideProps) {
               horizontal
               data={reactions}
               keyExtractor={e => e.label}
-              style={{ alignItems: "center" }}
+              style={{ justifyContent: "space-around", flex: 1 }}
               renderItem={({ item }) => {
-                const isSelected = selectedReaction === item.id
+                const isSelected = reaction === item.id
                 return (
                   <Selectable
                     isSelected={isSelected}
-                    onPress={() => setReaction(item.id)}
+                    onPress={() => onSetReaction(item.id)}
                     style={[styles.selectable, isSelected && styles.selected]}
                   >
                     <Txt style={styles.score}>{item.label}</Txt>
@@ -138,8 +181,15 @@ export default function PickReactionSlide({ scrollNext }: SlideProps) {
 
         <Spacer y={layout.globalPadding} />
 
-        <Section title="valider" contentContainerStyle={styles.centeredSection}>
-          <NextButton size={45} onPress={onPressNext} disabled={leftAp < 0} />
+        <Section
+          title={reaction === "none" ? "valider" : "suivant"}
+          contentContainerStyle={styles.centeredSection}
+        >
+          {reaction === "none" ? (
+            <PlayButton size={45} onPress={onPressNext} disabled={leftAp < 0} />
+          ) : (
+            <NextButton size={45} onPress={onPressNext} disabled={leftAp < 0} />
+          )}
         </Section>
       </Col>
     </DrawerSlide>

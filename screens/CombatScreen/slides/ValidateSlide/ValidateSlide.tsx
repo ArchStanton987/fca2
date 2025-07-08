@@ -13,7 +13,7 @@ import { useCombat } from "providers/CombatProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 
-import AwaitGmSlide from "../AwaitGmSlide"
+import AwaitGmSlide from "../wait-slides/AwaitGmSlide"
 
 const styles = StyleSheet.create({
   cta: {

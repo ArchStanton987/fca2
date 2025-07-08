@@ -1,5 +1,3 @@
-import { StyleSheet } from "react-native"
-
 import skillsMap from "lib/character/abilities/skills/skills"
 import { SkillId } from "lib/character/abilities/skills/skills.types"
 import { limbsMap } from "lib/character/health/health"
@@ -19,81 +17,19 @@ import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
-import colors from "styles/colors"
 import layout from "styles/layout"
 
-import AwaitGmSlide from "./AwaitGmSlide"
-import NextButton from "./NextButton"
-import SlideError, { slideErrors } from "./SlideError"
-
-const styles = StyleSheet.create({
-  centeredSection: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  scoreContainer: {
-    alignItems: "center"
-  },
-  score: {
-    fontSize: 35
-  },
-  finalScore: {
-    fontSize: 45
-  },
-  scoreDetailRow: {
-    justifyContent: "center",
-    alignItems: "flex-end"
-  },
-  outcome: {
-    textAlign: "center"
-  },
-  critSuccess: {
-    color: colors.difficulty.veryEasy
-  },
-  critFail: {
-    color: colors.difficulty.veryHard
-  },
-  success: {
-    color: colors.difficulty.easy
-  },
-  fail: {
-    color: colors.difficulty.hard
-  }
-})
-
-function Outcome({
-  isCritSuccess,
-  isCritFail,
-  finalScore,
-  isCritHit
-}: {
-  finalScore: number
-  isCritSuccess: boolean
-  isCritFail: boolean
-  isCritHit: boolean
-}) {
-  if (isCritSuccess) {
-    return <Txt style={[styles.outcome, styles.critSuccess]}>Réussite critique !</Txt>
-  }
-  if (isCritHit) {
-    return <Txt style={[styles.outcome, styles.critSuccess]}>Coup critique !</Txt>
-  }
-  if (isCritFail) {
-    return <Txt style={[styles.outcome, styles.critFail]}>Échec critique !</Txt>
-  }
-  return (
-    <Txt style={[styles.outcome, finalScore > 0 ? styles.success : styles.fail]}>
-      {finalScore > 0 ? "Réussite !" : "Échec"}
-    </Txt>
-  )
-}
+import NextButton from "../NextButton"
+import SlideError, { slideErrors } from "../SlideError"
+import AwaitGmSlide from "../wait-slides/AwaitGmSlide"
+import ActionOutcome from "./ActionOutcome"
+import styles from "./ScoreResultSlide.styles"
 
 type DiceResultSlideProps = SlideProps & {
   skillId: SkillId
 }
 
-export default function DiceResultSlide({ skillId, scrollNext }: DiceResultSlideProps) {
+export default function ScoreResultSlide({ skillId, scrollNext }: DiceResultSlideProps) {
   const useCases = useGetUseCases()
   const char = useCharacter()
   const { meta, charId, secAttr, special } = char
@@ -152,7 +88,6 @@ export default function DiceResultSlide({ skillId, scrollNext }: DiceResultSlide
       Toast.show({ type: "custom", text1: "Action réalisée !" })
       reset()
     } catch (error) {
-      console.log("error", error)
       Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement de l'action" })
     }
   }
@@ -233,7 +168,7 @@ export default function DiceResultSlide({ skillId, scrollNext }: DiceResultSlide
       <Spacer x={layout.globalPadding} />
       <Col style={{ width: 100 }}>
         <Section style={{ flex: 1 }} contentContainerStyle={styles.centeredSection}>
-          <Outcome
+          <ActionOutcome
             isCritFail={isCritFail}
             isCritSuccess={isDefaultCritSuccess}
             isCritHit={isCritHit}

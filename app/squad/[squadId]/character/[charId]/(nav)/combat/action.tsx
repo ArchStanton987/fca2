@@ -1,15 +1,15 @@
-import { useRef } from "react"
-import { ScrollView, useWindowDimensions } from "react-native"
+import { ScrollView } from "react-native"
 
-import { useLocalSearchParams } from "expo-router"
+import { Redirect, useLocalSearchParams } from "expo-router"
 
 import { getInitiativePrompts, getPlayingOrder } from "lib/combat/utils/combat-utils"
 
 import DrawerPage from "components/DrawerPage"
 import List from "components/List"
-import { getSlideWidth } from "components/Slides/slide.utils"
+import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
+import useScrollToSlide from "hooks/useScrollToSlide"
 import { useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
 import ActionUnavailableScreen from "screens/CombatScreen/ActionUnavailableScreen"
@@ -49,6 +49,9 @@ export default function ActionScreen() {
   const isPlaying = playingId === charId
 
   if (!isPlaying) return <ActionUnavailableScreen />
+
+  const isReaction = false
+  if (isReaction) return <Redirect href={{ pathname: routes.combat.reaction }} />
 
   return (
     <DrawerPage>

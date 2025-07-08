@@ -6,7 +6,8 @@ export const slideErrors = {
   noCombatError: "Aucun combat en cours.",
   noItemError: "Erreur lors de la sélection de l'objet.",
   noConsumableError: "L'objet n'est pas un consommable.",
-  noDiceRollError: "Erreur : pas de lancer de dés."
+  noDiceRollError: "Erreur : pas de lancer de dés.",
+  noReactionSkill: "Erreur : pas compétence associée à la réaction"
 }
 
 export default function SlideError({ error }: { error: string }) {

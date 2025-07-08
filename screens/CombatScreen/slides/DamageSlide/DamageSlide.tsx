@@ -1,6 +1,8 @@
+import { useState } from "react"
 import { StyleSheet } from "react-native"
 
 import Character from "lib/character/Character"
+import { getActionId, getCurrentRoundId } from "lib/combat/utils/combat-utils"
 import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 
 import Col from "components/Col"
@@ -22,6 +24,8 @@ import layout from "styles/layout"
 import PlayButton from "../PlayButton"
 import SlideError, { slideErrors } from "../SlideError"
 import WeaponInfo from "../WeaponInfo"
+import VisualizeReactionSlide from "../score-result/VisualizeReactionSlide"
+import AwaitReactionSlide from "../wait-slides/AwaitReactionSlide"
 
 const styles = StyleSheet.create({
   score: {
@@ -48,10 +52,16 @@ export default function DamageSlide({ scrollNext }: DamageSlideProps) {
   const { actionType, actionSubtype, itemDbKey } = form
   const { setForm } = useActionApi()
 
+  const [isReactionResultVisible, setIsReactionResultVisible] = useState(() => true)
+
   const { scoreStr, onPressKeypad } = useNumPad(form.rawDamage?.toString(), 3)
   const isScoreValid =
     (scoreStr.length > 0 && scoreStr.length < 4) || typeof form.rawDamage === "number"
 
+  const roundId = getCurrentRoundId(combat)
+  const actionId = getActionId(combat)
+  const action = combat?.rounds[roundId][actionId]
+  if (!combat || !action) return <SlideError error={slideErrors.noCombatError} />
   if (!itemDbKey) return <SlideError error={slideErrors.noItemError} />
 
   let item
@@ -83,7 +93,7 @@ export default function DamageSlide({ scrollNext }: DamageSlideProps) {
     setForm({ rawDamage: undefined })
   }
 
-  const submit = async () => {
+  const submitDamages = async () => {
     if (combat === null || !scrollNext) return
     const parsedScore = form?.rawDamage ?? parseInt(scoreStr, 10)
     if (!isScoreValid || Number.isNaN(parsedScore)) throw new Error("invalid score")
@@ -91,9 +101,28 @@ export default function DamageSlide({ scrollNext }: DamageSlideProps) {
     await useCases.combat.updateAction({ combat, payload })
     setForm({ rawDamage: parsedScore, damageType })
     scrollNext()
-    console.log("here")
+  }
+  const submitNoDamages = async () => {
+    if (combat === null || !scrollNext) return
+    const payload = { ...form, rawDamage: 0, damageType }
+    await useCases.combat.updateAction({ combat, payload })
+    setForm({ rawDamage: 0, damageType })
+    scrollNext()
   }
 
+  // AWAIT REACTION (loading)
+  if (action.oppositionRoll === undefined) return <AwaitReactionSlide />
+
+  // SEE REACTION
+  if (action.oppositionRoll !== false && isReactionResultVisible)
+    return (
+      <VisualizeReactionSlide
+        dismiss={() => setIsReactionResultVisible(false)}
+        skipDamage={() => submitNoDamages()}
+      />
+    )
+
+  // NO SUCCESSFUL REACTION
   return (
     <DrawerSlide>
       <Section title="score de dégâts" contentContainerStyle={{ flex: 1, height: "100%" }}>
@@ -131,7 +160,7 @@ export default function DamageSlide({ scrollNext }: DamageSlideProps) {
           <PlayButton
             onLongPress={() => resetField()}
             disabled={!isScoreValid}
-            onPress={() => submit()}
+            onPress={() => submitDamages()}
           />
         </Section>
       </Col>
