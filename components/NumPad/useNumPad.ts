@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-export default function useNumPad(initValue: string = "", maxLength: number = 2) {
+export default function useNumPad(initValue: string = "", maxLength: number = 3) {
   const [scoreStr, setScore] = useState(initValue)
 
   const onPressKeypad = (keyValue: string) => {
