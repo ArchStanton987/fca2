@@ -44,11 +44,16 @@ export default function ScoreResultSlide({ skillId, scrollNext }: DiceResultSlid
 
   if (!combat) return <SlideError error={slideErrors.noCombatError} />
 
-  const roll = combat.rounds?.[roundId]?.[actionId]?.roll
+  const action = combat.rounds?.[roundId]?.[actionId]
+  const roll = action?.roll
 
   if (roll === undefined) return <AwaitGmSlide messageCase="difficulty" />
   if (roll === false) return <SlideError error={slideErrors.noDiceRollError} />
 
+  let aimMalus = 0
+  if (aimZone) {
+    aimMalus = limbsMap[aimZone].aimBonus
+  }
   const { actorDiceScore = 0, actorSkillScore = 0, difficultyModifier = 0 } = roll ?? {}
   const contenderType = meta.isNpc ? "npcs" : "players"
   const actionBonus = combat[contenderType][charId]?.actionBonus ?? 0
@@ -67,7 +72,8 @@ export default function ScoreResultSlide({ skillId, scrollNext }: DiceResultSlid
     const bonusAc = contenders?.[targetId]?.combatData?.acBonusRecord?.[roundId] ?? 0
     targetAc += bonusAc
   }
-  const score = actorSkillScore - actorDiceScore + actionBonus
+  const sumBonusMalus = actionBonus - aimMalus
+  const score = actorSkillScore - actorDiceScore + sumBonusMalus
   const finalScore = score - targetAc - difficultyModifier
   const isCritHit = actorDiceScore <= withAimCritChance
   const isCrit = isCritHit || isDefaultCritSuccess
@@ -117,7 +123,7 @@ export default function ScoreResultSlide({ skillId, scrollNext }: DiceResultSlid
           <Spacer x={10} />
           <Col style={styles.scoreContainer}>
             <Txt>Bonus / Malus</Txt>
-            <Txt style={styles.score}>{actionBonus}</Txt>
+            <Txt style={styles.score}>{sumBonusMalus}</Txt>
           </Col>
           <Spacer x={10} />
           <Txt style={styles.score}>=</Txt>

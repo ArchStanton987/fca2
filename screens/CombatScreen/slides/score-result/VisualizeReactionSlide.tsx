@@ -31,7 +31,7 @@ export default function VisualizeReactionSlide({
   const { actorScores, opponentScores } = scores
   const { actorFinalScore, actorReactionScore } = actorScores
   const { opponentScore } = opponentScores
-  const isSuccess = actorFinalScore > 0
+  const isSuccess = actorReactionScore > 0
 
   const onPressNext = () => {
     if (isSuccess) {

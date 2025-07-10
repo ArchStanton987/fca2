@@ -55,8 +55,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end"
   },
   playing: {
-    borderColor: colors.secColor,
-    backgroundColor: colors.terColor
+    borderColor: colors.secColor
   }
 })
 
