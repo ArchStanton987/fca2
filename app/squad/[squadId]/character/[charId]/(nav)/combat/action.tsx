@@ -3,6 +3,8 @@ import { ScrollView } from "react-native"
 import { Redirect, useLocalSearchParams } from "expo-router"
 
 import {
+  getActionId,
+  getCurrentRoundId,
   getInitiativePrompts,
   getPlayerCanReact,
   getPlayingOrder
@@ -29,6 +31,9 @@ export default function ActionScreen() {
   const inv = useInventory()
   const { players, npcs, combat } = useCombat()
 
+  const roundId = getCurrentRoundId(combat)
+  const actionId = getActionId(combat)
+
   const { scrollRef, scrollTo, slideWidth } = useScrollToSlide()
 
   const form = useActionForm()
@@ -52,13 +57,13 @@ export default function ActionScreen() {
   const playingId = combat.currActorId || defaultPlayingId
   const isPlaying = playingId === charId
 
-  if (!isPlaying) return <ActionUnavailableScreen />
-
-  const canReact = getPlayerCanReact(charId, combat)
+  const canReact = getPlayerCanReact(char, combat)
   if (canReact) return <Redirect href={{ pathname: routes.combat.reaction }} />
 
+  if (!isPlaying) return <ActionUnavailableScreen />
+
   return (
-    <DrawerPage>
+    <DrawerPage key={`${roundId}-${actionId}`}>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}

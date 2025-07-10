@@ -8,6 +8,8 @@ export const species = {
   ghoul: "Goule"
 }
 
+export const withDodgeSpecies: SpeciesId[] = ["human", "mutie", "ghoul"]
+
 export type SpeciesId = keyof typeof species
 
 export type DbCharMeta = {

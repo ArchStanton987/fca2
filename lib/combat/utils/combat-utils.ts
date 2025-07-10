@@ -5,6 +5,7 @@ import { getKnowledgesBonus } from "lib/character/abilities/knowledges/knowledge
 import skillsMap from "lib/character/abilities/skills/skills"
 import { Skill, SkillId } from "lib/character/abilities/skills/skills.types"
 import { BodyPart, LimbsHp } from "lib/character/health/health-types"
+import { withDodgeSpecies } from "lib/character/meta/meta"
 import Inventory from "lib/objects/Inventory"
 import { ClothingData } from "lib/objects/data/clothings/clothings.types"
 import { Consumable } from "lib/objects/data/consumables/consumables.types"
@@ -313,13 +314,15 @@ export const getActionScores = (combat: Combat | null, contenders: Record<string
   return { actorScores: { ...actorScores, actorReactionScore }, opponentScores }
 }
 
-export const getPlayerCanReact = (charId: string, combat: Combat) => {
+export const getPlayerCanReact = (char: Playable, combat: Combat) => {
   const roundId = getCurrentRoundId(combat)
   const actionId = getActionId(combat)
   const action = combat.rounds[roundId][actionId]
   if (!action) return false
 
-  const playerIsTarget = action.targetId === charId
+  if (!withDodgeSpecies.includes(char.meta.speciesId)) return false
+
+  const playerIsTarget = action.targetId === char.charId
   if (!playerIsTarget) return false
 
   const { damageLocalization, oppositionRoll } = action

@@ -2,7 +2,7 @@ import { useState } from "react"
 import { StyleSheet } from "react-native"
 
 import Character from "lib/character/Character"
-import { getActionId, getCurrentRoundId } from "lib/combat/utils/combat-utils"
+import { getActionId, getCurrentRoundId, getPlayerCanReact } from "lib/combat/utils/combat-utils"
 import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 
 import Col from "components/Col"
@@ -44,7 +44,8 @@ type DamageSlideProps = SlideProps & {}
 
 export default function DamageSlide({ scrollNext }: DamageSlideProps) {
   const useCases = useGetUseCases()
-  const { combat } = useCombat()
+  const { combat, players, npcs } = useCombat()
+  const contenders = { ...players, ...npcs }
   const char = useCharacter()
   const inv = useInventory()
   const { clothingsRecord, consumablesRecord, miscObjectsRecord } = inv
@@ -111,10 +112,15 @@ export default function DamageSlide({ scrollNext }: DamageSlideProps) {
   }
 
   // AWAIT REACTION (loading)
-  if (action.oppositionRoll === undefined) return <AwaitReactionSlide />
+  let opponentCanReact = false
+  const opponent = action.targetId ? contenders[action?.targetId].char : null
+  if (opponent) {
+    opponentCanReact = getPlayerCanReact(opponent, combat)
+  }
+  if (opponentCanReact && action.oppositionRoll === undefined) return <AwaitReactionSlide />
 
   // SEE REACTION
-  if (action.oppositionRoll !== false && isReactionResultVisible)
+  if (!!action.oppositionRoll && isReactionResultVisible)
     return (
       <VisualizeReactionSlide
         dismiss={() => setIsReactionResultVisible(false)}

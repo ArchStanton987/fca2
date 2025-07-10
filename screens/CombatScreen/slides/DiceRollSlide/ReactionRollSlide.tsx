@@ -23,15 +23,15 @@ export default function ReactionRollSlide({ scrollNext }: SlideProps) {
   const initValue = diceRoll === 0 ? "" : diceRoll.toString()
 
   const { scoreStr, onPressKeypad } = useNumPad(initValue)
-  const skillLabel = skillId ? skillsMap[skillId].label : "Compétence"
+  const skillLabel = skillId ? skillsMap[skillId].short : "Comp."
 
   const diceScore = parseInt(scoreStr, 10)
   const isValid = scoreStr.length > 0 && !Number.isNaN(diceScore)
 
   const onPressConfirm = async () => {
-    if (!scrollNext || isValid || !combat) return
+    if (!scrollNext || !isValid || !combat) return
     setReactionForm({ diceRoll: diceScore })
-    await submit({ ...form, diceRoll }, combat)
+    await submit({ ...form, diceRoll: diceScore }, combat)
     scrollNext()
   }
 
