@@ -9,7 +9,13 @@ import repositoryMap from "lib/shared/db/get-repository"
 
 import Combat from "../Combat"
 import { Action, PlayerCombatData } from "../combats.types"
-import { getActivePlayersWithAp, getIsActionEndingRound } from "../utils/combat-utils"
+import {
+  getActionId,
+  getActivePlayersWithAp,
+  getCurrentRoundId,
+  getIsActionEndingRound
+} from "../utils/combat-utils"
+import applyDamageEntries from "./apply-damage-entries"
 import itemAction from "./item-action"
 import prepareAction from "./prepare-action"
 import saveAction from "./save-action"
@@ -33,6 +39,10 @@ export default function doCombatAction(
   return async ({ action, combat, contenders, item }: CombatActionParams) => {
     const { apCost = 0, actorId, actionType, actionSubtype } = action
     const { charId, status, meta } = contenders[actorId].char
+
+    const roundId = getCurrentRoundId(combat)
+    const actionId = getActionId(combat)
+    const { healthChangeEntries, oppositionRoll } = combat.rounds[roundId][actionId]
 
     if (apCost > status.currAp) throw new Error("Not enough AP to perform this action")
 
@@ -81,6 +91,23 @@ export default function doCombatAction(
 
       default:
         throw new Error(`Unknown action type: ${actionType}`)
+    }
+
+    // handle ap cost for opposition roll
+    if (oppositionRoll) {
+      const { opponentId, opponentApCost } = oppositionRoll
+      const opCharType = contenders[opponentId].char.meta.isNpc ? "npcs" : "characters"
+      const newAp = contenders[opponentId].char.secAttr.curr.actionPoints - opponentApCost
+      promises.push(
+        statusRepo.patch({ charId: opponentId, charType: opCharType }, { currAp: newAp })
+      )
+    }
+
+    // apply damage entries
+    if (healthChangeEntries) {
+      promises.push(
+        applyDamageEntries(dbType)({ combat, contenders, damageEntries: healthChangeEntries })
+      )
     }
 
     // save action in combat

@@ -28,6 +28,7 @@ export default function applyDamageEntries(dbType: keyof typeof repositoryMap = 
       if (entryType === "hp") {
         const { localization, damage } = entry
         const currHp = char.status[localization]
+        // TODO: FIX HP SYSTEM
         const newHp = currHp - damage < 0 ? 0 : currHp - damage
         const { meta, health } = char
         const charType = meta.isNpc ? "npcs" : "characters"

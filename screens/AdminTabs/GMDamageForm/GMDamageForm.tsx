@@ -76,9 +76,6 @@ export default function GMDamageForm({ rawDamage, realDamage, damageType }: GMDa
       return
     }
     try {
-      const hasEntries = Object.keys(form).length === 0
-      const damageEntries = hasEntries ? form : false
-      await useCases.combat.applyDamageEntries({ combat, contenders, damageEntries })
       await useCases.combat.updateAction({ combat, payload: { healthChangeEntries: form } })
       Toast.show({ type: "custom", text1: "Dégâts enregistrés !" })
       reset()
