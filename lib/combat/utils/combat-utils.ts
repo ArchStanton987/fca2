@@ -16,7 +16,7 @@ import { isKeyOf } from "utils/ts-utils"
 import Combat from "../Combat"
 import { Action, PlayerCombatData } from "../combats.types"
 import actions from "../const/actions"
-import { DEFAULT_INITIATIVE } from "../const/combat-const"
+import { DEFAULT_INITIATIVE, DODGE_AP_COST, PARRY_AP_COST } from "../const/combat-const"
 
 interface CombatEntry {
   rounds?: Record<string, Record<string, Action>>
@@ -324,6 +324,11 @@ export const getPlayerCanReact = (char: Playable, combat: Combat) => {
 
   const playerIsTarget = action.targetId === char.charId
   if (!playerIsTarget) return false
+
+  const { currAp } = char.status
+  const reactionActionsApCost = [DODGE_AP_COST, PARRY_AP_COST]
+  const hasEnoughAp = reactionActionsApCost.some(cost => currAp >= cost)
+  if (!hasEnoughAp) return false
 
   const { damageLocalization, oppositionRoll } = action
   if (!!damageLocalization && oppositionRoll === undefined) return true
