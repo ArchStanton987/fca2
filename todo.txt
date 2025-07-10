@@ -1,3 +1,10 @@
+COMBAT :
+- [MED] affiche slide roll dégâts même lorsque esquive réussie
+- [LOW] lorsque combined action et use TOUS PA, saute un tour ?
+- [LOW] pas MAJ fenètr combat lorsque tour du joueur apparaît (cas combined action ??)
+
+
+
 BUG peut pas consommer objet créé. Peut pas porter clothing créé ???
 CHECK SCROLL LORS CHOIX ACTIONS
 
