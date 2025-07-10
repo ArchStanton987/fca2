@@ -105,7 +105,7 @@ export default function DamageSlide({ scrollNext }: DamageSlideProps) {
   }
   const submitNoDamages = async () => {
     if (combat === null || !scrollNext) return
-    const payload = { ...form, rawDamage: 0, damageType }
+    const payload = { ...form, rawDamage: 0, damageType, healthEntriesChange: false }
     await useCases.combat.updateAction({ combat, payload })
     setForm({ rawDamage: 0, damageType })
     scrollNext()

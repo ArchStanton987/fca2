@@ -56,7 +56,7 @@ export type Action = {
   apCost?: number
   roll?: SimpleRoll | false
   oppositionRoll?: OppositionRoll | false
-  healthChangeEntries?: DamageEntries
+  healthChangeEntries?: DamageEntries | false
   itemId?: ItemId
   itemDbKey?: string
   targetId?: string
