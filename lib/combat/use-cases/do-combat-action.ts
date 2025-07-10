@@ -42,7 +42,7 @@ export default function doCombatAction(
 
     const roundId = getCurrentRoundId(combat)
     const actionId = getActionId(combat)
-    const { healthChangeEntries, oppositionRoll } = combat.rounds[roundId][actionId]
+    const storedAction = combat.rounds[roundId][actionId]
 
     if (apCost > status.currAp) throw new Error("Not enough AP to perform this action")
 
@@ -94,8 +94,8 @@ export default function doCombatAction(
     }
 
     // handle ap cost for opposition roll
-    if (oppositionRoll) {
-      const { opponentId, opponentApCost } = oppositionRoll
+    if (storedAction?.oppositionRoll) {
+      const { opponentId, opponentApCost } = storedAction.oppositionRoll
       const opCharType = contenders[opponentId].char.meta.isNpc ? "npcs" : "characters"
       const newAp = contenders[opponentId].char.secAttr.curr.actionPoints - opponentApCost
       promises.push(
@@ -104,10 +104,9 @@ export default function doCombatAction(
     }
 
     // apply damage entries
-    if (healthChangeEntries) {
-      promises.push(
-        applyDamageEntries(dbType)({ combat, contenders, damageEntries: healthChangeEntries })
-      )
+    if (storedAction?.healthChangeEntries) {
+      const damageEntries = storedAction.healthChangeEntries
+      promises.push(applyDamageEntries(dbType)({ combat, contenders, damageEntries }))
     }
 
     // save action in combat
