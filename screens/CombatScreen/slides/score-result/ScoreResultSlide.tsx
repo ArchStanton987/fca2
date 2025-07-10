@@ -160,7 +160,7 @@ export default function ScoreResultSlide({ skillId, scrollNext }: DiceResultSlid
           <Spacer x={10} />
           <Col style={styles.scoreContainer}>
             <Txt>Score final</Txt>
-            <Txt style={styles.finalScore}>{finalScore}</Txt>
+            <Txt style={styles.score}>{finalScore}</Txt>
           </Col>
         </Row>
       </Section>

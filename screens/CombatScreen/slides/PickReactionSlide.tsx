@@ -116,7 +116,7 @@ export default function PickReactionSlide({ scrollNext }: SlideProps) {
           <Section style={{ flex: 1 }} contentContainerStyle={{ alignItems: "center" }} title="PA">
             <Row>
               <Txt style={[styles.score, apCost > 0 && styles.prevScore]}>{leftAp}</Txt>
-              <Txt style={styles.score}> / {status.currAp}</Txt>
+              <Txt style={styles.score}> / {secAttr.curr.actionPoints}</Txt>
             </Row>
           </Section>
           <Spacer x={layout.globalPadding} />

@@ -43,8 +43,12 @@ export default function VisualizeReactionSlide({
 
   return (
     <DrawerSlide>
-      <Section title="résultats" style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
-        <Row style={styles.scoreDetailRow}>
+      <Section
+        title="scores réaction adversaire"
+        style={{ flex: 1 }}
+        contentContainerStyle={{ flex: 1, justifyContent: "center" }}
+      >
+        <Row style={{ alignItems: "flex-end", justifyContent: "center" }}>
           <Col style={styles.scoreContainer}>
             <Txt>Votre score</Txt>
             <Txt style={styles.score}>{actorFinalScore}</Txt>
@@ -66,8 +70,14 @@ export default function VisualizeReactionSlide({
         </Row>
       </Section>
 
+      <Spacer x={layout.globalPadding} />
+
       <Col>
-        <Section style={{ flex: 1 }} contentContainerStyle={styles.centeredSection}>
+        <Section
+          title="résultat"
+          style={{ flex: 1 }}
+          contentContainerStyle={styles.centeredSection}
+        >
           <ActionOutcome
             isCritFail={false}
             isCritSuccess={false}
@@ -77,7 +87,7 @@ export default function VisualizeReactionSlide({
         </Section>
 
         <Spacer y={layout.globalPadding} />
-        <Section title="continuer">
+        <Section title="continuer" contentContainerStyle={{ alignItems: "center" }}>
           <NextButton onPress={() => onPressNext()} />
         </Section>
       </Col>

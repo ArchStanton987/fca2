@@ -50,7 +50,7 @@ export default function ReactionScoreResultSlide() {
 
   const score = skillScore - diceRoll + opponnentActionBonus
   const isCritFail = diceRoll >= getCritFailureThreshold(special.curr)
-  const isCrit = score < secAttr.curr.critChance
+  const isCrit = diceRoll < secAttr.curr.critChance
   const finalScore = score - actorFinalScore
   const isSuccess = finalScore >= 0
 
@@ -61,7 +61,7 @@ export default function ReactionScoreResultSlide() {
 
   return (
     <DrawerSlide>
-      <Section title="résultats" style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
+      <Section title="scores" style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
         <Row style={styles.scoreDetailRow}>
           <Col style={styles.scoreContainer}>
             <Txt>Compétence</Txt>
@@ -116,14 +116,18 @@ export default function ReactionScoreResultSlide() {
           <Spacer x={10} />
           <Col style={styles.scoreContainer}>
             <Txt>Score final</Txt>
-            <Txt style={styles.finalScore}>{finalScore}</Txt>
+            <Txt style={styles.score}>{finalScore}</Txt>
           </Col>
         </Row>
       </Section>
 
       <Spacer x={layout.globalPadding} />
       <Col style={{ width: 100 }}>
-        <Section style={{ flex: 1 }} contentContainerStyle={styles.centeredSection}>
+        <Section
+          title="résultat"
+          style={{ flex: 1 }}
+          contentContainerStyle={styles.centeredSection}
+        >
           <ActionOutcome
             isCritFail={!isSuccess && isCritFail}
             isCritSuccess={isSuccess && isCrit}

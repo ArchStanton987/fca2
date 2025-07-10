@@ -14,9 +14,6 @@ const styles = StyleSheet.create({
   score: {
     fontSize: 35
   },
-  finalScore: {
-    fontSize: 45
-  },
   scoreDetailRow: {
     justifyContent: "center",
     alignItems: "flex-end"
