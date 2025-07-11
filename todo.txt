@@ -1,7 +1,10 @@
 COMBAT :
+- [HIGH] garder index de la slide lorsque revient dessus
+- [MED] système HP / limbs HP
+- [MED] assignation upSkills pour perso générés (>100)
 - [MED] affiche slide roll dégâts même lorsque esquive réussie
 - [LOW] lorsque combined action et use TOUS PA, saute un tour ?
-- [LOW] pas MAJ fenètr combat lorsque tour du joueur apparaît (cas combined action ??)
+- [LOW] pas MAJ fenètre combat lorsque tour du joueur apparaît (cas combined action ??)
 
 
 
