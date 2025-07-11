@@ -44,7 +44,7 @@ export default function ActionScreen() {
   }
   const slides = getSlides(actionType, actionSubtype, weapon)
 
-  if (!combat) return <SlideError error={slideErrors.noCombatError} />
+  if (!combat?.id) return <SlideError error={slideErrors.noCombatError} />
 
   const prompts = getInitiativePrompts(charId, players ?? {}, npcs ?? {})
   if (prompts.playerShouldRollInitiative) return <InitiativeScreen />

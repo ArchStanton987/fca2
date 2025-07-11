@@ -317,7 +317,7 @@ export const getActionScores = (combat: Combat | null, contenders: Record<string
 export const getPlayerCanReact = (char: Playable, combat: Combat) => {
   const roundId = getCurrentRoundId(combat)
   const actionId = getActionId(combat)
-  const action = combat.rounds[roundId][actionId]
+  const action = combat.rounds?.[roundId]?.[actionId]
   if (!action) return false
 
   if (!withDodgeSpecies.includes(char.meta.speciesId)) return false
