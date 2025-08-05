@@ -1,4 +1,7 @@
-import { Action, DbCombatEntry, PlayerCombatData } from "./combats.types"
+import { computed, makeObservable, observable } from "mobx"
+
+import Action from "./Action"
+import { DbCombatEntry, PlayerCombatData } from "./combats.types"
 
 export const defaultAction = {
   actionType: "",
@@ -37,13 +40,52 @@ export default class Combat {
       Object.entries(payload.rounds ?? {}).map(([rId, round]) => {
         const roundId = Number(rId)
         const actions = Object.fromEntries(
-          Object.entries(round ?? {}).map(([aId, action]) => {
+          Object.entries(round ?? {}).map(([aId, dbAction]) => {
             const actionId = Number(aId)
-            return [actionId, action as Action]
+            const action = new Action(dbAction)
+            return [actionId, action]
           })
         )
         return [roundId, actions]
       })
     )
+
+    makeObservable(this, {
+      id: observable,
+      squadId: observable,
+      date: observable,
+      location: observable,
+      title: observable,
+      description: observable,
+      currActorId: observable,
+      players: observable,
+      npcs: observable,
+      rounds: observable,
+      //
+      currRoundId: computed,
+      currActionId: computed,
+      currAction: computed
+    })
+  }
+
+  get currRoundId() {
+    const keys = Object.keys(this.rounds ?? {}).map(Number)
+    return keys.length > 0 ? Math.max(...keys) : 1
+  }
+
+  get currActionId() {
+    const roundId = this.currRoundId
+    const roundActions = Object.entries(this.rounds[roundId] ?? {})
+    if (roundActions.length === 0) return 1
+    const action = roundActions.find(([, a]) => !a?.isDone)
+    if (action) {
+      const [actionId] = action
+      return Number(actionId)
+    }
+    return roundActions.length + 1
+  }
+
+  get currAction() {
+    return this.rounds[this.currRoundId][this.currActionId]
   }
 }

@@ -334,3 +334,107 @@ export const getPlayerCanReact = (char: Playable, combat: Combat) => {
   if (!!damageLocalization && oppositionRoll === undefined) return true
   return false
 }
+
+const pickActionFields: (keyof Action)[] = [
+  "actionType",
+  "actionSubtype",
+  "actorId",
+  "isCombinedAction"
+]
+
+const getReturnStepFromBasicAction = (action: Partial<Action>) => {
+  if (typeof action.apCost !== "number") return "AWAIT_AP_ASSIGNEMENT"
+}
+
+const getReturnStepFromAttackAction = (action: Partial<Action>) => {
+  if (typeof action.apCost !== "number") return "AWAIT_AP_ASSIGNEMENT"
+  if (!action.targetId) return "AWAIT_PICK_TARGET"
+  if (action.aimZone === undefined) return "AWAIT_AIM"
+  if (action.roll === undefined) return "AWAIT_GM_DIFFICULTY"
+  // with roll
+  if (action.roll !== false) {
+    const { actorDiceScore, actorSkillScore, difficultyModifier } = action.roll
+    if (typeof difficultyModifier !== "number") return "AWAIT_GM_DIFFICULTY"
+    if (typeof actorDiceScore !== "number") return "AWAIT_PLAYER_ROLL"
+    if (typeof actorSkillScore !== "number") return "AWAIT_PLAYER_ROLL"
+  }
+  if (action.isDone) return "AWAIT_NEW_ACTION"
+  if (!action.damageLocalization) return "AWAIT_DAMAGE_LOCALIZATION"
+  if (action.oppositionRoll === undefined) return "AWAIT_REACTION"
+  // with reaction
+  if (action.oppositionRoll !== false) {
+    const {
+      opponentDiceScore,
+      opponentApCost,
+      opponentId,
+      opponentSkillScore,
+      opponentArmorClass
+    } = action.oppositionRoll
+    const isValidReaction =
+      typeof opponentDiceScore === "number" &&
+      opponentDiceScore !== 0 &&
+      typeof opponentApCost === "number" &&
+      typeof opponentId === "string" &&
+      typeof opponentSkillScore === "number" &&
+      opponentSkillScore !== 0 &&
+      typeof opponentArmorClass === "number"
+    if (!isValidReaction) return "AWAIT_REACTION_ROLL"
+  }
+  if (action.rawDamage === undefined) return "AWAIT_DAMAGE_ROLL"
+  if (action.healthChangeEntries === undefined) return "AWAIT_GM_DAMAGE"
+  if (action.isDone === undefined) return "AWAIT_ACTION_VALIDATION"
+  return "UNKNOWN_ATTACK_STEP"
+}
+
+export const getStep = (action: Partial<Action>) => {
+  if (action === undefined) return ""
+  const isDone = !!action?.isDone
+  if (isDone) return "AWAIT_NEW_ACTION"
+  const keys = Object.keys(action)
+  if (!keys.every(k => pickActionFields.includes(k as keyof Action))) {
+    return "AWAIT_PICK_ACTION"
+  }
+  switch (action.actionType) {
+    case "weapon": {
+      if (action.actionSubtype === "reload" || action.actionSubtype === "unload")
+        return getReturnStepFromBasicAction(action)
+      return getReturnStepFromAttackAction(action)
+    }
+    case "movement": {
+      if (typeof action.apCost !== "number") return "AWAIT_AP_ASSIGNEMENT"
+      if (action.roll === undefined) return "AWAIT_GM_DIFFICULTY"
+      // with roll
+      if (action.roll !== false) {
+        const { actorDiceScore, actorSkillScore, difficultyModifier } = action.roll
+        if (typeof difficultyModifier !== "number") return "AWAIT_GM_DIFFICULTY"
+        if (typeof actorDiceScore !== "number") return "AWAIT_PLAYER_ROLL"
+        if (typeof actorSkillScore !== "number") return "AWAIT_PLAYER_ROLL"
+      }
+      if (action.isDone === undefined) return "AWAIT_ACTION_VALIDATION"
+      break
+    }
+    case "item": {
+      if (action.actionSubtype === "throw") return getReturnStepFromAttackAction(action)
+      if (action.actionSubtype === "hit") return getReturnStepFromAttackAction(action)
+      if (action.actionSubtype === "use" || action.actionSubtype === "pickUp") {
+        if (typeof action.apCost !== "number") return "AWAIT_AP_ASSIGNEMENT"
+        if (action.isDone === undefined) return "AWAIT_ACTION_VALIDATION"
+      }
+      break
+    }
+
+    default:
+      throw new Error("unknown action type")
+  }
+  //
+
+  return "UNKNOWN_STEP"
+}
+
+export enum CombatStep {
+  "AWAIT_PICK_ACTION",
+  // prepare, wait
+  // item
+  "AWAIT_AP_ASSIGNEMENT",
+  "AWAIT_ITEM_USAGE"
+}

@@ -1,7 +1,7 @@
 import { DbChar } from "lib/character/Character"
 import { DbEffect } from "lib/character/effects/effects.types"
 import { DbStatus } from "lib/character/status/status.types"
-import { Action, DbCombatEntry, PlayerCombatData } from "lib/combat/combats.types"
+import { DbAction, DbCombatEntry, PlayerCombatData } from "lib/combat/combats.types"
 import { DbNpc } from "lib/npc/npc.types"
 import { DbSquad } from "lib/squad/squad-types"
 
@@ -32,7 +32,7 @@ export type ActionParams = {
   combatId: string
   roundId: number
   id?: number
-  childKey?: keyof Action
+  childKey?: keyof DbAction
 }
 export type NpcParams = { id?: string; childKey?: keyof DbNpc }
 export type CharacterParams = { charType: CharType; id?: string; childKey?: keyof DbChar }

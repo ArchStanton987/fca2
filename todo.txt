@@ -50,17 +50,7 @@ TODO: collectibles UI
 
 TODO: sound
 
-TODO: initiative:
-- récup initiative de tous les autres contenders
-- tant que égalité entre 2 scores => reroll
-- pas la main tant que tout le monde n'a pas un score d'initiative
 
-TODO: combat health change entries
-- changement hp
-- peut modifier combat status
-- peut ajouter (retirer ?) effet
-
-quid combatStatus : "active" | "inactive" | "outOfCombat"
 
 comment récup joueur actif ?
 1. tri caracs

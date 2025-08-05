@@ -8,7 +8,7 @@ import { Weapon } from "lib/objects/data/weapons/weapons.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import Combat from "../Combat"
-import { Action, PlayerCombatData } from "../combats.types"
+import { DbAction, PlayerCombatData } from "../combats.types"
 import {
   getActionId,
   getActivePlayersWithAp,
@@ -24,7 +24,7 @@ import waitAction from "./wait-action"
 import weaponAction from "./weapon-action"
 
 export type CombatActionParams = {
-  action: Action
+  action: DbAction
   combat: Combat
   contenders: Record<string, { char: Playable; combatData: PlayerCombatData }>
   item?: Clothing | Consumable | MiscObject | Weapon
