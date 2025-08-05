@@ -9,23 +9,23 @@ type ItemId = string
 type AimZone = keyof LimbsHp
 
 export default class Action {
-  actionType: string
-  actionSubtype: string
-  actorId: PlayableId
-  isCombinedAction: boolean
-  apCost: number
-  roll: SimpleRoll | false
-  oppositionRoll: OppositionRoll | false
-  healthChangeEntries: DamageEntries | false
-  itemId: ItemId
-  itemDbKey: string
-  targetId: string
-  isSuccess: boolean
-  damageLocalization: keyof LimbsHp
-  aimZone: AimZone | false
-  rawDamage: number
-  damageType: DamageTypeId
-  isDone: boolean
+  actionType?: string
+  actionSubtype?: string
+  actorId?: PlayableId
+  isCombinedAction?: boolean
+  apCost?: number
+  isSuccess?: boolean
+  isDone?: boolean
+  roll?: SimpleRoll | false
+  oppositionRoll?: OppositionRoll | false
+  healthChangeEntries?: DamageEntries | false
+  itemId?: ItemId | false
+  itemDbKey?: string | false
+  targetId?: string | false
+  damageLocalization?: keyof LimbsHp | false
+  aimZone?: AimZone | false
+  rawDamage?: number | false
+  damageType?: DamageTypeId | false
 
   constructor(payload: DbAction) {
     this.actionType = payload.actionType
@@ -74,20 +74,46 @@ export default class Action {
     const { actionType, actionSubtype, isCombinedAction, actorId } = this
     const actionTypeKeys = [actionType, actionSubtype, isCombinedAction, actorId]
     if (actionTypeKeys.some(e => e === undefined)) return "AWAIT_PICK_ACTION"
-
-    const { roll, apCost, isDone } = this
+    const { apCost, roll } = this
     if (typeof apCost !== "number") return "AWAIT_AP_ASSIGNEMENT"
 
-    if (actionSubtype === "aim") {
-    }
+    if (this.targetId === undefined) return "AWAIT_PICK_TARGET"
+    if (this.aimZone === undefined) return "AWAIT_AIM"
 
     if (roll === undefined) return "AWAIT_GM_DIFFICULTY"
+    // with roll
     if (roll !== false) {
       const { actorDiceScore, actorSkillScore, difficultyModifier } = roll
       if (typeof difficultyModifier !== "number") return "AWAIT_GM_DIFFICULTY"
       if (typeof actorDiceScore !== "number") return "AWAIT_PLAYER_ROLL"
       if (typeof actorSkillScore !== "number") return "AWAIT_PLAYER_ROLL"
     }
+    const { damageLocalization, oppositionRoll } = this
+    if (damageLocalization === undefined) return "AWAIT_DAMAGE_LOCALIZATION"
+    if (oppositionRoll === undefined) return "AWAIT_REACTION"
+    // with reaction
+    if (oppositionRoll !== false) {
+      const {
+        opponentDiceScore,
+        opponentApCost,
+        opponentId,
+        opponentSkillScore,
+        opponentArmorClass
+      } = oppositionRoll
+      const isValidReaction =
+        typeof opponentDiceScore === "number" &&
+        opponentDiceScore !== 0 &&
+        typeof opponentApCost === "number" &&
+        typeof opponentId === "string" &&
+        typeof opponentSkillScore === "number" &&
+        opponentSkillScore !== 0 &&
+        typeof opponentArmorClass === "number"
+      if (!isValidReaction) return "AWAIT_REACTION_ROLL"
+    }
+    const { rawDamage, healthChangeEntries, isDone } = this
+    if (rawDamage === undefined) return "AWAIT_DAMAGE_ROLL"
+    if (healthChangeEntries === undefined) return "AWAIT_GM_DAMAGE"
+    if (isDone === undefined) return "AWAIT_ACTION_VALIDATION"
 
     return "UNKNOWN_STEP"
   }

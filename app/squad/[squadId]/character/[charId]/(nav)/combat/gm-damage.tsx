@@ -66,7 +66,11 @@ export default function GMDamage() {
     <DamageFormProvider>
       <DrawerPage>
         {showForm ? (
-          <GMDamageForm realDamage={realDamage} rawDamage={rawDamage} damageType={damageType} />
+          <GMDamageForm
+            realDamage={realDamage}
+            rawDamage={typeof rawDamage === "number" ? rawDamage : undefined}
+            damageType={typeof damageType === "string" ? damageType : undefined}
+          />
         ) : (
           <Txt>Rien à faire pour le moment</Txt>
         )}

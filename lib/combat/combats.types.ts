@@ -61,18 +61,18 @@ export type DbAction = {
   actorId?: CharId
   isCombinedAction?: boolean
   apCost?: number
+  isSuccess?: boolean
+  isDone?: boolean
   roll?: SimpleRoll | false
   oppositionRoll?: OppositionRoll | false
   healthChangeEntries?: DamageEntries | false
-  itemId?: ItemId
-  itemDbKey?: string
-  targetId?: string
-  isSuccess?: boolean
-  damageLocalization?: keyof LimbsHp
+  itemId?: ItemId | false
+  itemDbKey?: string | false
+  targetId?: string | false
+  damageLocalization?: keyof LimbsHp | false
   aimZone?: AimZone | false
-  rawDamage?: number
-  damageType?: DamageTypeId
-  isDone?: boolean
+  rawDamage?: number | false
+  damageType?: DamageTypeId | false
 }
 
 export type WeaponAction = {
