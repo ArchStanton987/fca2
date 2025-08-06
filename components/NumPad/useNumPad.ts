@@ -25,3 +25,22 @@ export default function useNumPad(initValue: string = "", maxLength: number = 3)
 
   return { scoreStr, onPressKeypad, setScore }
 }
+
+export const getNewNumpadValue = (init: string, newValue: string, maxLength = 3) => {
+  switch (newValue) {
+    case "del":
+      if (init.length > 0) {
+        return init.slice(0, -1)
+      }
+      return init
+    case "clear":
+      return ""
+    case newValue.match(/^\d$/)?.[0]:
+      if (init.length < maxLength) {
+        return init + newValue
+      }
+      return init
+    default:
+      throw new Error("Invalid key value")
+  }
+}

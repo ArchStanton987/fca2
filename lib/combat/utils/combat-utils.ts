@@ -11,7 +11,6 @@ import Inventory from "lib/objects/Inventory"
 import { ClothingData } from "lib/objects/data/clothings/clothings.types"
 import { Consumable } from "lib/objects/data/consumables/consumables.types"
 import { DamageTypeId, Weapon } from "lib/objects/data/weapons/weapons.types"
-import { reactionsRecord } from "lib/reaction/reactions.const"
 
 import { isKeyOf } from "utils/ts-utils"
 
@@ -347,28 +346,34 @@ export const getReactionAbilities = (
   const roundId = getCurrentRoundId(combat)
 
   const armorClassBonus = contenders?.[charId]?.combatData?.acBonusRecord?.[roundId] ?? 0
-  const armorClass = secAttr.curr.armorClass + armorClassBonus
 
   const actionBonus = contenders?.[charId]?.combatData?.actionBonus ?? 0
 
   const dodgeKBonus = knowledgeLevels.find(el => el.id === knowledgesRecord.kDodge)?.bonus ?? 0
-  const dodgeScore = skills.curr.physical + dodgeKBonus
 
-  const weaponSkill = equipedObjects.weapons[0].data.skillId
+  const weaponSkillId = equipedObjects.weapons[0].data.skillId
   const parryKBonus = knowledgeLevels.find(el => el.id === knowledgesRecord.kParry)?.bonus ?? 0
-  const parrySkillId = getParrySkill(weaponSkill)
-  const parryScore = skills.curr[parrySkillId] + parryKBonus
+  const parrySkillId = getParrySkill(weaponSkillId)
 
-  // return {
-  //   final: {
-  //     armorClass,
-  //     dodgeScore,
-  //     parryScore
-  //   },
-  //   calc: {
-  //     parryKBonus,
-  //     parrySkill,
-  //     parryScore
-  //   }
-  // }
+  return {
+    armorClass: {
+      curr: secAttr.curr.armorClass,
+      bonus: armorClassBonus,
+      total: secAttr.curr.armorClass + armorClassBonus
+    },
+    dodge: {
+      skillId: "physical" as const,
+      curr: skills.curr.physical,
+      knowledgeBonus: dodgeKBonus,
+      bonus: actionBonus,
+      total: skills.curr.physical + dodgeKBonus + actionBonus
+    },
+    parry: {
+      skillId: parrySkillId,
+      curr: skills.curr[parrySkillId],
+      knowledgeBonus: parryKBonus,
+      bonus: actionBonus,
+      total: skills.curr[parrySkillId] + parryKBonus + actionBonus
+    }
+  }
 }

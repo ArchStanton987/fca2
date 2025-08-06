@@ -1,9 +1,11 @@
 import React, { createContext, useContext, useMemo, useReducer } from "react"
 
+import { getNewNumpadValue } from "components/NumPad/useNumPad"
+
 export type ReactionStateContext = {
   // charId: string
   reaction: "none" | "parry" | "dodge"
-  diceRoll: number
+  diceRoll: string
   // skillScore: number
   // skillId?: SkillId
   // apCost: number
@@ -12,13 +14,14 @@ export type ReactionStateContext = {
 
 type ReactionApiContext = {
   setReactionForm: (e: Partial<ReactionStateContext>) => void
+  setReactionRoll: (e: string) => void
   reset: () => void
 }
 
 export const defaultReactionForm = {
   // charId: "",
   reaction: "none",
-  diceRoll: 0
+  diceRoll: ""
   // skillScore: 0,
   // apCost: 0,
   // armorClass: 0
@@ -29,12 +32,17 @@ const ReactionContextApi = createContext<ReactionApiContext>({} as ReactionApiCo
 
 type Action =
   | { type: "SET_FORM"; payload: Partial<ReactionStateContext> }
+  | { type: "SET_ROLL"; payload: string }
   | { type: "RESET"; payload: undefined }
 
 const reducer = (state: ReactionStateContext, { type, payload }: Action): ReactionStateContext => {
   switch (type) {
     case "SET_FORM":
       return { ...state, ...payload }
+    case "SET_ROLL": {
+      const diceRoll = getNewNumpadValue(state.diceRoll, payload)
+      return { ...state, diceRoll }
+    }
     case "RESET":
       return defaultReactionForm
     default: {
@@ -50,6 +58,9 @@ export function ReactionProvider({ children }: { children: React.ReactNode }) {
     () => ({
       setReactionForm: (payload: Partial<ReactionStateContext>) => {
         dispatch({ type: "SET_FORM", payload })
+      },
+      setReactionRoll: (payload: string) => {
+        dispatch({ type: "SET_ROLL", payload })
       },
       reset: () => {
         dispatch({ type: "RESET", payload: undefined })

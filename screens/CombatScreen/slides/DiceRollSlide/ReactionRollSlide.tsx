@@ -1,44 +1,61 @@
 import skillsMap from "lib/character/abilities/skills/skills"
+import { getReactionAbilities } from "lib/combat/utils/combat-utils"
+import { reactionsRecord } from "lib/reaction/reactions.const"
 
 import Col from "components/Col"
 import NumPad from "components/NumPad/NumPad"
-import useNumPad from "components/NumPad/useNumPad"
 import Section from "components/Section"
 import DrawerSlide from "components/Slides/DrawerSlide"
 import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
+import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
 import { useReactionApi, useReactionForm } from "providers/ReactionProvider"
+import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
 
 import NextButton from "../NextButton"
+import SlideError, { slideErrors } from "../SlideError"
 import styles from "./DiceRollSlide.styles"
 
 export default function ReactionRollSlide({ scrollNext }: SlideProps) {
-  const { combat } = useCombat()
+  const useCases = useGetUseCases()
+  const { combat, players, npcs } = useCombat()
+  const contenders = { ...players, ...npcs }
+  const char = useCharacter()
+  const { charId } = char
   const form = useReactionForm()
-  const { diceRoll, skillScore, skillId } = form
-  const { setReactionForm, submit } = useReactionApi()
-  const initValue = diceRoll === 0 ? "" : diceRoll.toString()
+  const { diceRoll, reaction } = form
+  const { setReactionRoll } = useReactionApi()
 
-  const { scoreStr, onPressKeypad } = useNumPad(initValue)
-  const skillLabel = skillId ? skillsMap[skillId].short : "Comp."
+  const diceScore = parseInt(diceRoll, 10)
+  const isValid = diceRoll.length > 0 && !Number.isNaN(diceScore)
 
-  const diceScore = parseInt(scoreStr, 10)
-  const isValid = scoreStr.length > 0 && !Number.isNaN(diceScore)
+  if (reaction === "none") return <SlideError error={slideErrors.noDiceRollError} />
+  if (!combat) return <SlideError error={slideErrors.noCombatError} />
+
+  const reactionAbilities = getReactionAbilities(char, contenders, combat)
+  const { skillId, total } = reactionAbilities[reaction]
+  const skillLabel = skillsMap[skillId].label
 
   const onPressConfirm = async () => {
     if (!scrollNext || !isValid || !combat) return
-    setReactionForm({ diceRoll: diceScore })
-    await submit({ ...form, diceRoll: diceScore }, combat)
+    const oppositionRoll = {
+      opponentId: charId,
+      opponentApCost: reactionsRecord[reaction].apCost,
+      opponentDiceScore: diceScore,
+      opponentSkillScore: total,
+      opponentArmorClass: reactionAbilities.armorClass.total
+    }
+    await useCases.combat.updateAction({ combat, payload: oppositionRoll })
     scrollNext()
   }
 
   return (
     <DrawerSlide>
       <Section title="score aux dés" contentContainerStyle={{ flex: 1, height: "100%" }}>
-        <NumPad onPressKeyPad={onPressKeypad} />
+        <NumPad onPressKeyPad={setReactionRoll} />
       </Section>
 
       <Spacer x={layout.globalPadding} />
@@ -49,7 +66,7 @@ export default function ReactionRollSlide({ scrollNext }: SlideProps) {
           title="JET DE DÉ"
           contentContainerStyle={styles.scoreContainer}
         >
-          <Txt style={styles.score}>{scoreStr}</Txt>
+          <Txt style={styles.score}>{diceRoll}</Txt>
         </Section>
         <Spacer y={layout.globalPadding} />
         <Section
@@ -57,7 +74,7 @@ export default function ReactionRollSlide({ scrollNext }: SlideProps) {
           title={skillLabel}
           contentContainerStyle={styles.scoreContainer}
         >
-          <Txt style={styles.score}>{skillScore}</Txt>
+          <Txt style={styles.score}>{total}</Txt>
         </Section>
       </Col>
 

@@ -2,7 +2,7 @@ import { router } from "expo-router"
 
 import skillsMap from "lib/character/abilities/skills/skills"
 import { getCritFailureThreshold } from "lib/combat/const/crit"
-import { getActionId, getCurrentRoundId } from "lib/combat/utils/combat-utils"
+import { getActionId, getCurrentRoundId, getReactionAbilities } from "lib/combat/utils/combat-utils"
 
 import Col from "components/Col"
 import Row from "components/Row"
@@ -22,10 +22,12 @@ import ActionOutcome from "./ActionOutcome"
 import styles from "./ScoreResultSlide.styles"
 
 export default function ReactionScoreResultSlide() {
-  const { charId, secAttr, special } = useCharacter()
+  const char = useCharacter()
+  const { charId, secAttr, special } = char
   const { combat, players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
-  const { skillId, skillScore, diceRoll } = useReactionForm()
+  const { diceRoll, reaction } = useReactionForm()
+  const diceScore = parseInt(diceRoll, 10)
   const { reset } = useReactionApi()
 
   const roundId = getCurrentRoundId(combat)
@@ -38,9 +40,13 @@ export default function ReactionScoreResultSlide() {
   const roll = combat?.rounds?.[roundId]?.[actionId]?.roll
   const action = combat?.rounds?.[roundId]?.[actionId]
 
-  if (!combat || !action) return <SlideError error={slideErrors.noCombatError} />
-  if (!skillId) return <SlideError error={slideErrors.noReactionSkill} />
-  if (diceRoll === 0 || !roll) return <SlideError error={slideErrors.noDiceRollError} />
+  if (!combat || !action?.actorId) return <SlideError error={slideErrors.noCombatError} />
+  if (reaction === "none") return <SlideError error={slideErrors.noDiceRollError} />
+  if (diceScore === 0 || !roll) return <SlideError error={slideErrors.noDiceRollError} />
+
+  const reactionAbilities = getReactionAbilities(char, contenders, combat)
+  const { skillId, total, curr, knowledgeBonus, bonus } = reactionAbilities[reaction]
+  const skillLabel = skillsMap[skillId].label
 
   // TODO: refactor with getActionScore()
   const { actorSkillScore = 0, actorDiceScore = 0, difficultyModifier } = roll
@@ -48,9 +54,9 @@ export default function ReactionScoreResultSlide() {
   const actorScore = actorSkillScore - actorDiceScore + actorBonus
   const actorFinalScore = actorScore - opponentAc - difficultyModifier
 
-  const score = skillScore - diceRoll + opponnentActionBonus
-  const isCritFail = diceRoll >= getCritFailureThreshold(special.curr)
-  const isCrit = diceRoll < secAttr.curr.critChance
+  const score = total - diceScore + opponnentActionBonus
+  const isCritFail = diceScore >= getCritFailureThreshold(special.curr)
+  const isCrit = diceScore < secAttr.curr.critChance
   const finalScore = score - actorFinalScore
   const isSuccess = finalScore >= 0
 
@@ -65,8 +71,8 @@ export default function ReactionScoreResultSlide() {
         <Row style={styles.scoreDetailRow}>
           <Col style={styles.scoreContainer}>
             <Txt>Compétence</Txt>
-            <Txt>{skillsMap[skillId].label}</Txt>
-            <Txt style={styles.score}>{skillScore}</Txt>
+            <Txt>{skillLabel}</Txt>
+            <Txt style={styles.score}>{curr + knowledgeBonus}</Txt>
           </Col>
           <Spacer x={10} />
           <Txt style={styles.score}>-</Txt>

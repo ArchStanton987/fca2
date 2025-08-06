@@ -2,10 +2,8 @@ import { StyleSheet } from "react-native"
 
 import { router } from "expo-router"
 
-import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-levels"
-import { DODGE_AP_COST, PARRY_AP_COST } from "lib/combat/const/combat-const"
-import { getCurrentRoundId, getParrySkill } from "lib/combat/utils/combat-utils"
-import { reactions } from "lib/reaction/reactions.const"
+import { getReactionAbilities } from "lib/combat/utils/combat-utils"
+import { reactions, reactionsRecord } from "lib/reaction/reactions.const"
 
 import Col from "components/Col"
 import List from "components/List"
@@ -27,6 +25,7 @@ import layout from "styles/layout"
 
 import NextButton from "./NextButton"
 import PlayButton from "./PlayButton"
+import SlideError, { slideErrors } from "./SlideError"
 
 const styles = StyleSheet.create({
   score: {
@@ -52,44 +51,23 @@ export default function PickReactionSlide({ scrollNext }: SlideProps) {
   const useCases = useGetUseCases()
   const { combat, players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
-  const roundId = getCurrentRoundId(combat)
   const char = useCharacter()
-  const { charId, skills, equipedObjects, knowledgesRecord, status, secAttr } = char
+  const { status, secAttr } = char
 
   const form = useReactionForm()
   const { reaction } = form
   const { setReactionForm, reset } = useReactionApi()
 
-  const armorClassBonus = contenders?.[charId]?.combatData?.acBonusRecord?.[roundId] ?? 0
-  const actionArmorClass = secAttr.curr.armorClass + armorClassBonus
+  if (!combat) return <SlideError error={slideErrors.noCombatError} />
 
-  const actionBonus = contenders?.[charId]?.combatData?.actionBonus ?? 0
+  const reactionAbilities = getReactionAbilities(char, contenders, combat)
+  const { parry, dodge } = reactionAbilities
 
-  const dodgeKBonus = knowledgeLevels.find(el => el.id === knowledgesRecord.kDodge)?.bonus ?? 0
-  const dodgeScore = skills.curr.physical + dodgeKBonus
-
-  const weaponSkill = equipedObjects.weapons[0].data.skillId
-  const parryKBonus = knowledgeLevels.find(el => el.id === knowledgesRecord.kParry)?.bonus ?? 0
-  const parrySkill = getParrySkill(weaponSkill)
-  const parryScore = skills.curr[parrySkill] + parryKBonus
-
-  const { apCost } = reactionsMap[reaction]
+  const { apCost } = reactionsRecord[reaction]
   const leftAp = status.currAp - apCost
 
-  const onSetReaction = (newReaction: keyof typeof reactionsMap) => {
-    let skillScore = 0
-    let skillId
-    if (newReaction === "parry" || newReaction === "dodge") {
-      skillScore = newReaction === "parry" ? parryScore : dodgeScore
-      skillId = newReaction === "parry" ? parrySkill : "physical"
-    }
-    setReactionForm({
-      reaction: newReaction,
-      apCost: reactionsMap[newReaction].apCost,
-      armorClass: actionArmorClass,
-      skillScore,
-      skillId
-    })
+  const onSetReaction = (newReaction: keyof typeof reactionsRecord) => {
+    setReactionForm({ reaction: newReaction })
   }
 
   const onPressNext = async () => {
@@ -121,12 +99,12 @@ export default function PickReactionSlide({ scrollNext }: SlideProps) {
             contentContainerStyle={{ alignItems: "center" }}
             title="parade"
           >
-            {actionBonus !== 0 ? (
+            {parry.bonus !== 0 ? (
               <Txt style={styles.score}>
-                {parryScore} + {actionBonus}
+                {parry.curr + parry.knowledgeBonus} + {parry.bonus}
               </Txt>
             ) : (
-              <Txt style={styles.score}>{parryScore}</Txt>
+              <Txt style={styles.score}>{parry.total}</Txt>
             )}
           </Section>
           <Spacer x={layout.globalPadding} />
@@ -135,12 +113,12 @@ export default function PickReactionSlide({ scrollNext }: SlideProps) {
             contentContainerStyle={{ alignItems: "center" }}
             title="esquive"
           >
-            {actionBonus !== 0 ? (
+            {dodge.bonus !== 0 ? (
               <Txt style={styles.score}>
-                {dodgeScore} + {actionBonus}
+                {dodge.curr + dodge.knowledgeBonus} + {dodge.bonus}
               </Txt>
             ) : (
-              <Txt style={styles.score}>{dodgeScore}</Txt>
+              <Txt style={styles.score}>{dodge.total}</Txt>
             )}
           </Section>
         </Row>
