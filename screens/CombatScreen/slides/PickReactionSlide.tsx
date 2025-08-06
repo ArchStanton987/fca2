@@ -5,6 +5,7 @@ import { router } from "expo-router"
 import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-levels"
 import { DODGE_AP_COST, PARRY_AP_COST } from "lib/combat/const/combat-const"
 import { getCurrentRoundId, getParrySkill } from "lib/combat/utils/combat-utils"
+import { reactions } from "lib/reaction/reactions.const"
 
 import Col from "components/Col"
 import List from "components/List"
@@ -20,6 +21,7 @@ import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
 import { useReactionApi, useReactionForm } from "providers/ReactionProvider"
+import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
 
@@ -46,14 +48,8 @@ const styles = StyleSheet.create({
   }
 })
 
-const reactionsMap = {
-  none: { id: "none", label: "Aucune", apCost: 0 },
-  parry: { id: "parry", label: "Parade", apCost: PARRY_AP_COST },
-  dodge: { id: "dodge", label: "Esquive", apCost: DODGE_AP_COST }
-} as const
-const reactions = Object.values(reactionsMap)
-
 export default function PickReactionSlide({ scrollNext }: SlideProps) {
+  const useCases = useGetUseCases()
   const { combat, players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
   const roundId = getCurrentRoundId(combat)
@@ -62,7 +58,7 @@ export default function PickReactionSlide({ scrollNext }: SlideProps) {
 
   const form = useReactionForm()
   const { reaction } = form
-  const { setReactionForm, submit, reset } = useReactionApi()
+  const { setReactionForm, reset } = useReactionApi()
 
   const armorClassBonus = contenders?.[charId]?.combatData?.acBonusRecord?.[roundId] ?? 0
   const actionArmorClass = secAttr.curr.armorClass + armorClassBonus
@@ -101,7 +97,7 @@ export default function PickReactionSlide({ scrollNext }: SlideProps) {
     if (!combat) throw new Error("could not find combat")
     if (leftAp < 0) throw new Error("No enough AP")
     if (reaction === "none") {
-      submit(form, combat)
+      await useCases.combat.updateAction({ combat, payload: { oppositionRoll: false } })
       router.replace(routes.combat.action)
       reset()
       return

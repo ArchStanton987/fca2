@@ -2,6 +2,7 @@
 import Playable from "lib/character/Playable"
 import { KnowledgeId } from "lib/character/abilities/knowledges/knowledge-types"
 import { getKnowledgesBonus } from "lib/character/abilities/knowledges/knowledge-utils"
+import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-levels"
 import skillsMap from "lib/character/abilities/skills/skills"
 import { Skill, SkillId } from "lib/character/abilities/skills/skills.types"
 import { BodyPart, LimbsHp } from "lib/character/health/health-types"
@@ -10,6 +11,7 @@ import Inventory from "lib/objects/Inventory"
 import { ClothingData } from "lib/objects/data/clothings/clothings.types"
 import { Consumable } from "lib/objects/data/consumables/consumables.types"
 import { DamageTypeId, Weapon } from "lib/objects/data/weapons/weapons.types"
+import { reactionsRecord } from "lib/reaction/reactions.const"
 
 import { isKeyOf } from "utils/ts-utils"
 
@@ -334,4 +336,39 @@ export const getPlayerCanReact = (char: Playable, combat: Combat) => {
   const { damageLocalization, oppositionRoll } = action
   if (!!damageLocalization && oppositionRoll === undefined) return true
   return false
+}
+
+export const getReactionAbilities = (
+  char: Playable,
+  contenders: Record<string, PlayerData>,
+  combat: Combat
+) => {
+  const { charId, skills, equipedObjects, knowledgesRecord, secAttr } = char
+  const roundId = getCurrentRoundId(combat)
+
+  const armorClassBonus = contenders?.[charId]?.combatData?.acBonusRecord?.[roundId] ?? 0
+  const armorClass = secAttr.curr.armorClass + armorClassBonus
+
+  const actionBonus = contenders?.[charId]?.combatData?.actionBonus ?? 0
+
+  const dodgeKBonus = knowledgeLevels.find(el => el.id === knowledgesRecord.kDodge)?.bonus ?? 0
+  const dodgeScore = skills.curr.physical + dodgeKBonus
+
+  const weaponSkill = equipedObjects.weapons[0].data.skillId
+  const parryKBonus = knowledgeLevels.find(el => el.id === knowledgesRecord.kParry)?.bonus ?? 0
+  const parrySkillId = getParrySkill(weaponSkill)
+  const parryScore = skills.curr[parrySkillId] + parryKBonus
+
+  // return {
+  //   final: {
+  //     armorClass,
+  //     dodgeScore,
+  //     parryScore
+  //   },
+  //   calc: {
+  //     parryKBonus,
+  //     parrySkill,
+  //     parryScore
+  //   }
+  // }
 }
