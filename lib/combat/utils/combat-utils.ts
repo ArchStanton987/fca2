@@ -16,7 +16,7 @@ import { isKeyOf } from "utils/ts-utils"
 
 import Action from "../Action"
 import Combat from "../Combat"
-import { PlayerCombatData } from "../combats.types"
+import { DbAction, PlayerCombatData } from "../combats.types"
 import actions from "../const/actions"
 import { DEFAULT_INITIATIVE, DODGE_AP_COST, PARRY_AP_COST } from "../const/combat-const"
 
@@ -376,4 +376,22 @@ export const getReactionAbilities = (
       total: skills.curr[parrySkillId] + parryKBonus + actionBonus
     }
   }
+}
+
+export const getActionHasNoRoll = (action: DbAction) => {
+  const { actionType, actionSubtype } = action
+  const noRollTypes = ["prepare", "wait", "other"]
+  if (actionType && noRollTypes.includes(actionType)) return true
+  if (actionType === "item" && actionSubtype !== "throw") return true
+  return false
+}
+
+export const getActionIsNotAggressive = ({ actionSubtype }: DbAction) => {
+  const aggressiveActionsSubtypes = ["basic", "aim", "burst", "throw", "hit"]
+  return !aggressiveActionsSubtypes.includes(actionSubtype ?? "")
+}
+
+export const getActionHasNoItem = (action: DbAction) => {
+  const noItemActions = ["movement", "other", "wait", "prepare", "other"]
+  return noItemActions.includes(action.actionType ?? "")
 }

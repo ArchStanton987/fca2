@@ -3,6 +3,11 @@ import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 import { computed, makeObservable, observable } from "mobx"
 
 import { DamageEntries, DbAction, OppositionRoll, SimpleRoll } from "./combats.types"
+import {
+  getActionHasNoItem,
+  getActionHasNoRoll,
+  getActionIsNotAggressive
+} from "./utils/combat-utils"
 
 type PlayableId = string
 type ItemId = string
@@ -28,22 +33,47 @@ export default class Action {
   damageType?: DamageTypeId | false
 
   constructor(payload: DbAction) {
-    this.actionType = payload.actionType
-    this.actionSubtype = payload.actionSubtype
+    const { actionType, actionSubtype } = payload
+    this.actionType = actionType
+    this.actionSubtype = actionSubtype
     this.actorId = payload.actorId
     this.isCombinedAction = payload.isCombinedAction
     this.apCost = payload.apCost
-    this.roll = payload.roll
-    this.oppositionRoll = payload.oppositionRoll
-    this.healthChangeEntries = payload.healthChangeEntries
-    this.itemId = payload.itemId
-    this.itemDbKey = payload.itemDbKey
-    this.targetId = payload.targetId
-    this.isSuccess = payload.isSuccess
-    this.damageLocalization = payload.damageLocalization
-    this.aimZone = payload.aimZone
-    this.rawDamage = payload.rawDamage
-    this.damageType = payload.damageType
+
+    const hasNoRoll = getActionHasNoRoll(payload)
+    if (hasNoRoll) {
+      this.roll = false
+      this.healthChangeEntries = false
+    } else {
+      this.roll = payload.roll
+      this.healthChangeEntries = payload.healthChangeEntries
+    }
+
+    const actionIsNotAggressive = getActionIsNotAggressive(payload)
+    if (actionIsNotAggressive) {
+      this.oppositionRoll = false
+      this.targetId = false
+      this.rawDamage = false
+      this.damageType = false
+      this.damageLocalization = false
+    } else {
+      this.oppositionRoll = payload.oppositionRoll
+      this.targetId = payload.targetId
+      this.rawDamage = payload.rawDamage
+      this.damageType = payload.damageType
+      this.damageLocalization = payload.damageLocalization
+    }
+
+    const hasNoItem = getActionHasNoItem(payload)
+    if (hasNoItem) {
+      this.itemId = false
+      this.itemDbKey = false
+    } else {
+      this.itemId = payload.itemId
+      this.itemDbKey = payload.itemDbKey
+    }
+
+    this.aimZone = actionSubtype === "aim" ? payload.aimZone : false
     this.isDone = payload.isDone
 
     makeObservable(this, {
@@ -54,7 +84,6 @@ export default class Action {
       apCost: observable,
       roll: observable,
       oppositionRoll: observable,
-      healthChangeEntries: observable,
       itemId: observable,
       itemDbKey: observable,
       targetId: observable,
