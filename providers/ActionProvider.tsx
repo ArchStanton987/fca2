@@ -12,7 +12,7 @@ export type ActionStateContext = Form<{
   actionSubtype: string
   isCombinedAction: boolean
   apCost: number
-  actorDiceScore: string
+  actorDiceScore?: string
   targetId?: string
   aimZone?: keyof LimbsHp
   damageLocalization?: keyof LimbsHp
@@ -38,8 +38,8 @@ export const defaultActionForm = {
   actionSubtype: "",
   isCombinedAction: false,
   apCost: 0,
-  actorDiceScore: "",
-  targetId: "",
+  actorDiceScore: undefined,
+  targetId: undefined,
   aimZone: undefined,
   damageLocalization: undefined,
   rawDamage: undefined,

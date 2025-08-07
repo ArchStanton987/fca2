@@ -1,6 +1,6 @@
 import { StyleSheet, TouchableOpacity } from "react-native"
 
-import { getActionId, getCurrentRoundId, getItemFromId } from "lib/combat/utils/combat-utils"
+import { getItemFromId } from "lib/combat/utils/combat-utils"
 import Toast from "react-native-toast-message"
 
 import Section from "components/Section"
@@ -43,9 +43,7 @@ export default function ValidateSlide() {
 
   const isDamageRolled = typeof rawDamage === "number"
 
-  const roundId = getCurrentRoundId(combat)
-  const actionId = getActionId(combat)
-  const action = combat?.rounds?.[roundId]?.[actionId]
+  const action = combat?.currAction
   const isWaitingForGm = isDamageRolled && action?.healthChangeEntries === undefined
 
   const submit = async () => {

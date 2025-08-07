@@ -2,7 +2,7 @@ import { useState } from "react"
 import { StyleSheet } from "react-native"
 
 import Character from "lib/character/Character"
-import { getActionId, getCurrentRoundId, getPlayerCanReact } from "lib/combat/utils/combat-utils"
+import { getPlayerCanReact } from "lib/combat/utils/combat-utils"
 import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 
 import Col from "components/Col"
@@ -59,10 +59,8 @@ export default function DamageSlide({ scrollNext }: DamageSlideProps) {
   const isScoreValid =
     (scoreStr.length > 0 && scoreStr.length < 4) || typeof form.rawDamage === "number"
 
-  const roundId = getCurrentRoundId(combat)
-  const actionId = getActionId(combat)
-  const action = combat?.rounds[roundId][actionId]
-  if (!combat || !action) return <SlideError error={slideErrors.noCombatError} />
+  const action = combat?.currAction
+  if (!action) return <SlideError error={slideErrors.noCombatError} />
   if (!itemDbKey) return <SlideError error={slideErrors.noItemError} />
 
   let item

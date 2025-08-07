@@ -1,5 +1,4 @@
 import actions from "lib/combat/const/actions"
-import getUseCases from "lib/get-use-cases"
 
 import List from "components/List"
 import ListItemSelectable from "components/ListItemSelectable"
@@ -13,7 +12,6 @@ import colors from "styles/colors"
 const title = "action / pa / dist"
 
 export default function MovementActions() {
-  const useCases = getUseCases()
   const { status } = useCharacter()
   const { combat } = useCombat()
   const { actionSubtype } = useActionForm()
@@ -24,7 +22,6 @@ export default function MovementActions() {
     setActionSubtype(id)
     const apCost = actions.movement.subtypes[id].apCost ?? status.currAp
     setForm({ apCost })
-    useCases.combat.updateAction({ combat, payload: { apCost } })
   }
 
   return (

@@ -30,7 +30,8 @@ export default function DiceRollSlide({ scrollNext }: DiceRollSlideProps) {
 
   const char = useCharacter()
   const inventory = useInventory()
-  const { combat } = useCombat()
+  const { combat, players, npcs } = useCombat()
+  const contenders = { ...players, ...npcs }
 
   const { setRoll } = useActionApi()
   const form = useActionForm()
@@ -48,20 +49,21 @@ export default function DiceRollSlide({ scrollNext }: DiceRollSlideProps) {
     item = getItemWithSkillFromId(form.itemDbKey, inventory)
   }
 
-  const { skillLabel, totalSkillScore } = getDiceRollData({ ...form, item }, char)
+  const { skillLabel, totalSkillScore } = getDiceRollData(contenders, { ...form, item }, char)
 
   const action = combat?.currAction
   if (!action) return <SlideError error={slideErrors.noCombatError} />
   if (action.roll === false) return <NoRollSlide />
   if (action.roll === undefined) return <AwaitGmSlide messageCase="difficulty" />
-  if (!action.roll.difficultyModifier) return <AwaitGmSlide messageCase="difficulty" />
+  if (typeof action.roll.difficultyModifier !== "number")
+    return <AwaitGmSlide messageCase="difficulty" />
 
   const difficultyScore = action.roll?.difficultyModifier ?? 0
   const difficultyLvl = difficultyArray.find(e => difficultyScore <= e.threshold)
 
-  const actorDiceScore = parseInt(form.actorDiceScore, 10)
-  const isValid = form.actorDiceScore.length > 0 && !Number.isNaN(actorDiceScore)
-  const roll = { ...action.roll, actorDiceScore }
+  const actorDiceScore = form.actorDiceScore ? parseInt(form.actorDiceScore, 10) : 0
+  const isValid = !Number.isNaN(actorDiceScore)
+  const roll = { ...action.roll, actorSkillScore: totalSkillScore, actorDiceScore }
 
   const onPressConfirm = async () => {
     if (combat === null || !scrollNext || !isValid) return

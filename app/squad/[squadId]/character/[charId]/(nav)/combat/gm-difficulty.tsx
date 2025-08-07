@@ -7,7 +7,7 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import Slider from "@react-native-community/slider"
 import { ActionTypeId, withRollActionsTypes } from "lib/combat/const/actions"
 import difficultyArray from "lib/combat/const/difficulty"
-import { getActionId, getCurrentRoundId, getPlayingOrder } from "lib/combat/utils/combat-utils"
+import { getPlayingOrder } from "lib/combat/utils/combat-utils"
 
 import DrawerPage from "components/DrawerPage"
 import Row from "components/Row"
@@ -45,7 +45,8 @@ export default function GMActionsScreen() {
 
   const submit = () => {
     if (!combat) return
-    const roll = hasRoll ? { difficultyModifier: difficulty } : false
+    const prevRoll = combat.currAction.roll
+    const roll = hasRoll ? { ...prevRoll, difficultyModifier: difficulty } : false
     useCases.combat.updateAction({ combat, payload: { roll } })
   }
 
@@ -56,11 +57,7 @@ export default function GMActionsScreen() {
   const resetDifficulty = () => {
     if (!combat) return
     setDifficulty(0)
-    const roundId = getCurrentRoundId(combat)
-    const actionId = getActionId(combat)
-    const payload = { ...combat.rounds?.[roundId]?.[actionId] }
-    delete payload.roll
-    useCases.combat.updateAction({ combat, payload })
+    useCases.combat.resetDifficulty({ combat })
   }
 
   if (!meta.isNpc)
@@ -85,9 +82,7 @@ export default function GMActionsScreen() {
 
   if (!currPlayer) return <Txt>Impossible de récupérer le joueur</Txt>
 
-  const roundId = getCurrentRoundId(combat)
-  const actionId = getActionId(combat)
-  const action = combat?.rounds?.[roundId]?.[actionId]
+  const action = combat.currAction
   const actionHasDifficulty = withRollActionsTypes.includes(action?.actionType as ActionTypeId)
   const isDifficultySet = action?.roll === false || action?.roll?.difficultyModifier !== undefined
 

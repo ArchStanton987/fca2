@@ -164,6 +164,7 @@ const getKnowledgesFromAction = <T extends keyof typeof actions>({
 }
 
 export const getDiceRollData = <T extends keyof typeof actions>(
+  contenders: Record<string, PlayerData>,
   { actionType, actionSubtype, item }: ActionForm<T>,
   char: Playable
 ): { skillId: SkillId; skillLabel: string; totalSkillScore: number } => {
@@ -178,7 +179,8 @@ export const getDiceRollData = <T extends keyof typeof actions>(
   if (!skill) throw new Error("No skill found")
   const knowledges = getKnowledgesFromAction({ actionType, actionSubtype, item })
   const knowledgeBonus = getKnowledgesBonus(knowledges, char)
-  const totalSkillScore = char.skills.curr[skill.id] + knowledgeBonus
+  const actionBonus = contenders?.[char.charId]?.combatData?.actionBonus ?? 0
+  const totalSkillScore = char.skills.curr[skill.id] + knowledgeBonus + actionBonus
   return { skillId: skill.id, skillLabel: skill.label, totalSkillScore }
 }
 

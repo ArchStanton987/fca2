@@ -86,6 +86,7 @@ export default class Combat {
   }
 
   get currAction() {
-    return this.rounds[this.currRoundId][this.currActionId]
+    const currAction = this?.rounds?.[this.currRoundId]?.[this.currActionId]
+    return currAction ?? new Action({})
   }
 }

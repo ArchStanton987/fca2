@@ -59,9 +59,9 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
   const submit = async () => {
     if (!combat || !players || !npcs) throw new Error("No combat found")
 
+    const payload = { ...form, actorId: charId }
     if (form.actionType === "wait" || form.actionType === "prepare") {
       try {
-        const payload = { ...form, actorId: charId }
         await useCases.combat.doCombatAction({ combat, contenders, action: payload })
         Toast.show({ type: "custom", text1: toastMessages[form.actionType] })
         reset()
@@ -71,7 +71,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
       return
     }
 
-    await useCases.combat.updateAction({ combat, payload: form })
+    await useCases.combat.updateAction({ combat, payload })
     if (!scrollNext) throw new Error("No scrollNext function found")
     scrollNext()
   }

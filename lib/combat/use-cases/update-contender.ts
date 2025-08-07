@@ -17,6 +17,7 @@ export default function updateContender(dbType: keyof typeof repositoryMap = "rt
     const contenderType = char.meta.isNpc ? "npcs" : "players"
     const combatId = combat.id
     const id = char.charId
-    return contenderRepo.patch({ combatId, contenderType, id }, payload)
+    const toSave = JSON.parse(JSON.stringify(payload)) // remove undefined values (throws error)
+    return contenderRepo.patch({ combatId, contenderType, id }, toSave)
   }
 }

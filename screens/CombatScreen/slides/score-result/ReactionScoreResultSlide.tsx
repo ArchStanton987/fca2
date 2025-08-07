@@ -2,12 +2,7 @@ import { router } from "expo-router"
 
 import skillsMap from "lib/character/abilities/skills/skills"
 import { getCritFailureThreshold } from "lib/combat/const/crit"
-import {
-  getActionId,
-  getActionScores,
-  getCurrentRoundId,
-  getReactionAbilities
-} from "lib/combat/utils/combat-utils"
+import { getActionScores, getReactionAbilities } from "lib/combat/utils/combat-utils"
 
 import Col from "components/Col"
 import Row from "components/Row"
@@ -35,11 +30,8 @@ export default function ReactionScoreResultSlide() {
   const diceScore = parseInt(diceRoll, 10)
   const { reset } = useReactionApi()
 
-  const roundId = getCurrentRoundId(combat)
-  const actionId = getActionId(combat)
-
-  const roll = combat?.rounds?.[roundId]?.[actionId]?.roll
-  const action = combat?.rounds?.[roundId]?.[actionId]
+  const action = combat?.currAction
+  const roll = action?.roll
 
   if (!combat || !action?.actorId) return <SlideError error={slideErrors.noCombatError} />
   if (reaction === "none") return <SlideError error={slideErrors.noDiceRollError} />

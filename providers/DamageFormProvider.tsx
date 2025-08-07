@@ -1,7 +1,7 @@
 import { ReactNode, createContext, useContext, useMemo, useReducer } from "react"
 
 import { GMDamageEntry } from "lib/combat/combats.types"
-import { getActionId, getCurrentRoundId, getRealDamage } from "lib/combat/utils/combat-utils"
+import { getRealDamage } from "lib/combat/utils/combat-utils"
 
 import { useCombat } from "./CombatProvider"
 
@@ -72,14 +72,12 @@ const reducer = (
 export function DamageFormProvider({ children }: { children: ReactNode }) {
   const { combat, players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
-  const roundId = getCurrentRoundId(combat)
-  const actionId = getActionId(combat)
-  const action = combat?.rounds?.[roundId]?.[actionId]
+  const action = combat?.currAction
 
   let initEntry: DamageEntriesState = {}
   if (action) {
     const { rawDamage, damageLocalization, targetId, damageType, aimZone } = action
-    const loc = aimZone ?? damageLocalization
+    const loc = aimZone || damageLocalization
     if (targetId && targetId in contenders && loc && rawDamage && damageType) {
       const newDmgEntry = { rawDamage, damageLocalization: loc, damageType }
       const realDamage = Math.round(getRealDamage(contenders[targetId].char, newDmgEntry))

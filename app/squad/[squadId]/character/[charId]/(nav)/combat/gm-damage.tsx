@@ -1,6 +1,6 @@
 import { Redirect } from "expo-router"
 
-import { getActionId, getCurrentRoundId, getRealDamage } from "lib/combat/utils/combat-utils"
+import { getRealDamage } from "lib/combat/utils/combat-utils"
 
 import DrawerPage from "components/DrawerPage"
 import Txt from "components/Txt"
@@ -28,9 +28,7 @@ export default function GMDamage() {
       </DrawerPage>
     )
 
-  const roundId = getCurrentRoundId(combat)
-  const actionId = getActionId(combat)
-  const action = combat?.rounds?.[roundId]?.[actionId]
+  const action = combat.currAction
 
   if (!action) {
     return (
@@ -49,11 +47,10 @@ export default function GMDamage() {
     targetId
   } = action
   const isDamageSet = typeof action?.rawDamage === "number"
-  const dmgLoc = aimZone ?? damageLocalization
+  const dmgLoc = aimZone || damageLocalization
   const hasHealthEntry = existingHealthChangeEntries !== undefined
 
   const showForm = isDamageSet && !!dmgLoc && !hasHealthEntry
-
   let realDamage
   if (rawDamage && targetId && damageType && dmgLoc) {
     const dmgEntry = { rawDamage, damageLocalization: dmgLoc, damageType }
