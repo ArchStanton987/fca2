@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { ScrollView, StyleSheet } from "react-native"
+import { StyleSheet } from "react-native"
 
 import { limbsMap } from "lib/character/health/health"
 import { LimbsHp } from "lib/character/health/health-types"
@@ -86,54 +86,50 @@ export default function GMDamageForm({ rawDamage, realDamage, damageType }: GMDa
 
   return (
     <DrawerPage>
-      <Section style={{ flex: 1 }} title="entrées de dégâts">
+      <ScrollSection style={{ flex: 1 }} title="entrées de dégâts">
         <Row>
           <Col style={{ flex: 1 }}>
             <Txt>Dég. bruts : </Txt>
-            <TxtInput editable={false} value={rawDamage?.toString() ?? ""} />
+            <TxtInput readOnly editable={false} value={rawDamage?.toString() ?? ""} />
           </Col>
           <Spacer x={layout.globalPadding} />
           <Col style={{ flex: 1 }}>
             <Txt>Dég. réels :</Txt>
-            <TxtInput editable={false} value={realDamage?.toString() ?? ""} />
+            <TxtInput readOnly editable={false} value={realDamage?.toString() ?? ""} />
           </Col>
           <Spacer x={layout.globalPadding} />
           <Col style={{ flex: 1 }}>
             <Txt>Type :</Txt>
-            <TxtInput editable={false} value={damageType} />
+            <TxtInput readOnly editable={false} value={damageType} />
           </Col>
         </Row>
 
         <Spacer y={layout.globalPadding} />
 
-        {/* <ScrollView style={{ flex: 1 }}> */}
-        <ScrollView>
-          <Row style={{ alignItems: "center" }}>
-            <Txt>ENTREES</Txt>
-            <Spacer x={layout.globalPadding} />
-            <PlusIcon size={40} onPress={add} />
-          </Row>
-          <Spacer y={layout.globalPadding} />
+        <Row style={{ alignItems: "center" }}>
+          <Txt>ENTREES</Txt>
+          <Spacer x={layout.globalPadding} />
+          <PlusIcon size={40} onPress={add} />
+        </Row>
 
-          <List
-            data={entries}
-            keyExtractor={e => e.id}
-            separator={<Spacer y={15} />}
-            renderItem={({ item }) => {
-              const isSelected = item.id === selectedEntry
-              return (
-                <HealthChangeEntry
-                  entry={item}
-                  isSelected={isSelected}
-                  selectEntry={() => setSelectedEntry(item.id)}
-                  onPressLocalization={() => setSelectedPannel("localization")}
-                  onPressChar={() => setSelectedPannel("char")}
-                />
-              )
-            }}
-          />
-        </ScrollView>
-      </Section>
+        <List
+          data={entries}
+          keyExtractor={e => e.id}
+          separator={<Spacer y={15} />}
+          renderItem={({ item }) => {
+            const isSelected = item.id === selectedEntry
+            return (
+              <HealthChangeEntry
+                entry={item}
+                isSelected={isSelected}
+                selectEntry={() => setSelectedEntry(item.id)}
+                onPressLocalization={() => setSelectedPannel("localization")}
+                onPressChar={() => setSelectedPannel("char")}
+              />
+            )
+          }}
+        />
+      </ScrollSection>
 
       <Spacer x={layout.globalPadding} />
 
