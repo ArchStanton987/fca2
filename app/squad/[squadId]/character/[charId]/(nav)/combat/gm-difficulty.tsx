@@ -46,7 +46,7 @@ export default function GMActionsScreen() {
   const submit = () => {
     if (!combat) return
     const roll = hasRoll ? { difficultyModifier: difficulty } : false
-    useCases.combat.setAction({ combat, payload: { childKey: "roll", data: roll } })
+    useCases.combat.updateAction({ combat, payload: { roll } })
   }
 
   const handleSetDiff = useCallback((v: number) => {
@@ -60,7 +60,7 @@ export default function GMActionsScreen() {
     const actionId = getActionId(combat)
     const payload = { ...combat.rounds?.[roundId]?.[actionId] }
     delete payload.roll
-    useCases.combat.setAction({ combat, payload })
+    useCases.combat.updateAction({ combat, payload })
   }
 
   if (!meta.isNpc)

@@ -99,8 +99,8 @@ export function DamageFormProvider({ children }: { children: ReactNode }) {
   const api = useMemo(
     () => ({
       add: () => {
-        const targetId = action?.targetId ?? ""
-        dispatch({ type: "add", payload: { targetId } })
+        const targetId = typeof action?.targetId === "string" ? action?.targetId : ""
+        dispatch({ type: "add", payload: { targetId: targetId ?? "" } })
       },
       deleteEntry: (id: string) => {
         dispatch({ type: "delete", payload: { id } })

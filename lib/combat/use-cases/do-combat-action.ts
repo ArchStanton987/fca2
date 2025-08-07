@@ -24,7 +24,7 @@ import waitAction from "./wait-action"
 import weaponAction from "./weapon-action"
 
 export type CombatActionParams = {
-  action: DbAction
+  action: DbAction & { actorId: string }
   combat: Combat
   contenders: Record<string, { char: Playable; combatData: PlayerCombatData }>
   item?: Clothing | Consumable | MiscObject | Weapon

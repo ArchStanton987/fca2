@@ -1,11 +1,11 @@
 import repositoryMap from "lib/shared/db/get-repository"
 
 import Combat from "../Combat"
-import { Action } from "../combats.types"
+import { DbAction } from "../combats.types"
 import { getActionId, getCurrentRoundId } from "../utils/combat-utils"
 
 export type UpdateActionParams = {
-  payload: Partial<Action>
+  payload: Partial<DbAction>
   combat: Combat
 }
 

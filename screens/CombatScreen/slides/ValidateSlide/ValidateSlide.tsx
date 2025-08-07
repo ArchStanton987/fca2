@@ -7,6 +7,7 @@ import Section from "components/Section"
 import DrawerSlide from "components/Slides/DrawerSlide"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
+import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
@@ -32,6 +33,7 @@ const styles = StyleSheet.create({
 
 export default function ValidateSlide() {
   const useCases = useGetUseCases()
+  const { charId } = useCharacter()
   const inv = useInventory()
   const form = useActionForm()
   const { reset } = useActionApi()
@@ -50,7 +52,8 @@ export default function ValidateSlide() {
     if (!combat) return
     try {
       const item = getItemFromId(inv, itemDbKey)
-      await useCases.combat.doCombatAction({ combat, contenders, action: form, item })
+      const payload = { ...form, actorId: charId }
+      await useCases.combat.doCombatAction({ combat, contenders, action: payload, item })
       Toast.show({ type: "custom", text1: "Action réalisée !" })
       reset()
     } catch (err) {

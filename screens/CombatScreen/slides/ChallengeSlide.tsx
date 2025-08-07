@@ -11,6 +11,7 @@ import DrawerSlide from "components/Slides/DrawerSlide"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import HealthFigure from "components/draws/HealthFigure/HealthFigure"
+import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
@@ -33,6 +34,7 @@ const styles = StyleSheet.create({
 
 export default function ChallengeSlide() {
   const useCases = useGetUseCases()
+  const { charId } = useCharacter()
   const form = useActionForm()
   const { itemDbKey } = form
   const { reset } = useActionApi()
@@ -43,7 +45,8 @@ export default function ChallengeSlide() {
   const submit = async (item: Consumable) => {
     if (!combat) throw new Error("no combat")
     try {
-      await useCases.combat.doCombatAction({ action: form, contenders, combat, item })
+      const action = { ...form, actorId: charId }
+      await useCases.combat.doCombatAction({ action, contenders, combat, item })
       Toast.show({ type: "custom", text1: "Action réalisée" })
       reset()
     } catch (err) {

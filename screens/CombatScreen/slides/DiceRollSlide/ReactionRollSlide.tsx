@@ -48,7 +48,7 @@ export default function ReactionRollSlide({ scrollNext }: SlideProps) {
       opponentSkillScore: total,
       opponentArmorClass: reactionAbilities.armorClass.total
     }
-    await useCases.combat.updateAction({ combat, payload: oppositionRoll })
+    await useCases.combat.updateAction({ combat, payload: { oppositionRoll } })
     scrollNext()
   }
 

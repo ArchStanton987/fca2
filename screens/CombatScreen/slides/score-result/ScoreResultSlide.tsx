@@ -89,7 +89,7 @@ export default function ScoreResultSlide({ skillId, scrollNext }: DiceResultSlid
     }
     try {
       const item = getItemFromId(inv, form.itemDbKey)
-      const actionPayload = { combat, contenders, action: form, item }
+      const actionPayload = { combat, contenders, action: { ...form, actorId: charId }, item }
       await useCases.combat.doCombatAction(actionPayload)
       Toast.show({ type: "custom", text1: "Action réalisée !" })
       reset()

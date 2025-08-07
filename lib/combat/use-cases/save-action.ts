@@ -2,12 +2,12 @@ import Playable from "lib/character/Playable"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import Combat from "../Combat"
-import { Action } from "../combats.types"
+import { DbAction } from "../combats.types"
 import { getActionId, getCurrentRoundId } from "../utils/combat-utils"
 import updateContender from "./update-contender"
 
 export type SaveActionParams = {
-  action: Action
+  action: DbAction & { actorId: string }
   contenders: Record<string, { char: Playable }>
   combat: Combat
 }

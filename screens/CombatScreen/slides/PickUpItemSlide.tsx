@@ -32,7 +32,8 @@ export default function PickUpItemSlide({ scrollPrevious }: SlideProps) {
     if (!combat) throw new Error("No combat found")
     try {
       await useCases.inventory.exchange(character, state, inventory)
-      await useCases.combat.doCombatAction({ combat, contenders, action: form })
+      const action = { ...form, actorId: character.charId }
+      await useCases.combat.doCombatAction({ combat, contenders, action })
       Toast.show({ type: "custom", text1: "Action réalisée" })
       reset()
     } catch (error) {

@@ -37,7 +37,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
   const useCases = getUseCases()
   const { players, npcs, combat } = useCombat()
   const char = useCharacter()
-  const { equipedObjects, unarmed } = char
+  const { equipedObjects, unarmed, charId } = char
   const weapons = equipedObjects.weapons.length > 0 ? equipedObjects.weapons : [unarmed]
 
   const form = useActionForm()
@@ -61,7 +61,8 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
 
     if (form.actionType === "wait" || form.actionType === "prepare") {
       try {
-        await useCases.combat.doCombatAction({ combat, contenders, action: form })
+        const payload = { ...form, actorId: charId }
+        await useCases.combat.doCombatAction({ combat, contenders, action: payload })
         Toast.show({ type: "custom", text1: toastMessages[form.actionType] })
         reset()
       } catch (error) {

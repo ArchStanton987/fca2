@@ -42,7 +42,7 @@ type DiceResultSlideProps = {
 
 export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) {
   const useCases = useGetUseCases()
-  const { status, secAttr } = useCharacter()
+  const { status, secAttr, charId } = useCharacter()
   const inventory = useInventory()
   const { combat, npcs, players } = useCombat()
   const contenders = { ...players, ...npcs }
@@ -84,7 +84,8 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
         }
         try {
           const item = getItemFromId(inventory, form.itemDbKey)
-          await useCases.combat.doCombatAction({ contenders, combat, action: form, item })
+          const action = { ...form, actorId: charId }
+          await useCases.combat.doCombatAction({ contenders, combat, action, item })
           Toast.show({ type: "custom", text1: "Action réalisée" })
           reset()
         } catch (error) {
@@ -109,7 +110,8 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
           break
         }
         try {
-          await useCases.combat.doCombatAction({ contenders, combat, action: form, item })
+          const action = { ...form, actorId: charId }
+          await useCases.combat.doCombatAction({ contenders, combat, action, item })
           Toast.show({ type: "custom", text1: "Action réalisée" })
           reset()
         } catch (error) {

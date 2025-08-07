@@ -2,13 +2,13 @@ import Playable from "lib/character/Playable"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import Combat from "../Combat"
-import { Action, PlayerCombatData } from "../combats.types"
+import { DbAction, PlayerCombatData } from "../combats.types"
 import { AC_BONUS_PER_AP_SPENT, SCORE_BONUS_PER_AP_SPENT } from "../const/combat-const"
 import { getCurrentRoundId } from "../utils/combat-utils"
 import updateContender from "./update-contender"
 
 export type PrepareActionParams = {
-  action: Action
+  action: DbAction & { actorId: string }
   combat: Combat
   contenders: Record<string, { char: Playable; combatData: PlayerCombatData }>
 }

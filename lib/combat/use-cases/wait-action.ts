@@ -1,10 +1,10 @@
 import Playable from "lib/character/Playable"
 import repositoryMap from "lib/shared/db/get-repository"
 
-import { Action, PlayerCombatData } from "../combats.types"
+import { DbAction, PlayerCombatData } from "../combats.types"
 
 export type WaitActionParams = {
-  action: Action
+  action: DbAction & { actorId: string }
   contenders: Record<string, { char: Playable; combatData: PlayerCombatData }>
 }
 

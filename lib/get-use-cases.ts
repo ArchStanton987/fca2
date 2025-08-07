@@ -10,7 +10,7 @@ import subCharacterChild, {
   SubCharacterChildParams
 } from "./character/use-cases/sub-character-child"
 import subCharacters from "./character/use-cases/sub-characters"
-import { Action } from "./combat/combats.types"
+import { DbAction } from "./combat/combats.types"
 import adminEndFight, { AdminEndFightParams } from "./combat/use-cases/admin-end-fight"
 import applyDamageEntries, {
   ApplyDamageEntriesParams
@@ -99,7 +99,7 @@ export default function getUseCases(
       prepareAction: (data: PrepareActionParams) => prepareAction(dbType)(data),
       // ACTION HELPERS
       updateAction: (data: UpdateActionParams) => updateAction(dbType)(data),
-      setAction: <K extends keyof Action>(data: SetActionParams<K>) => setAction(dbType)(data),
+      setAction: <K extends keyof DbAction>(data: SetActionParams<K>) => setAction(dbType)(data),
       saveAction: (data: SaveActionParams) => saveAction(dbType)(data),
       // GM
       applyDamageEntries: (data: ApplyDamageEntriesParams) => applyDamageEntries(dbType)(data)
