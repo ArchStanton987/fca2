@@ -22,7 +22,8 @@ export default function ActionInfo() {
     if (weapons.length < 2) return
     const currentIndex = weapons.findIndex(w => w.dbKey === itemDbKey)
     const nextIndex = (currentIndex + 1) % weapons.length
-    setForm({ itemDbKey: weapons[nextIndex].dbKey })
+    const { dbKey } = weapons[nextIndex]
+    setForm({ itemDbKey: dbKey })
   }
 
   let description = ""
@@ -36,7 +37,7 @@ export default function ActionInfo() {
   if (description) return <Txt>{description}</Txt>
   if (actionType === "weapon" && itemDbKey) {
     return (
-      <Pressable onPress={toggleWeapon} disabled={weapons.length < 2}>
+      <Pressable key={itemDbKey} onPress={toggleWeapon} disabled={weapons.length < 2}>
         <WeaponInfo selectedWeapon={itemDbKey} />
       </Pressable>
     )

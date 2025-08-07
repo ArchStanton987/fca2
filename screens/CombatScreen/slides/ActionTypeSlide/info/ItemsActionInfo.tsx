@@ -64,8 +64,8 @@ export default function ItemsActionInfo() {
   const { setForm } = useActionApi()
   const { itemDbKey, actionSubtype } = useActionForm()
 
-  const onPressItem = (dbKey: string, id: string) => {
-    setForm({ itemDbKey: dbKey, itemId: id })
+  const onPressItem = (dbKey: string) => {
+    setForm({ itemDbKey: dbKey })
   }
 
   const itemLists = getItemList(actionSubtype, character, inventory)
@@ -87,7 +87,7 @@ export default function ItemsActionInfo() {
                 <ListItemSelectable
                   isSelected={itemDbKey === item.dbKey}
                   label={"count" in item ? `${item.data.label}(${item.count})` : item.data.label}
-                  onPress={() => onPressItem(item.dbKey, item.data.id)}
+                  onPress={() => onPressItem(item.dbKey)}
                 />
               )}
             />

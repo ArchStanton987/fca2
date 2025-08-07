@@ -1,28 +1,23 @@
 import { createContext, useContext, useMemo, useReducer } from "react"
 
 import { LimbsHp } from "lib/character/health/health-types"
-import { DamageEntries, SimpleRoll } from "lib/combat/combats.types"
 import { ActionTypeId } from "lib/combat/const/actions"
 import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 import { Form } from "lib/shared/types/utils-types"
 
-import { useCharacter } from "contexts/CharacterContext"
+import { getNewNumpadValue } from "components/NumPad/useNumPad"
 
 export type ActionStateContext = Form<{
   actionType: ActionTypeId
   actionSubtype: string
-  actorId: string
   isCombinedAction: boolean
   apCost: number
-  roll?: SimpleRoll
-  healthChangeEntries?: DamageEntries
+  actorDiceScore: string
   targetId?: string
-  attackType?: string
   aimZone?: keyof LimbsHp
   damageLocalization?: keyof LimbsHp
   rawDamage?: number
   damageType?: DamageTypeId
-  itemId?: string
   itemDbKey?: string
 }>
 
@@ -34,24 +29,21 @@ type ActionApiContext = {
   ) => void
   setActionSubtype: (actionSubtype: string, apCost?: number) => void
   setForm: (payload: Partial<ActionStateContext>) => void
+  setRoll: (e: string) => void
   reset: () => void
 }
 
 export const defaultActionForm = {
   actionType: "",
   actionSubtype: "",
-  actorId: "",
   isCombinedAction: false,
   apCost: 0,
-  roll: undefined,
-  healthChangeEntries: undefined,
-  targetId: undefined,
-  attackType: undefined,
+  actorDiceScore: "",
+  targetId: "",
   aimZone: undefined,
   damageLocalization: undefined,
   rawDamage: undefined,
   damageType: undefined,
-  itemId: undefined,
   itemDbKey: undefined
 } as const
 
@@ -61,47 +53,50 @@ const actionContextApi = createContext<ActionApiContext>({} as ActionApiContext)
 type Action =
   | {
       type: "SET_ACTION_TYPE"
-      payload:
-        | { actionType: ActionTypeId }
-        | { actionType: "weapon"; itemId: string; itemDbKey: string }
+      payload: { actionType: ActionTypeId } | { actionType: "weapon"; itemDbKey: string }
     }
   | { type: "SET_ACTION_SUBTYPE"; payload: { actionSubtype: string; apCost?: number } }
   | { type: "SET_FORM"; payload: Partial<ActionStateContext> }
-  | { type: "RESET"; payload: { actorId: string } }
+  | { type: "SET_ROLL"; payload: string }
+  | { type: "RESET"; payload: undefined }
 
 const reducer = (state: ActionStateContext, { type, payload }: Action): ActionStateContext => {
   switch (type) {
     case "SET_ACTION_TYPE": {
-      const { isCombinedAction, actorId } = state
+      const { isCombinedAction } = state
       const { actionType } = payload
-      const newState = { ...defaultActionForm, isCombinedAction, actorId, actionType }
-      if ("itemId" in payload)
-        return { ...newState, itemId: payload.itemId, itemDbKey: payload.itemDbKey }
+      const newState = { ...defaultActionForm, isCombinedAction, actionType }
+      if ("itemDbKey" in payload) return { ...newState, itemDbKey: payload.itemDbKey }
       if (actionType === "prepare" || actionType === "wait")
         return { ...newState, isCombinedAction: false }
       return newState
     }
 
     case "SET_ACTION_SUBTYPE": {
-      const { actionType, actorId, itemId, itemDbKey, isCombinedAction } = state
+      const { actionType, itemDbKey, isCombinedAction } = state
       const { actionSubtype, apCost = defaultActionForm.apCost } = payload
       const newState = {
         ...defaultActionForm,
         isCombinedAction,
         actionType,
-        actorId,
         actionSubtype,
         apCost
       }
-      if (actionType === "weapon") return { ...newState, itemId, itemDbKey }
+      if (actionType === "weapon") return { ...newState, itemDbKey }
       return newState
     }
 
     case "SET_FORM":
       return { ...state, ...payload }
 
+    case "SET_ROLL": {
+      const initRollValue = state?.actorDiceScore ?? ""
+      const actorDiceScore = getNewNumpadValue(initRollValue, payload)
+      return { ...state, actorDiceScore }
+    }
+
     case "RESET":
-      return { ...defaultActionForm, actorId: payload.actorId }
+      return defaultActionForm
 
     default: {
       throw Error(`Unknown action : ${type}`)
@@ -110,9 +105,7 @@ const reducer = (state: ActionStateContext, { type, payload }: Action): ActionSt
 }
 
 export function ActionProvider({ children }: { children: React.ReactNode }) {
-  const character = useCharacter()
-  const actorId = character.charId
-  const [state, dispatch] = useReducer(reducer, { ...defaultActionForm, actorId })
+  const [state, dispatch] = useReducer(reducer, defaultActionForm)
 
   const api = useMemo(
     () => ({
@@ -132,11 +125,15 @@ export function ActionProvider({ children }: { children: React.ReactNode }) {
         dispatch({ type: "SET_FORM", payload })
       },
 
+      setRoll: (payload: string) => {
+        dispatch({ type: "SET_ROLL", payload })
+      },
+
       reset: () => {
-        dispatch({ type: "RESET", payload: { actorId } })
+        dispatch({ type: "RESET", payload: undefined })
       }
     }),
-    [actorId]
+    []
   )
 
   return (

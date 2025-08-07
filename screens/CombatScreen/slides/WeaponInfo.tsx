@@ -39,8 +39,6 @@ export default function WeaponInfo({ selectedWeapon }: { selectedWeapon?: string
 
   const hasMalus = getHasStrengthMalus(weapon, char.special.curr)
 
-  // TODO: handle very long weapon name
-
   return (
     <>
       <Row style={{ alignItems: "center", justifyContent: "center" }}>

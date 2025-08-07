@@ -3,11 +3,6 @@ import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 import { computed, makeObservable, observable } from "mobx"
 
 import { DamageEntries, DbAction, OppositionRoll, SimpleRoll } from "./combats.types"
-import {
-  getActionHasNoItem,
-  getActionHasNoRoll,
-  getActionIsNotAggressive
-} from "./utils/combat-utils"
 
 type PlayableId = string
 type ItemId = string
@@ -19,7 +14,6 @@ export default class Action {
   actorId?: PlayableId
   isCombinedAction?: boolean
   apCost?: number
-  isSuccess?: boolean
   isDone?: boolean
   roll?: SimpleRoll | false
   oppositionRoll?: OppositionRoll | false
@@ -32,6 +26,24 @@ export default class Action {
   rawDamage?: number | false
   damageType?: DamageTypeId | false
 
+  static getActionHasNoRoll = (action: DbAction) => {
+    const { actionType, actionSubtype } = action
+    const noRollTypes = ["prepare", "wait", "other"]
+    if (actionType && noRollTypes.includes(actionType)) return true
+    if (actionType === "item" && actionSubtype !== "throw") return true
+    return false
+  }
+
+  static getActionIsNotAggressive = ({ actionSubtype }: DbAction) => {
+    const aggressiveActionsSubtypes = ["basic", "aim", "burst", "throw", "hit"]
+    return !aggressiveActionsSubtypes.includes(actionSubtype ?? "")
+  }
+
+  static getActionHasNoItem = (action: DbAction) => {
+    const noItemActions = ["movement", "other", "wait", "prepare", "other"]
+    return noItemActions.includes(action.actionType ?? "")
+  }
+
   constructor(payload: DbAction) {
     const { actionType, actionSubtype } = payload
     this.actionType = actionType
@@ -40,7 +52,7 @@ export default class Action {
     this.isCombinedAction = payload.isCombinedAction
     this.apCost = payload.apCost
 
-    const hasNoRoll = getActionHasNoRoll(payload)
+    const hasNoRoll = Action.getActionHasNoRoll(payload)
     if (hasNoRoll) {
       this.roll = false
       this.healthChangeEntries = false
@@ -49,7 +61,7 @@ export default class Action {
       this.healthChangeEntries = payload.healthChangeEntries
     }
 
-    const actionIsNotAggressive = getActionIsNotAggressive(payload)
+    const actionIsNotAggressive = Action.getActionIsNotAggressive(payload)
     if (actionIsNotAggressive) {
       this.oppositionRoll = false
       this.targetId = false
@@ -64,7 +76,7 @@ export default class Action {
       this.damageLocalization = payload.damageLocalization
     }
 
-    const hasNoItem = getActionHasNoItem(payload)
+    const hasNoItem = Action.getActionHasNoItem(payload)
     if (hasNoItem) {
       this.itemId = false
       this.itemDbKey = false
@@ -82,17 +94,17 @@ export default class Action {
       actorId: observable,
       isCombinedAction: observable,
       apCost: observable,
+      isDone: observable,
       roll: observable,
       oppositionRoll: observable,
+      healthChangeEntries: observable,
       itemId: observable,
       itemDbKey: observable,
       targetId: observable,
-      isSuccess: observable,
       damageLocalization: observable,
       aimZone: observable,
       rawDamage: observable,
       damageType: observable,
-      isDone: observable,
       //
       combatStep: computed
     })

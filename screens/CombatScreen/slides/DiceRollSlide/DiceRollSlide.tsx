@@ -1,16 +1,9 @@
 import Character from "lib/character/Character"
-import { Roll, SimpleRoll } from "lib/combat/combats.types"
 import difficultyArray from "lib/combat/const/difficulty"
-import {
-  getActionId,
-  getCurrentRoundId,
-  getDiceRollData,
-  getItemWithSkillFromId
-} from "lib/combat/utils/combat-utils"
+import { getDiceRollData, getItemWithSkillFromId } from "lib/combat/utils/combat-utils"
 
 import Col from "components/Col"
 import NumPad from "components/NumPad/NumPad"
-import useNumPad from "components/NumPad/useNumPad"
 import Section from "components/Section"
 import DrawerSlide from "components/Slides/DrawerSlide"
 import Spacer from "components/Spacer"
@@ -39,7 +32,7 @@ export default function DiceRollSlide({ scrollNext }: DiceRollSlideProps) {
   const inventory = useInventory()
   const { combat } = useCombat()
 
-  const { setForm } = useActionApi()
+  const { setRoll } = useActionApi()
   const form = useActionForm()
 
   let item
@@ -57,42 +50,29 @@ export default function DiceRollSlide({ scrollNext }: DiceRollSlideProps) {
 
   const { skillLabel, totalSkillScore } = getDiceRollData({ ...form, item }, char)
 
-  const { scoreStr, onPressKeypad } = useNumPad(form.roll?.actorDiceScore?.toString())
+  const action = combat?.currAction
+  if (!action) return <SlideError error={slideErrors.noCombatError} />
+  if (action.roll === false) return <NoRollSlide />
+  if (action.roll === undefined) return <AwaitGmSlide messageCase="difficulty" />
+  if (!action.roll.difficultyModifier) return <AwaitGmSlide messageCase="difficulty" />
 
-  const onPressConfirm = async (r: SimpleRoll) => {
-    if (combat === null || !scrollNext) return
-    setForm({ roll: r })
-    await useCases.combat.updateAction({ combat, payload: { roll: r } })
-    scrollNext()
-  }
-
-  if (combat === null) return <SlideError error={slideErrors.noCombatError} />
-
-  const roundId = getCurrentRoundId(combat)
-  const actionId = getActionId(combat)
-  const currRoll = combat?.rounds?.[roundId]?.[actionId]?.roll
-  const isAwaitingGm = currRoll === undefined
-
-  if (isAwaitingGm) return <AwaitGmSlide messageCase="difficulty" />
-  if (currRoll === false) return <NoRollSlide />
-
-  const difficultyScore = currRoll?.difficultyModifier ?? 0
+  const difficultyScore = action.roll?.difficultyModifier ?? 0
   const difficultyLvl = difficultyArray.find(e => difficultyScore <= e.threshold)
 
-  const diceScore = parseInt(scoreStr, 10)
-  const isValid = scoreStr.length > 0 && !Number.isNaN(diceScore)
-  const prevRoll = combat.rounds?.[roundId]?.[actionId]?.roll
-  const payload: Roll = {
-    ...prevRoll,
-    difficultyModifier: difficultyScore,
-    actorDiceScore: diceScore,
-    actorSkillScore: totalSkillScore
+  const actorDiceScore = parseInt(form.actorDiceScore, 10)
+  const isValid = form.actorDiceScore.length > 0 && !Number.isNaN(actorDiceScore)
+  const roll = { ...action.roll, actorDiceScore }
+
+  const onPressConfirm = async () => {
+    if (combat === null || !scrollNext || !isValid) return
+    await useCases.combat.updateAction({ combat, payload: { roll } })
+    scrollNext()
   }
 
   return (
     <DrawerSlide>
       <Section title="score aux dés" contentContainerStyle={{ flex: 1, height: "100%" }}>
-        <NumPad onPressKeyPad={onPressKeypad} />
+        <NumPad onPressKeyPad={setRoll} />
       </Section>
 
       <Spacer x={layout.globalPadding} />
@@ -103,7 +83,7 @@ export default function DiceRollSlide({ scrollNext }: DiceRollSlideProps) {
           title="JET DE DÉ"
           contentContainerStyle={styles.scoreContainer}
         >
-          <Txt style={styles.score}>{scoreStr}</Txt>
+          <Txt style={styles.score}>{form.actorDiceScore}</Txt>
         </Section>
         <Spacer y={layout.globalPadding} />
         <Section
@@ -136,7 +116,7 @@ export default function DiceRollSlide({ scrollNext }: DiceRollSlideProps) {
         <Spacer y={layout.globalPadding} />
 
         <Section title="valider" contentContainerStyle={styles.scoreContainer}>
-          <NextButton onPress={() => onPressConfirm(payload)} size={55} disabled={!isValid} />
+          <NextButton onPress={() => onPressConfirm()} size={55} disabled={!isValid} />
         </Section>
       </Col>
     </DrawerSlide>
