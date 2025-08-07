@@ -3,13 +3,8 @@ import React, { createContext, useContext, useMemo, useReducer } from "react"
 import { getNewNumpadValue } from "components/NumPad/useNumPad"
 
 export type ReactionStateContext = {
-  // charId: string
   reaction: "none" | "parry" | "dodge"
   diceRoll: string
-  // skillScore: number
-  // skillId?: SkillId
-  // apCost: number
-  // armorClass: number
 }
 
 type ReactionApiContext = {
@@ -18,14 +13,7 @@ type ReactionApiContext = {
   reset: () => void
 }
 
-export const defaultReactionForm = {
-  // charId: "",
-  reaction: "none",
-  diceRoll: ""
-  // skillScore: 0,
-  // apCost: 0,
-  // armorClass: 0
-} as const
+export const defaultReactionForm = { reaction: "none", diceRoll: "" } as const
 
 const ReactionContextForm = createContext<ReactionStateContext>({} as ReactionStateContext)
 const ReactionContextApi = createContext<ReactionApiContext>({} as ReactionApiContext)

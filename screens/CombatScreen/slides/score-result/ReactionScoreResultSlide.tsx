@@ -2,7 +2,12 @@ import { router } from "expo-router"
 
 import skillsMap from "lib/character/abilities/skills/skills"
 import { getCritFailureThreshold } from "lib/combat/const/crit"
-import { getActionId, getCurrentRoundId, getReactionAbilities } from "lib/combat/utils/combat-utils"
+import {
+  getActionId,
+  getActionScores,
+  getCurrentRoundId,
+  getReactionAbilities
+} from "lib/combat/utils/combat-utils"
 
 import Col from "components/Col"
 import Row from "components/Row"
@@ -23,7 +28,7 @@ import styles from "./ScoreResultSlide.styles"
 
 export default function ReactionScoreResultSlide() {
   const char = useCharacter()
-  const { charId, secAttr, special } = char
+  const { secAttr, special } = char
   const { combat, players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
   const { diceRoll, reaction } = useReactionForm()
@@ -32,10 +37,6 @@ export default function ReactionScoreResultSlide() {
 
   const roundId = getCurrentRoundId(combat)
   const actionId = getActionId(combat)
-
-  const opponnentActionBonus = contenders?.[charId]?.combatData?.actionBonus ?? 0
-  const oppononentAcBonus = contenders?.[charId]?.combatData?.acBonusRecord?.[roundId] ?? 0
-  const opponentAc = secAttr.curr.armorClass + oppononentAcBonus
 
   const roll = combat?.rounds?.[roundId]?.[actionId]?.roll
   const action = combat?.rounds?.[roundId]?.[actionId]
@@ -48,13 +49,10 @@ export default function ReactionScoreResultSlide() {
   const { skillId, total, curr, knowledgeBonus, bonus } = reactionAbilities[reaction]
   const skillLabel = skillsMap[skillId].label
 
-  // TODO: refactor with getActionScore()
-  const { actorSkillScore = 0, actorDiceScore = 0, difficultyModifier } = roll
-  const actorBonus = contenders?.[action.actorId]?.combatData?.actionBonus ?? 0
-  const actorScore = actorSkillScore - actorDiceScore + actorBonus
-  const actorFinalScore = actorScore - opponentAc - difficultyModifier
+  const scores = getActionScores(combat, contenders)
+  const actorFinalScore = scores?.actorScores?.actorFinalScore ?? 0
 
-  const score = total - diceScore + opponnentActionBonus
+  const score = total - diceScore + bonus
   const isCritFail = diceScore >= getCritFailureThreshold(special.curr)
   const isCrit = diceScore < secAttr.curr.critChance
   const finalScore = score - actorFinalScore
@@ -90,7 +88,7 @@ export default function ReactionScoreResultSlide() {
           <Spacer x={10} />
           <Col style={styles.scoreContainer}>
             <Txt>Bonus / Malus</Txt>
-            <Txt style={styles.score}>{opponnentActionBonus}</Txt>
+            <Txt style={styles.score}>{bonus}</Txt>
           </Col>
           <Spacer x={10} />
           <Txt style={styles.score}>=</Txt>
