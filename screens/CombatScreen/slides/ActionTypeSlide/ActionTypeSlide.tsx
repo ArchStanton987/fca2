@@ -59,7 +59,7 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
   const submit = async () => {
     if (!combat || !players || !npcs) throw new Error("No combat found")
 
-    const payload = { ...form, actorId: charId }
+    const payload = { ...form, actorId: charId, apCost: undefined }
     if (form.actionType === "wait" || form.actionType === "prepare") {
       try {
         await useCases.combat.doCombatAction({ combat, contenders, action: payload })

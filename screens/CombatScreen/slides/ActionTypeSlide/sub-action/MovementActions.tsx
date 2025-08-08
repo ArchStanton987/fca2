@@ -6,23 +6,14 @@ import ScrollSection from "components/Section/ScrollSection"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
-import { useCombat } from "providers/CombatProvider"
 import colors from "styles/colors"
 
 const title = "action / pa / dist"
 
 export default function MovementActions() {
   const { status } = useCharacter()
-  const { combat } = useCombat()
   const { actionSubtype } = useActionForm()
-  const { setActionSubtype, setForm } = useActionApi()
-
-  const onPressElement = (id: keyof typeof actions.movement.subtypes) => {
-    if (!combat) throw new Error("No combat found")
-    setActionSubtype(id)
-    const apCost = actions.movement.subtypes[id].apCost ?? status.currAp
-    setForm({ apCost })
-  }
+  const { setActionSubtype } = useActionApi()
 
   return (
     <ScrollSection style={{ flex: 1 }} title={title}>
@@ -31,11 +22,12 @@ export default function MovementActions() {
         keyExtractor={item => item.id}
         renderItem={({ item }) => {
           const disabled = typeof item.apCost === "number" && status.currAp < item.apCost
+          const apCost = actions.movement.subtypes[item.id].apCost ?? status.currAp
           return (
             <ListItemSelectable
               isSelected={actionSubtype === item.id}
               style={{ flexDirection: "row", justifyContent: "space-between" }}
-              onPress={() => onPressElement(item.id)}
+              onPress={() => setActionSubtype(item.id, apCost)}
               disabled={disabled}
             >
               <Txt style={[{ flex: 1 }, disabled && { color: colors.terColor }]}>{item.label}</Txt>

@@ -8,18 +8,12 @@ import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import colors from "styles/colors"
 
-// const title = [{ title: "action", containerStyle: { flex: 1 } }, { title: "pa" }]
 const title = "pa"
 
 export default function ItemActions() {
   const { status } = useCharacter()
   const { actionSubtype } = useActionForm()
-  const { setActionSubtype, setForm } = useActionApi()
-
-  const onPressElement = (id: string, apCost: number) => {
-    setActionSubtype(id)
-    setForm({ apCost })
-  }
+  const { setActionSubtype } = useActionApi()
 
   return (
     <ScrollSection style={{ flex: 1 }} title={title}>
@@ -32,7 +26,7 @@ export default function ItemActions() {
             <ListItemSelectable
               isSelected={actionSubtype === item.id}
               style={{ flexDirection: "row", justifyContent: "space-between" }}
-              onPress={() => onPressElement(item.id, item.apCost)}
+              onPress={() => setActionSubtype(item.id, item.apCost)}
               disabled={status.currAp < item.apCost}
             >
               <Txt style={disabled && { color: colors.terColor }}>{item.label}</Txt>

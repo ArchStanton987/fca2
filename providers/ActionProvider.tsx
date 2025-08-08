@@ -27,7 +27,7 @@ type ActionApiContext = {
       | { actionType: ActionTypeId }
       | { actionType: "weapon"; itemId: string; itemDbKey: string }
   ) => void
-  setActionSubtype: (actionSubtype: string, apCost?: number) => void
+  setActionSubtype: (actionSubtype: string, apCost: number) => void
   setForm: (payload: Partial<ActionStateContext>) => void
   setRoll: (e: string) => void
   reset: () => void
@@ -55,7 +55,7 @@ type Action =
       type: "SET_ACTION_TYPE"
       payload: { actionType: ActionTypeId } | { actionType: "weapon"; itemDbKey: string }
     }
-  | { type: "SET_ACTION_SUBTYPE"; payload: { actionSubtype: string; apCost?: number } }
+  | { type: "SET_ACTION_SUBTYPE"; payload: { actionSubtype: string; apCost: number } }
   | { type: "SET_FORM"; payload: Partial<ActionStateContext> }
   | { type: "SET_ROLL"; payload: string }
   | { type: "RESET"; payload: undefined }
@@ -117,7 +117,7 @@ export function ActionProvider({ children }: { children: React.ReactNode }) {
         dispatch({ type: "SET_ACTION_TYPE", payload })
       },
 
-      setActionSubtype: (actionSubtype: string, apCost?: number) => {
+      setActionSubtype: (actionSubtype: string, apCost: number) => {
         dispatch({ type: "SET_ACTION_SUBTYPE", payload: { actionSubtype, apCost } })
       },
 

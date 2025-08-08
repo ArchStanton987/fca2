@@ -23,7 +23,7 @@ export default function ActionInfo() {
     const currentIndex = weapons.findIndex(w => w.dbKey === itemDbKey)
     const nextIndex = (currentIndex + 1) % weapons.length
     const { dbKey } = weapons[nextIndex]
-    setForm({ itemDbKey: dbKey })
+    setForm({ itemDbKey: dbKey, apCost: 0, actionSubtype: undefined })
   }
 
   let description = ""
