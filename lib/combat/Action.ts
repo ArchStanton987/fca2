@@ -55,10 +55,8 @@ export default class Action {
     const hasNoRoll = Action.getActionHasNoRoll(payload)
     if (hasNoRoll) {
       this.roll = false
-      this.healthChangeEntries = false
     } else {
       this.roll = payload.roll
-      this.healthChangeEntries = payload.healthChangeEntries
     }
 
     const actionIsNotAggressive = Action.getActionIsNotAggressive(payload)
@@ -68,12 +66,14 @@ export default class Action {
       this.rawDamage = false
       this.damageType = false
       this.damageLocalization = false
+      this.healthChangeEntries = false
     } else {
       this.oppositionRoll = payload.oppositionRoll
       this.targetId = payload.targetId
       this.rawDamage = payload.rawDamage
       this.damageType = payload.damageType
       this.damageLocalization = payload.damageLocalization
+      this.healthChangeEntries = payload.healthChangeEntries
     }
 
     const hasNoItem = Action.getActionHasNoItem(payload)
