@@ -155,11 +155,11 @@ export default function ScoreResultSlide({ skillId, scrollNext }: DiceResultSlid
             </>
           ) : null}
 
-          <Txt style={styles.score}>+</Txt>
+          <Txt style={styles.score}>{difficultyModifier > 0 ? "-" : "+"}</Txt>
           <Spacer x={10} />
           <Col style={styles.scoreContainer}>
             <Txt>Difficulté</Txt>
-            <Txt style={styles.score}>{difficultyModifier}</Txt>
+            <Txt style={styles.score}>{Math.abs(difficultyModifier)}</Txt>
           </Col>
           <Spacer x={10} />
           <Txt style={styles.score}>=</Txt>
