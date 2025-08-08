@@ -11,6 +11,7 @@ import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
 
@@ -31,8 +32,9 @@ const styles = StyleSheet.create({
 })
 
 export default function PickTargetSlide({ scrollNext }: SlideProps) {
+  const useCases = useGetUseCases()
   const { charId } = useCharacter()
-  const { players, npcs } = useCombat()
+  const { combat, players, npcs } = useCombat()
   const contenders = {
     ...players,
     ...npcs,
@@ -41,9 +43,16 @@ export default function PickTargetSlide({ scrollNext }: SlideProps) {
 
   const { targetId } = useActionForm()
   const { setForm } = useActionApi()
+  const form = useActionForm()
 
   const onPressPlayer = (id: string) => {
     setForm({ targetId: id })
+  }
+
+  const submit = () => {
+    if (!combat) return
+    useCases.combat.updateAction({ combat, payload: form })
+    scrollNext?.()
   }
 
   const targetList = Object.values(contenders).filter(e => e.char.charId !== charId)
@@ -79,7 +88,7 @@ export default function PickTargetSlide({ scrollNext }: SlideProps) {
         <Spacer y={layout.globalPadding} />
 
         <Section title="suivant" contentContainerStyle={styles.centeredSection}>
-          <NextButton disabled={!targetId} onPress={scrollNext} />
+          <NextButton disabled={!targetId} onPress={submit} />
         </Section>
       </Col>
     </DrawerSlide>
