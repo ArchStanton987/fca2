@@ -62,7 +62,7 @@ export default function DiceRollSlide({ scrollNext }: DiceRollSlideProps) {
   const difficultyLvl = difficultyArray.find(e => difficultyScore <= e.threshold)
 
   const actorDiceScore = form.actorDiceScore ? parseInt(form.actorDiceScore, 10) : 0
-  const isValid = !Number.isNaN(actorDiceScore)
+  const isValid = !Number.isNaN(actorDiceScore) && actorDiceScore > 0 && actorDiceScore < 101
   const roll = { ...action.roll, actorSkillScore: totalSkillScore, actorDiceScore }
 
   const onPressConfirm = async () => {
