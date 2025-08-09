@@ -40,5 +40,6 @@ export type DbMiscObjectData = {
 export type MiscObject = {
   id: MiscObjectId
   dbKey: string
+  category: "misc"
   data: MiscObjectData
 }

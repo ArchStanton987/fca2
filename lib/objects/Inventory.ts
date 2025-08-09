@@ -68,6 +68,8 @@ export default class Inventory {
       //
       inventory: computed,
       //
+      allItems: computed,
+      //
       groupedConsumables: computed,
       groupedMiscObjects: computed,
 
@@ -84,7 +86,7 @@ export default class Inventory {
   get clothings(): Clothing[] {
     return Object.entries(this.dbInventory.clothings || []).map(([dbKey, { id }]) => {
       const isEquiped = this.charData.dbEquipedObjects?.clothings?.[dbKey] !== undefined
-      return { data: this.allClothings[id], dbKey, id, isEquiped }
+      return { data: this.allClothings[id], dbKey, id, isEquiped, category: "clothing" }
     })
   }
 
@@ -92,6 +94,7 @@ export default class Inventory {
     return Object.entries(this.dbInventory.consumables || []).map(([dbKey, value]) => ({
       data: this.allConsumables[value.id as ConsumableId],
       dbKey,
+      category: "consumable",
       id: value.id,
       remainingUse: value.remainingUse
     }))
@@ -110,6 +113,7 @@ export default class Inventory {
   get miscObjects(): MiscObject[] {
     return Object.entries(this.dbInventory.miscObjects || {}).map(([dbKey, { id }]) => ({
       data: this.allMiscObjects[id],
+      category: "misc",
       dbKey,
       id
     }))
@@ -186,6 +190,15 @@ export default class Inventory {
       consumables: this.consumablesRecord,
       miscObjects: this.miscObjectsRecord,
       ammo: this.ammoRecord
+    }
+  }
+
+  get allItems() {
+    return {
+      ...this.weaponsRecord,
+      ...this.clothingsRecord,
+      ...this.consumablesRecord,
+      ...this.miscObjectsRecord
     }
   }
 

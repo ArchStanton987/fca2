@@ -93,6 +93,7 @@ export default class NonHuman implements Playable {
       skills: computed,
       knowledges: computed,
       equipedObjects: computed,
+      equipedObjectsRecord: computed,
       dbEquipedObjects: computed,
       //
       effectsRecord: computed,

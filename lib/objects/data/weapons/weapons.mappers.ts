@@ -51,7 +51,7 @@ export const dbToWeapon = (
   }
   const isEquiped = dbEquipedObjects?.weapons?.[dbKey] !== undefined
   const data = { ...weaponsMap[id], basicApCost, specialApCost }
-  return { inMagazine, data, dbKey, id, skill, isEquiped, ammo }
+  return { inMagazine, data, dbKey, id, skill, isEquiped, ammo, category: "weapon" }
 }
 
 export const attackToWeapon = (
@@ -61,6 +61,7 @@ export const attackToWeapon = (
   return {
     id: name as WeaponId,
     dbKey: name,
+    category: "weapon",
     skill,
     isEquiped: true,
     data: {

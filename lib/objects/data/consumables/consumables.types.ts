@@ -46,6 +46,7 @@ export type DbConsumableData = {
 export type Consumable = {
   id: string
   dbKey: string
+  category: "consumable"
   remainingUse?: number
   data: ConsumableData
 }

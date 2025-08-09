@@ -82,6 +82,7 @@ export type WeaponData = {
 
 export type Weapon = {
   id: WeaponId
+  category: "weapon"
   dbKey: string
   skill: number
   isEquiped: boolean
