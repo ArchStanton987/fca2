@@ -9,12 +9,7 @@ import repositoryMap from "lib/shared/db/get-repository"
 
 import Combat from "../Combat"
 import { DbAction, PlayerCombatData } from "../combats.types"
-import {
-  getActionId,
-  getActivePlayersWithAp,
-  getCurrentRoundId,
-  getIsActionEndingRound
-} from "../utils/combat-utils"
+import { getActivePlayersWithAp, getIsActionEndingRound } from "../utils/combat-utils"
 import applyDamageEntries from "./apply-damage-entries"
 import itemAction from "./item-action"
 import prepareAction from "./prepare-action"
@@ -40,9 +35,7 @@ export default function doCombatAction(
     const { apCost = 0, actorId, actionType, actionSubtype } = action
     const { charId, status, meta } = contenders[actorId].char
 
-    const roundId = getCurrentRoundId(combat)
-    const actionId = getActionId(combat)
-    const storedAction = combat.rounds[roundId][actionId]
+    const storedAction = combat?.currAction
 
     if (apCost > status.currAp) throw new Error("Not enough AP to perform this action")
 

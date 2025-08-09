@@ -52,6 +52,7 @@ export default function GMActionsScreen() {
     } else {
       useCases.combat.setDifficulty({ combat, roll })
     }
+    setDifficulty(0)
   }
 
   const handleSetDiff = useCallback((v: number) => {
