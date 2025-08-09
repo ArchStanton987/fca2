@@ -71,7 +71,6 @@ export default function PickReactionSlide({ scrollNext }: SlideProps) {
   }
 
   const onPressNext = async () => {
-    if (!scrollNext) throw new Error("scroll fn not provided")
     if (!combat) throw new Error("could not find combat")
     if (leftAp < 0) throw new Error("No enough AP")
     if (reaction === "none") {
@@ -80,7 +79,7 @@ export default function PickReactionSlide({ scrollNext }: SlideProps) {
       reset()
       return
     }
-    scrollNext()
+    scrollNext?.()
   }
 
   return (

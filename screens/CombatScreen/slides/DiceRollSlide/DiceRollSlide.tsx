@@ -78,10 +78,14 @@ export default function DiceRollSlide({ scrollNext }: DiceRollSlideProps) {
     scrollNext()
   }
 
+  const handlePad = (v: string) => {
+    setRoll(v, "action")
+  }
+
   return (
     <DrawerSlide>
       <Section title="score aux dés" contentContainerStyle={{ flex: 1, height: "100%" }}>
-        <NumPad onPressKeyPad={setRoll} />
+        <NumPad onPressKeyPad={handlePad} />
       </Section>
 
       <Spacer x={layout.globalPadding} />

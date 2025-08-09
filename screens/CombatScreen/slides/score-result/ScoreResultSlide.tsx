@@ -12,7 +12,6 @@ import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
-import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
@@ -32,7 +31,6 @@ export default function ScoreResultSlide({ skillId, scrollNext }: DiceResultSlid
   const useCases = useGetUseCases()
   const char = useCharacter()
   const { charId, secAttr, special } = char
-  const inv = useInventory()
   const { combat, npcs, players } = useCombat()
   const contenders = { ...players, ...npcs }
   const form = useActionForm()
@@ -67,9 +65,8 @@ export default function ScoreResultSlide({ skillId, scrollNext }: DiceResultSlid
       return
     }
     try {
-      const item = inv.allItems[form.itemDbKey ?? ""]
-      const actionPayload = { combat, contenders, action: { ...form, actorId: charId }, item }
-      await useCases.combat.doCombatAction(actionPayload)
+      const payload = { ...action, actorId: charId }
+      await useCases.combat.doCombatAction({ combat, contenders, action: payload })
       Toast.show({ type: "custom", text1: "Action réalisée !" })
       reset()
     } catch (error) {

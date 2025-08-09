@@ -45,7 +45,7 @@ export default function ChallengeSlide() {
   const submit = async (item: Consumable) => {
     if (!combat) throw new Error("no combat")
     try {
-      const action = { ...form, actorId: charId }
+      const action = { ...combat.currAction, actorId: charId }
       await useCases.combat.doCombatAction({ action, contenders, combat, item })
       Toast.show({ type: "custom", text1: "Action réalisée" })
       reset()

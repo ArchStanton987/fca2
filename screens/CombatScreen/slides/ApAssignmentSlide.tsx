@@ -47,7 +47,7 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
   const { combat, npcs, players } = useCombat()
   const contenders = { ...players, ...npcs }
   const form = useActionForm()
-  const { apCost } = form
+  const { actionType, actionSubtype, apCost } = form
   const { setForm, reset } = useActionApi()
 
   const maxAp = secAttr.curr.actionPoints
@@ -73,7 +73,8 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
   const onPressNext = async () => {
     if (!combat || !scrollNext) return
     await useCases.combat.updateAction({ combat, payload: { apCost } })
-    const { actionType, actionSubtype } = form
+
+    const action = { ...combat?.currAction, apCost, actorId: charId }
 
     switch (actionType) {
       // TODO: case other
@@ -84,7 +85,6 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
         }
         try {
           const item = getItemFromId(inventory, form.itemDbKey)
-          const action = { ...form, actorId: charId }
           await useCases.combat.doCombatAction({ contenders, combat, action, item })
           Toast.show({ type: "custom", text1: "Action réalisée" })
           reset()
@@ -110,7 +110,6 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
           break
         }
         try {
-          const action = { ...form, actorId: charId }
           await useCases.combat.doCombatAction({ contenders, combat, action, item })
           Toast.show({ type: "custom", text1: "Action réalisée" })
           reset()

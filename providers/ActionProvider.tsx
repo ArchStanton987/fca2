@@ -16,7 +16,7 @@ export type ActionStateContext = Form<{
   targetId?: string
   aimZone?: keyof LimbsHp
   damageLocalization?: keyof LimbsHp
-  rawDamage?: number
+  rawDamage?: string
   damageType?: DamageTypeId
   itemDbKey?: string
 }>
@@ -29,7 +29,7 @@ type ActionApiContext = {
   ) => void
   setActionSubtype: (actionSubtype: string, apCost: number) => void
   setForm: (payload: Partial<ActionStateContext>) => void
-  setRoll: (e: string) => void
+  setRoll: (e: string, type: "action" | "damage") => void
   reset: () => void
 }
 
@@ -57,7 +57,7 @@ type Action =
     }
   | { type: "SET_ACTION_SUBTYPE"; payload: { actionSubtype: string; apCost: number } }
   | { type: "SET_FORM"; payload: Partial<ActionStateContext> }
-  | { type: "SET_ROLL"; payload: string }
+  | { type: "SET_ROLL"; payload: { value: string; type: "action" | "damage" } }
   | { type: "RESET"; payload: undefined }
 
 const reducer = (state: ActionStateContext, { type, payload }: Action): ActionStateContext => {
@@ -90,9 +90,10 @@ const reducer = (state: ActionStateContext, { type, payload }: Action): ActionSt
       return { ...state, ...payload }
 
     case "SET_ROLL": {
-      const initRollValue = state?.actorDiceScore ?? ""
-      const actorDiceScore = getNewNumpadValue(initRollValue, payload)
-      return { ...state, actorDiceScore }
+      const key = payload.type === "action" ? "actorDiceScore" : "rawDamage"
+      const initRollValue = state[key] ?? ""
+      const newValue = getNewNumpadValue(initRollValue, payload.value)
+      return { ...state, [key]: newValue }
     }
 
     case "RESET":
@@ -125,8 +126,8 @@ export function ActionProvider({ children }: { children: React.ReactNode }) {
         dispatch({ type: "SET_FORM", payload })
       },
 
-      setRoll: (payload: string) => {
-        dispatch({ type: "SET_ROLL", payload })
+      setRoll: (value: string, type: "action" | "damage") => {
+        dispatch({ type: "SET_ROLL", payload: { value, type } })
       },
 
       reset: () => {

@@ -56,19 +56,18 @@ export default function DamageLocalizationSlide({ scrollNext }: DamageLocalizati
     if (combat === null || !scrollNext) return
     if (!isScoreValid) throw new Error("invalid score")
     if (!damageLocalization) {
-      const payload = { ...form, damageLocalization: getBodyPart(scoreStr) }
-      await useCases.combat.updateAction({ combat, payload })
+      setForm({ damageLocalization: getBodyPart(scoreStr) })
       setIsLoading(true)
       setTimeout(
-        async () => {
-          await useCases.combat.updateAction({ combat, payload })
-          setForm({ damageLocalization: getBodyPart(scoreStr) })
+        () => {
           setIsLoading(false)
         },
-        meta.isNpc ? 0 : 2000
+        meta.isNpc ? 0 : 1500
       )
       return
     }
+    const payload = { damageLocalization: getBodyPart(scoreStr) }
+    await useCases.combat.updateAction({ combat, payload })
     scrollNext()
   }
 

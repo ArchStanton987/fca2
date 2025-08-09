@@ -9,11 +9,12 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
-import { useActionApi, useActionForm } from "providers/ActionProvider"
+import { useActionApi } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 
+import SlideError, { slideErrors } from "../SlideError"
 import AwaitGmSlide from "../wait-slides/AwaitGmSlide"
 
 const styles = StyleSheet.create({
@@ -35,22 +36,22 @@ export default function ValidateSlide() {
   const useCases = useGetUseCases()
   const { charId } = useCharacter()
   const inv = useInventory()
-  const form = useActionForm()
   const { reset } = useActionApi()
-  const { rawDamage, itemDbKey } = form
   const { combat, players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
 
-  const isDamageRolled = typeof rawDamage === "number"
-
   const action = combat?.currAction
+  if (!action) return <SlideError error={slideErrors.noCombatError} />
+  const { rawDamage, itemDbKey } = action
+  const isDamageRolled = typeof rawDamage === "number"
   const isWaitingForGm = isDamageRolled && action?.healthChangeEntries === undefined
 
   const submit = async () => {
     if (!combat) return
     try {
-      const item = getItemFromId(inv, itemDbKey)
-      const payload = { ...form, actorId: charId }
+      const itemKey = typeof itemDbKey === "string" ? itemDbKey : undefined
+      const item = getItemFromId(inv, itemKey)
+      const payload = { ...action, actorId: charId }
       await useCases.combat.doCombatAction({ combat, contenders, action: payload, item })
       Toast.show({ type: "custom", text1: "Action réalisée !" })
       reset()

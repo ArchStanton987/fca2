@@ -43,7 +43,6 @@ export default function PickTargetSlide({ scrollNext }: SlideProps) {
 
   const { targetId } = useActionForm()
   const { setForm } = useActionApi()
-  const form = useActionForm()
 
   const onPressPlayer = (id: string) => {
     setForm({ targetId: id })
@@ -51,7 +50,7 @@ export default function PickTargetSlide({ scrollNext }: SlideProps) {
 
   const submit = () => {
     if (!combat) return
-    useCases.combat.updateAction({ combat, payload: form })
+    useCases.combat.updateAction({ combat, payload: { targetId } })
     scrollNext?.()
   }
 

@@ -1,15 +1,15 @@
-damageslide : attention au do combat action (payload: form), faire MAJ action avant, envoi docombat avec action state et non action form
 controler payload update action pour toutes slides
+damageslide : attention au do combat action (payload: form), faire MAJ action avant, envoi docombat avec action state et non action form
 beasts special & skills
 liste cibles : MAJ avec morts
 
 COMBAT :
 - [HIGH] garder index de la slide lorsque revient dessus
-- [MED] système HP / limbs HP
+- [MED] système HP / limbs HP (with crit part?)
 - [MED] assignation upSkills pour perso générés (>100)
-- [MED] affiche slide roll dégâts même lorsque esquive réussie
-- [LOW] lorsque combined action et use TOUS PA, saute un tour ?
-- [LOW] pas MAJ fenètre combat lorsque tour du joueur apparaît (cas combined action ??)
+o [MED] affiche slide roll dégâts même lorsque esquive réussie
+o [LOW] lorsque combined action et use TOUS PA, saute un tour ?
+o [LOW] pas MAJ fenètre combat lorsque tour du joueur apparaît (cas combined action ??)
 
 
 
@@ -54,39 +54,6 @@ TODO: add levelup
 TODO: collectibles UI
 
 TODO: sound
-
-
-
-comment récup joueur actif ?
-1. tri caracs
-  - si currActorId => currActorId
-  - retirer contenders non actifs
-  - retirer contenders en pause
-  - retourner plus haut AP
-    => si égalité, retourner meilleur initiative
-
-PB : pas valide si action combinée, joueur avec moins de PA peut jouer
-
-
-fin combat si :
-  - action GM
-  - tous les membres d'un camp ont un statut "outOfCombat"
-=> réinitialise combatStatus, PA
-
-ajout round lorsque :
-  - n'est pas en fin de combat
-  - tous les contenders ont PA = 0
-=> réinitialise PA
-=> peut lever statut "inactive" : si "inactive" && currentRoundId n'est compris entre aucun inactiveRecord
-=> réinitialise currActorId
-
-à la fin d'une action :
-  - set currActorId
-  - check ajout round
-
-
-=> comment gérer inactif temporaire ?
- ou via combat status
 
 
 

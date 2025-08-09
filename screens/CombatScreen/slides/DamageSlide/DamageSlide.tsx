@@ -7,7 +7,6 @@ import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 
 import Col from "components/Col"
 import NumPad from "components/NumPad/NumPad"
-import useNumPad from "components/NumPad/useNumPad"
 import Section from "components/Section"
 import DrawerSlide from "components/Slides/DrawerSlide"
 import { SlideProps } from "components/Slides/Slide.types"
@@ -50,14 +49,13 @@ export default function DamageSlide({ scrollNext }: DamageSlideProps) {
   const inv = useInventory()
   const { clothingsRecord, consumablesRecord, miscObjectsRecord } = inv
   const form = useActionForm()
-  const { actionType, actionSubtype, itemDbKey } = form
-  const { setForm } = useActionApi()
+  const { actionType, actionSubtype, itemDbKey, rawDamage = "" } = form
+  const { setForm, setRoll } = useActionApi()
 
   const [isReactionResultVisible, setIsReactionResultVisible] = useState(() => true)
 
-  const { scoreStr, onPressKeypad } = useNumPad(form.rawDamage?.toString(), 3)
-  const isScoreValid =
-    (scoreStr.length > 0 && scoreStr.length < 4) || typeof form.rawDamage === "number"
+  const parsedScore = parseInt(rawDamage, 10)
+  const isValid = !Number.isNaN(parsedScore) && parsedScore >= 0 && parsedScore < 1000
 
   const action = combat?.currAction
   if (!action) return <SlideError error={slideErrors.noCombatError} />
@@ -89,29 +87,30 @@ export default function DamageSlide({ scrollNext }: DamageSlideProps) {
   }
 
   const resetField = () => {
-    setForm({ rawDamage: undefined })
+    setForm({ rawDamage: "" })
+  }
+
+  const onPressPad = (e: string) => {
+    setRoll(e, "damage")
   }
 
   const submitDamages = async () => {
     if (combat === null || !scrollNext) return
-    const parsedScore = form?.rawDamage ?? parseInt(scoreStr, 10)
-    if (!isScoreValid || Number.isNaN(parsedScore)) throw new Error("invalid score")
+    if (!isValid) throw new Error("invalid score")
     const payload = { rawDamage: parsedScore, damageType }
     await useCases.combat.updateAction({ combat, payload })
-    setForm({ rawDamage: parsedScore, damageType })
     scrollNext()
   }
   const submitNoDamages = async () => {
     if (combat === null || !scrollNext) return
     const payload = {
-      ...form,
+      ...action,
       actorId: char.charId,
       rawDamage: false as const,
       damageType: false as const,
       healthEntriesChange: false
     }
     await useCases.combat.doCombatAction({ combat, action: payload, contenders })
-    setForm({ rawDamage: 0, damageType })
     scrollNext()
   }
 
@@ -136,7 +135,7 @@ export default function DamageSlide({ scrollNext }: DamageSlideProps) {
   return (
     <DrawerSlide>
       <Section title="score de dégâts" contentContainerStyle={{ flex: 1, height: "100%" }}>
-        <NumPad onPressKeyPad={onPressKeypad} />
+        <NumPad onPressKeyPad={onPressPad} />
       </Section>
 
       <Spacer x={layout.globalPadding} />
@@ -162,14 +161,14 @@ export default function DamageSlide({ scrollNext }: DamageSlideProps) {
 
       <Col style={{ minWidth: 100 }}>
         <Section title="résultat" style={{ flex: 1 }} contentContainerStyle={styles.scoreContainer}>
-          <Txt style={styles.score}>{form?.rawDamage ?? scoreStr}</Txt>
+          <Txt style={styles.score}>{rawDamage}</Txt>
         </Section>
         <Spacer y={layout.globalPadding} />
 
         <Section title="valider" style={{ flex: 1 }} contentContainerStyle={styles.scoreContainer}>
           <PlayButton
             onLongPress={() => resetField()}
-            disabled={!isScoreValid}
+            disabled={!isValid}
             onPress={() => submitDamages()}
           />
         </Section>

@@ -6,7 +6,7 @@ import UpdateObjects from "components/UpdateObjects/UpdateObjects"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useUpdateObjects } from "contexts/UpdateObjectsContext"
-import { useActionApi, useActionForm } from "providers/ActionProvider"
+import { useActionApi } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 
@@ -16,7 +16,6 @@ export default function PickUpItemSlide({ scrollPrevious }: SlideProps) {
   const inventory = useInventory()
 
   const { state } = useUpdateObjects()
-  const form = useActionForm()
   const { reset } = useActionApi()
 
   const { combat, npcs, players } = useCombat()
@@ -32,8 +31,8 @@ export default function PickUpItemSlide({ scrollPrevious }: SlideProps) {
     if (!combat) throw new Error("No combat found")
     try {
       await useCases.inventory.exchange(character, state, inventory)
-      const action = { ...form, actorId: character.charId }
-      await useCases.combat.doCombatAction({ combat, contenders, action })
+      const payload = { ...combat.currAction, actorId: character.charId }
+      await useCases.combat.doCombatAction({ combat, contenders, action: payload })
       Toast.show({ type: "custom", text1: "Action réalisée" })
       reset()
     } catch (error) {
