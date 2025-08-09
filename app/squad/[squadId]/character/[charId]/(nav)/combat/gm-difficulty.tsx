@@ -46,8 +46,12 @@ export default function GMActionsScreen() {
   const submit = () => {
     if (!combat) return
     const prevRoll = combat.currAction.roll
-    const roll = hasRoll ? { ...prevRoll, difficultyModifier: difficulty } : false
-    useCases.combat.updateAction({ combat, payload: { roll } })
+    const roll = hasRoll ? { ...prevRoll, difficulty } : false
+    if (roll === false) {
+      useCases.combat.updateAction({ combat, payload: { roll } })
+    } else {
+      useCases.combat.setDifficulty({ combat, roll })
+    }
   }
 
   const handleSetDiff = useCallback((v: number) => {
@@ -84,7 +88,7 @@ export default function GMActionsScreen() {
 
   const action = combat.currAction
   const actionHasDifficulty = withRollActionsTypes.includes(action?.actionType as ActionTypeId)
-  const isDifficultySet = action?.roll === false || action?.roll?.difficultyModifier !== undefined
+  const isDifficultySet = action?.roll === false || action?.roll?.difficulty !== undefined
 
   if (!actionHasDifficulty)
     return (

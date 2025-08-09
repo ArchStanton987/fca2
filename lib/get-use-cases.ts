@@ -23,6 +23,7 @@ import prepareAction, { PrepareActionParams } from "./combat/use-cases/prepare-a
 import resetDifficulty, { ResetDifficultyParams } from "./combat/use-cases/reset-difficulty"
 import saveAction, { SaveActionParams } from "./combat/use-cases/save-action"
 import setAction, { SetActionParams } from "./combat/use-cases/set-action"
+import setDifficulty, { SetDifficultyParams } from "./combat/use-cases/set-difficulty"
 import startFight, { StartFightParams } from "./combat/use-cases/start-fight"
 import subAllFights from "./combat/use-cases/sub-all-fights"
 import subFight, { SubFightParams } from "./combat/use-cases/sub-fight"
@@ -102,6 +103,7 @@ export default function getUseCases(
       updateAction: (data: UpdateActionParams) => updateAction(dbType)(data),
       setAction: <K extends keyof DbAction>(data: SetActionParams<K>) => setAction(dbType)(data),
       saveAction: (data: SaveActionParams) => saveAction(dbType)(data),
+      setDifficulty: (data: SetDifficultyParams) => setDifficulty(dbType)(data),
       resetDifficulty: (data: ResetDifficultyParams) => resetDifficulty(dbType)(data),
       // GM
       applyDamageEntries: (data: ApplyDamageEntriesParams) => applyDamageEntries(dbType)(data)

@@ -1,7 +1,7 @@
 import { DbChar } from "lib/character/Character"
 import { DbEffect } from "lib/character/effects/effects.types"
 import { DbStatus } from "lib/character/status/status.types"
-import { DbAction, DbCombatEntry, PlayerCombatData } from "lib/combat/combats.types"
+import { DbAction, DbCombatEntry, PlayerCombatData, Roll } from "lib/combat/combats.types"
 import { DbNpc } from "lib/npc/npc.types"
 import { DbSquad } from "lib/squad/squad-types"
 
@@ -34,6 +34,12 @@ export type ActionParams = {
   id?: number
   childKey?: keyof DbAction
 }
+export type RollParams = {
+  combatId: string
+  roundId: number
+  id?: number
+  childKey?: keyof Roll
+}
 export type NpcParams = { id?: string; childKey?: keyof DbNpc }
 export type CharacterParams = { charType: CharType; id?: string; childKey?: keyof DbChar }
 export type StatusParams = CharParams & { childKey?: keyof DbStatus }
@@ -64,6 +70,11 @@ const rtdb = {
   getAction: ({ combatId, roundId, id, childKey }: ActionParams) =>
     id
       ? `v2/combat/${combatId}/rounds/${roundId}/${id}/${childKey ?? ""}`
+      : `v2/combat/${combatId}/rounds/${roundId}/`,
+
+  getRoll: ({ combatId, roundId, id, childKey }: RollParams) =>
+    id
+      ? `v2/combat/${combatId}/rounds/${roundId}/${id}/roll/${childKey ?? ""}`
       : `v2/combat/${combatId}/rounds/${roundId}/`,
 
   getEnemy: ({ id, childKey }: NpcParams) =>
