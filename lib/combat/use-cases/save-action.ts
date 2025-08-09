@@ -19,19 +19,21 @@ export default function saveAction(dbType: keyof typeof repositoryMap = "rtdb") 
   return async ({ action, combat, contenders }: SaveActionParams) => {
     const promises = []
 
-    const { actorId, isCombinedAction } = action
+    const { actorId, isCombinedAction, apCost = 0 } = action
     const roundId = getCurrentRoundId(combat)
     const actionId = getActionId(combat)
 
-    // if is part of a combined action, set current actor id in combat, else reset it
-    if (isCombinedAction) {
+    // if is part of a combined action & has still ap, set current actor id in combat, else reset it
+    const { currAp } = contenders[actorId].char.status
+    const hasRemainingAp = currAp - apCost > 0
+    if (isCombinedAction && hasRemainingAp) {
       promises.push(combatRepo.patch({ id: combat.id }, { currActorId: actorId }))
     } else {
       promises.push(combatRepo.deleteChild({ id: combat.id, childKey: "currActorId" }))
     }
 
     // if has rolled dices, reset action bonus
-    if (action.roll !== false && typeof action?.roll?.actorDiceScore === "number") {
+    if (action.roll !== false && typeof action?.roll?.dice === "number") {
       const { char } = contenders[actorId]
       promises.push(updateContender(dbType)({ char, combat, payload: { actionBonus: 0 } }))
     }

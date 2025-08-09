@@ -1,4 +1,4 @@
-import { getActionScores } from "lib/combat/utils/combat-utils"
+import { getRollFinalScore } from "lib/combat/utils/combat-utils"
 
 import Col from "components/Col"
 import Row from "components/Row"
@@ -21,24 +21,23 @@ export default function VisualizeReactionSlide({
   dismiss: () => void
   skipDamage: () => void
 }) {
-  const { combat, players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
+  const { combat } = useCombat()
 
-  const scores = getActionScores(combat, contenders)
-  if (scores === null) return <SlideError error={slideErrors.noDiceRollError} />
-  if (!scores.opponentScores) return <SlideError error={slideErrors.noDiceRollError} />
+  const action = combat?.currAction
+  if (!action?.roll || !action?.reactionRoll)
+    return <SlideError error={slideErrors.noDiceRollError} />
 
-  const { actorScores, opponentScores } = scores
-  const { actorFinalScore, actorReactionScore } = actorScores
-  const { opponentScore } = opponentScores
-  const isSuccess = actorReactionScore > 0
+  const actorScore = getRollFinalScore(action.roll)
+  const { opponentDice, opponentSumAbilities } = action.reactionRoll
+  const opponentScore = opponentSumAbilities - opponentDice
+  const actorReactionScore = actorScore - opponentScore
+  const actionHasFailed = actorReactionScore < 0
 
   const onPressNext = () => {
-    if (isSuccess) {
-      dismiss()
-      return
+    if (actionHasFailed) {
+      skipDamage()
     }
-    skipDamage()
+    dismiss()
   }
 
   return (
@@ -51,7 +50,7 @@ export default function VisualizeReactionSlide({
         <Row style={{ alignItems: "flex-end", justifyContent: "center" }}>
           <Col style={styles.scoreContainer}>
             <Txt>Votre score</Txt>
-            <Txt style={styles.score}>{actorFinalScore}</Txt>
+            <Txt style={styles.score}>{actorScore}</Txt>
           </Col>
           <Spacer x={10} />
           <Txt style={styles.score}>-</Txt>

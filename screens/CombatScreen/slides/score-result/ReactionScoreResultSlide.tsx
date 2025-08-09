@@ -2,7 +2,7 @@ import { router } from "expo-router"
 
 import skillsMap from "lib/character/abilities/skills/skills"
 import { getCritFailureThreshold } from "lib/combat/const/crit"
-import { getActionScores, getReactionAbilities } from "lib/combat/utils/combat-utils"
+import { getRollBonus } from "lib/combat/utils/combat-utils"
 
 import Col from "components/Col"
 import Row from "components/Row"
@@ -23,7 +23,7 @@ import styles from "./ScoreResultSlide.styles"
 
 export default function ReactionScoreResultSlide() {
   const char = useCharacter()
-  const { secAttr, special } = char
+  const { secAttr, special, equipedObjects } = char
   const { combat, players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
   const { diceRoll, reaction } = useReactionForm()
@@ -32,23 +32,25 @@ export default function ReactionScoreResultSlide() {
 
   const action = combat?.currAction
   const roll = action?.roll
+  const reactionRoll = action?.reactionRoll
 
   if (!combat || !action?.actorId) return <SlideError error={slideErrors.noCombatError} />
   if (reaction === "none") return <SlideError error={slideErrors.noDiceRollError} />
-  if (diceScore === 0 || !roll) return <SlideError error={slideErrors.noDiceRollError} />
+  if (diceScore === 0 || !roll || !reactionRoll)
+    return <SlideError error={slideErrors.noDiceRollError} />
 
-  const reactionAbilities = getReactionAbilities(char, contenders, combat)
-  const { skillId, total, curr, knowledgeBonus, bonus } = reactionAbilities[reaction]
-  const skillLabel = skillsMap[skillId].label
+  const { sumAbilities, dice, bonus, targetArmorClass, difficulty } = roll
+  const actorFinalScore = sumAbilities - dice + bonus - targetArmorClass - difficulty
 
-  const scores = getActionScores(combat, contenders)
-  const actorFinalScore = scores?.actorScores?.actorFinalScore ?? 0
-
-  const score = total - diceScore + bonus
-  const isCritFail = diceScore >= getCritFailureThreshold(special.curr)
-  const isCrit = diceScore < secAttr.curr.critChance
-  const finalScore = score - actorFinalScore
+  const { opponentSumAbilities, opponentDice, opponentId } = reactionRoll
+  const opponentBonus = getRollBonus(opponentId, contenders)
+  const opponentScore = opponentSumAbilities - opponentDice + opponentBonus
+  const isCritFail = opponentDice >= getCritFailureThreshold(special.curr)
+  const isCrit = opponentDice < secAttr.curr.critChance
+  const finalScore = opponentScore - actorFinalScore
   const isSuccess = finalScore >= 0
+
+  const weaponSkillId = equipedObjects.weapons[0].data.skillId ?? "unarmed"
 
   const submit = () => {
     reset()
@@ -61,8 +63,8 @@ export default function ReactionScoreResultSlide() {
         <Row style={styles.scoreDetailRow}>
           <Col style={styles.scoreContainer}>
             <Txt>Compétence</Txt>
-            <Txt>{skillLabel}</Txt>
-            <Txt style={styles.score}>{curr + knowledgeBonus}</Txt>
+            <Txt>{skillsMap[weaponSkillId].short}</Txt>
+            <Txt style={styles.score}>{opponentSumAbilities}</Txt>
           </Col>
           <Spacer x={10} />
           <Txt style={styles.score}>-</Txt>
@@ -80,14 +82,14 @@ export default function ReactionScoreResultSlide() {
           <Spacer x={10} />
           <Col style={styles.scoreContainer}>
             <Txt>Bonus / Malus</Txt>
-            <Txt style={styles.score}>{bonus}</Txt>
+            <Txt style={styles.score}>{opponentBonus}</Txt>
           </Col>
           <Spacer x={10} />
           <Txt style={styles.score}>=</Txt>
           <Spacer x={10} />
           <Col style={styles.scoreContainer}>
             <Txt>Score</Txt>
-            <Txt style={styles.score}>{score}</Txt>
+            <Txt style={styles.score}>{opponentScore}</Txt>
           </Col>
         </Row>
 
@@ -96,7 +98,7 @@ export default function ReactionScoreResultSlide() {
         <Row style={styles.scoreDetailRow}>
           <Col style={styles.scoreContainer}>
             <Txt>Score</Txt>
-            <Txt style={styles.score}>{score}</Txt>
+            <Txt style={styles.score}>{opponentScore}</Txt>
           </Col>
 
           <Spacer x={10} />

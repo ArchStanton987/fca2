@@ -1,3 +1,8 @@
+damageslide : attention au do combat action (payload: form), faire MAJ action avant, envoi docombat avec action state et non action form
+controler payload update action pour toutes slides
+beasts special & skills
+liste cibles : MAJ avec morts
+
 COMBAT :
 - [HIGH] garder index de la slide lorsque revient dessus
 - [MED] système HP / limbs HP

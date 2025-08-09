@@ -1,6 +1,10 @@
 import Character from "lib/character/Character"
 import difficultyArray from "lib/combat/const/difficulty"
-import { getDiceRollData, getItemWithSkillFromId } from "lib/combat/utils/combat-utils"
+import {
+  getActorSkillFromAction,
+  getContenderAc,
+  getRollBonus
+} from "lib/combat/utils/combat-utils"
 
 import Col from "components/Col"
 import NumPad from "components/NumPad/NumPad"
@@ -30,43 +34,46 @@ export default function DiceRollSlide({ scrollNext }: DiceRollSlideProps) {
 
   const char = useCharacter()
   const inventory = useInventory()
+  const { weaponsRecord = {}, consumablesRecord = {} } = inventory
   const { combat, players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
 
   const { setRoll } = useActionApi()
   const form = useActionForm()
+  const { itemDbKey = "", targetId = "" } = form
 
   let item
   if (form.actionType === "weapon") {
-    item = char.unarmed
     const isHuman = char instanceof Character
-    if (form.itemDbKey) {
+    if (itemDbKey) {
       item = isHuman
-        ? inventory.weaponsRecord[form.itemDbKey] ?? char.unarmed
-        : char.equipedObjectsRecord.weapons[form.itemDbKey]
+        ? weaponsRecord[itemDbKey] ?? char.unarmed
+        : char.equipedObjectsRecord.weapons[itemDbKey]
     }
   } else {
-    item = getItemWithSkillFromId(form.itemDbKey, inventory)
+    item = consumablesRecord[itemDbKey]
   }
 
-  const { skillLabel, totalSkillScore } = getDiceRollData(contenders, { ...form, item }, char)
+  const { skillLabel, sumAbilities } = getActorSkillFromAction({ ...form, item }, char)
 
   const action = combat?.currAction
   if (!action) return <SlideError error={slideErrors.noCombatError} />
   if (action.roll === false) return <NoRollSlide />
   if (action.roll === undefined) return <AwaitGmSlide messageCase="difficulty" />
-  if (typeof action.roll.difficultyModifier !== "number")
-    return <AwaitGmSlide messageCase="difficulty" />
+  const { difficulty } = action.roll
+  if (typeof difficulty !== "number") return <AwaitGmSlide messageCase="difficulty" />
 
-  const difficultyScore = action.roll?.difficultyModifier ?? 0
-  const difficultyLvl = difficultyArray.find(e => difficultyScore <= e.threshold)
+  const difficultyLvl = difficultyArray.find(e => difficulty <= e.threshold)
 
-  const actorDiceScore = form.actorDiceScore ? parseInt(form.actorDiceScore, 10) : 0
-  const isValid = !Number.isNaN(actorDiceScore) && actorDiceScore > 0 && actorDiceScore < 101
-  const roll = { ...action.roll, actorSkillScore: totalSkillScore, actorDiceScore }
+  const dice = form.actorDiceScore ? parseInt(form.actorDiceScore, 10) : 0
+  const isValid = !Number.isNaN(dice) && dice > 0 && dice < 101
+
+  const bonus = getRollBonus(char.charId, contenders, form)
+  const targetArmorClass = getContenderAc(targetId, combat, contenders)
 
   const onPressConfirm = async () => {
     if (combat === null || !scrollNext || !isValid) return
+    const roll = { difficulty, sumAbilities, dice, bonus, targetArmorClass }
     await useCases.combat.updateAction({ combat, payload: { roll } })
     scrollNext()
   }
@@ -93,7 +100,7 @@ export default function DiceRollSlide({ scrollNext }: DiceRollSlideProps) {
           title={skillLabel}
           contentContainerStyle={styles.scoreContainer}
         >
-          <Txt style={styles.score}>{totalSkillScore}</Txt>
+          <Txt style={styles.score}>{sumAbilities}</Txt>
         </Section>
       </Col>
 

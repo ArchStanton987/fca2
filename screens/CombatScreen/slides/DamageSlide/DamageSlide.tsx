@@ -96,15 +96,21 @@ export default function DamageSlide({ scrollNext }: DamageSlideProps) {
     if (combat === null || !scrollNext) return
     const parsedScore = form?.rawDamage ?? parseInt(scoreStr, 10)
     if (!isScoreValid || Number.isNaN(parsedScore)) throw new Error("invalid score")
-    const payload = { ...form, rawDamage: parsedScore, damageType }
+    const payload = { rawDamage: parsedScore, damageType }
     await useCases.combat.updateAction({ combat, payload })
     setForm({ rawDamage: parsedScore, damageType })
     scrollNext()
   }
   const submitNoDamages = async () => {
     if (combat === null || !scrollNext) return
-    const payload = { ...form, rawDamage: 0, damageType, healthEntriesChange: false }
-    await useCases.combat.updateAction({ combat, payload })
+    const payload = {
+      ...form,
+      actorId: char.charId,
+      rawDamage: false as const,
+      damageType: false as const,
+      healthEntriesChange: false
+    }
+    await useCases.combat.doCombatAction({ combat, action: payload, contenders })
     setForm({ rawDamage: 0, damageType })
     scrollNext()
   }
@@ -115,10 +121,10 @@ export default function DamageSlide({ scrollNext }: DamageSlideProps) {
   if (opponent) {
     opponentCanReact = getPlayerCanReact(opponent, combat)
   }
-  if (opponentCanReact && action.oppositionRoll === undefined) return <AwaitReactionSlide />
+  if (opponentCanReact && action.reactionRoll === undefined) return <AwaitReactionSlide />
 
   // SEE REACTION
-  if (!!action.oppositionRoll && isReactionResultVisible)
+  if (!!action.reactionRoll && isReactionResultVisible)
     return (
       <VisualizeReactionSlide
         dismiss={() => setIsReactionResultVisible(false)}

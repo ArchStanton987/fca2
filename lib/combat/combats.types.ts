@@ -28,19 +28,19 @@ export type PlayerCombatData = {
   acBonusRecord: ArmorClassBonusRecord
 }
 
-export type SimpleRoll = {
-  actorSkillScore?: number
-  actorDiceScore?: number
-  difficultyModifier: number
+export type Roll = {
+  sumAbilities: number
+  dice: number
+  bonus: number
+  difficulty: number
+  targetArmorClass: number
 }
-export type OppositionRoll = {
+export type ReactionRoll = {
   opponentId: string
-  opponentSkillScore: number
-  opponentDiceScore: number
-  opponentArmorClass?: number
+  opponentSumAbilities: number
+  opponentDice: number
   opponentApCost: number
 }
-export type Roll = SimpleRoll | OppositionRoll
 type DamageEntry = {
   charId: string
   entryType: "hp"
@@ -63,8 +63,8 @@ export type DbAction = {
   apCost?: number
   isSuccess?: boolean
   isDone?: boolean
-  roll?: SimpleRoll | false
-  oppositionRoll?: OppositionRoll | false
+  roll?: Roll | false
+  reactionRoll?: ReactionRoll | false
   healthChangeEntries?: DamageEntries | false
   itemId?: ItemId | false
   itemDbKey?: string | false
@@ -81,8 +81,8 @@ export type WeaponAction = {
   actorId: CharId
   isCombinedAction?: boolean
   apCost?: number
-  roll?: SimpleRoll | false
-  oppositionRoll?: OppositionRoll | false
+  roll?: Roll | false
+  reactionRoll?: ReactionRoll | false
   healthChangeEntries?: DamageEntries | false
   itemId?: ItemId
   itemDbKey?: string
@@ -101,7 +101,7 @@ export type MovementAction = {
   actorId: CharId
   isCombinedAction?: boolean
   apCost?: number
-  roll?: SimpleRoll | false
+  roll?: Roll | false
   isSuccess?: boolean
   isDone?: boolean
 }
@@ -112,8 +112,8 @@ export type ItemAction = {
   actorId: CharId
   isCombinedAction?: boolean
   apCost?: number
-  roll?: SimpleRoll | false
-  oppositionRoll?: OppositionRoll | false
+  roll?: Roll | false
+  reactionRoll?: ReactionRoll | false
   healthChangeEntries?: DamageEntries | false
   itemId?: ItemId
   itemDbKey?: string

@@ -41,14 +41,14 @@ export default function ReactionRollSlide({ scrollNext }: SlideProps) {
 
   const onPressConfirm = async () => {
     if (!scrollNext || !isValid || !combat) return
-    const oppositionRoll = {
+    const reactionRoll = {
       opponentId: charId,
       opponentApCost: reactionsRecord[reaction].apCost,
-      opponentDiceScore: diceScore,
-      opponentSkillScore: total,
+      opponentDice: diceScore,
+      opponentSumAbilities: total,
       opponentArmorClass: reactionAbilities.armorClass.total
     }
-    await useCases.combat.updateAction({ combat, payload: { oppositionRoll } })
+    await useCases.combat.updateAction({ combat, payload: { reactionRoll } })
     scrollNext()
   }
 

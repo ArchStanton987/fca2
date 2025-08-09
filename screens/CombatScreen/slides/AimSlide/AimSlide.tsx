@@ -76,8 +76,8 @@ export default function AimSlide({ scrollNext }: SlideProps) {
         <Section style={{ flex: 1 }} title="effets" contentContainerStyle={styles.centeredSection}>
           {aimZone ? (
             <>
-              <Txt>Malus de visée : {limbsMap[aimZone].aimBonus}</Txt>
-              <Txt>Bonus chance crit. : {limbsMap[aimZone].aimBonus}</Txt>
+              <Txt>Malus de visée : {limbsMap[aimZone].aimMalus}</Txt>
+              <Txt>Bonus chance crit. : {limbsMap[aimZone].aimMalus}</Txt>
             </>
           ) : null}
         </Section>

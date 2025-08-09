@@ -5,6 +5,7 @@ import { getKnowledgesBonus } from "lib/character/abilities/knowledges/knowledge
 import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-levels"
 import skillsMap from "lib/character/abilities/skills/skills"
 import { Skill, SkillId } from "lib/character/abilities/skills/skills.types"
+import { limbsMap } from "lib/character/health/health"
 import { BodyPart, LimbsHp } from "lib/character/health/health-types"
 import { withDodgeSpecies } from "lib/character/meta/meta"
 import Inventory from "lib/objects/Inventory"
@@ -16,7 +17,7 @@ import { isKeyOf } from "utils/ts-utils"
 
 import Action from "../Action"
 import Combat from "../Combat"
-import { PlayerCombatData } from "../combats.types"
+import { PlayerCombatData, Roll } from "../combats.types"
 import actions from "../const/actions"
 import { DEFAULT_INITIATIVE, DODGE_AP_COST, PARRY_AP_COST } from "../const/combat-const"
 
@@ -118,7 +119,7 @@ interface ActionForm<T extends keyof typeof actions> {
   item?: Consumable | Weapon
 }
 
-export const getSkillFromAction = <T extends keyof typeof actions>({
+export const getSkillIdFromAction = <T extends keyof typeof actions>({
   actionType,
   actionSubtype,
   item
@@ -163,25 +164,24 @@ const getKnowledgesFromAction = <T extends keyof typeof actions>({
   return []
 }
 
-export const getDiceRollData = <T extends keyof typeof actions>(
-  contenders: Record<string, PlayerData>,
+export const getActorSkillFromAction = <T extends keyof typeof actions>(
   { actionType, actionSubtype, item }: ActionForm<T>,
   char: Playable
-): { skillId: SkillId; skillLabel: string; totalSkillScore: number } => {
+) => {
   if (actionType === "weapon" && item) {
     if (actionSubtype !== "hit" && actionSubtype !== "throw") {
       if (!("skill" in item)) throw new Error("Item is not a weapon")
       const { skillId } = item.data
-      return { skillId, skillLabel: skillsMap[skillId].short, totalSkillScore: item.skill }
+      const sumAbilities = item.skill
+      return { skillId, skillLabel: skillsMap[skillId].short, sumAbilities }
     }
   }
-  const skill = getSkillFromAction({ actionType, actionSubtype, item })
+  const skill = getSkillIdFromAction({ actionType, actionSubtype, item })
   if (!skill) throw new Error("No skill found")
   const knowledges = getKnowledgesFromAction({ actionType, actionSubtype, item })
   const knowledgeBonus = getKnowledgesBonus(knowledges, char)
-  const actionBonus = contenders?.[char.charId]?.combatData?.actionBonus ?? 0
-  const totalSkillScore = char.skills.curr[skill.id] + knowledgeBonus + actionBonus
-  return { skillId: skill.id, skillLabel: skill.label, totalSkillScore }
+  const sumAbilities = char.skills.curr[skill.id] + knowledgeBonus
+  return { skillId: skill.id, skillLabel: skill.label, sumAbilities }
 }
 
 export const getItemWithSkillFromId = (itemDbKey: string | undefined, inventory: Inventory) => {
@@ -271,51 +271,30 @@ export const getParrySkill = (weaponSkill: SkillId): SkillId => {
   return "melee"
 }
 
-export const getActionScores = (combat: Combat | null, contenders: Record<string, PlayerData>) => {
-  if (combat === null) return null
-  const roundId = getCurrentRoundId(combat)
-  const actionId = getActionId(combat)
-  const action = combat.rounds[roundId][actionId]
-  if (!action || !action.actorId) return null
-  const { actorId, roll, targetId, oppositionRoll } = action
-  const actor = contenders[actorId]
-  if (!actor) return null
-  if (!targetId) return null
-  if (roll === undefined || roll === false) return null
-  const { actorSkillScore, actorDiceScore, difficultyModifier } = roll
-  if (!actorSkillScore || !actorDiceScore) return null
-  const opponentBaseAc = contenders[targetId]?.char?.secAttr.curr.armorClass
-  const opponentBonusAc = contenders?.[targetId]?.combatData?.acBonusRecord?.[roundId] ?? 0
-  const opponentAc = opponentBaseAc + opponentBonusAc
+export const getContenderAc = (
+  charId: string,
+  combat: Combat,
+  contenders: Record<string, PlayerData>
+) => {
+  const roundId = combat.currRoundId
+  const currAc = contenders[charId]?.char?.secAttr.curr.armorClass ?? 0
+  const bonusAc = contenders?.[charId]?.combatData?.acBonusRecord?.[roundId] ?? 0
+  return currAc + bonusAc
+}
 
-  const actorActionBonus = actor.combatData?.actionBonus ?? 0
-  const actorScore = actorSkillScore - actorDiceScore + actorActionBonus
-  const actorFinalScore = actorScore - opponentAc - difficultyModifier
-  const actorScores = {
-    actorDiceScore,
-    actorSkillScore,
-    actorActionBonus,
-    actorScore,
-    difficultyModifier,
-    opponentAc,
-    actorFinalScore
-  }
-  if (!oppositionRoll) return { actorScores }
-  const { opponentDiceScore, opponentId, opponentSkillScore } = oppositionRoll
-  const opponent = contenders[opponentId]
-  if (!opponent) throw new Error("opponent not found")
-  const opponentActionBonus = opponent.combatData.actionBonus
-  const opponentScore = opponentSkillScore - opponentDiceScore + opponentActionBonus
-  const opponentReactionScore = opponentScore - actorFinalScore
-  const actorReactionScore = actorFinalScore - opponentScore
-  const opponentScores = {
-    opponentDiceScore,
-    opponentSkillScore,
-    opponentActionBonus,
-    opponentScore,
-    opponentReactionScore
-  }
-  return { actorScores: { ...actorScores, actorReactionScore }, opponentScores }
+export const getRollBonus = (
+  actorId: string,
+  contenders: Record<string, PlayerData>,
+  action?: { aimZone?: keyof typeof limbsMap }
+) => {
+  const actionBonus = contenders?.[actorId]?.combatData?.actionBonus ?? 0
+  const aimMalus = action?.aimZone ? limbsMap[action.aimZone].aimMalus : 0
+  return actionBonus + aimMalus
+}
+
+export const getRollFinalScore = (roll: Roll) => {
+  const { sumAbilities, dice, difficulty, bonus, targetArmorClass } = roll
+  return sumAbilities - dice + bonus - targetArmorClass - difficulty
 }
 
 export const getPlayerCanReact = (char: Playable, combat: Combat) => {
@@ -334,8 +313,8 @@ export const getPlayerCanReact = (char: Playable, combat: Combat) => {
   const hasEnoughAp = reactionActionsApCost.some(cost => currAp >= cost)
   if (!hasEnoughAp) return false
 
-  const { damageLocalization, oppositionRoll } = action
-  if (!!damageLocalization && oppositionRoll === undefined) return true
+  const { damageLocalization, reactionRoll } = action
+  if (!!damageLocalization && reactionRoll === undefined) return true
   return false
 }
 

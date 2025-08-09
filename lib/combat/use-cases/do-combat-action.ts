@@ -94,8 +94,8 @@ export default function doCombatAction(
     }
 
     // handle ap cost for opposition roll
-    if (storedAction?.oppositionRoll) {
-      const { opponentId, opponentApCost } = storedAction.oppositionRoll
+    if (storedAction?.reactionRoll) {
+      const { opponentId, opponentApCost } = storedAction.reactionRoll
       const opCharType = contenders[opponentId].char.meta.isNpc ? "npcs" : "characters"
       const newAp = contenders[opponentId].char.secAttr.curr.actionPoints - opponentApCost
       promises.push(

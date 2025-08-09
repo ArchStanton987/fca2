@@ -37,7 +37,7 @@ export type Limb = {
   label: string
   maxValue: number
   minValue: number | false
-  aimBonus: number
+  aimMalus: number
 }
 
 export const limbsMap: Record<LimbHpId, Limb> = {
@@ -47,7 +47,7 @@ export const limbsMap: Record<LimbHpId, Limb> = {
     label: "Tête",
     maxValue: 15,
     minValue: false,
-    aimBonus: 30
+    aimMalus: 30
   },
   leftArmHp: {
     id: "leftArmHp",
@@ -55,7 +55,7 @@ export const limbsMap: Record<LimbHpId, Limb> = {
     label: "Bras gauche",
     maxValue: 20,
     minValue: false,
-    aimBonus: 10
+    aimMalus: 10
   },
   rightArmHp: {
     id: "rightArmHp",
@@ -63,7 +63,7 @@ export const limbsMap: Record<LimbHpId, Limb> = {
     label: "Bras droit",
     maxValue: 20,
     minValue: false,
-    aimBonus: 10
+    aimMalus: 10
   },
   leftTorsoHp: {
     id: "leftTorsoHp",
@@ -71,7 +71,7 @@ export const limbsMap: Record<LimbHpId, Limb> = {
     label: "Torse gauche",
     maxValue: 25,
     minValue: false,
-    aimBonus: 0
+    aimMalus: 0
   },
   rightTorsoHp: {
     id: "rightTorsoHp",
@@ -79,7 +79,7 @@ export const limbsMap: Record<LimbHpId, Limb> = {
     label: "Torse droit",
     maxValue: 30,
     minValue: false,
-    aimBonus: 0
+    aimMalus: 0
   },
   groinHp: {
     id: "groinHp",
@@ -87,7 +87,7 @@ export const limbsMap: Record<LimbHpId, Limb> = {
     label: "Entrejambe",
     maxValue: 15,
     minValue: false,
-    aimBonus: 30
+    aimMalus: 30
   },
   leftLegHp: {
     id: "leftLegHp",
@@ -95,7 +95,7 @@ export const limbsMap: Record<LimbHpId, Limb> = {
     label: "Jambe gauche",
     maxValue: 20,
     minValue: false,
-    aimBonus: 10
+    aimMalus: 10
   },
   rightLegHp: {
     id: "rightLegHp",
@@ -103,7 +103,7 @@ export const limbsMap: Record<LimbHpId, Limb> = {
     label: "Jambe droite",
     maxValue: 20,
     minValue: false,
-    aimBonus: 10
+    aimMalus: 10
   }
 }
 

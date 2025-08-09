@@ -2,7 +2,6 @@ import skillsMap from "lib/character/abilities/skills/skills"
 import { SkillId } from "lib/character/abilities/skills/skills.types"
 import { limbsMap } from "lib/character/health/health"
 import { getCritFailureThreshold } from "lib/combat/const/crit"
-import { getActionId, getCurrentRoundId, getItemFromId } from "lib/combat/utils/combat-utils"
 import Toast from "react-native-toast-message"
 
 import Col from "components/Col"
@@ -32,50 +31,30 @@ type DiceResultSlideProps = SlideProps & {
 export default function ScoreResultSlide({ skillId, scrollNext }: DiceResultSlideProps) {
   const useCases = useGetUseCases()
   const char = useCharacter()
-  const { meta, charId, secAttr, special } = char
+  const { charId, secAttr, special } = char
   const inv = useInventory()
   const { combat, npcs, players } = useCombat()
   const contenders = { ...players, ...npcs }
   const form = useActionForm()
-  const { actionType, actionSubtype, targetId, aimZone } = form
+  const { actionType, actionSubtype, aimZone } = form
   const { reset } = useActionApi()
-  const roundId = getCurrentRoundId(combat)
-  const actionId = getActionId(combat)
 
-  if (!combat) return <SlideError error={slideErrors.noCombatError} />
+  const action = combat?.currAction
+  if (!action) return <SlideError error={slideErrors.noCombatError} />
+  if (action.roll === undefined) return <AwaitGmSlide messageCase="difficulty" />
+  if (action.roll === false) return <SlideError error={slideErrors.noDiceRollError} />
 
-  const action = combat.rounds?.[roundId]?.[actionId]
-  const roll = action?.roll
-
-  if (roll === undefined) return <AwaitGmSlide messageCase="difficulty" />
-  if (roll === false) return <SlideError error={slideErrors.noDiceRollError} />
-
-  let aimMalus = 0
-  if (aimZone) {
-    aimMalus = limbsMap[aimZone].aimBonus
-  }
-  const { actorDiceScore = 0, actorSkillScore = 0, difficultyModifier = 0 } = roll ?? {}
-  const contenderType = meta.isNpc ? "npcs" : "players"
-  const actionBonus = combat[contenderType][charId]?.actionBonus ?? 0
+  const { dice, sumAbilities, difficulty, bonus, targetArmorClass = 0 } = action.roll
 
   let withAimCritChance = secAttr.curr.critChance
   if (actionType === "weapon" && aimZone) {
-    withAimCritChance += limbsMap[aimZone].aimBonus
+    withAimCritChance += limbsMap[aimZone].aimMalus
   }
-  const isDefaultCritSuccess = actorDiceScore !== 0 && actorDiceScore <= secAttr.curr.critChance
-  const isCritFail = actorDiceScore !== 0 && actorDiceScore >= getCritFailureThreshold(special.curr)
-
-  const isAgainstAc = actionType === "weapon" || actionSubtype === "throw"
-  let targetAc = 0
-  if (isAgainstAc && typeof targetId === "string" && !!targetId && targetId !== "other") {
-    targetAc = contenders?.[targetId].char.secAttr.curr.armorClass ?? 0
-    const bonusAc = contenders?.[targetId]?.combatData?.acBonusRecord?.[roundId] ?? 0
-    targetAc += bonusAc
-  }
-  const sumBonusMalus = actionBonus - aimMalus
-  const score = actorSkillScore - actorDiceScore + sumBonusMalus
-  const finalScore = score - targetAc - difficultyModifier
-  const isCritHit = actorDiceScore <= withAimCritChance
+  const isDefaultCritSuccess = dice !== 0 && dice <= secAttr.curr.critChance
+  const isCritFail = dice !== 0 && dice >= getCritFailureThreshold(special.curr)
+  const score = sumAbilities - dice + bonus
+  const finalScore = score - targetArmorClass - difficulty
+  const isCritHit = dice <= withAimCritChance
   const isCrit = isCritHit || isDefaultCritSuccess
   const isSuccess = isDefaultCritSuccess || isCritHit || finalScore > 0
 
@@ -88,7 +67,7 @@ export default function ScoreResultSlide({ skillId, scrollNext }: DiceResultSlid
       return
     }
     try {
-      const item = getItemFromId(inv, form.itemDbKey)
+      const item = inv.allItems[form.itemDbKey ?? ""]
       const actionPayload = { combat, contenders, action: { ...form, actorId: charId }, item }
       await useCases.combat.doCombatAction(actionPayload)
       Toast.show({ type: "custom", text1: "Action réalisée !" })
@@ -105,7 +84,7 @@ export default function ScoreResultSlide({ skillId, scrollNext }: DiceResultSlid
           <Col style={styles.scoreContainer}>
             <Txt>Compétence</Txt>
             <Txt>{skillsMap[skillId].label}</Txt>
-            <Txt style={styles.score}>{actorSkillScore}</Txt>
+            <Txt style={styles.score}>{sumAbilities}</Txt>
           </Col>
           <Spacer x={10} />
           <Txt style={styles.score}>-</Txt>
@@ -115,7 +94,7 @@ export default function ScoreResultSlide({ skillId, scrollNext }: DiceResultSlid
             <Txt
               style={[styles.score, isCrit && styles.critSuccess, isCritFail && styles.critFail]}
             >
-              {actorDiceScore}
+              {dice}
             </Txt>
           </Col>
           <Spacer x={10} />
@@ -123,7 +102,7 @@ export default function ScoreResultSlide({ skillId, scrollNext }: DiceResultSlid
           <Spacer x={10} />
           <Col style={styles.scoreContainer}>
             <Txt>Bonus / Malus</Txt>
-            <Txt style={styles.score}>{sumBonusMalus}</Txt>
+            <Txt style={styles.score}>{bonus}</Txt>
           </Col>
           <Spacer x={10} />
           <Txt style={styles.score}>=</Txt>
@@ -143,23 +122,23 @@ export default function ScoreResultSlide({ skillId, scrollNext }: DiceResultSlid
           </Col>
           <Spacer x={10} />
 
-          {targetAc !== 0 ? (
+          {targetArmorClass !== 0 ? (
             <>
               <Txt style={styles.score}>-</Txt>
               <Spacer x={10} />
               <Col style={styles.scoreContainer}>
                 <Txt>CA</Txt>
-                <Txt style={styles.score}>{targetAc}</Txt>
+                <Txt style={styles.score}>{targetArmorClass}</Txt>
               </Col>
               <Spacer x={10} />
             </>
           ) : null}
 
-          <Txt style={styles.score}>{difficultyModifier > 0 ? "-" : "+"}</Txt>
+          <Txt style={styles.score}>{difficulty > 0 ? "-" : "+"}</Txt>
           <Spacer x={10} />
           <Col style={styles.scoreContainer}>
             <Txt>Difficulté</Txt>
-            <Txt style={styles.score}>{Math.abs(difficultyModifier)}</Txt>
+            <Txt style={styles.score}>{Math.abs(difficulty)}</Txt>
           </Col>
           <Spacer x={10} />
           <Txt style={styles.score}>=</Txt>

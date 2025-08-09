@@ -75,7 +75,7 @@ export default function PickReactionSlide({ scrollNext }: SlideProps) {
     if (!combat) throw new Error("could not find combat")
     if (leftAp < 0) throw new Error("No enough AP")
     if (reaction === "none") {
-      await useCases.combat.updateAction({ combat, payload: { oppositionRoll: false } })
+      await useCases.combat.updateAction({ combat, payload: { reactionRoll: false } })
       router.replace(routes.combat.action)
       reset()
       return

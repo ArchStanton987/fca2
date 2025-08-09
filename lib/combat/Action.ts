@@ -2,7 +2,7 @@ import { LimbsHp } from "lib/character/health/health-types"
 import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 import { computed, makeObservable, observable } from "mobx"
 
-import { DamageEntries, DbAction, OppositionRoll, SimpleRoll } from "./combats.types"
+import { DamageEntries, DbAction, ReactionRoll, Roll } from "./combats.types"
 
 type PlayableId = string
 type ItemId = string
@@ -15,8 +15,8 @@ export default class Action {
   isCombinedAction?: boolean
   apCost?: number
   isDone?: boolean
-  roll?: SimpleRoll | false
-  oppositionRoll?: OppositionRoll | false
+  roll?: Roll | false
+  reactionRoll?: ReactionRoll | false
   healthChangeEntries?: DamageEntries | false
   itemId?: ItemId | false
   itemDbKey?: string | false
@@ -44,6 +44,17 @@ export default class Action {
     return noItemActions.includes(action.actionType ?? "")
   }
 
+  static getIsRollMissed = (roll: Partial<Roll>) => {
+    const { sumAbilities, dice, bonus, difficulty, targetArmorClass = 0 } = roll
+    const hasNotRolled =
+      sumAbilities === undefined ||
+      dice === undefined ||
+      bonus === undefined ||
+      difficulty === undefined
+    if (hasNotRolled) return false
+    return sumAbilities - dice + bonus - targetArmorClass - difficulty < 0
+  }
+
   constructor(payload: DbAction) {
     const { actionType, actionSubtype } = payload
     this.actionType = actionType
@@ -60,15 +71,16 @@ export default class Action {
     }
 
     const actionIsNotAggressive = Action.getActionIsNotAggressive(payload)
-    if (actionIsNotAggressive) {
-      this.oppositionRoll = false
+    const isRollMissed = !!this.roll && Action.getIsRollMissed(this.roll)
+    if (actionIsNotAggressive || isRollMissed) {
+      this.reactionRoll = false
       this.targetId = false
       this.rawDamage = false
       this.damageType = false
       this.damageLocalization = false
       this.healthChangeEntries = false
     } else {
-      this.oppositionRoll = payload.oppositionRoll
+      this.reactionRoll = payload.reactionRoll
       this.targetId = payload.targetId
       this.rawDamage = payload.rawDamage
       this.damageType = payload.damageType
@@ -96,7 +108,7 @@ export default class Action {
       apCost: observable,
       isDone: observable,
       roll: observable,
-      oppositionRoll: observable,
+      reactionRoll: observable,
       healthChangeEntries: observable,
       itemId: observable,
       itemDbKey: observable,
@@ -124,31 +136,24 @@ export default class Action {
     if (roll === undefined) return "AWAIT_GM_DIFFICULTY"
     // with roll
     if (roll !== false) {
-      const { actorDiceScore, actorSkillScore, difficultyModifier } = roll
-      if (typeof difficultyModifier !== "number") return "AWAIT_GM_DIFFICULTY"
-      if (typeof actorDiceScore !== "number") return "AWAIT_PLAYER_ROLL"
-      if (typeof actorSkillScore !== "number") return "AWAIT_PLAYER_ROLL"
+      const { dice, sumAbilities, difficulty } = roll
+      if (typeof difficulty !== "number") return "AWAIT_GM_DIFFICULTY"
+      if (typeof dice !== "number") return "AWAIT_PLAYER_ROLL"
+      if (typeof sumAbilities !== "number") return "AWAIT_PLAYER_ROLL"
     }
-    const { damageLocalization, oppositionRoll } = this
+    const { damageLocalization, reactionRoll } = this
     if (damageLocalization === undefined) return "AWAIT_DAMAGE_LOCALIZATION"
-    if (oppositionRoll === undefined) return "AWAIT_REACTION"
+    if (reactionRoll === undefined) return "AWAIT_REACTION"
     // with reaction
-    if (oppositionRoll !== false) {
-      const {
-        opponentDiceScore,
-        opponentApCost,
-        opponentId,
-        opponentSkillScore,
-        opponentArmorClass
-      } = oppositionRoll
+    if (reactionRoll !== false) {
+      const { opponentSumAbilities, opponentApCost, opponentId, opponentDice } = reactionRoll
       const isValidReaction =
-        typeof opponentDiceScore === "number" &&
-        opponentDiceScore !== 0 &&
+        typeof opponentDice === "number" &&
+        opponentDice !== 0 &&
         typeof opponentApCost === "number" &&
         typeof opponentId === "string" &&
-        typeof opponentSkillScore === "number" &&
-        opponentSkillScore !== 0 &&
-        typeof opponentArmorClass === "number"
+        typeof opponentSumAbilities === "number" &&
+        opponentSumAbilities !== 0
       if (!isValidReaction) return "AWAIT_REACTION_ROLL"
     }
     const { rawDamage, healthChangeEntries, isDone } = this

@@ -93,7 +93,10 @@ export default function ChallengeSlide() {
 
         <Spacer y={layout.globalPadding} />
 
-        <Section title="valider" contentContainerStyle={styles.centeredSection}>
+        <Section
+          title="valider"
+          contentContainerStyle={{ justifyContent: "center", alignItems: "center" }}
+        >
           <PlayButton onPress={() => submit(item)} />
         </Section>
       </Col>
