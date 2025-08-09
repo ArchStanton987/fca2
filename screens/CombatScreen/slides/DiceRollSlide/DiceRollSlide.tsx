@@ -1,4 +1,5 @@
 import Character from "lib/character/Character"
+import { REACTION_MIN_AP_COST } from "lib/combat/const/combat-const"
 import difficultyArray from "lib/combat/const/difficulty"
 import {
   getActorSkillFromAction,
@@ -73,8 +74,10 @@ export default function DiceRollSlide({ scrollNext }: DiceRollSlideProps) {
 
   const onPressConfirm = async () => {
     if (combat === null || !scrollNext || !isValid) return
+    const targetAp = contenders[targetId].char.status.currAp
+    const reactionRoll = targetAp > REACTION_MIN_AP_COST ? undefined : false
     const roll = { difficulty, sumAbilities, dice, bonus, targetArmorClass }
-    await useCases.combat.updateAction({ combat, payload: { roll } })
+    await useCases.combat.updateAction({ combat, payload: { roll, reactionRoll } })
     scrollNext()
   }
 
