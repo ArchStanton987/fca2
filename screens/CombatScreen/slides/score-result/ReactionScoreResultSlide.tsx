@@ -2,7 +2,7 @@ import { router } from "expo-router"
 
 import skillsMap from "lib/character/abilities/skills/skills"
 import { getCritFailureThreshold } from "lib/combat/const/crit"
-import { getRollBonus } from "lib/combat/utils/combat-utils"
+import { getReactionAbilities, getRollBonus } from "lib/combat/utils/combat-utils"
 
 import Col from "components/Col"
 import Row from "components/Row"
@@ -23,7 +23,7 @@ import styles from "./ScoreResultSlide.styles"
 
 export default function ReactionScoreResultSlide() {
   const char = useCharacter()
-  const { secAttr, special, equipedObjects } = char
+  const { secAttr, special } = char
   const { combat, players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
   const { diceRoll, reaction } = useReactionForm()
@@ -50,7 +50,7 @@ export default function ReactionScoreResultSlide() {
   const finalScore = opponentScore - actorFinalScore
   const isSuccess = finalScore >= 0
 
-  const weaponSkillId = equipedObjects.weapons[0].data.skillId ?? "unarmed"
+  const { skillId } = getReactionAbilities(char, contenders, combat)[reaction]
 
   const submit = () => {
     reset()
@@ -63,7 +63,7 @@ export default function ReactionScoreResultSlide() {
         <Row style={styles.scoreDetailRow}>
           <Col style={styles.scoreContainer}>
             <Txt>Compétence</Txt>
-            <Txt>{skillsMap[weaponSkillId].short}</Txt>
+            <Txt>{skillsMap[skillId].short}</Txt>
             <Txt style={styles.score}>{opponentSumAbilities}</Txt>
           </Col>
           <Spacer x={10} />
