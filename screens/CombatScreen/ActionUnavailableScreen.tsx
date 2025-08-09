@@ -15,8 +15,11 @@ function WaitScreen() {
   const { combat } = useCombat()
   const character = useCharacter()
 
+  const roll = combat?.currAction?.roll
+  const canEndWait = roll === false || roll === undefined
+
   const onPressEnd = () => {
-    if (!combat) return
+    if (!combat || !canEndWait) return
     useCases.combat.endWait({ combat, actor: character })
   }
 
@@ -31,11 +34,12 @@ function WaitScreen() {
       <TouchableHighlight
         style={{
           borderWidth: 2,
-          backgroundColor: colors.secColor,
+          backgroundColor: canEndWait ? colors.secColor : colors.terColor,
           paddingVertical: 15,
           paddingHorizontal: 20
         }}
         onPress={onPressEnd}
+        disabled={!canEndWait}
       >
         <Txt style={{ color: colors.primColor }}>ACTION</Txt>
       </TouchableHighlight>

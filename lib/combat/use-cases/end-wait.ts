@@ -11,6 +11,7 @@ export type EndWaitParams = {
 export default function endWait(dbType: keyof typeof repositoryMap = "rtdb") {
   const statusRepo = repositoryMap[dbType].statusRepository
   const combatRepo = repositoryMap[dbType].combatRepository
+  const actionRepo = repositoryMap[dbType].actionRepository
 
   return ({ combat, actor }: EndWaitParams) => {
     const promises = []
@@ -25,6 +26,12 @@ export default function endWait(dbType: keyof typeof repositoryMap = "rtdb") {
     promises.push(
       statusRepo.setChild({ charId: actor.charId, charType, childKey: "combatStatus" }, "active")
     )
+
+    // reset current action
+    const combatId = combat.id
+    const roundId = combat.currRoundId
+    const actionId = combat.currActionId
+    promises.push(actionRepo.delete({ combatId, roundId, id: actionId }))
 
     return Promise.all(promises)
   }
