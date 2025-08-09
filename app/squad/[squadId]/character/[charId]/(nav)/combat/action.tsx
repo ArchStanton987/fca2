@@ -1,6 +1,6 @@
 import { ScrollView } from "react-native"
 
-import { Redirect, useLocalSearchParams } from "expo-router"
+import { Redirect } from "expo-router"
 
 import {
   getActionId,
@@ -25,8 +25,6 @@ import SlideError, { slideErrors } from "screens/CombatScreen/slides/SlideError"
 import getSlides from "screens/CombatScreen/slides/slides"
 
 export default function ActionScreen() {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
-
   const char = useCharacter()
   const inv = useInventory()
   const { players, npcs, combat } = useCombat()
@@ -46,7 +44,7 @@ export default function ActionScreen() {
 
   if (!combat?.id) return <SlideError error={slideErrors.noCombatError} />
 
-  const prompts = getInitiativePrompts(charId, players ?? {}, npcs ?? {})
+  const prompts = getInitiativePrompts(char.charId, players ?? {}, npcs ?? {})
   if (prompts.playerShouldRollInitiative) return <InitiativeScreen />
   if (prompts.shouldWaitOthers) return <WaitInitiativeScreen />
 
@@ -55,7 +53,7 @@ export default function ActionScreen() {
     contenders.find(c => c.char.status.combatStatus === "active")?.char.charId ??
     contenders.find(c => c.char.status.combatStatus === "wait")?.char.charId
   const playingId = combat.currActorId || defaultPlayingId
-  const isPlaying = playingId === charId
+  const isPlaying = playingId === char.charId
 
   const canReact = getPlayerCanReact(char, combat)
   if (canReact) return <Redirect href={{ pathname: routes.combat.reaction }} />
