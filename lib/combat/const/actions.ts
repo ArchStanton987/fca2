@@ -55,13 +55,13 @@ const actions = {
     subtypes: {
       dangerAwareness: {
         id: "dangerAwareness",
-        label: "Anticipe les attaques",
+        label: "Préparer à défendre",
         description:
           "Dépensez ce qu'il vous reste de points d'action pour mieux faire face au danger. Pour le prochain round, vous gagnez autant de classe d'armure (CA) que vous dépensez de points d'action (PA)."
       },
       visualize: {
         id: "visualize",
-        label: "Visualiser prochaine action",
+        label: "Préparer prochaine action",
         description:
           "Dépensez ce qu'il vous reste de points d'action (PA) pour mieux réussir votre prochaine action. Pour chaque PA dépensé, vous gagnez un bonus de +2 au score de votre prochaine action."
       }
