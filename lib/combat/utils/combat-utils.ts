@@ -289,7 +289,7 @@ export const getRollBonus = (
 ) => {
   const actionBonus = contenders?.[actorId]?.combatData?.actionBonus ?? 0
   const aimMalus = action?.aimZone ? limbsMap[action.aimZone].aimMalus : 0
-  return actionBonus + aimMalus
+  return actionBonus - aimMalus
 }
 
 export const getRollFinalScore = (roll: Roll) => {
