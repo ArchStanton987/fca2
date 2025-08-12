@@ -1,5 +1,3 @@
-controler payload update action pour toutes slides
-damageslide : attention au do combat action (payload: form), faire MAJ action avant, envoi docombat avec action state et non action form
 beasts special & skills
 liste cibles : MAJ avec morts
 

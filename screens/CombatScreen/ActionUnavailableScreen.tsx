@@ -16,10 +16,10 @@ function WaitScreen() {
   const character = useCharacter()
 
   const roll = combat?.currAction?.roll
-  const canEndWait = roll === false || roll === undefined
+  const hasThrownDice = roll && typeof roll.dice === "number"
 
   const onPressEnd = () => {
-    if (!combat || !canEndWait) return
+    if (!combat || hasThrownDice) return
     useCases.combat.endWait({ combat, actor: character })
   }
 
@@ -34,12 +34,12 @@ function WaitScreen() {
       <TouchableHighlight
         style={{
           borderWidth: 2,
-          backgroundColor: canEndWait ? colors.secColor : colors.terColor,
+          backgroundColor: !hasThrownDice ? colors.secColor : colors.terColor,
           paddingVertical: 15,
           paddingHorizontal: 20
         }}
         onPress={onPressEnd}
-        disabled={!canEndWait}
+        disabled={hasThrownDice}
       >
         <Txt style={{ color: colors.primColor }}>ACTION</Txt>
       </TouchableHighlight>
