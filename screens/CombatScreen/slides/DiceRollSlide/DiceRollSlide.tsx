@@ -77,7 +77,7 @@ export default function DiceRollSlide({ scrollNext }: DiceRollSlideProps) {
     let reactionRoll
     if (targetId) {
       const targetAp = contenders[targetId].char.status.currAp
-      reactionRoll = targetAp > REACTION_MIN_AP_COST ? undefined : (false as const)
+      reactionRoll = targetAp >= REACTION_MIN_AP_COST ? undefined : (false as const)
     }
     const roll = { difficulty, sumAbilities, dice, bonus, targetArmorClass }
     await useCases.combat.updateAction({ combat, payload: { roll, reactionRoll } })
