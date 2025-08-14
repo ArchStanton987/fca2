@@ -26,10 +26,10 @@ export default function NoRollSlide() {
   const contenders = { ...players, ...npcs }
 
   const submit = async () => {
-    if (!combat) throw new Error("No combat found")
+    if (!combat?.currAction) throw new Error("No combat found")
     try {
       const item = getItemFromId(inv, form.itemDbKey)
-      const action = { ...form, actorId: charId }
+      const action = { ...combat?.currAction, actorId: charId }
       await useCases.combat.doCombatAction({ combat, contenders, action, item })
       Toast.show({ type: "custom", text1: "Action enregistrée !" })
       reset()
