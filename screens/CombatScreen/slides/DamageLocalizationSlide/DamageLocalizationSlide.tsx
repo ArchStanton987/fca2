@@ -46,7 +46,7 @@ export default function DamageLocalizationSlide({ scrollNext }: DamageLocalizati
 
   const [isLoading, setIsLoading] = useState(false)
 
-  const isScoreValid = scoreStr.length === 1 || scoreStr.length === 2 || !!damageLocalization
+  const isScoreValid = (scoreStr.length > 0 && scoreStr.length <= 3) || !!damageLocalization
 
   const resetField = () => {
     setForm({ damageLocalization: undefined })
