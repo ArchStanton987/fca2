@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableHighlight, TouchableHighlightProps } from "react-native"
+import { StyleSheet, TouchableHighlightProps, TouchableOpacity } from "react-native"
 
 import Feather from "@expo/vector-icons/Feather"
 import MaterialIcons from "@expo/vector-icons/MaterialIcons"
@@ -34,11 +34,11 @@ function Digit({ value }: { value: string }) {
   return null
 }
 
-function DigitContainer({ value, onPress, ...rest }: KeyPadProps) {
+function DigitContainer({ value, onPress }: KeyPadProps) {
   return (
-    <TouchableHighlight style={styles.digitContainer} onPress={onPress} {...rest}>
+    <TouchableOpacity style={styles.digitContainer} onPress={onPress}>
       <Digit value={value} />
-    </TouchableHighlight>
+    </TouchableOpacity>
   )
 }
 
