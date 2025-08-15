@@ -1,6 +1,6 @@
 import { ReactNode, createContext, useContext, useMemo, useReducer } from "react"
 
-import { GMDamageEntry } from "lib/combat/combats.types"
+import { DamageEntry } from "lib/combat/combats.types"
 import { getRealDamage } from "lib/combat/utils/combat-utils"
 
 import { useCombat } from "./CombatProvider"
@@ -15,13 +15,13 @@ const defaultDamageEntry = {
 
 let entryId = 0
 
-type DamageEntriesState = Record<string, GMDamageEntry>
+type DamageEntriesState = Record<string, DamageEntry>
 
 type DamageEntriesApiType = {
   add: () => void
   deleteEntry: (id: string) => void
   toggleEntryType: (id: string) => void
-  setEntry: (id: string, payload: Partial<GMDamageEntry>) => void
+  setEntry: (id: string, payload: Partial<DamageEntry>) => void
   reset: () => void
 }
 
@@ -32,7 +32,7 @@ export type DamageEntriesAction =
   | { type: "add"; payload: { targetId: string } }
   | { type: "delete"; payload: { id: string } }
   | { type: "toggleEntryType"; payload: { id: string } }
-  | { type: "setEntry"; payload: { id: string; entry: Partial<GMDamageEntry> } }
+  | { type: "setEntry"; payload: { id: string; entry: Partial<DamageEntry> } }
   | { type: "reset"; payload?: undefined }
 
 const reducer = (
@@ -106,7 +106,7 @@ export function DamageFormProvider({ children }: { children: ReactNode }) {
       toggleEntryType: (id: string) => {
         dispatch({ type: "toggleEntryType", payload: { id } })
       },
-      setEntry: (id: string, payload: Partial<GMDamageEntry>) => {
+      setEntry: (id: string, payload: Partial<DamageEntry>) => {
         dispatch({ type: "setEntry", payload: { id, entry: payload } })
       },
       reset: () => {

@@ -12,7 +12,6 @@ import {
 } from "lib/character/progress/progress-utils"
 import { Progress } from "lib/character/progress/progress.types"
 import { getLevelAndThresholds } from "lib/character/status/status-calc"
-import { DbPlayableCombatRecap } from "lib/combat/combats.types"
 import { getRemainingTime } from "lib/common/utils/time-calc"
 import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
 import { ClothingData, ClothingId } from "lib/objects/data/clothings/clothings.types"
@@ -51,7 +50,7 @@ export type DbChar = {
   equipedObj?: DbEquipedObjects
   status: DbStatus
   meta: DbCharMeta
-  combats?: Record<string, DbPlayableCombatRecap>
+  combats?: Record<string, string>
 } & { inventory: DbInventory }
 
 export default class Character implements Playable {
@@ -65,7 +64,7 @@ export default class Character implements Playable {
   date: Date
   squadId: Squad["squadId"]
   meta: DbCharMeta
-  combats: Record<string, DbPlayableCombatRecap>
+  combats: Record<string, string>
 
   allClothings: Record<ClothingId, ClothingData>
   allEffects: Record<EffectId, EffectData>

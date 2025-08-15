@@ -1,25 +1,15 @@
 import { LimbsHp } from "lib/character/health/health-types"
 import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 
-export type WeaponActionSubtypeId =
-  | "basicAttack"
-  | "aim"
-  | "burst"
-  | "reload"
-  | "unload"
-  | "hit"
-  | "throw"
-export type MovementType = "crawl" | "walk" | "run" | "sprint" | "jump" | "climb" | "getUp"
-type ItemActionType = "drop" | "equip" | "unequip" | "use" | "search"
-export type PrepareActionType = "dangerAwareness" | "visualize"
-
 type CharId = string
 type NpcId = string
 type ItemId = string
 type AimZone = keyof LimbsHp
+type RoundId = number
+type AcBonus = number
 
 type InactiveRecord = Record<number, { inactiveRoundStart: number; inactiveRoundEnd: number }>
-type ArmorClassBonusRecord = Record<number, number>
+type ArmorClassBonusRecord = Record<RoundId, AcBonus>
 
 export type PlayerCombatData = {
   initiative: number
@@ -41,7 +31,7 @@ export type ReactionRoll = {
   opponentDice: number
   opponentApCost: number
 }
-type DamageEntry = {
+type HpEntry = {
   charId: string
   entryType: "hp"
   localization: keyof LimbsHp
@@ -52,8 +42,8 @@ type InactiveEntry = {
   entryType: "inactive"
   duration: number
 }
-export type GMDamageEntry = DamageEntry | InactiveEntry
-export type DamageEntries = Record<string, GMDamageEntry> | false
+export type DamageEntry = HpEntry | InactiveEntry
+export type DamageEntries = Record<string, DamageEntry> | false
 
 export type DbAction = {
   actionType?: string
@@ -75,83 +65,6 @@ export type DbAction = {
   damageType?: DamageTypeId | false
 }
 
-export type WeaponAction = {
-  actionType: "weapon"
-  actionSubtype: WeaponActionSubtypeId
-  actorId: CharId
-  isCombinedAction?: boolean
-  apCost?: number
-  roll?: Roll | false
-  reactionRoll?: ReactionRoll | false
-  healthChangeEntries?: DamageEntries | false
-  itemId?: ItemId
-  itemDbKey?: string
-  targetId?: string
-  isSuccess?: boolean
-  damageLocalization?: keyof LimbsHp
-  aimZone?: AimZone | false
-  rawDamage?: number
-  damageType?: DamageTypeId
-  isDone?: boolean
-}
-
-export type MovementAction = {
-  actionType: "movement"
-  actionSubtype?: string
-  actorId: CharId
-  isCombinedAction?: boolean
-  apCost?: number
-  roll?: Roll | false
-  isSuccess?: boolean
-  isDone?: boolean
-}
-
-export type ItemAction = {
-  actionType: "item"
-  actionSubtype?: ItemActionType
-  actorId: CharId
-  isCombinedAction?: boolean
-  apCost?: number
-  roll?: Roll | false
-  reactionRoll?: ReactionRoll | false
-  healthChangeEntries?: DamageEntries | false
-  itemId?: ItemId
-  itemDbKey?: string
-  targetId?: string
-  isSuccess?: boolean
-  damageLocalization?: keyof LimbsHp
-  rawDamage?: number
-  damageType?: DamageTypeId
-  isDone?: boolean
-}
-
-export type PauseAction = { actionType: "pause"; actorId: CharId; isDone?: boolean }
-
-export type OtherAction = {
-  actionType: "other"
-  actionSubtype: string
-  actorId: CharId
-  isCombinedAction?: boolean
-  apCost: number
-  isDone?: boolean
-}
-
-export type PrepareAction = {
-  actionType: "prepare"
-  actionSubtype: PrepareActionType
-  actorId: CharId
-  apCost: number
-  isDone?: boolean
-}
-
-export type DoneAction =
-  | WeaponAction
-  | MovementAction
-  | ItemAction
-  | PauseAction
-  | OtherAction
-  | PrepareAction
-
 export type DbCombatEntry = {
   squadId: string
   date: string
@@ -162,23 +75,4 @@ export type DbCombatEntry = {
   players: Record<CharId, PlayerCombatData>
   npcs: Record<NpcId, PlayerCombatData>
   rounds?: Record<number, Record<number, DbAction>>
-}
-
-// export type DbArchivedCombat = {
-//   squadId: string
-//   timestamp: string
-//   location?: string
-//   title: string
-//   description?: string
-//   rounds?: Record<number, Record<number, DoneAction>>
-// }
-
-// export type DbCombatEntry = DbActiveCombat | DbArchivedCombat
-
-export type DbPlayableCombatRecap = {
-  id: string
-  title: string
-  date: string
-  location?: string
-  description?: string
 }

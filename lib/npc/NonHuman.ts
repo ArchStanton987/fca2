@@ -21,7 +21,6 @@ import { Health } from "lib/character/health/health-types"
 import { DbCharMeta } from "lib/character/meta/meta"
 import { Progress } from "lib/character/progress/progress.types"
 import { DbStatus } from "lib/character/status/status.types"
-import { DbPlayableCombatRecap } from "lib/combat/combats.types"
 import { getModAttribute } from "lib/common/utils/char-calc"
 import { getRemainingTime } from "lib/common/utils/time-calc"
 import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
@@ -43,7 +42,7 @@ export default class NonHuman implements Playable {
   date: Date
   squadId: Squad["squadId"]
   meta: DbCharMeta
-  combats: Record<string, DbPlayableCombatRecap>
+  combats: Record<string, string>
   dbEffects: DbEffects
   allEffects: Record<EffectId, EffectData>
   dbAbilities: DbAbilities
@@ -54,7 +53,7 @@ export default class NonHuman implements Playable {
       status: DbStatus
       meta: DbCharMeta
       effects?: DbEffects
-      combats?: Record<string, DbPlayableCombatRecap>
+      combats?: Record<string, string>
     },
     game: { date: Date; squadId: string; membersRecord: Record<string, any> },
     newElements: CreatedElements = defaultCreatedElements

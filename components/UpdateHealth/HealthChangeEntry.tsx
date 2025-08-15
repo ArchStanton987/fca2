@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet } from "react-native"
 
-import { GMDamageEntry } from "lib/combat/combats.types"
+import { DamageEntry } from "lib/combat/combats.types"
 
 import Col from "components/Col"
 import Row from "components/Row"
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
 })
 
 type HealthChangeEntryProps = {
-  entry: GMDamageEntry & { id: string }
+  entry: DamageEntry & { id: string }
   selectEntry: () => void
   onPressChar: () => void
   onPressLocalization: () => void

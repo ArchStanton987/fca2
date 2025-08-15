@@ -25,11 +25,8 @@ export default function adminEndFight(dbType: keyof typeof repositoryMap = "rtdb
         promises.push(statusRepo.deleteChild({ charId, charType, childKey: "combatStatus" }))
         promises.push(statusRepo.deleteChild({ charId, charType, childKey: "currentCombatId" }))
       }
-      const { id, title, date, description, location } = combat
-      const newCombats = {
-        ...combats,
-        [id]: { id, title, date: date.toJSON(), description, location }
-      }
+      const { id } = combat
+      const newCombats = { ...combats, id }
       // add fight ID in characters combat archive
       promises.push(characterRepo.patch({ charType, id: charId }, { combats: newCombats }))
     })
