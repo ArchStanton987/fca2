@@ -71,12 +71,10 @@ export default function GMDamageForm({ rawDamage, realDamage, damageType }: GMDa
   }
 
   const submit = async () => {
-    if (combat === null) {
-      Toast.show({ type: "error", text1: "combat context could not be found" })
-      return
-    }
+    if (combat === null) return
     try {
-      await useCases.combat.updateAction({ combat, payload: { healthChangeEntries: form } })
+      const healthChangeEntries = entries.length === 0 ? false : form
+      await useCases.combat.updateAction({ combat, payload: { healthChangeEntries } })
       Toast.show({ type: "custom", text1: "Dégâts enregistrés !" })
       reset()
     } catch (err) {

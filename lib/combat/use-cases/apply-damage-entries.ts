@@ -26,7 +26,7 @@ export default function applyDamageEntries(dbType: keyof typeof repositoryMap = 
       if (!char) throw new Error("could not find character")
       // handle health points update
       if (entryType === "hp") {
-        const { localization, damage } = entry
+        const { localization, damage = 0 } = entry
         const currHp = char.status[localization]
         // TODO: FIX HP SYSTEM
         const newHp = currHp - damage < 0 ? 0 : currHp - damage
