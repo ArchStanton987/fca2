@@ -91,9 +91,7 @@ export default function doCombatAction(
       const { opponentId, opponentApCost } = storedAction.reactionRoll
       const opCharType = contenders[opponentId].char.meta.isNpc ? "npcs" : "characters"
       const newAp = contenders[opponentId].char.secAttr.curr.actionPoints - opponentApCost
-      promises.push(
-        statusRepo.patch({ charId: opponentId, charType: opCharType }, { currAp: newAp })
-      )
+      await statusRepo.patch({ charId: opponentId, charType: opCharType }, { currAp: newAp })
     }
 
     // apply damage entries

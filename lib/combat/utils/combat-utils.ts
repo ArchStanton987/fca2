@@ -84,7 +84,11 @@ export const getActivePlayersWithAp = (contenders: Record<string, PlayerData>) =
 
 export const getIsActionEndingRound = (
   contenders: Record<string, PlayerData>,
-  action: { apCost: number; actorId: string }
+  action: {
+    apCost: number
+    actorId: string
+    reactionRoll?: Action["reactionRoll"]
+  }
 ) => {
   const actor = contenders[action.actorId]
   if (!actor) return false
@@ -92,8 +96,22 @@ export const getIsActionEndingRound = (
     .filter(c => c.char.status.combatStatus !== "inactive")
     .filter(c => c.char.status.combatStatus !== "dead")
     .filter(c => c.char.status.currAp > 0)
-  if (validContenders.length > 1) return false
-  return actor.char.status.currAp - action.apCost <= 0
+
+  const actorHasRemainingAp = actor.char.status.currAp - action.apCost > 0
+
+  if (validContenders.length === 1 && !actorHasRemainingAp) return true
+
+  if (validContenders.length === 2 && action.reactionRoll) {
+    const opponentId = action?.reactionRoll?.opponentId
+    const opponentApCost = action?.reactionRoll?.opponentApCost
+
+    if (opponentId && typeof opponentApCost === "number") {
+      const opponent = contenders[opponentId].char
+      const opponentHasRemaningAp = opponent.status.currAp - opponentApCost > 0
+      if (!opponentHasRemaningAp && !actorHasRemainingAp) return true
+    }
+  }
+  return false
 }
 
 export const getInitiativePrompts = (
