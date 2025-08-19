@@ -32,7 +32,7 @@ export default function AdminDrawer({ sectionId, navElements }: DrawerProps) {
     <ScrollSection style={styles.drawerContainer} title={sectionId} titleVariant="shiny">
       <List
         data={navElements}
-        keyExtractor={item => item.label}
+        keyExtractor={item => item.path}
         style={{ flex: 1 }}
         renderItem={({ item }) => {
           const { path } = item
