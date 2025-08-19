@@ -86,14 +86,6 @@ export default function doCombatAction(
         throw new Error(`Unknown action type: ${actionType}`)
     }
 
-    // handle ap cost for opposition roll
-    if (storedAction?.reactionRoll) {
-      const { opponentId, opponentApCost } = storedAction.reactionRoll
-      const opCharType = contenders[opponentId].char.meta.isNpc ? "npcs" : "characters"
-      const newAp = contenders[opponentId].char.secAttr.curr.actionPoints - opponentApCost
-      await statusRepo.patch({ charId: opponentId, charType: opCharType }, { currAp: newAp })
-    }
-
     // apply damage entries
     if (storedAction?.healthChangeEntries) {
       const damageEntries = storedAction.healthChangeEntries
@@ -107,9 +99,18 @@ export default function doCombatAction(
     if (isEndingRound) {
       promises.push(setNewRound(dbType)({ contenders, combat }))
     } else {
+      // set actor action points
       const charType = meta.isNpc ? "npcs" : "characters"
       const newAp = status.currAp - apCost
       promises.push(statusRepo.setChild({ charId, charType, childKey: "currAp" }, newAp))
+
+      // set opponent action points if has reaction roll
+      if (storedAction?.reactionRoll) {
+        const { opponentId, opponentApCost } = storedAction.reactionRoll
+        const opCharType = contenders[opponentId].char.meta.isNpc ? "npcs" : "characters"
+        const oppNewAp = contenders[opponentId].char.secAttr.curr.actionPoints - opponentApCost
+        await statusRepo.patch({ charId: opponentId, charType: opCharType }, { currAp: oppNewAp })
+      }
     }
 
     return Promise.all(promises)
