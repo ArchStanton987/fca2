@@ -1,14 +1,21 @@
 import { TouchableHighlight } from "react-native"
 
+import { Redirect } from "expo-router"
+
+import { getPlayerCanReact } from "lib/combat/utils/combat-utils"
+
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
+import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
+
+import SlideError, { slideErrors } from "./slides/SlideError"
 
 function WaitScreen() {
   const useCases = useGetUseCases()
@@ -22,6 +29,10 @@ function WaitScreen() {
     if (!combat || hasThrownDice) return
     useCases.combat.endWait({ combat, actor: character })
   }
+
+  if (!combat) return <SlideError error={slideErrors.noCombatError} />
+  const canReact = getPlayerCanReact(character, combat)
+  if (canReact) return <Redirect href={{ pathname: routes.combat.reaction }} />
 
   return (
     <>
