@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   centeredSection: {
-    flex: 1,
     flexDirection: "row",
     justifyContent: "space-evenly",
     alignItems: "center"
