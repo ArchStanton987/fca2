@@ -34,7 +34,7 @@ export default function setNewRound(dbType: keyof typeof repositoryMap = "rtdb")
         const isStillInactive = Object.values(inactiveRecord).some(
           r => nextRoundId >= r.inactiveRoundStart && nextRoundId <= r.inactiveRoundEnd
         )
-        const isUnconscious = getHealthState(health.hp, health.maxHp) === "woundedExhausted"
+        const isUnconscious = getHealthState(health.hp, health.maxHp) === "woundedUnconscious"
         if (isStillInactive || isUnconscious) return
         promises.push(statusRepo.patch({ charId, charType }, { combatStatus: "active" }))
       }
