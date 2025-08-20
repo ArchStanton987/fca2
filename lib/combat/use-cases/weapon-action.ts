@@ -17,7 +17,6 @@ export type WeaponActionParams = {
 export default function weaponAction(dbType: keyof typeof repositoryMap = "rtdb") {
   const { load, unload, use } = getWeaponsUseCases(dbType)
   const { drop } = getInventoryUseCases(dbType)
-  const statusRepo = repositoryMap[dbType].statusRepository
   return async ({ action, contenders, item }: WeaponActionParams) => {
     const { actionSubtype = "", actorId, apCost } = action
     const { char } = contenders[actorId]
@@ -25,18 +24,11 @@ export default function weaponAction(dbType: keyof typeof repositoryMap = "rtdb"
     const charType = meta.isNpc ? "npcs" : "characters"
 
     switch (actionSubtype) {
-      case "hit": {
-        const newAp = char.status.currAp - (apCost ?? 0)
-        return statusRepo.patch({ charId, charType }, { currAp: newAp })
-      }
+      case "hit":
+        return null
       case "basic":
       case "aim":
       case "burst":
-        // handle case with species which can't carry weapon
-        if (meta.speciesId === "robot" || meta.speciesId === "animal") {
-          const newAp = char.status.currAp - (apCost ?? 0)
-          return statusRepo.patch({ charId, charType }, { currAp: newAp })
-        }
         if (!item) throw new Error("Missing item")
         return use(char, item, actionSubtype, apCost)
       case "reload":

@@ -47,12 +47,7 @@ export default function doCombatAction(
     switch (actionType) {
       case "weapon": {
         // handle case with species which can't carry weapon
-        if (meta.speciesId === "robot" || meta.speciesId === "animal") {
-          const { currAp } = status
-          const newAp = currAp - apCost
-          promises.push(statusRepo.patch({ charId, charType: "npcs" }, { currAp: newAp }))
-          break
-        }
+        if (meta.speciesId === "robot" || meta.speciesId === "animal") break
         if (!item) throw new Error("Item is required for weapon action")
         if (!(item?.data?.id in weaponsMap)) throw new Error("item is not a weapon")
         // @ts-ignore
