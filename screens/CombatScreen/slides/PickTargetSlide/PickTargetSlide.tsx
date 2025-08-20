@@ -33,13 +33,10 @@ const styles = StyleSheet.create({
 
 export default function PickTargetSlide({ scrollNext }: SlideProps) {
   const useCases = useGetUseCases()
-  const { charId } = useCharacter()
+  const { meta } = useCharacter()
+  const { isEnemy } = meta
   const { combat, players, npcs } = useCombat()
-  const contenders = {
-    ...players,
-    ...npcs,
-    other: { char: { fullname: "autre", charId: "other" } }
-  }
+  const contenders = { ...players, ...npcs }
 
   const { targetId } = useActionForm()
   const { setForm } = useActionApi()
@@ -54,7 +51,13 @@ export default function PickTargetSlide({ scrollNext }: SlideProps) {
     scrollNext?.()
   }
 
-  const targetList = Object.values(contenders).filter(e => e.char.charId !== charId)
+  const hostiles = Object.values(contenders).filter(c =>
+    isEnemy ? !c.char.meta.isEnemy : c.char.meta.isEnemy
+  )
+  const nonHostiles = Object.values(contenders).filter(c =>
+    isEnemy ? c.char.meta.isEnemy : !c.char.meta.isEnemy
+  )
+  const targetList = [...hostiles, { char: { fullname: "autre", charId: "other" } }, ...nonHostiles]
 
   return (
     <DrawerSlide>
