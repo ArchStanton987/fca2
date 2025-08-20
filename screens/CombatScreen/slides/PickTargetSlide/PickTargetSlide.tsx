@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
 
 export default function PickTargetSlide({ scrollNext }: SlideProps) {
   const useCases = useGetUseCases()
-  const { meta } = useCharacter()
+  const { meta, charId } = useCharacter()
   const { isEnemy } = meta
   const { combat, players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
@@ -51,9 +51,11 @@ export default function PickTargetSlide({ scrollNext }: SlideProps) {
     scrollNext?.()
   }
 
-  const aliveContenders = Object.values(contenders).filter(
-    c => c.char.status.combatStatus !== "dead"
-  )
+  const aliveContenders = Object.values(contenders).filter(c => {
+    const isAlive = c.char.status.combatStatus !== "dead"
+    const isNotCurrPlayer = c.char.charId !== charId
+    return isAlive && isNotCurrPlayer
+  })
   const hostiles = Object.values(aliveContenders).filter(c =>
     isEnemy ? !c.char.meta.isEnemy : c.char.meta.isEnemy
   )
