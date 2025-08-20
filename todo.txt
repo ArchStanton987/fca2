@@ -1,42 +1,32 @@
+update healthChangeEntries with modifiers and effects (beasts...)
+- utiliser zustand
+- séparer fichier pour chaque type entrée
+
 beasts special & skills
-liste cibles : MAJ avec morts
+
+TODO: type Playable :
+type Attack: {
+  name: string
+  weaponId?: WeaponId
+  skillScore: number // percentage
+  apCost: number
+  damage: string // dice roll string (e.g., '1d6', '2d4+2')
+  effects?: EffectId[]
+  modifiers?: Modifier[]
+}
+type Weapon : 
+get attacks(): Attack[]
+
 
 COMBAT :
 - [HIGH] garder index de la slide lorsque revient dessus
 - [MED] système HP / limbs HP (with crit part?)
 - [MED] assignation upSkills pour perso générés (>100)
-o [MED] affiche slide roll dégâts même lorsque esquive réussie
-o [LOW] lorsque combined action et use TOUS PA, saute un tour ?
-o [LOW] pas MAJ fenètre combat lorsque tour du joueur apparaît (cas combined action ??)
+- [LOW] besoin recharger personnage lorsque nouveau combat
 
 
 
 BUG peut pas consommer objet créé. Peut pas porter clothing créé ???
-CHECK SCROLL LORS CHOIX ACTIONS
-
-- clôturer combat (commande admin)
-  (reset combat status pour tous les contenders)
-  (ajoute une entrée combats pour tous les contenders)
-  ?(conversion combat en archive)
-  ?(suppression pnj)
-? clôturer combat (commande joueur)
-  (reset combat status)
-  (ajoute une entrée combats pour le personnage)
-? clôturer combat (commande npc)
-
-
-    // Clôturer un combat :
-    // 1. POV joueur : affichage indique que le combat est terminé, à la validation :
-    //  - reset currFightId
-    //  - reset combatStatus
-    //  - reset AP
-
-    // 2. POV admin / ennemi : affichage indique que le combat est terminé, à la validation :
-    //  - retirer les ennemis du squad
-    //    pour CHAQUE ennemi :
-    //    - reset currFightId
-    //    - reset combatStatus
-    //    - reset AP
 
 
 TODO: remove trap / thrown weapon after usage
@@ -49,9 +39,6 @@ TODO: add levelup
   - change db model for perks (any perk can have a level)
   - update perks
   - add level up ui
-TODO: collectibles UI
-
-TODO: sound
 
 
 
