@@ -65,7 +65,7 @@ export default function DamageSlide({ scrollNext }: DamageSlideProps) {
   let damageRoll
   let damageType: DamageTypeId = "physical"
 
-  if (actionType === "weapon") {
+  if (actionType === "weapon" && actionSubtype !== "hit") {
     const isHuman = char instanceof Character
     item = isHuman
       ? inv.weaponsRecord[itemDbKey] ?? char.unarmed
@@ -82,8 +82,8 @@ export default function DamageSlide({ scrollNext }: DamageSlideProps) {
       consumablesRecord[itemDbKey] ??
       miscObjectsRecord[itemDbKey] ?? { data: { weight: 0.5 } }
     const weight = item?.data?.weight ?? 0.5
-    const roundedWeight = Math.ceil(weight)
-    damageRoll = `1D6+${roundedWeight}`
+    const roundedWeight = Math.round(weight)
+    damageRoll = `1D6+DM+${roundedWeight}`
   }
 
   const resetField = () => {
