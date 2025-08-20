@@ -19,7 +19,7 @@ import NextButton from "../NextButton"
 
 const styles = StyleSheet.create({
   button: {
-    padding: 15,
+    padding: 10,
     borderColor: colors.secColor
   },
   selected: {
@@ -51,10 +51,13 @@ export default function PickTargetSlide({ scrollNext }: SlideProps) {
     scrollNext?.()
   }
 
-  const hostiles = Object.values(contenders).filter(c =>
+  const aliveContenders = Object.values(contenders).filter(
+    c => c.char.status.combatStatus !== "dead"
+  )
+  const hostiles = Object.values(aliveContenders).filter(c =>
     isEnemy ? !c.char.meta.isEnemy : c.char.meta.isEnemy
   )
-  const nonHostiles = Object.values(contenders).filter(c =>
+  const nonHostiles = Object.values(aliveContenders).filter(c =>
     isEnemy ? c.char.meta.isEnemy : !c.char.meta.isEnemy
   )
   const targetList = [...hostiles, { char: { fullname: "autre", charId: "other" } }, ...nonHostiles]
