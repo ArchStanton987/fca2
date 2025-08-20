@@ -59,6 +59,7 @@ export default function doCombatAction(
         promises.push(weaponAction(dbType)({ action, contenders, item }))
         break
       }
+      case "other":
       case "movement":
         // no further operations needed (handled in saveAction)
         break

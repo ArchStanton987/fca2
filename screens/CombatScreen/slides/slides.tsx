@@ -99,6 +99,7 @@ const getSlides = <T extends keyof typeof actions>(
   actionSubType?: keyof (typeof actions)[T]["subtypes"] | string,
   weapon?: Weapon
 ) => {
+  if (actionType === "other") return baseItemSlides
   if (actionType === "movement") {
     return movementSlides
   }

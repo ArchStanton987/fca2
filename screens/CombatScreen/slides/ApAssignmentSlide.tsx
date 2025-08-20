@@ -1,7 +1,11 @@
 import { StyleSheet } from "react-native"
 
 import { getItemFromId, getItemWithSkillFromId } from "lib/combat/utils/combat-utils"
+import { Clothing } from "lib/objects/data/clothings/clothings.types"
+import { Consumable } from "lib/objects/data/consumables/consumables.types"
 import { isConsumableItem } from "lib/objects/data/consumables/consumables.utils"
+import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
+import { Weapon } from "lib/objects/data/weapons/weapons.types"
 import Toast from "react-native-toast-message"
 
 import CheckBox from "components/CheckBox/CheckBox"
@@ -70,27 +74,35 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
     setForm({ apCost: newApCost })
   }
 
+  const handleSubmit = async (item?: Consumable | Weapon | Clothing | MiscObject) => {
+    if (!combat || !scrollNext) return
+
+    const action = { ...combat?.currAction, apCost, actorId: charId }
+    try {
+      await useCases.combat.doCombatAction({ contenders, combat, action, item })
+      Toast.show({ type: "custom", text1: "Action réalisée" })
+      reset()
+    } catch (error) {
+      Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement de l'action" })
+    }
+  }
+
   const onPressNext = async () => {
     if (!combat || !scrollNext) return
     await useCases.combat.updateAction({ combat, payload: { apCost } })
 
-    const action = { ...combat?.currAction, apCost, actorId: charId }
-
     switch (actionType) {
-      // TODO: case other
+      case "other": {
+        handleSubmit()
+        break
+      }
       case "weapon": {
         if (actionSubtype !== "reload" && actionSubtype !== "unload") {
           scrollNext()
           break
         }
-        try {
-          const item = getItemFromId(inventory, form.itemDbKey)
-          await useCases.combat.doCombatAction({ contenders, combat, action, item })
-          Toast.show({ type: "custom", text1: "Action réalisée" })
-          reset()
-        } catch (error) {
-          Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement de l'action" })
-        }
+        const item = getItemFromId(inventory, form.itemDbKey)
+        handleSubmit(item)
         break
       }
       case "movement":
@@ -109,13 +121,7 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
           scrollNext()
           break
         }
-        try {
-          await useCases.combat.doCombatAction({ contenders, combat, action, item })
-          Toast.show({ type: "custom", text1: "Action réalisée" })
-          reset()
-        } catch (error) {
-          Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement de l'action" })
-        }
+        handleSubmit(item)
         break
       }
       default:
