@@ -3,7 +3,7 @@ import { TouchableOpacity, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import { EffectId } from "lib/character/effects/effects.types"
+import { EffectData, EffectId } from "lib/character/effects/effects.types"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import List from "components/List"
@@ -21,6 +21,8 @@ import useCreatedElements from "hooks/context/useCreatedElements"
 import { SearchParams, fromLocalParams } from "screens/ScreenParams"
 
 import styles from "./UpdateEffectsModal.styles"
+
+const calculatedEffects: EffectData["type"][] = ["cripled", "healthState", "radState", "withdrawal"]
 
 export default function UpdateEffectsModal() {
   const localParams = useLocalSearchParams() as SearchParams<DrawerParams>
@@ -56,9 +58,12 @@ export default function UpdateEffectsModal() {
     })
   }
 
+  const validEffects = effects.filter(e => !calculatedEffects.includes(e.type))
   const visibleEffects =
     searchValue.length > 2
-      ? effects.filter(effect => effect.label.toLowerCase().includes(searchValue.toLowerCase()))
+      ? validEffects.filter(effect =>
+          effect.label.toLowerCase().includes(searchValue.toLowerCase())
+        )
       : []
 
   return (
