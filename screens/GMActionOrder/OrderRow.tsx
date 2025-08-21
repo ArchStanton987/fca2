@@ -1,7 +1,8 @@
 import { StyleSheet, View } from "react-native"
 
-import { useLocalSearchParams } from "expo-router"
+import { router, useLocalSearchParams } from "expo-router"
 
+import { useSetCurrCharId } from "lib/character/character-store"
 import { DbStatus } from "lib/character/status/status.types"
 import Animated, { FadingTransition } from "react-native-reanimated"
 
@@ -90,8 +91,7 @@ export function OrderRowHeader() {
 }
 
 export default function OrderRow(props: OrderRowProps) {
-  const params = useLocalSearchParams()
-  const playingId = params?.charId
+  const params = useLocalSearchParams<{ charId: string; squadId: string }>()
   const { charId, name, ap, isPlaying, status, initiative, hasFinishedRound, isCombinedAction } =
     props
   const { players, npcs } = useCombat()
@@ -102,22 +102,21 @@ export default function OrderRow(props: OrderRowProps) {
 
   const textProps = { isPlaying, status, hasFinishedRound }
 
-  // TODO
-  // const onChangePlayer = (npcId: string) => {
-  //   if (npcs === null || !(npcId in npcs)) return
-  //   router.dismissTo({
-  //     pathname: "/squad/[squadId]/character/[charId]/combat",
-  //     params: { charId: npcId, squadId: params.squadId }
-  //   })
-  // }
+  const setCurrCharId = useSetCurrCharId()
+
+  const onChangePlayer = (npcId: string) => {
+    if (npcs === null || !(npcId in npcs)) return
+    router.setParams({ charId: npcId })
+    setCurrCharId(npcId)
+  }
 
   return (
     <Animated.View layout={FadingTransition}>
       <Row style={styles.container}>
         <Col style={styles.checkboxCol}>
           <CheckBox
-            // onPress={() => onChangePlayer(charId)}
-            isChecked={playingId === charId}
+            onPress={() => onChangePlayer(charId)}
+            isChecked={charId === params?.charId}
             size={30}
             disabled={!!players && charId in players}
           />

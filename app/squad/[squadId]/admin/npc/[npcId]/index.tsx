@@ -2,6 +2,8 @@ import { TouchableOpacity } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useSetCurrCharId } from "lib/character/character-store"
+
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import ScrollSection from "components/Section/ScrollSection"
@@ -19,7 +21,10 @@ export default function EnemyScreen() {
   const squad = useSquad()
   const { npcs } = useAdmin()
 
+  const setChar = useSetCurrCharId()
+
   const play = () => {
+    setChar(npcId)
     router.push({
       pathname: "/squad/[squadId]/character/[charId]/main/recap",
       params: { charId: npcId, squadId: squad.squadId }

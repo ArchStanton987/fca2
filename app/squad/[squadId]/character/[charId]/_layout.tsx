@@ -1,15 +1,15 @@
-import { useMemo, useState } from "react"
+import { ReactNode, useMemo, useState } from "react"
 import { Platform } from "react-native"
 
-import { Stack, useLocalSearchParams } from "expo-router"
+import { Stack } from "expo-router"
 
 import { NativeStackNavigationOptions } from "@react-navigation/native-stack"
 import Character from "lib/character/Character"
+import { useCurrCharStore } from "lib/character/character-store"
 import NonHuman from "lib/npc/NonHuman"
 import Inventory from "lib/objects/Inventory"
 import Toast from "react-native-toast-message"
 
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import { CharacterContext } from "contexts/CharacterContext"
 import { InventoryContext } from "contexts/InventoryContext"
 import { useSquad } from "contexts/SquadContext"
@@ -21,7 +21,6 @@ import { ReactionProvider } from "providers/ReactionProvider"
 import UpdatesProvider from "providers/UpdatesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import LoadingScreen from "screens/LoadingScreen"
-import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
 import { getDDMMYYYY, getHHMM } from "utils/date"
 
@@ -34,9 +33,7 @@ const modalOptions: NativeStackNavigationOptions = {
   }
 }
 
-export default function CharStack() {
-  const { charId } = useLocalSearchParams() as SearchParams<DrawerParams>
-
+function CharProvider({ children, charId }: { children: ReactNode; charId: string }) {
   const useCases = useGetUseCases()
 
   const squad = useSquad()
@@ -88,33 +85,41 @@ export default function CharStack() {
 
   return (
     <CharacterContext.Provider value={character}>
-      <InventoryContext.Provider value={charInventory}>
-        <UpdatesProvider>
-          <CombatProvider>
-            <ActionProvider>
-              <ReactionProvider>
-                <Stack
-                  screenOptions={{
-                    headerShown: false,
-                    contentStyle: { backgroundColor: colors.primColor, padding: 10 }
-                  }}
-                >
-                  <Stack.Screen name="(nav)" />
-                  <Stack.Screen name="(modal)/update-effects" options={modalOptions} />
-                  <Stack.Screen name="(modal)/update-effects-confirmation" options={modalOptions} />
-                  <Stack.Screen name="(modal)/update-objects" options={modalOptions} />
-                  <Stack.Screen name="(modal)/update-objects-confirmation" options={modalOptions} />
-                  <Stack.Screen name="(modal)/update-status" options={modalOptions} />
-                  <Stack.Screen name="(modal)/update-health" options={modalOptions} />
-                  <Stack.Screen name="(modal)/update-skills" options={modalOptions} />
-                  <Stack.Screen name="(modal)/update-skills-confirmation" options={modalOptions} />
-                  <Stack.Screen name="(modal)/update-knowledges" options={modalOptions} />
-                </Stack>
-              </ReactionProvider>
-            </ActionProvider>
-          </CombatProvider>
-        </UpdatesProvider>
-      </InventoryContext.Provider>
+      <InventoryContext.Provider value={charInventory}>{children}</InventoryContext.Provider>
     </CharacterContext.Provider>
+  )
+}
+
+export default function CharStack() {
+  const currCharId = useCurrCharStore(state => state.charId)
+  if (!currCharId) return <LoadingScreen />
+  return (
+    <CharProvider charId={currCharId}>
+      <UpdatesProvider>
+        <CombatProvider>
+          <ActionProvider>
+            <ReactionProvider>
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  contentStyle: { backgroundColor: colors.primColor, padding: 10 }
+                }}
+              >
+                <Stack.Screen name="(nav)" />
+                <Stack.Screen name="(modal)/update-effects" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-effects-confirmation" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-objects" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-objects-confirmation" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-status" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-health" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-skills" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-skills-confirmation" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-knowledges" options={modalOptions} />
+              </Stack>
+            </ReactionProvider>
+          </ActionProvider>
+        </CombatProvider>
+      </UpdatesProvider>
+    </CharProvider>
   )
 }
