@@ -54,9 +54,9 @@ export default function ScoreResultSlide({ skillId, scrollNext }: DiceResultSlid
   const isCritFail = dice !== 0 && dice >= getCritFailureThreshold(special.curr)
   const score = sumAbilities - dice + bonus
   const finalScore = score - targetArmorClass - difficulty
-  const isCritHit = dice <= withAimCritChance
+  const isSuccess = isDefaultCritSuccess || finalScore > 0
+  const isCritHit = finalScore > 0 && dice <= withAimCritChance
   const isCrit = isCritHit || isDefaultCritSuccess
-  const isSuccess = isDefaultCritSuccess || isCritHit || finalScore > 0
 
   const submit = async () => {
     const withDamageSubtypes = ["throw", "basic", "aim", "burst", "hit"]
