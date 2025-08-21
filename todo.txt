@@ -27,6 +27,7 @@ COMBAT :
 - [MED] système HP / limbs HP (with crit part?)
 - [MED] assignation upSkills pour perso générés (>100)
 - [LOW] besoin recharger personnage lorsque nouveau combat
+- [LOW] bug lorsque clic sur perso dans dmg form
 
 
 
