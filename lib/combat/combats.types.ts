@@ -1,3 +1,4 @@
+import { EffectId } from "lib/character/effects/effects.types"
 import { LimbsHp } from "lib/character/health/health-types"
 import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 
@@ -42,7 +43,17 @@ type InactiveEntry = {
   entryType: "inactive"
   duration: number
 }
-export type DamageEntry = HpEntry | InactiveEntry
+type RadEntry = {
+  charId: string
+  entryType: "rads"
+  amount: number
+}
+type EffectEntry = {
+  charId: string
+  entryType: "effect"
+  effectId: EffectId
+}
+export type DamageEntry = HpEntry | InactiveEntry | RadEntry | EffectEntry
 export type DamageEntries = Record<string, DamageEntry> | false
 
 export type DbAction = {

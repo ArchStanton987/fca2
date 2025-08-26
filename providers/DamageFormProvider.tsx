@@ -1,80 +1,28 @@
-import { ReactNode, createContext, useContext, useMemo, useReducer } from "react"
+import { ReactNode, createContext, useContext, useState } from "react"
 
+import Playable from "lib/character/Playable"
+import Action from "lib/combat/Action"
 import { DamageEntry } from "lib/combat/combats.types"
+import { GMDamageFormState, createDmgStore } from "lib/combat/gm-damage-store"
 import { getRealDamage } from "lib/combat/utils/combat-utils"
+import { StoreApi, useStore } from "zustand"
 
 import { useCombat } from "./CombatProvider"
 
-const defaultInactiveEntry = { charId: "", entryType: "inactive", duration: 1 } as const
-const defaultDamageEntry = {
-  charId: "",
-  entryType: "hp",
-  localization: "leftTorsoHp",
-  damage: 1
-} as const
+const GmDamageContext = createContext<StoreApi<GMDamageFormState>>(
+  {} as StoreApi<GMDamageFormState>
+)
 
-let entryId = 0
-
-type DamageEntriesState = Record<string, DamageEntry>
-
-type DamageEntriesApiType = {
-  add: () => void
-  deleteEntry: (id: string) => void
-  toggleEntryType: (id: string) => void
-  setEntry: (id: string, payload: Partial<DamageEntry>) => void
-  reset: () => void
-}
-
-const gmDamageContextForm = createContext<DamageEntriesState>({} as DamageEntriesState)
-const gmDamageContextApi = createContext<DamageEntriesApiType>({} as DamageEntriesApiType)
-
-export type DamageEntriesAction =
-  | { type: "add"; payload: { targetId: string } }
-  | { type: "delete"; payload: { id: string } }
-  | { type: "toggleEntryType"; payload: { id: string } }
-  | { type: "setEntry"; payload: { id: string; entry: Partial<DamageEntry> } }
-  | { type: "reset"; payload?: undefined }
-
-const reducer = (
-  state: DamageEntriesState,
-  { type, payload }: DamageEntriesAction
-): DamageEntriesState => {
-  switch (type) {
-    case "add": {
-      entryId += 1
-      return { ...state, [entryId]: { ...defaultDamageEntry, charId: payload.targetId } }
-    }
-    case "delete": {
-      const cpy = { ...state }
-      delete cpy[payload.id]
-      return { ...cpy }
-    }
-    case "toggleEntryType": {
-      const { charId, entryType } = state[payload.id]
-      const newEntry =
-        entryType === "hp" ? { ...defaultInactiveEntry, charId } : { ...defaultDamageEntry, charId }
-      return { ...state, [payload.id]: newEntry }
-    }
-    case "setEntry": {
-      const { entry, id } = payload
-      const newEntry = { ...state[id], ...entry }
-      // @ts-ignore
-      return { ...state, [id]: { ...state[id], ...newEntry } }
-    }
-    case "reset": {
-      return {}
-    }
-    default:
-      throw new Error("Unknown action")
+const getInitDamageEntry = (
+  action: Action | undefined,
+  contenders: Record<string, { char: Playable }>
+) => {
+  let initEntry: DamageEntry = {
+    charId: "",
+    entryType: "hp",
+    localization: "rightTorsoHp",
+    damage: 1
   }
-}
-
-export function DamageFormProvider({ children }: { children: ReactNode }) {
-  const { combat, players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
-  const action = combat?.currAction
-
-  let initEntry: DamageEntriesState = {}
   if (action) {
     const { rawDamage, damageLocalization, targetId, damageType, aimZone } = action
     const loc = aimZone || damageLocalization
@@ -82,58 +30,58 @@ export function DamageFormProvider({ children }: { children: ReactNode }) {
       const newDmgEntry = { rawDamage, damageLocalization: loc, damageType }
       const realDamage = Math.round(getRealDamage(contenders[targetId].char, newDmgEntry))
       initEntry = {
-        0: {
-          charId: targetId,
-          entryType: "hp",
-          localization: loc,
-          damage: realDamage
-        }
+        charId: targetId,
+        entryType: "hp",
+        localization: loc,
+        damage: realDamage
       }
     }
   }
+  return initEntry
+}
+// const getInitRadsEntry = (
+//   action: Action | undefined,
+//   contenders: Record<string, { char: Playable }>
+// ) => {
+//   let initEntry: DamageEntry = {
+//     charId: "",
+//     entryType: "rads",
+//     amount: 10
+//   }
+//   if (action) {
+//     const { actorId = "", targetId, itemDbKey } = action
+//     const actor = contenders[actorId]?.char
+//     if (!actor) return initEntry
+//     let item = null
+//     if (actor instanceof Character) {
+//       const wpn = actor.equipedObjects.weapons.find(w => w.dbKey === itemDbKey)
+//       if (!wpn) return initEntry
+//       const amount = wpn.
+//     }
+//   }
+// }
 
-  const [state, dispatch] = useReducer(reducer, initEntry)
+export function DamageFormProvider({ children }: { children: ReactNode }) {
+  const { combat, players, npcs } = useCombat()
+  const contenders = { ...players, ...npcs }
+  const action = combat?.currAction
 
-  const api = useMemo(
-    () => ({
-      add: () => {
-        const targetId = typeof action?.targetId === "string" ? action?.targetId : ""
-        dispatch({ type: "add", payload: { targetId: targetId ?? "" } })
-      },
-      deleteEntry: (id: string) => {
-        dispatch({ type: "delete", payload: { id } })
-      },
-      toggleEntryType: (id: string) => {
-        dispatch({ type: "toggleEntryType", payload: { id } })
-      },
-      setEntry: (id: string, payload: Partial<DamageEntry>) => {
-        dispatch({ type: "setEntry", payload: { id, entry: payload } })
-      },
-      reset: () => {
-        dispatch({ type: "reset" })
-      }
-    }),
-    [action]
-  )
+  const [store] = useState(() => {
+    const initEntry = getInitDamageEntry(action, contenders)
+    return createDmgStore({ 0: initEntry })
+  })
 
-  return (
-    <gmDamageContextForm.Provider value={state}>
-      <gmDamageContextApi.Provider value={api}>{children}</gmDamageContextApi.Provider>
-    </gmDamageContextForm.Provider>
-  )
+  return <GmDamageContext.Provider value={store}>{children}</GmDamageContext.Provider>
 }
 
-export const useDamageForm = () => {
-  const context = useContext(gmDamageContextForm)
-  if (!context) {
+export const useDamageFormStore = (selector: (state: GMDamageFormState) => unknown) => {
+  const store = useContext(GmDamageContext)
+  if (!store) {
     throw new Error("useDamgeForm must be used within its provider")
   }
-  return context
+  return useStore(store, selector)
 }
-export const useDamageFormApi = () => {
-  const context = useContext(gmDamageContextApi)
-  if (!context) {
-    throw new Error("useDamgeFormApi must be used within its provider")
-  }
-  return context
-}
+export const useDamageFormActions = () => useDamageFormStore(state => state.actions)
+export const useDamageFormPannel = () => useDamageFormStore(state => state.pannel)
+export const useDamageFormSelectedEntry = () => useDamageFormStore(state => state.selectedEntry)
+export const useDamageFormEntries = () => useDamageFormStore(state => state.entries)

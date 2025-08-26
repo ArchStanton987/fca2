@@ -3,8 +3,6 @@ import Playable from "lib/character/Playable"
 import { KnowledgeId } from "lib/character/abilities/knowledges/knowledge-types"
 import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-levels"
 import traitsMap from "lib/character/abilities/traits/traits"
-import { EffectId } from "lib/character/effects/effects.types"
-import { Modifier } from "lib/character/effects/symptoms.type"
 import { getModAttribute } from "lib/common/utils/char-calc"
 
 import { DbInventory } from "../objects.types"
@@ -51,12 +49,21 @@ export const dbToWeapon = (
   }
   const isEquiped = dbEquipedObjects?.weapons?.[dbKey] !== undefined
   const data = { ...weaponsMap[id], basicApCost, specialApCost }
-  return { inMagazine, data, dbKey, id, skill, isEquiped, ammo, category: "weapon" }
+  return {
+    inMagazine,
+    data,
+    dbKey,
+    id,
+    skill,
+    isEquiped,
+    ammo,
+    category: "weapon",
+    effects: [],
+    modifiers: []
+  }
 }
 
-export const attackToWeapon = (
-  attack: BeastAttack
-): Weapon & { effects: EffectId[]; modifiers: Modifier[] } => {
+export const attackToWeapon = (attack: BeastAttack): Weapon => {
   const { name, skill, apCost, damage, effects, modifiers } = attack
   return {
     id: name as WeaponId,

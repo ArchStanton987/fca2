@@ -89,6 +89,8 @@ export type Weapon = {
   data: WeaponData
   ammo: number
   inMagazine?: number
+  effects: EffectId[]
+  modifiers: Modifier[]
 }
 
 export type WeaponId =
