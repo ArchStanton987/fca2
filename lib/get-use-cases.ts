@@ -106,7 +106,8 @@ export default function getUseCases(
       setDifficulty: (data: SetDifficultyParams) => setDifficulty(dbType)(data),
       resetDifficulty: (data: ResetDifficultyParams) => resetDifficulty(dbType)(data),
       // GM
-      applyDamageEntries: (data: ApplyDamageEntriesParams) => applyDamageEntries(dbType)(data)
+      applyDamageEntries: (data: ApplyDamageEntriesParams) =>
+        applyDamageEntries(dbType, createdElements)(data)
     },
     npc: {
       subAll: () => subAllNpcs(dbType)(),

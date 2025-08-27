@@ -32,29 +32,16 @@ export type ReactionRoll = {
   opponentDice: number
   opponentApCost: number
 }
-type HpEntry = {
+export interface DamageEntry {
   charId: string
-  entryType: "hp"
-  localization: keyof LimbsHp
-  damage: number
+  entryType: "hp" | "rads" | "effect" | "inactive"
+  localization?: keyof LimbsHp
+  damage?: number
+  duration?: number
+  amount?: number
+  effectId?: EffectId | ""
 }
-type InactiveEntry = {
-  charId: string
-  entryType: "inactive"
-  duration: number
-}
-type RadEntry = {
-  charId: string
-  entryType: "rads"
-  amount: number
-}
-type EffectEntry = {
-  charId: string
-  entryType: "effect"
-  effectId: EffectId
-}
-export type DamageEntry = HpEntry | InactiveEntry | RadEntry | EffectEntry
-export type DamageEntries = Record<string, DamageEntry> | false
+export type DamageEntries = Record<number, DamageEntry> | false
 
 export type DbAction = {
   actionType?: string

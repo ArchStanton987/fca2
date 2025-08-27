@@ -1,8 +1,5 @@
-import { useState } from "react"
 import { StyleSheet } from "react-native"
 
-import { limbsMap } from "lib/character/health/health"
-import { LimbsHp } from "lib/character/health/health-types"
 import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 import Toast from "react-native-toast-message"
 
@@ -12,17 +9,18 @@ import List from "components/List"
 import Row from "components/Row"
 import Section from "components/Section"
 import ScrollSection from "components/Section/ScrollSection"
-import Selectable from "components/Selectable"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import TxtInput from "components/TxtInput"
-import HealthChangeEntry from "components/UpdateHealth/HealthChangeEntry"
 import PlusIcon from "components/icons/PlusIcon"
 import { useCombat } from "providers/CombatProvider"
-import { useDamageForm, useDamageFormApi } from "providers/DamageFormProvider"
+import { useDamageFormActions, useDamageFormStore } from "providers/DamageFormProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import PlayButton from "screens/CombatScreen/slides/PlayButton"
 import layout from "styles/layout"
+
+import DamageEntry from "./DamageEntry"
+import DamageFormListPicker from "./DamageFormListPicker"
 
 const styles = StyleSheet.create({
   centeredSection: {
@@ -36,8 +34,6 @@ const styles = StyleSheet.create({
   }
 })
 
-type Pannel = "char" | "localization"
-
 type GMDamageScreenProps = {
   rawDamage?: number
   realDamage?: number
@@ -46,37 +42,17 @@ type GMDamageScreenProps = {
 
 export default function GMDamageForm({ rawDamage, realDamage, damageType }: GMDamageScreenProps) {
   const useCases = useGetUseCases()
-  const { combat, players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
-  const charList = Object.values(contenders).map(c => ({
-    id: c.char.charId,
-    name: c.char.fullname
-  }))
-  const form = useDamageForm()
-  const entries = Object.entries(form).map(([id, val]) => ({ id, ...val }))
-
-  const { add, setEntry, reset } = useDamageFormApi()
-
-  const [selectedPannel, setSelectedPannel] = useState<Pannel>("char")
-  const defaultSelectedEntry = entries.length > 0 ? entries[0].id : null
-  const [selectedEntry, setSelectedEntry] = useState<string | null>(defaultSelectedEntry)
-
-  const setLoc = (value: keyof LimbsHp) => {
-    if (!selectedEntry) return
-    setEntry(selectedEntry, { localization: value })
-  }
-  const setChar = (value: string) => {
-    if (!selectedEntry) return
-    setEntry(selectedEntry, { charId: value })
-  }
+  const { combat } = useCombat()
+  const entries = useDamageFormStore(state => state.entries)
+  const actions = useDamageFormActions()
 
   const submit = async () => {
     if (combat === null) return
     try {
-      const healthChangeEntries = entries.length === 0 ? false : form
+      const healthChangeEntries = Object.keys(entries).length === 0 ? false : entries
       await useCases.combat.updateAction({ combat, payload: { healthChangeEntries } })
       Toast.show({ type: "custom", text1: "Dégâts enregistrés !" })
-      reset()
+      actions.clear()
     } catch (err) {
       Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement des dégâts" })
     }
@@ -107,25 +83,14 @@ export default function GMDamageForm({ rawDamage, realDamage, damageType }: GMDa
         <Row style={{ alignItems: "center" }}>
           <Txt>ENTREES</Txt>
           <Spacer x={layout.globalPadding} />
-          <PlusIcon size={40} onPress={add} />
+          <PlusIcon size={40} onPress={() => actions.addEntry()} />
         </Row>
 
         <List
-          data={entries}
+          data={Object.entries(entries).map(([id, value]) => ({ id, ...value }))}
           keyExtractor={e => e.id}
           separator={<Spacer y={15} />}
-          renderItem={({ item }) => {
-            const isSelected = item.id === selectedEntry
-            return (
-              <HealthChangeEntry
-                entry={item}
-                isSelected={isSelected}
-                selectEntry={() => setSelectedEntry(item.id)}
-                onPressLocalization={() => setSelectedPannel("localization")}
-                onPressChar={() => setSelectedPannel("char")}
-              />
-            )
-          }}
+          renderItem={({ item }) => <DamageEntry id={parseInt(item.id, 10)} />}
         />
       </ScrollSection>
 
@@ -133,27 +98,7 @@ export default function GMDamageForm({ rawDamage, realDamage, damageType }: GMDa
 
       <Col style={{ width: 100 }}>
         <ScrollSection style={{ flex: 1 }}>
-          {selectedPannel === "char" ? (
-            <List
-              data={charList}
-              keyExtractor={e => e.id}
-              renderItem={({ item }) => (
-                <Selectable isSelected={false} onPress={() => setChar(item.id)}>
-                  <Txt>{item.name}</Txt>
-                </Selectable>
-              )}
-            />
-          ) : (
-            <List
-              data={Object.values(limbsMap)}
-              keyExtractor={e => e.id}
-              renderItem={({ item }) => (
-                <Selectable isSelected={false} onPress={() => setLoc(item.id)}>
-                  <Txt>{item.label}</Txt>
-                </Selectable>
-              )}
-            />
-          )}
+          <DamageFormListPicker />
         </ScrollSection>
 
         <Spacer y={layout.globalPadding} />

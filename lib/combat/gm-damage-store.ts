@@ -1,34 +1,22 @@
 /* eslint-disable import/prefer-default-export */
-import { EffectId } from "lib/character/effects/effects.types"
-import { LimbsHp } from "lib/character/health/health-types"
 import { createStore } from "zustand"
 
 import { DamageEntry } from "./combats.types"
 
-type Pannel = "chars" | "bodyParts" | "effects"
-
-interface Entry {
-  charId: string
-  entryType: "hp" | "rads" | "effect" | "inactive"
-  localization?: keyof LimbsHp
-  damage?: number
-  duration?: number
-  amount?: number
-  effectId?: EffectId | ""
-}
+export type DamageFormPannel = "chars" | "bodyParts" | "effects"
 
 export type GMDamageFormState = {
-  pannel: Pannel
+  pannel: DamageFormPannel
   selectedEntry: number | null
   newEntryId: number
-  entries: Record<number, Entry>
+  entries: Record<number, DamageEntry>
   actions: {
-    setPannel: (pannel: Pannel) => void
+    setPannel: (pannel: DamageFormPannel) => void
     addEntry: () => void
     selectEntry: (e: number) => void
     deleteEntry: (e: number) => void
     toggleEntryType: () => void
-    setEntry: <T extends keyof Entry>(key: keyof Entry, value: Entry[T]) => void
+    setEntry: <T extends keyof DamageEntry>(key: keyof DamageEntry, value: DamageEntry[T]) => void
     clear: () => void
   }
 }
@@ -56,7 +44,7 @@ export const createDmgStore = (initEntries: Record<number, DamageEntry>) =>
     ...initState,
     entries: initEntries ?? { ...initState.entries },
     actions: {
-      setPannel: (pannel: Pannel) => set({ pannel }),
+      setPannel: (pannel: DamageFormPannel) => set({ pannel }),
       addEntry: () =>
         set(state => {
           const id = state.newEntryId + 1
@@ -80,7 +68,7 @@ export const createDmgStore = (initEntries: Record<number, DamageEntry>) =>
           const newEntry = defaultEntries[newType]
           return { entries: { ...entries, [selectedEntry]: newEntry } }
         }),
-      setEntry: <T extends keyof Entry>(key: keyof Entry, value: Entry[T]) =>
+      setEntry: <T extends keyof DamageEntry>(key: keyof DamageEntry, value: DamageEntry[T]) =>
         set(state => {
           const { selectedEntry, entries } = state
           if (!selectedEntry) return { ...state }

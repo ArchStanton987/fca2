@@ -1,5 +1,6 @@
 import { Redirect } from "expo-router"
 
+import GMDamageForm from "lib/combat/ui/damage-form/GMDamageForm"
 import { getRealDamage } from "lib/combat/utils/combat-utils"
 
 import DrawerPage from "components/DrawerPage"
@@ -8,7 +9,6 @@ import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
 import { DamageFormProvider } from "providers/DamageFormProvider"
-import GMDamageForm from "screens/AdminTabs/GMDamageForm/GMDamageForm"
 
 export default function GMDamage() {
   const { meta, charId } = useCharacter()

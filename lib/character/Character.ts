@@ -263,15 +263,12 @@ export default class Character implements Playable {
   }
 
   get equipedObjects() {
-    // const weapons = Object.entries(this.dbEquipedObjects.weapons || {}).map(([dbKey, value]) => ({
-    //   dbKey,
-    //   data: weaponsMap[value.id],
-    //   inMagazine: value.inMagazine,
-    //   ...value
-    // }))
-    const weapons = Object.entries(this.dbEquipedObjects.weapons || {}).map(([dbKey, value]) => 
-    dbToWeapon(([dbKey, value], this, this.))
-    )
+    const weapons = Object.entries(this.dbEquipedObjects.weapons || {}).map(([dbKey, value]) => ({
+      dbKey,
+      data: weaponsMap[value.id],
+      inMagazine: value.inMagazine,
+      ...value
+    }))
     const clothings = Object.entries(this.dbEquipedObjects.clothings || {}).map(
       ([dbKey, value]) => ({
         dbKey,

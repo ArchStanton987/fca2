@@ -74,14 +74,13 @@ export function DamageFormProvider({ children }: { children: ReactNode }) {
   return <GmDamageContext.Provider value={store}>{children}</GmDamageContext.Provider>
 }
 
-export const useDamageFormStore = (selector: (state: GMDamageFormState) => unknown) => {
+export function useDamageFormStore<T>(selector: (state: GMDamageFormState) => T): T {
   const store = useContext(GmDamageContext)
   if (!store) {
-    throw new Error("useDamgeForm must be used within its provider")
+    throw new Error("useDamageFormStore must be used within its provider")
   }
   return useStore(store, selector)
 }
+
+export const useDamageEntry = (id: number) => useDamageFormStore(state => state.entries[id])
 export const useDamageFormActions = () => useDamageFormStore(state => state.actions)
-export const useDamageFormPannel = () => useDamageFormStore(state => state.pannel)
-export const useDamageFormSelectedEntry = () => useDamageFormStore(state => state.selectedEntry)
-export const useDamageFormEntries = () => useDamageFormStore(state => state.entries)

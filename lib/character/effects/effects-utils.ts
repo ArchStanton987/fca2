@@ -7,6 +7,13 @@ import { DbStatus } from "lib/character/status/status.types"
 import Playable from "../Playable"
 import getEffectsUseCases, { getEffectLengthInMs } from "./effects-use-cases"
 
+export const calculatedEffects: EffectData["type"][] = [
+  "cripled",
+  "healthState",
+  "radState",
+  "withdrawal"
+]
+
 export const getExpiringEffects = (char: Playable, refDate: Date) =>
   char.effects.filter(effect => {
     const { startTs, endTs, data } = effect
