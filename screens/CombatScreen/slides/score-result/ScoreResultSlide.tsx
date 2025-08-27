@@ -44,7 +44,13 @@ export default function ScoreResultSlide({ skillId, scrollNext }: DiceResultSlid
   if (action.roll === undefined) return <AwaitGmSlide messageCase="difficulty" />
   if (action.roll === false) return <SlideError error={slideErrors.noDiceRollError} />
 
-  const { dice, sumAbilities, difficulty, bonus, targetArmorClass = 0 } = action.roll
+  const {
+    dice = 0,
+    sumAbilities = 0,
+    difficulty = 0,
+    bonus = 0,
+    targetArmorClass = 0
+  } = action.roll
 
   let withAimCritChance = secAttr.curr.critChance
   if (actionType === "weapon" && aimZone) {
