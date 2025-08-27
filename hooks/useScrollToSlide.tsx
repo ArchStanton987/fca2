@@ -8,9 +8,9 @@ export default function useScrollToSlide() {
   const { width } = useWindowDimensions()
   const slideWidth = getSlideWidth(width)
 
-  const scrollTo = (index: number) => {
+  const scrollTo = (index: number, animated = true) => {
     if (!scrollRef.current) return
-    scrollRef.current.scrollTo({ x: index * slideWidth, animated: true })
+    scrollRef.current.scrollTo({ x: index * slideWidth, animated })
   }
 
   return { scrollRef, scrollTo, slideWidth }

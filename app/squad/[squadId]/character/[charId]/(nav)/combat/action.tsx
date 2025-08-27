@@ -1,6 +1,7 @@
+import { useCallback, useRef } from "react"
 import { ScrollView } from "react-native"
 
-import { Redirect } from "expo-router"
+import { Redirect, useFocusEffect } from "expo-router"
 
 import {
   getActionId,
@@ -24,6 +25,8 @@ import WaitInitiativeScreen from "screens/CombatScreen/WaitInitiativeScreen"
 import SlideError, { slideErrors } from "screens/CombatScreen/slides/SlideError"
 import getSlides from "screens/CombatScreen/slides/slides"
 
+let onLeaveIndex = 0
+
 export default function ActionScreen() {
   const char = useCharacter()
   const inv = useInventory()
@@ -33,6 +36,18 @@ export default function ActionScreen() {
   const actionId = getActionId(combat)
 
   const { scrollRef, scrollTo, slideWidth } = useScrollToSlide()
+  const scrollIndex = useRef(0)
+
+  useFocusEffect(
+    useCallback(() => {
+      if (onLeaveIndex !== 0) {
+        scrollTo(onLeaveIndex)
+      }
+      return () => {
+        onLeaveIndex = scrollIndex.current
+      }
+    }, [scrollTo])
+  )
 
   const form = useActionForm()
   const { actionType, actionSubtype, itemDbKey } = form
@@ -70,6 +85,11 @@ export default function ActionScreen() {
         disableIntervalMomentum
         ref={scrollRef}
         bounces={false}
+        scrollEventThrottle={1000}
+        onScroll={e => {
+          const res = Math.round(e.nativeEvent.contentOffset.x / slideWidth)
+          scrollIndex.current = res
+        }}
       >
         <List
           data={slides}
