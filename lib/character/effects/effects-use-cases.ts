@@ -8,7 +8,7 @@ import effectsMap from "./effects"
 
 export const getEffectLengthInMs = (char: Playable, effect: EffectData) => {
   const isChemReliant = char.traits?.some(t => t.id === "chemReliant")
-  if (!effect.length) return null
+  if (typeof effect?.length !== "number") return null
   const isWithdrawal = effect.type === "withdrawal"
   const lengthInH = isWithdrawal && isChemReliant ? effect.length * 0.5 : effect.length
   return lengthInH * 60 * 60 * 1000
