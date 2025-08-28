@@ -1,5 +1,3 @@
-import { computed, makeObservable, observable } from "mobx"
-
 import Action from "./Action"
 import { DbCombatEntry, PlayerCombatData } from "./combats.types"
 
@@ -49,23 +47,6 @@ export default class Combat {
         return [roundId, actions]
       })
     )
-
-    makeObservable(this, {
-      id: observable,
-      squadId: observable,
-      date: observable,
-      location: observable,
-      title: observable,
-      description: observable,
-      currActorId: observable,
-      players: observable,
-      npcs: observable,
-      rounds: observable,
-      //
-      currRoundId: computed,
-      currActionId: computed,
-      currAction: computed
-    })
   }
 
   get currRoundId() {

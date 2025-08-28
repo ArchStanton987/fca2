@@ -1,6 +1,5 @@
 import { LimbsHp } from "lib/character/health/health-types"
 import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
-import { computed, makeObservable, observable } from "mobx"
 
 import { DamageEntries, DbAction, ReactionRoll, Roll } from "./combats.types"
 
@@ -99,27 +98,6 @@ export default class Action {
 
     this.aimZone = actionSubtype === "aim" ? payload.aimZone : false
     this.isDone = payload.isDone
-
-    makeObservable(this, {
-      actionType: observable,
-      actionSubtype: observable,
-      actorId: observable,
-      isCombinedAction: observable,
-      apCost: observable,
-      isDone: observable,
-      roll: observable,
-      reactionRoll: observable,
-      healthChangeEntries: observable,
-      itemId: observable,
-      itemDbKey: observable,
-      targetId: observable,
-      damageLocalization: observable,
-      aimZone: observable,
-      rawDamage: observable,
-      damageType: observable,
-      //
-      combatStep: computed
-    })
   }
 
   get combatStep() {
