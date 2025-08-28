@@ -1,11 +1,11 @@
 import { ReactNode, useMemo, useState } from "react"
 import { Platform } from "react-native"
 
-import { Stack } from "expo-router"
+import { Stack, useLocalSearchParams } from "expo-router"
 
 import { NativeStackNavigationOptions } from "@react-navigation/native-stack"
 import Character from "lib/character/Character"
-import { useCurrCharStore } from "lib/character/character-store"
+import { useCurrCharStore, useSetCurrCharId } from "lib/character/character-store"
 import NonHuman from "lib/npc/NonHuman"
 import Inventory from "lib/objects/Inventory"
 import Toast from "react-native-toast-message"
@@ -91,7 +91,14 @@ function CharProvider({ children, charId }: { children: ReactNode; charId: strin
 }
 
 export default function CharStack() {
+  const { charId } = useLocalSearchParams<{ charId: string }>()
   const currCharId = useCurrCharStore(state => state.charId)
+  const setChar = useSetCurrCharId()
+
+  if (charId && currCharId === null) {
+    setChar(charId)
+  }
+
   if (!currCharId) return <LoadingScreen />
   return (
     <CharProvider charId={currCharId}>
