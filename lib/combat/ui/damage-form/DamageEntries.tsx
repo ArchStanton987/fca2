@@ -2,6 +2,7 @@ import { ReactNode } from "react"
 import { Pressable, StyleSheet } from "react-native"
 
 import Col from "components/Col"
+import List from "components/List"
 import Row from "components/Row"
 import SelectorButton from "components/SelectorButton"
 import Spacer from "components/Spacer"
@@ -157,7 +158,7 @@ function EffectEntry({ id }: { id: number }) {
   )
 }
 
-export default function DamageEntry({ id }: { id: number }) {
+function DamageEntry({ id }: { id: number }) {
   const entry = useDamageEntry(id)
 
   if (entry.entryType === "hp") return <HpEntry id={id} />
@@ -165,4 +166,16 @@ export default function DamageEntry({ id }: { id: number }) {
   if (entry.entryType === "rads") return <RadsEntry id={id} />
   if (entry.entryType === "effect") return <EffectEntry id={id} />
   return null
+}
+
+export default function DamageEntries() {
+  const entries = useDamageFormStore(state => state.entries)
+  return (
+    <List
+      data={Object.entries(entries).map(([id, value]) => ({ id, ...value }))}
+      keyExtractor={e => e.id}
+      separator={<Spacer y={15} />}
+      renderItem={({ item }) => <DamageEntry id={parseInt(item.id, 10)} />}
+    />
+  )
 }

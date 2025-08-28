@@ -22,7 +22,7 @@ export default function DurationInput({ entryId }: DurationInputProps) {
   return (
     <TxtInput
       style={styles.input}
-      value={entry?.damage?.toString()}
+      value={entry?.duration?.toString()}
       onChangeText={e => {
         actions.setEntry("duration", e)
       }}

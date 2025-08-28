@@ -25,7 +25,7 @@ const initState = {
   pannel: "chars" as const,
   selectedEntry: null,
   entries: {},
-  newEntryId: 1
+  newEntryId: 0
 }
 const defaultEntries = {
   hp: {
@@ -35,7 +35,7 @@ const defaultEntries = {
     damage: 1
   },
   rads: { charId: "", entryType: "rads" as const, amount: 10 },
-  inactive: { charId: "", entryType: "effect" as const, effectId: "" as const },
+  inactive: { charId: "", entryType: "inactive" as const, duration: 1 as const },
   effect: { charId: "", entryType: "effect" as const, effectId: "" as const }
 }
 
@@ -60,18 +60,18 @@ export const createDmgStore = (initEntries: Record<number, DamageEntry>) =>
       toggleEntryType: () =>
         set(state => {
           const { selectedEntry, entries } = state
-          if (!selectedEntry) return { ...state }
-          const currEntryType = entries[selectedEntry].entryType
-          const currIndex = entryTypes.indexOf(currEntryType)
+          if (typeof selectedEntry !== "number") return { ...state }
+          const { entryType, charId } = entries[selectedEntry]
+          const currIndex = entryTypes.indexOf(entryType)
           const newIndex = currIndex === entryTypes.length - 1 ? 0 : currIndex + 1
           const newType = entryTypes[newIndex]
-          const newEntry = defaultEntries[newType]
+          const newEntry = { ...defaultEntries[newType], charId }
           return { entries: { ...entries, [selectedEntry]: newEntry } }
         }),
       setEntry: <T extends keyof DamageEntry>(key: keyof DamageEntry, value: DamageEntry[T]) =>
         set(state => {
           const { selectedEntry, entries } = state
-          if (!selectedEntry) return { ...state }
+          if (typeof selectedEntry !== "number") return { ...state }
           const updatedEntry = { ...state.entries[selectedEntry], [key]: value }
           return { entries: { ...entries, [selectedEntry]: updatedEntry } }
         }),

@@ -22,7 +22,7 @@ export default function RadsInput({ entryId }: RadsInputProps) {
   return (
     <TxtInput
       style={styles.input}
-      value={entry?.damage?.toString()}
+      value={entry?.amount?.toString()}
       onChangeText={e => {
         actions.setEntry("amount", e)
       }}

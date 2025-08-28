@@ -1,11 +1,9 @@
 import { StyleSheet } from "react-native"
 
 import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
-import Toast from "react-native-toast-message"
 
 import Col from "components/Col"
 import DrawerPage from "components/DrawerPage"
-import List from "components/List"
 import Row from "components/Row"
 import Section from "components/Section"
 import ScrollSection from "components/Section/ScrollSection"
@@ -13,14 +11,12 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import TxtInput from "components/TxtInput"
 import PlusIcon from "components/icons/PlusIcon"
-import { useCombat } from "providers/CombatProvider"
-import { useDamageFormActions, useDamageFormStore } from "providers/DamageFormProvider"
-import { useGetUseCases } from "providers/UseCasesProvider"
-import PlayButton from "screens/CombatScreen/slides/PlayButton"
+import { useDamageFormActions } from "providers/DamageFormProvider"
 import layout from "styles/layout"
 
-import DamageEntry from "./DamageEntry"
+import DamageEntries from "./DamageEntries"
 import DamageFormListPicker from "./DamageFormListPicker"
+import SubmitDamageForm from "./inputs/SubmitDamageForm"
 
 const styles = StyleSheet.create({
   centeredSection: {
@@ -41,23 +37,7 @@ type GMDamageScreenProps = {
 }
 
 export default function GMDamageForm({ rawDamage, realDamage, damageType }: GMDamageScreenProps) {
-  const useCases = useGetUseCases()
-  const { combat } = useCombat()
-  const entries = useDamageFormStore(state => state.entries)
   const actions = useDamageFormActions()
-
-  const submit = async () => {
-    if (combat === null) return
-    try {
-      const healthChangeEntries = Object.keys(entries).length === 0 ? false : entries
-      await useCases.combat.updateAction({ combat, payload: { healthChangeEntries } })
-      Toast.show({ type: "custom", text1: "Dégâts enregistrés !" })
-      actions.clear()
-    } catch (err) {
-      Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement des dégâts" })
-    }
-  }
-
   return (
     <DrawerPage>
       <ScrollSection style={{ flex: 1 }} title="entrées de dégâts">
@@ -86,12 +66,7 @@ export default function GMDamageForm({ rawDamage, realDamage, damageType }: GMDa
           <PlusIcon size={40} onPress={() => actions.addEntry()} />
         </Row>
 
-        <List
-          data={Object.entries(entries).map(([id, value]) => ({ id, ...value }))}
-          keyExtractor={e => e.id}
-          separator={<Spacer y={15} />}
-          renderItem={({ item }) => <DamageEntry id={parseInt(item.id, 10)} />}
-        />
+        <DamageEntries />
       </ScrollSection>
 
       <Spacer x={layout.globalPadding} />
@@ -104,7 +79,7 @@ export default function GMDamageForm({ rawDamage, realDamage, damageType }: GMDa
         <Spacer y={layout.globalPadding} />
 
         <Section title="valider" contentContainerStyle={styles.submitSection}>
-          <PlayButton onPress={() => submit()} />
+          <SubmitDamageForm />
         </Section>
       </Col>
     </DrawerPage>
