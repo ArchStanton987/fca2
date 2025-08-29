@@ -19,6 +19,7 @@ import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
 import { useReactionApi, useReactionForm } from "providers/ReactionProvider"
+import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
   }
 })
 
-export default function PickReactionSlide({ scrollNext }: SlideProps) {
+export default function PickReactionSlide({ slideIndex }: SlideProps) {
   const useCases = useGetUseCases()
   const { combat, players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
@@ -57,6 +58,12 @@ export default function PickReactionSlide({ scrollNext }: SlideProps) {
   const form = useReactionForm()
   const { reaction } = form
   const { setReactionForm, reset } = useReactionApi()
+
+  const { scrollTo } = useScrollTo()
+
+  const scrollNext = () => {
+    scrollTo(slideIndex + 1)
+  }
 
   if (!combat) return <SlideError error={slideErrors.noCombatError} />
 

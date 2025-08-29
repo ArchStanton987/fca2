@@ -17,6 +17,7 @@ import Spacer from "components/Spacer"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useScrollTo } from "providers/SlidesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
 
@@ -33,7 +34,7 @@ const toastMessages = {
   prepare: "OK ! On se prépare !"
 } as const
 
-export default function ActionTypeSlide({ scrollNext }: SlideProps) {
+export default function ActionTypeSlide({ slideIndex }: SlideProps) {
   const useCases = getUseCases()
   const { players, npcs, combat } = useCombat()
   const char = useCharacter()
@@ -47,6 +48,12 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
   const contenders = { ...players, ...npcs }
   const activePlayersWithAp = getActivePlayersWithAp(contenders)
   const isLastPlayer = activePlayersWithAp.length === 1
+
+  const { scrollTo } = useScrollTo()
+
+  const scrollNext = () => {
+    scrollTo(slideIndex + 1)
+  }
 
   const onPressActionType = (id: keyof typeof actions) => {
     if (id === "weapon") {
@@ -71,7 +78,6 @@ export default function ActionTypeSlide({ scrollNext }: SlideProps) {
       return
     }
     await useCases.combat.updateAction({ combat, payload })
-    if (!scrollNext) throw new Error("No scrollNext function found")
     scrollNext()
   }
 

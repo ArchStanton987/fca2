@@ -14,6 +14,7 @@ import List from "components/List"
 import Row from "components/Row"
 import Section from "components/Section"
 import DrawerSlide from "components/Slides/DrawerSlide"
+import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import MinusIcon from "components/icons/MinusIcon"
@@ -22,6 +23,7 @@ import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -40,11 +42,7 @@ const styles = StyleSheet.create({
   }
 })
 
-type DiceResultSlideProps = {
-  scrollNext?: () => void
-}
-
-export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) {
+export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
   const useCases = useGetUseCases()
   const { status, secAttr, charId } = useCharacter()
   const inventory = useInventory()
@@ -56,6 +54,12 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
 
   const maxAp = secAttr.curr.actionPoints
   const { currAp } = status
+
+  const { scrollTo } = useScrollTo()
+
+  const scrollNext = () => {
+    scrollTo(slideIndex + 1)
+  }
 
   const incApCost = (type: "add" | "remove") => {
     let newApCost
@@ -75,7 +79,7 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
   }
 
   const handleSubmit = async (item?: Consumable | Weapon | Clothing | MiscObject) => {
-    if (!combat || !scrollNext) return
+    if (!combat) return
 
     const action = { ...combat?.currAction, apCost, actorId: charId }
     try {
@@ -88,7 +92,7 @@ export default function ApAssignmentSlide({ scrollNext }: DiceResultSlideProps) 
   }
 
   const onPressNext = async () => {
-    if (!combat || !scrollNext) return
+    if (!combat) return
     await useCases.combat.updateAction({ combat, payload: { apCost } })
 
     switch (actionType) {

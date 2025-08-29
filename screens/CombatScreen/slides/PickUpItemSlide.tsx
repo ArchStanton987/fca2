@@ -8,9 +8,10 @@ import { useInventory } from "contexts/InventoryContext"
 import { useUpdateObjects } from "contexts/UpdateObjectsContext"
 import { useActionApi } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 
-export default function PickUpItemSlide({ scrollPrevious }: SlideProps) {
+export default function PickUpItemSlide({ slideIndex }: SlideProps) {
   const useCases = useGetUseCases()
   const character = useCharacter()
   const inventory = useInventory()
@@ -20,6 +21,12 @@ export default function PickUpItemSlide({ scrollPrevious }: SlideProps) {
 
   const { combat, npcs, players } = useCombat()
   const contenders = { ...players, ...npcs }
+
+  const { scrollTo } = useScrollTo()
+
+  const scrollPrevious = () => {
+    scrollTo(slideIndex - 1)
+  }
 
   const onPressCancel = () => {
     if (scrollPrevious) {

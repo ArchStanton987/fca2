@@ -15,6 +15,7 @@ import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
 
@@ -28,7 +29,12 @@ type DiceResultSlideProps = SlideProps & {
   skillId: SkillId
 }
 
-export default function ScoreResultSlide({ skillId, scrollNext }: DiceResultSlideProps) {
+export default function ScoreResultSlide({ skillId, slideIndex }: DiceResultSlideProps) {
+  const { scrollTo } = useScrollTo()
+
+  const scrollNext = () => {
+    scrollTo(slideIndex + 1)
+  }
   const useCases = useGetUseCases()
   const char = useCharacter()
   const inv = useInventory()
@@ -68,7 +74,6 @@ export default function ScoreResultSlide({ skillId, scrollNext }: DiceResultSlid
     const withDamageSubtypes = ["throw", "basic", "aim", "burst", "hit"]
     const hasNextSlide = withDamageSubtypes.includes(actionSubtype) && isSuccess
     if (hasNextSlide) {
-      if (!scrollNext) throw new Error("invalid scrollNext")
       scrollNext()
       return
     }

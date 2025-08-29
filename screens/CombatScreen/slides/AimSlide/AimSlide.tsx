@@ -13,6 +13,7 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -33,18 +34,24 @@ const styles = StyleSheet.create({
   }
 })
 
-export default function AimSlide({ scrollNext }: SlideProps) {
+export default function AimSlide({ slideIndex }: SlideProps) {
   const useCases = useGetUseCases()
   const { combat } = useCombat()
   const { aimZone = "" } = useActionForm()
   const { setForm } = useActionApi()
+
+  const { scrollTo } = useScrollTo()
+
+  const scrollNext = () => {
+    scrollTo(slideIndex + 1)
+  }
 
   const onPressPart = (id: keyof LimbsHp) => {
     setForm({ aimZone: id })
   }
 
   const onPressNext = async () => {
-    if (!combat || !scrollNext || !aimZone) return
+    if (!combat || !aimZone) return
     await useCases.combat.updateAction({ combat, payload: { aimZone } })
     scrollNext()
   }

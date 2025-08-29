@@ -12,6 +12,7 @@ import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
 import { useReactionApi, useReactionForm } from "providers/ReactionProvider"
+import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
 
@@ -19,7 +20,7 @@ import NextButton from "../NextButton"
 import SlideError, { slideErrors } from "../SlideError"
 import styles from "./DiceRollSlide.styles"
 
-export default function ReactionRollSlide({ scrollNext }: SlideProps) {
+export default function ReactionRollSlide({ slideIndex }: SlideProps) {
   const useCases = useGetUseCases()
   const { combat, players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
@@ -28,6 +29,12 @@ export default function ReactionRollSlide({ scrollNext }: SlideProps) {
   const form = useReactionForm()
   const { diceRoll, reaction } = form
   const { setReactionRoll } = useReactionApi()
+
+  const { scrollTo } = useScrollTo()
+
+  const scrollNext = () => {
+    scrollTo(slideIndex + 1)
+  }
 
   const diceScore = parseInt(diceRoll, 10)
   const isValid = diceRoll.length > 0 && !Number.isNaN(diceScore)
@@ -40,7 +47,7 @@ export default function ReactionRollSlide({ scrollNext }: SlideProps) {
   const skillLabel = skillsMap[skillId].label
 
   const onPressConfirm = async () => {
-    if (!scrollNext || !isValid || !combat) return
+    if (!isValid || !combat) return
     const reactionRoll = {
       opponentId: charId,
       opponentApCost: reactionsRecord[reaction].apCost,

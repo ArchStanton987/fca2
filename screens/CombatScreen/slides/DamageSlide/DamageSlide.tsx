@@ -16,6 +16,7 @@ import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
 
 type DamageSlideProps = SlideProps & {}
 
-export default function DamageSlide({ scrollNext }: DamageSlideProps) {
+export default function DamageSlide({ slideIndex }: DamageSlideProps) {
   const useCases = useGetUseCases()
   const { combat, players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
@@ -51,6 +52,12 @@ export default function DamageSlide({ scrollNext }: DamageSlideProps) {
   const form = useActionForm()
   const { actionType, actionSubtype, itemDbKey, rawDamage = "" } = form
   const { setForm, setRoll } = useActionApi()
+
+  const { scrollTo } = useScrollTo()
+
+  const scrollNext = () => {
+    scrollTo(slideIndex + 1)
+  }
 
   const [isReactionResultVisible, setIsReactionResultVisible] = useState(() => true)
 
@@ -95,14 +102,14 @@ export default function DamageSlide({ scrollNext }: DamageSlideProps) {
   }
 
   const submitDamages = async () => {
-    if (combat === null || !scrollNext) return
+    if (combat === null) return
     if (!isValid) throw new Error("invalid score")
     const payload = { rawDamage: parsedScore, damageType }
     await useCases.combat.updateAction({ combat, payload })
     scrollNext()
   }
   const submitNoDamages = async () => {
-    if (combat === null || !scrollNext) return
+    if (combat === null) return
     const payload = {
       ...action,
       actorId: char.charId,

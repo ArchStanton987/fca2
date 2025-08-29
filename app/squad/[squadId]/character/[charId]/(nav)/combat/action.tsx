@@ -1,61 +1,49 @@
-import { useCallback, useRef } from "react"
-import { ScrollView } from "react-native"
-
-import { Redirect, useFocusEffect } from "expo-router"
+import { Redirect } from "expo-router"
 
 import {
-  getActionId,
-  getCurrentRoundId,
   getInitiativePrompts,
   getPlayerCanReact,
   getPlayingOrder
 } from "lib/combat/utils/combat-utils"
 
-import DrawerPage from "components/DrawerPage"
 import List from "components/List"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
-import useScrollToSlide from "hooks/useScrollToSlide"
 import { useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { SlidesProvider } from "providers/SlidesProvider"
 import ActionUnavailableScreen from "screens/CombatScreen/ActionUnavailableScreen"
 import InitiativeScreen from "screens/CombatScreen/InitiativeScreen"
 import WaitInitiativeScreen from "screens/CombatScreen/WaitInitiativeScreen"
 import SlideError, { slideErrors } from "screens/CombatScreen/slides/SlideError"
 import getSlides from "screens/CombatScreen/slides/slides"
 
-let onLeaveIndex = 0
-
-export default function ActionScreen() {
+function SlideList() {
   const char = useCharacter()
   const inv = useInventory()
-  const { players, npcs, combat } = useCombat()
-
-  const roundId = getCurrentRoundId(combat)
-  const actionId = getActionId(combat)
-
-  const { scrollRef, scrollTo, slideWidth } = useScrollToSlide()
-  const scrollIndex = useRef(0)
-
-  useFocusEffect(
-    useCallback(() => {
-      if (onLeaveIndex !== 0) {
-        scrollTo(onLeaveIndex)
-      }
-      return () => {
-        onLeaveIndex = scrollIndex.current
-      }
-    }, [scrollTo])
-  )
-
   const form = useActionForm()
   const { actionType, actionSubtype, itemDbKey } = form
   let weapon = char.unarmed
   if (itemDbKey) {
     weapon = inv.weaponsRecord[itemDbKey] ?? char.unarmed
   }
+
   const slides = getSlides(actionType, actionSubtype, weapon)
+
+  return (
+    <List
+      data={slides}
+      horizontal
+      keyExtractor={item => item.id}
+      renderItem={({ item, index }) => item.renderSlide({ slideIndex: index })}
+    />
+  )
+}
+
+export default function ActionScreen() {
+  const char = useCharacter()
+  const { players, npcs, combat } = useCombat()
 
   if (!combat?.id) return <SlideError error={slideErrors.noCombatError} />
 
@@ -76,33 +64,8 @@ export default function ActionScreen() {
   if (!isPlaying) return <ActionUnavailableScreen />
 
   return (
-    <DrawerPage key={`${roundId}-${actionId}`}>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        snapToInterval={slideWidth}
-        decelerationRate="fast"
-        disableIntervalMomentum
-        ref={scrollRef}
-        bounces={false}
-        scrollEventThrottle={1000}
-        onScroll={e => {
-          const res = Math.round(e.nativeEvent.contentOffset.x / slideWidth)
-          scrollIndex.current = res
-        }}
-      >
-        <List
-          data={slides}
-          horizontal
-          keyExtractor={item => item.id}
-          renderItem={({ item, index }) =>
-            item.renderSlide({
-              scrollNext: () => scrollTo(index + 1),
-              scrollPrevious: () => scrollTo(index - 1)
-            })
-          }
-        />
-      </ScrollView>
-    </DrawerPage>
+    <SlidesProvider>
+      <SlideList />
+    </SlidesProvider>
   )
 }

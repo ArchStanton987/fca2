@@ -11,6 +11,7 @@ import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -31,7 +32,12 @@ const styles = StyleSheet.create({
   }
 })
 
-export default function PickTargetSlide({ scrollNext }: SlideProps) {
+export default function PickTargetSlide({ slideIndex }: SlideProps) {
+  const { scrollTo } = useScrollTo()
+
+  const scrollNext = () => {
+    scrollTo(slideIndex + 1)
+  }
   const useCases = useGetUseCases()
   const { meta, charId } = useCharacter()
   const { isEnemy } = meta

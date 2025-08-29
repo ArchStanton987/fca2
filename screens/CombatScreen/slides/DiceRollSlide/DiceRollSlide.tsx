@@ -11,12 +11,14 @@ import Col from "components/Col"
 import NumPad from "components/NumPad/NumPad"
 import Section from "components/Section"
 import DrawerSlide from "components/Slides/DrawerSlide"
+import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
 
@@ -26,11 +28,13 @@ import AwaitGmSlide from "../wait-slides/AwaitGmSlide"
 import styles from "./DiceRollSlide.styles"
 import NoRollSlide from "./NoRollSlide"
 
-type DiceRollSlideProps = {
-  scrollNext?: () => void
-}
+export default function DiceRollSlide({ slideIndex }: SlideProps) {
+  const { scrollTo } = useScrollTo()
 
-export default function DiceRollSlide({ scrollNext }: DiceRollSlideProps) {
+  const scrollNext = () => {
+    scrollTo(slideIndex + 1)
+  }
+
   const useCases = useGetUseCases()
 
   const char = useCharacter()
@@ -73,7 +77,7 @@ export default function DiceRollSlide({ scrollNext }: DiceRollSlideProps) {
   const targetArmorClass = getContenderAc(targetId, combat, contenders)
 
   const onPressConfirm = async () => {
-    if (combat === null || !scrollNext || !isValid) return
+    if (combat === null || !isValid) return
     let reactionRoll
     if (targetId) {
       const targetAp = contenders[targetId].char.status.currAp
