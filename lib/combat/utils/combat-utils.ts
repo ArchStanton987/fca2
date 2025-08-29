@@ -331,6 +331,9 @@ export const getPlayerCanReact = (char: Playable, combat: Combat) => {
   const hasEnoughAp = reactionActionsApCost.some(cost => currAp >= cost)
   if (!hasEnoughAp) return false
 
+  const isActive = char.status.combatStatus === "active" || char.status.combatStatus === "wait"
+  if (!isActive) return false
+
   const { damageLocalization, reactionRoll } = action
   if (!!damageLocalization && reactionRoll === undefined) return true
   return false
@@ -350,7 +353,8 @@ export const getReactionAbilities = (
 
   const dodgeKBonus = knowledgeLevels.find(el => el.id === knowledgesRecord.kDodge)?.bonus ?? 0
 
-  const weaponSkillId = equipedObjects.weapons[0].data.skillId
+  const defaultWeapon = equipedObjects.weapons[0] ?? char.unarmed
+  const weaponSkillId = defaultWeapon.data.skillId
   const parryKBonus = knowledgeLevels.find(el => el.id === knowledgesRecord.kParry)?.bonus ?? 0
   const parrySkillId = getParrySkill(weaponSkillId)
 

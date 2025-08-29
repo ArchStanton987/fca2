@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
 
 export default function ValidateSlide() {
   const useCases = useGetUseCases()
-  const { charId } = useCharacter()
+  const { charId, unarmed } = useCharacter()
   const inv = useInventory()
   const { reset } = useActionApi()
   const { combat, players, npcs } = useCombat()
@@ -50,7 +50,7 @@ export default function ValidateSlide() {
     if (!combat) return
     try {
       const itemKey = typeof itemDbKey === "string" ? itemDbKey : undefined
-      const item = getItemFromId(inv, itemKey)
+      const item = getItemFromId(inv, itemKey) ?? unarmed
       const payload = { ...action, actorId: charId }
       await useCases.combat.doCombatAction({ combat, contenders, action: payload, item })
       Toast.show({ type: "custom", text1: "Action réalisée !" })
