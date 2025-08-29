@@ -3,31 +3,57 @@ import { ScrollView, useWindowDimensions } from "react-native"
 
 import { useFocusEffect } from "expo-router"
 
+import { create } from "zustand"
+
 import DrawerPage from "components/DrawerPage"
 import { getSlideWidth } from "components/Slides/slide.utils"
 
-let onLeaveIndex = 0
+type SliderId = "actionSlider" | "reactionSlider"
 
-type SlidesContextType = {
-  scrollTo: (i: number) => void
+type SlidesStoreType = {
+  actionSlider: number
+  reactionSlider: number
+  actions: {
+    setSlideIndex: (id: SliderId, index: number) => void
+  }
 }
+
+const useSlidersStore = create<SlidesStoreType>(set => ({
+  actionSlider: 0,
+  reactionSlider: 0,
+  actions: {
+    setSlideIndex: (id: SliderId, index: number) => set(state => ({ ...state, [id]: index }))
+  }
+}))
+export const useSliderIndex = (id: SliderId) => useSlidersStore(state => state[id])
+export const useSetSliderIndex = () => useSlidersStore(state => state.actions.setSlideIndex)
+
+type SlidesContextType = { scrollTo: (i: number) => void }
 const SlidesContext = createContext({} as SlidesContextType)
 
-export function SlidesProvider({ children }: { children: ReactNode }) {
+export function SlidesProvider({
+  children,
+  sliderId
+}: {
+  children: ReactNode
+  sliderId: SliderId
+}) {
   const { width } = useWindowDimensions()
   const slideWidth = getSlideWidth(width)
   const scrollRef = useRef<ScrollView>(null)
   const scrollIndex = useRef(0)
+  const setSlideIndex = useSetSliderIndex()
+  const lastIndex = useSliderIndex(sliderId)
 
   useFocusEffect(
     useCallback(() => {
-      if (onLeaveIndex !== 0 && scrollRef.current) {
-        scrollRef.current.scrollTo({ x: onLeaveIndex * slideWidth, animated: true })
+      if (lastIndex) {
+        scrollRef?.current?.scrollTo({ x: lastIndex * slideWidth, animated: true })
       }
       return () => {
-        onLeaveIndex = scrollIndex.current
+        setSlideIndex(sliderId, scrollIndex.current)
       }
-    }, [slideWidth])
+    }, [sliderId, setSlideIndex, slideWidth, lastIndex])
   )
 
   const slidesApi = useMemo(

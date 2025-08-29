@@ -59,7 +59,7 @@ export default function DiceRollSlide({ slideIndex }: SlideProps) {
     item = consumablesRecord[itemDbKey]
   }
 
-  const { skillLabel, sumAbilities } = getActorSkillFromAction({ ...form, item }, char)
+  const { skillLabel, skillId, sumAbilities } = getActorSkillFromAction({ ...form, item }, char)
 
   const action = combat?.currAction
   if (!action) return <SlideError error={slideErrors.noCombatError} />
@@ -83,7 +83,7 @@ export default function DiceRollSlide({ slideIndex }: SlideProps) {
       const targetAp = contenders[targetId].char.status.currAp
       reactionRoll = targetAp >= REACTION_MIN_AP_COST ? undefined : (false as const)
     }
-    const roll = { difficulty, sumAbilities, dice, bonus, targetArmorClass }
+    const roll = { difficulty, sumAbilities, dice, bonus, targetArmorClass, skillId }
     await useCases.combat.updateAction({ combat, payload: { roll, reactionRoll } })
     scrollNext()
   }

@@ -24,7 +24,7 @@ function SlideList() {
 
 export default function ReactionsScreen() {
   return (
-    <SlidesProvider>
+    <SlidesProvider sliderId="reactionSlider">
       <SlideList />
     </SlidesProvider>
   )

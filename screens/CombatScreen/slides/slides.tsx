@@ -1,6 +1,4 @@
-import { SkillId } from "lib/character/abilities/skills/skills.types"
 import actions from "lib/combat/const/actions"
-import { Weapon } from "lib/objects/data/weapons/weapons.types"
 
 import { SlideProps } from "components/Slides/Slide.types"
 
@@ -34,10 +32,10 @@ const damageLocalizationSlide = {
   renderSlide: (props: SlideProps) => <DamageLocalizationSlide {...props} />
 }
 
-const getDiceResultSlide = (skillId: SkillId) => ({
+const diceResultSlide = {
   id: "diceResult",
-  renderSlide: (props: SlideProps) => <ScoreResultSlide skillId={skillId} {...props} />
-})
+  renderSlide: (props: SlideProps) => <ScoreResultSlide {...props} />
+}
 
 const pickTargetSlide = {
   id: "pickTarget",
@@ -53,14 +51,14 @@ const validateSlide = {
   renderSlide: () => <ValidateSlide />
 }
 
-const movementSlides = [initSlide, apAssignmentSlide, diceRollSlide, getDiceResultSlide("physical")]
+const movementSlides = [initSlide, apAssignmentSlide, diceRollSlide, diceResultSlide]
 
 const baseItemSlides = [initSlide, apAssignmentSlide]
-const getBasicAttackSlides = (skillId: SkillId) => [
+const basicAttackSlides = [
   ...baseItemSlides,
   pickTargetSlide,
   diceRollSlide,
-  getDiceResultSlide(skillId),
+  diceResultSlide,
   damageLocalizationSlide,
   damageSlide,
   validateSlide
@@ -84,39 +82,35 @@ const aimSlide = {
   renderSlide: (props: SlideProps) => <AimSlide {...props} />
 }
 
-const getAimAttackSlides = (weapon: Weapon) => [
+const aimAttackSlides = [
   ...baseItemSlides,
   pickTargetSlide,
   aimSlide,
   diceRollSlide,
-  getDiceResultSlide(weapon.data.skillId),
+  diceResultSlide,
   damageSlide,
   validateSlide
 ]
 
 const getSlides = <T extends keyof typeof actions>(
   actionType: T | "",
-  actionSubType?: keyof (typeof actions)[T]["subtypes"] | string,
-  weapon?: Weapon
+  actionSubType?: keyof (typeof actions)[T]["subtypes"] | string
 ) => {
   if (actionType === "other") return baseItemSlides
-  if (actionType === "movement") {
-    return movementSlides
-  }
+  if (actionType === "movement") return movementSlides
   if (actionType === "item") {
-    if (actionSubType === "throw") return getBasicAttackSlides("throw")
+    if (actionSubType === "throw") return basicAttackSlides
     if (actionSubType === "pickUp") return pickUpItemSlides
     if (actionSubType === "use") return useItemSlides
     return baseItemSlides
   }
   if (actionType === "weapon") {
-    if (!weapon) throw new Error("Couldn't get weapon slides")
     if (actionSubType === "reload") return baseItemSlides
     if (actionSubType === "unload") return baseItemSlides
-    if (actionSubType === "throw") return getBasicAttackSlides("throw")
-    if (actionSubType === "hit") return getBasicAttackSlides("melee")
-    if (actionSubType === "aim") return getAimAttackSlides(weapon)
-    return getBasicAttackSlides(weapon.data.skillId)
+    if (actionSubType === "throw") return basicAttackSlides
+    if (actionSubType === "hit") return basicAttackSlides
+    if (actionSubType === "aim") return aimAttackSlides
+    return basicAttackSlides
   }
   return [initSlide]
 }

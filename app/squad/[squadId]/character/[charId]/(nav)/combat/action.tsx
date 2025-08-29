@@ -1,3 +1,5 @@
+import { ReactNode } from "react"
+
 import { Redirect } from "expo-router"
 
 import {
@@ -9,7 +11,6 @@ import {
 import List from "components/List"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
-import { useInventory } from "contexts/InventoryContext"
 import { useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
 import { SlidesProvider } from "providers/SlidesProvider"
@@ -20,16 +21,9 @@ import SlideError, { slideErrors } from "screens/CombatScreen/slides/SlideError"
 import getSlides from "screens/CombatScreen/slides/slides"
 
 function SlideList() {
-  const char = useCharacter()
-  const inv = useInventory()
-  const form = useActionForm()
-  const { actionType, actionSubtype, itemDbKey } = form
-  let weapon = char.unarmed
-  if (itemDbKey) {
-    weapon = inv.weaponsRecord[itemDbKey] ?? char.unarmed
-  }
+  const { actionType, actionSubtype } = useActionForm()
 
-  const slides = getSlides(actionType, actionSubtype, weapon)
+  const slides = getSlides(actionType, actionSubtype)
 
   return (
     <List
@@ -41,7 +35,7 @@ function SlideList() {
   )
 }
 
-export default function ActionScreen() {
+function WithActionRedirections({ children }: { children: ReactNode }) {
   const char = useCharacter()
   const { players, npcs, combat } = useCombat()
 
@@ -63,9 +57,15 @@ export default function ActionScreen() {
 
   if (!isPlaying) return <ActionUnavailableScreen />
 
+  return children
+}
+
+export default function ActionScreen() {
   return (
-    <SlidesProvider>
-      <SlideList />
-    </SlidesProvider>
+    <WithActionRedirections>
+      <SlidesProvider sliderId="actionSlider">
+        <SlideList />
+      </SlidesProvider>
+    </WithActionRedirections>
   )
 }

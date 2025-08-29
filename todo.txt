@@ -1,7 +1,8 @@
+test chaque action / sous action
+test unarmed
+
 check mrFast AP COST
 update healthChangeEntries with modifiers and effects (beasts...)
-- utiliser zustand
-- séparer fichier pour chaque type entrée
 
 beasts special & skills
 

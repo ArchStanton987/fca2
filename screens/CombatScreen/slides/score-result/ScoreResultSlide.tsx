@@ -1,7 +1,7 @@
-import skillsMap from "lib/character/abilities/skills/skills"
-import { SkillId } from "lib/character/abilities/skills/skills.types"
+import Character from "lib/character/Character"
 import { limbsMap } from "lib/character/health/health"
 import { getCritFailureThreshold } from "lib/combat/const/crit"
+import { getActorSkillFromAction } from "lib/combat/utils/combat-utils"
 import Toast from "react-native-toast-message"
 
 import Col from "components/Col"
@@ -25,25 +25,20 @@ import AwaitGmSlide from "../wait-slides/AwaitGmSlide"
 import ActionOutcome from "./ActionOutcome"
 import styles from "./ScoreResultSlide.styles"
 
-type DiceResultSlideProps = SlideProps & {
-  skillId: SkillId
-}
-
-export default function ScoreResultSlide({ skillId, slideIndex }: DiceResultSlideProps) {
-  const { scrollTo } = useScrollTo()
-
-  const scrollNext = () => {
-    scrollTo(slideIndex + 1)
-  }
+export default function ScoreResultSlide({ slideIndex }: SlideProps) {
   const useCases = useGetUseCases()
   const char = useCharacter()
   const inv = useInventory()
+  const { weaponsRecord = {}, consumablesRecord = {} } = inv
   const { charId, secAttr, special } = char
   const { combat, npcs, players } = useCombat()
   const contenders = { ...players, ...npcs }
   const form = useActionForm()
+  const { itemDbKey = "" } = form
   const { actionType, actionSubtype, aimZone } = form
   const { reset } = useActionApi()
+
+  const { scrollTo } = useScrollTo()
 
   const action = combat?.currAction
   if (!action) return <SlideError error={slideErrors.noCombatError} />
@@ -62,6 +57,20 @@ export default function ScoreResultSlide({ skillId, slideIndex }: DiceResultSlid
   if (actionType === "weapon" && aimZone) {
     withAimCritChance += limbsMap[aimZone].aimMalus
   }
+
+  let obj
+  if (form.actionType === "weapon") {
+    const isHuman = char instanceof Character
+    if (itemDbKey) {
+      obj = isHuman
+        ? weaponsRecord[itemDbKey] ?? char.unarmed
+        : char.equipedObjectsRecord.weapons[itemDbKey]
+    }
+  } else {
+    obj = consumablesRecord[itemDbKey]
+  }
+  const { skillLabel } = getActorSkillFromAction({ ...form, item: obj }, char)
+
   const isDefaultCritSuccess = dice !== 0 && dice <= secAttr.curr.critChance
   const isCritFail = dice !== 0 && dice >= getCritFailureThreshold(special.curr)
   const score = sumAbilities - dice + bonus
@@ -74,7 +83,7 @@ export default function ScoreResultSlide({ skillId, slideIndex }: DiceResultSlid
     const withDamageSubtypes = ["throw", "basic", "aim", "burst", "hit"]
     const hasNextSlide = withDamageSubtypes.includes(actionSubtype) && isSuccess
     if (hasNextSlide) {
-      scrollNext()
+      scrollTo(slideIndex + 1)
       return
     }
     try {
@@ -94,7 +103,7 @@ export default function ScoreResultSlide({ skillId, slideIndex }: DiceResultSlid
         <Row style={styles.scoreDetailRow}>
           <Col style={styles.scoreContainer}>
             <Txt>Compétence</Txt>
-            <Txt>{skillsMap[skillId].label}</Txt>
+            <Txt>{skillLabel}</Txt>
             <Txt style={styles.score}>{sumAbilities}</Txt>
           </Col>
           <Spacer x={10} />
