@@ -4,7 +4,6 @@ import clothingsMap from "lib/objects/data/clothings/clothings"
 import { Clothing, ClothingId } from "lib/objects/data/clothings/clothings.types"
 import weaponsMap from "lib/objects/data/weapons/weapons"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
-import { CharType } from "lib/shared/db/api-rtdb"
 
 import { CreatedElements, defaultCreatedElements } from "./created-elements"
 import { EquipableCategory, EquipableObject } from "./fbEquipedObjectsRepository"
@@ -21,21 +20,16 @@ const getEquipedObjectsUseCases = (
   const allClothings = { ...clothingsMap, ...newClothings } as unknown as typeof clothingsMap
 
   return {
-    get: (
-      charType: CharType,
-      charId: string,
-      category: EquipableCategory,
-      dbKey: EquipableObject["dbKey"]
-    ) => repository.get(charType, charId, category, dbKey),
+    get: (charId: string, category: EquipableCategory, dbKey: EquipableObject["dbKey"]) =>
+      repository.get(charId, category, dbKey),
 
-    getByCategory: (charType: CharType, charId: string, category: EquipableCategory) =>
-      repository.getByCategory(charType, charId, category),
+    getByCategory: (charId: string, category: EquipableCategory) =>
+      repository.getByCategory(charId, category),
 
-    getAll: (charType: CharType, charId: string) => repository.getAll(charType, charId),
+    getAll: (charId: string) => repository.getAll(charId),
 
     toggle: async (char: Playable, object: Weapon | Clothing) => {
-      const { charId, equipedObjects, meta } = char
-      const charType = meta.isNpc ? "npcs" : "characters"
+      const { charId, equipedObjects } = char
       const category = getObjectCategory(object)
       const { weapons, clothings } = equipedObjects
       const { dbKey } = object
@@ -61,17 +55,13 @@ const getEquipedObjectsUseCases = (
             )
         }
 
-        return repository.add(charType, charId, category, object)
+        return repository.add(charId, category, object)
       }
-      return repository.remove(charType, charId, category, dbKey)
+      return repository.remove(charId, category, dbKey)
     },
 
-    remove: (
-      charType: CharType,
-      charId: string,
-      category: EquipableCategory,
-      dbKey: EquipableObject["dbKey"]
-    ) => repository.remove(charType, charId, category, dbKey)
+    remove: (charId: string, category: EquipableCategory, dbKey: EquipableObject["dbKey"]) =>
+      repository.remove(charId, category, dbKey)
   }
 }
 

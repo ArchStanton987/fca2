@@ -31,8 +31,7 @@ export default function applyDamageEntries(
       const { char, combatData } = contenders[charId]
       if (!char) throw new Error("could not find character")
 
-      const { meta, health } = char
-      const charType = meta.isNpc ? "npcs" : "characters"
+      const { health } = char
       switch (entryType) {
         // handle health points update
         case "hp": {
@@ -42,11 +41,11 @@ export default function applyDamageEntries(
             const currHp = char.status[localization]
             // TODO: FIX HP SYSTEM
             const newHp = currHp - damage < 0 ? 0 : currHp - damage
-            promises.push(statusRepo.patch({ charId, charType }, { [localization]: newHp }))
+            promises.push(statusRepo.patch({ charId }, { [localization]: newHp }))
             const hS = getHealthState(health.hp - damage, health.maxHp)
             if (hS === "vanished" || hS === "dead" || hS === "woundedUnconscious") {
               const newStatus = hS === "woundedUnconscious" ? "inactive" : "dead"
-              promises.push(statusRepo.patch({ charId, charType }, { combatStatus: newStatus }))
+              promises.push(statusRepo.patch({ charId }, { combatStatus: newStatus }))
             }
           }
           break
@@ -61,7 +60,7 @@ export default function applyDamageEntries(
           const newKey = inactiveKeys.length !== 0 ? Math.max(...inactiveKeys) + 1 : 0
           const newInactiveEntry = { inactiveRoundStart: roundId, inactiveRoundEnd }
           const inactiveRecord = { ...prevInactiveRecord, [newKey]: newInactiveEntry }
-          promises.push(statusRepo.patch({ charId, charType }, { combatStatus: "inactive" }))
+          promises.push(statusRepo.patch({ charId }, { combatStatus: "inactive" }))
           promises.push(updateContender(dbType)({ char, combat, payload: { inactiveRecord } }))
           break
         }
@@ -69,7 +68,7 @@ export default function applyDamageEntries(
         case "rads": {
           const { amount = 0 } = entry
           const rads = char.status.rads + amount
-          promises.push(statusRepo.patch({ charId, charType }, { rads }))
+          promises.push(statusRepo.patch({ charId }, { rads }))
           break
         }
         // handle effects

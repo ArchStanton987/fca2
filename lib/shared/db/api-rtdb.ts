@@ -5,8 +5,7 @@ import { DbAction, DbCombatEntry, PlayerCombatData, Roll } from "lib/combat/comb
 import { DbNpc } from "lib/npc/npc.types"
 import { DbSquad } from "lib/squad/squad-types"
 
-export type CharType = "characters" | "npcs"
-type CharParams = { charId: string; charType: CharType }
+type CharParams = { charId: string }
 type Child<T> = { childKey?: T }
 
 export type AdditionalCategory = "clothings" | "consumables" | "effects" | "miscObjects"
@@ -41,7 +40,7 @@ export type RollParams = {
   childKey?: keyof Roll
 }
 export type NpcParams = { id?: string; childKey?: keyof DbNpc }
-export type CharacterParams = { charType: CharType; id?: string; childKey?: keyof DbChar }
+export type CharacterParams = { id?: string; childKey?: keyof DbChar }
 export type StatusParams = CharParams & { childKey?: keyof DbStatus }
 export type EffectsParams = CharParams & { dbKey?: string; childKey?: keyof DbEffect }
 //
@@ -49,50 +48,50 @@ export type SquadParams = { id?: string; childKey?: keyof DbSquad }
 
 const rtdb = {
   getAdditionalClothings: ({ childKey }: AdditionalClothingsParams) =>
-    `v2/additional/clothings/${childKey ?? ""}`,
+    `v3/additional/clothings/${childKey ?? ""}`,
   getAdditionalConsumables: ({ childKey }: AdditionalConsumablesParams) =>
-    `v2/additional/consumables/${childKey ?? ""}`,
+    `v3/additional/consumables/${childKey ?? ""}`,
   getAdditionalEffects: ({ childKey }: AdditionalEffectsParams) =>
-    `v2/additional/effects/${childKey ?? ""}`,
+    `v3/additional/effects/${childKey ?? ""}`,
   getAdditionalMiscObjects: ({ childKey }: AdditionalMiscParams) =>
-    `v2/additional/miscObjects/${childKey ?? ""}`,
+    `v3/additional/miscObjects/${childKey ?? ""}`,
   //
   getCombat: ({ id, childKey }: CombatParams) =>
-    childKey ? `v2/combat/${id}/${childKey}` : `v2/combat/${id ?? ""}`,
+    childKey ? `v3/combat/${id}/${childKey}` : `v3/combat/${id ?? ""}`,
 
   getContender: ({ combatId, contenderType, id, childKey }: ContenderParams) =>
     id
-      ? `v2/combat/${combatId}/${contenderType}/${id}/${childKey ?? ""}`
-      : `v2/combat/${combatId}/${contenderType}/`,
+      ? `v3/combat/${combatId}/${contenderType}/${id}/${childKey ?? ""}`
+      : `v3/combat/${combatId}/${contenderType}/`,
   getRound: ({ combatId, id, childKey }: RoundParams) =>
-    id ? `v2/combat/${combatId}/rounds/${id}/${childKey ?? ""}` : `v2/combat/${combatId}/rounds/`,
+    id ? `v3/combat/${combatId}/rounds/${id}/${childKey ?? ""}` : `v3/combat/${combatId}/rounds/`,
 
   getAction: ({ combatId, roundId, id, childKey }: ActionParams) =>
     id
-      ? `v2/combat/${combatId}/rounds/${roundId}/${id}/${childKey ?? ""}`
-      : `v2/combat/${combatId}/rounds/${roundId}/`,
+      ? `v3/combat/${combatId}/rounds/${roundId}/${id}/${childKey ?? ""}`
+      : `v3/combat/${combatId}/rounds/${roundId}/`,
 
   getRoll: ({ combatId, roundId, id, childKey }: RollParams) =>
     id
-      ? `v2/combat/${combatId}/rounds/${roundId}/${id}/roll/${childKey ?? ""}`
-      : `v2/combat/${combatId}/rounds/${roundId}/`,
+      ? `v3/combat/${combatId}/rounds/${roundId}/${id}/roll/${childKey ?? ""}`
+      : `v3/combat/${combatId}/rounds/${roundId}/`,
 
   getEnemy: ({ id, childKey }: NpcParams) =>
-    childKey ? `v2/npcs/${id}/${childKey}` : `v2/npcs/${id ?? ""}`,
+    childKey ? `v3/npcs/${id}/${childKey}` : `v3/npcs/${id ?? ""}`,
 
-  getCharacter: ({ charType, id, childKey }: CharacterParams) =>
-    id ? `v2/${charType}/${id}/${childKey ?? ""}` : `v2/${charType}/`,
+  getCharacter: ({ id, childKey }: CharacterParams) =>
+    id ? `v3/playables/${id}/${childKey ?? ""}` : `v3/playables/`,
 
-  getStatus: ({ charId, charType, childKey }: StatusParams) =>
-    `v2/${charType}/${charId}/status/${childKey ?? ""}`,
+  getStatus: ({ charId, childKey }: StatusParams) =>
+    `v3/playables/${charId}/status/${childKey ?? ""}`,
 
-  getEffects: ({ charId, charType, dbKey, childKey }: EffectsParams) =>
+  getEffects: ({ charId, dbKey, childKey }: EffectsParams) =>
     dbKey
-      ? `v2/${charType}/${charId}/effects/${dbKey}/${childKey ?? ""}`
-      : `v2/${charType}/${charId}/effects/`,
+      ? `v3/playables/${charId}/effects/${dbKey}/${childKey ?? ""}`
+      : `v3/playables/${charId}/effects/`,
 
   getSquad: ({ id, childKey }: SquadParams) =>
-    childKey ? `v2/squads/${id}/${childKey}` : `v2/squads/${id ?? ""}`
+    childKey ? `v3/squads/${id}/${childKey}` : `v3/squads/${id ?? ""}`
 }
 
 export default rtdb

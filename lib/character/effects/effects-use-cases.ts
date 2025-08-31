@@ -1,7 +1,6 @@
 import { getRepository } from "lib/RepositoryBuilder"
 import { DbEffect, Effect, EffectData, EffectId } from "lib/character/effects/effects.types"
 import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
-import { CharType } from "lib/shared/db/api-rtdb"
 
 import Playable from "../Playable"
 import effectsMap from "./effects"
@@ -39,19 +38,17 @@ function getEffectsUseCases(
   const allEffects = { ...effectsMap, ...newEffects }
 
   return {
-    get: (charType: CharType, charId: string, effectId: EffectId) =>
-      repository.get(charType, charId, effectId),
+    get: (charId: string, effectId: EffectId) => repository.get(charId, effectId),
 
-    getAll: (charType: CharType, charId: string) => repository.getAll(charType, charId),
+    getAll: (charId: string) => repository.getAll(charId),
 
     add: async (char: Playable, effectId: EffectId, refDate?: Date, lengthInMs?: number) => {
       const dbEffect = createDbEffect(char, effectId, refDate, lengthInMs, allEffects)
       const existingEffect = char.effectsRecord[effectId]
-      const charType = char.meta.isNpc ? "npcs" : "characters"
       if (existingEffect) {
-        return repository.update(charType, char.charId, existingEffect.dbKey, dbEffect)
+        return repository.update(char.charId, existingEffect.dbKey, dbEffect)
       }
-      return repository.add(charType, char.charId, dbEffect)
+      return repository.add(char.charId, dbEffect)
     },
 
     // we process one start date for each effect, as start dates can be different inside a batch of effects (e.g. datetime update)
@@ -70,22 +67,16 @@ function getEffectsUseCases(
           newDbEffects.push(dbEffect)
         }
       })
-      const charType = char.meta.isNpc ? "npcs" : "characters"
       const promises = [
-        repository.groupAdd(charType, char.charId, newDbEffects),
-        repository.groupUpdate(charType, char.charId, updatedDbEffects)
+        repository.groupAdd(char.charId, newDbEffects),
+        repository.groupUpdate(char.charId, updatedDbEffects)
       ]
       return Promise.all(promises)
     },
 
-    remove: async (charType: CharType, charId: string, effect: Effect) =>
-      repository.remove(charType, charId, effect),
+    remove: async (charId: string, effect: Effect) => repository.remove(charId, effect),
 
-    groupRemove: (char: Playable, effects: Effect[]) => {
-      const charType = char.meta.isNpc ? "npcs" : "characters"
-
-      return repository.groupRemove(charType, char.charId, effects)
-    }
+    groupRemove: (char: Playable, effects: Effect[]) => repository.groupRemove(char.charId, effects)
   }
 }
 

@@ -30,8 +30,7 @@ export default function itemAction(
   return async ({ action, contenders, item }: CombatActionParams) => {
     const { actionSubtype = "", actorId } = action
     const { char } = contenders[actorId]
-    const { charId, meta } = char
-    const charType = meta.isNpc ? "npcs" : "characters"
+    const { charId } = char
 
     if (!(actionSubtype in actions.item.subtypes))
       throw new Error(`Wrong subtype: ${actionSubtype}`)
@@ -55,10 +54,10 @@ export default function itemAction(
         break
       case "drop":
         if (!item) throw new Error("Item not found")
-        return drop(charType, charId, item)
+        return drop(charId, item)
       case "throw": {
         if (!item) throw new Error("Item not found")
-        return drop(charType, charId, item)
+        return drop(charId, item)
       }
       default:
         throw new Error(`Unknown action subtype: ${actionSubtype}`)

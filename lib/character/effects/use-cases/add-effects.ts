@@ -20,18 +20,15 @@ export default function addEffects(
 
   return ({ char, effects }: AddEffectsParams) => {
     const promises: (Promise<void> | ThenableReference)[] = []
-    const { charId, meta } = char
-    const charType = meta.isNpc ? "npcs" : "characters"
+    const { charId } = char
 
     effects.forEach(({ effectId, startDate, lengthInMs }) => {
       const dbEffect = EffectsMappers.toDb(char, effectId, startDate, lengthInMs, newEffects)
       const existingEffect = char.effectsRecord[effectId]
       if (existingEffect) {
-        promises.push(
-          effectsRepo.patch({ charType, charId, dbKey: existingEffect.dbKey }, dbEffect)
-        )
+        promises.push(effectsRepo.patch({ charId, dbKey: existingEffect.dbKey }, dbEffect))
       } else {
-        promises.push(effectsRepo.add({ charType, charId }, dbEffect))
+        promises.push(effectsRepo.add({ charId }, dbEffect))
       }
     })
 

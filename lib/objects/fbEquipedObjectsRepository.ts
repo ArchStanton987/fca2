@@ -1,7 +1,6 @@
 import dbKeys from "db/db-keys"
 import { Clothing, DbClothing } from "lib/objects/data/clothings/clothings.types"
 import { DbWeapon, Weapon } from "lib/objects/data/weapons/weapons.types"
-import { CharType } from "lib/shared/db/api-rtdb"
 
 import { removeCollectible, updateValue } from "api/api-rtdb"
 
@@ -13,69 +12,51 @@ export type EquipableObject = Clothing | Weapon
 export type DbEquipableObject = DbClothing | DbWeapon
 export type DbEquipableCategory = Record<string, DbClothing> | Record<string, DbWeapon>
 
-const getContainerPath = (charType: CharType, charId: string) =>
-  dbKeys.char(charType, charId).equipedObjects.index
+const getContainerPath = (charId: string) => dbKeys.char(charId).equipedObjects.index
 
-const getCategoryPath = (charType: CharType, charId: string, category: EquipableCategory) =>
-  getContainerPath(charType, charId).concat("/", category)
+const getCategoryPath = (charId: string, category: EquipableCategory) =>
+  getContainerPath(charId).concat("/", category)
 
 const getItemPath = (
-  charType: CharType,
   charId: string,
   category: EquipableCategory,
   dbKey: EquipableObject["dbKey"]
-) => getCategoryPath(charType, charId, category).concat("/", dbKey)
+) => getCategoryPath(charId, category).concat("/", dbKey)
 
 const fbEquipedObjectsRepository = {
-  get: (
-    charType: CharType,
-    charId: string,
-    category: EquipableCategory,
-    dbKey: EquipableObject["dbKey"]
-  ) => {
-    const path = getItemPath(charType, charId, category, dbKey)
+  get: (charId: string, category: EquipableCategory, dbKey: EquipableObject["dbKey"]) => {
+    const path = getItemPath(charId, category, dbKey)
     return getRtdbSub<DbClothing | DbWeapon>(path)
   },
 
-  getByCategory: (charType: CharType, charId: string, category: EquipableCategory) => {
-    const path = getCategoryPath(charType, charId, category)
+  getByCategory: (charId: string, category: EquipableCategory) => {
+    const path = getCategoryPath(charId, category)
     return getRtdbSub<DbEquipableCategory>(path)
   },
 
-  getAll: (charType: CharType, charId: string) => {
-    const path = getContainerPath(charType, charId)
+  getAll: (charId: string) => {
+    const path = getContainerPath(charId)
     return getRtdbSub<DbEquipedObjects>(path)
   },
 
-  add: async (
-    charType: CharType,
-    charId: string,
-    category: EquipableCategory,
-    object: EquipableObject
-  ) => {
-    const path = getItemPath(charType, charId, category, object.dbKey)
+  add: async (charId: string, category: EquipableCategory, object: EquipableObject) => {
+    const path = getItemPath(charId, category, object.dbKey)
     const payload = { id: object.id }
     return updateValue(path, payload)
   },
 
-  remove: async (
-    charType: CharType,
-    charId: string,
-    category: EquipableCategory,
-    dbKey: EquipableObject["dbKey"]
-  ) => {
-    const path = getItemPath(charType, charId, category, dbKey)
+  remove: async (charId: string, category: EquipableCategory, dbKey: EquipableObject["dbKey"]) => {
+    const path = getItemPath(charId, category, dbKey)
     return removeCollectible(path)
   },
 
   update: async (
-    charType: CharType,
     charId: string,
     category: EquipableCategory,
     dbKey: EquipableObject["dbKey"],
     object: DbEquipableObject
   ) => {
-    const path = getItemPath(charType, charId, category, dbKey)
+    const path = getItemPath(charId, category, dbKey)
     return updateValue(path, object)
   }
 }

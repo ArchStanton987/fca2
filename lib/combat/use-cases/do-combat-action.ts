@@ -96,16 +96,14 @@ export default function doCombatAction(
       promises.push(setNewRound(dbType)({ contenders, combat }))
     } else {
       // set actor action points
-      const charType = meta.isNpc ? "npcs" : "characters"
       const newAp = status.currAp - apCost
-      promises.push(statusRepo.setChild({ charId, charType, childKey: "currAp" }, newAp))
+      promises.push(statusRepo.setChild({ charId, childKey: "currAp" }, newAp))
 
       // set opponent action points if has reaction roll
       if (storedAction?.reactionRoll) {
         const { opponentId, opponentApCost } = storedAction.reactionRoll
-        const opCharType = contenders[opponentId].char.meta.isNpc ? "npcs" : "characters"
         const oppNewAp = contenders[opponentId].char.secAttr.curr.actionPoints - opponentApCost
-        await statusRepo.patch({ charId: opponentId, charType: opCharType }, { currAp: oppNewAp })
+        await statusRepo.patch({ charId: opponentId }, { currAp: oppNewAp })
       }
     }
 

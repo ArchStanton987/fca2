@@ -16,19 +16,17 @@ export default function adminEndFight(dbType: keyof typeof repositoryMap = "rtdb
 
   return ({ combat, contenders }: AdminEndFightParams) => {
     const promises: (Promise<void> | ThenableReference)[] = []
-    Object.entries(contenders).forEach(([charId, { meta, secAttr, combats, status }]) => {
-      const { isNpc } = meta
-      const charType = isNpc ? ("npcs" as const) : ("characters" as const)
+    Object.entries(contenders).forEach(([charId, { secAttr, combats, status }]) => {
       // reset character ap, currFightId, combatStatus
       if (status.currentCombatId === combat.id) {
-        promises.push(statusRepo.patch({ charId, charType }, { currAp: secAttr.curr.actionPoints }))
-        promises.push(statusRepo.deleteChild({ charId, charType, childKey: "combatStatus" }))
-        promises.push(statusRepo.deleteChild({ charId, charType, childKey: "currentCombatId" }))
+        promises.push(statusRepo.patch({ charId }, { currAp: secAttr.curr.actionPoints }))
+        promises.push(statusRepo.deleteChild({ charId, childKey: "combatStatus" }))
+        promises.push(statusRepo.deleteChild({ charId, childKey: "currentCombatId" }))
       }
       const { id } = combat
       const newCombats = { ...combats, id }
       // add fight ID in characters combat archive
-      promises.push(characterRepo.patch({ charType, id: charId }, { combats: newCombats }))
+      promises.push(characterRepo.patch({ id: charId }, { combats: newCombats }))
     })
 
     // TODO: allow npc deletion

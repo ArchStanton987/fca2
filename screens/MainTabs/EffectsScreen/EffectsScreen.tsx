@@ -47,8 +47,7 @@ const title: ComposedTitleProps = [
 function EffectsScreen() {
   const useCases = useGetUseCases()
   const { squadId } = useSquad()
-  const { effects, charId, meta } = useCharacter()
-  const charType = meta.isNpc ? "npcs" : "characters"
+  const { effects, charId } = useCharacter()
 
   const [selectedId, setSelectedId] = useState<Effect["id"] | null>(null)
 
@@ -61,7 +60,7 @@ function EffectsScreen() {
   const onPressDelete = (effect: Effect) => {
     if (!effect.dbKey) return
     setSelectedId(null)
-    useCases.effects.remove(charType, charId, effect)
+    useCases.effects.remove(charId, effect)
   }
 
   const selectedEffect = effects.find(effect => effect.id === selectedId)

@@ -23,7 +23,6 @@ export default function ClothingRow({ clothing, isSelected, onPress, ...rest }: 
   const useCases = useGetUseCases()
 
   const character = useCharacter()
-  const charType = character.meta.isNpc ? "npcs" : "characters"
   const { isEquiped, data } = clothing
   const {
     label,
@@ -67,7 +66,7 @@ export default function ClothingRow({ clothing, isSelected, onPress, ...rest }: 
       <Spacer x={5} />
       <DeleteInput
         isSelected={isSelected}
-        onPress={() => useCases.inventory.drop(charType, character.charId, clothing)}
+        onPress={() => useCases.inventory.drop(character.charId, clothing)}
       />
     </Selectable>
   )

@@ -16,8 +16,7 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
       weapon: Weapon,
       apCostOverride: number | undefined = undefined
     ) => {
-      const { charId, meta } = char
-      const charType = meta.isNpc ? "npcs" : "characters"
+      const { charId } = char
       const { data, ammo, inMagazine = 0 } = weapon
       const { ammoType, magazine } = data
       const apCost = apCostOverride || LOAD_AP_COST
@@ -40,15 +39,13 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
       const promises = []
       // update inventory
       promises.push(
-        invRepository.updateCollectible(charType, charId, "weapons", weapon, "inMagazine", newInMag)
+        invRepository.updateCollectible(charId, "weapons", weapon, "inMagazine", newInMag)
       )
       const invAmmoPayload = { category: "ammo" as const, id: ammoType, newValue: newAmmo }
-      promises.push(invRepository.groupUpdateRecords(charType, charId, [invAmmoPayload]))
+      promises.push(invRepository.groupUpdateRecords(charId, [invAmmoPayload]))
       // update equipped object
       const equObjPayload = { id: weapon.id, inMagazine: newInMag }
-      promises.push(
-        equObjRepository.update(charType, charId, "weapons", weapon.dbKey, equObjPayload)
-      )
+      promises.push(equObjRepository.update(charId, "weapons", weapon.dbKey, equObjPayload))
       // update action points
       promises.push(statusRepository.updateElement(char, "currAp", newAp))
       return Promise.all(promises)
@@ -59,8 +56,7 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
       weapon: Weapon,
       apCostOverride: number | undefined = undefined
     ) => {
-      const { charId, meta } = char
-      const charType = meta.isNpc ? "npcs" : "characters"
+      const { charId } = char
       const { inMagazine = 0, data } = weapon
       const { ammoType } = data
       const apCost = apCostOverride || UNLOAD_AP_COST
@@ -77,15 +73,13 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
       const promises = []
       // update inventory
       promises.push(
-        invRepository.updateCollectible(charType, charId, "weapons", weapon, "inMagazine", newInMag)
+        invRepository.updateCollectible(charId, "weapons", weapon, "inMagazine", newInMag)
       )
       const invAmmoPayload = { category: "ammo" as const, id: ammoType, newValue: newAmmo }
-      promises.push(invRepository.groupUpdateRecords(charType, charId, [invAmmoPayload]))
+      promises.push(invRepository.groupUpdateRecords(charId, [invAmmoPayload]))
       // update equipped object
       const equObjPayload = { id: weapon.id, inMagazine: newInMag }
-      promises.push(
-        equObjRepository.update(charType, charId, "weapons", weapon.dbKey, equObjPayload)
-      )
+      promises.push(equObjRepository.update(charId, "weapons", weapon.dbKey, equObjPayload))
       // update action points
       promises.push(statusRepository.updateElement(char, "currAp", newAp))
       return Promise.all(promises)
@@ -97,8 +91,7 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
       actionId: WeaponActionId,
       apCostOverride: number | undefined = undefined
     ) => {
-      const { charId, status, meta } = char
-      const charType = meta.isNpc ? "npcs" : "characters"
+      const { charId, status } = char
       const { data, inMagazine = 0 } = weapon
       const { ammoType, ammoPerBurst, ammoPerShot } = data
       const apCost = apCostOverride || getApCost(weapon, char, actionId)
@@ -120,19 +113,10 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
         // UPDATE DB
         // remove ammo from equipped object db
         const equObjPayload = { id: weapon.id, inMagazine: newInMag }
-        promises.push(
-          equObjRepository.update(charType, charId, "weapons", weapon.dbKey, equObjPayload)
-        )
+        promises.push(equObjRepository.update(charId, "weapons", weapon.dbKey, equObjPayload))
         // remove ammo from inventory db
         promises.push(
-          invRepository.updateCollectible(
-            charType,
-            charId,
-            "weapons",
-            weapon,
-            "inMagazine",
-            newInMag
-          )
+          invRepository.updateCollectible(charId, "weapons", weapon, "inMagazine", newInMag)
         )
       }
       // REMOVE AP

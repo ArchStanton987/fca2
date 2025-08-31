@@ -16,8 +16,7 @@ export default function startFight(dbType: keyof typeof repositoryMap = "rtdb") 
     Object.entries(contenders).forEach(([charId, playable]) => {
       const currMaxAp = playable.secAttr.curr.actionPoints
       const patchedStatus = { ...combatStatus, currAp: currMaxAp }
-      const charType = playable.meta.isNpc ? "npcs" : "characters"
-      promises.push(statusRepo.patch({ charId, charType }, patchedStatus))
+      promises.push(statusRepo.patch({ charId }, patchedStatus))
     })
 
     return Promise.all(promises)

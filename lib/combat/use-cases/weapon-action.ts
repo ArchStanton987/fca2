@@ -20,8 +20,7 @@ export default function weaponAction(dbType: keyof typeof repositoryMap = "rtdb"
   return async ({ action, contenders, item }: WeaponActionParams) => {
     const { actionSubtype = "", actorId, apCost } = action
     const { char } = contenders[actorId]
-    const { charId, meta } = char
-    const charType = meta.isNpc ? "npcs" : "characters"
+    const { charId } = char
 
     switch (actionSubtype) {
       case "hit":
@@ -39,7 +38,7 @@ export default function weaponAction(dbType: keyof typeof repositoryMap = "rtdb"
         return unload(char, item)
       case "throw":
         if (!item) throw new Error("Missing item")
-        return drop(charType, charId, item)
+        return drop(charId, item)
       default:
         throw new Error(`Unknown action subtype : ${actionSubtype} for weapon actions`)
     }

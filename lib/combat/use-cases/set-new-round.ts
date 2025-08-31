@@ -20,11 +20,10 @@ export default function setNewRound(dbType: keyof typeof repositoryMap = "rtdb")
     const nextRoundId = getCurrentRoundId(combat) + 1
     Object.entries(contenders).forEach(([charId, { char }]) => {
       const { meta, status, secAttr, health } = char
-      const charType = meta.isNpc ? "npcs" : "characters"
       // reset AP for all contenders who are not dead
       if (status.combatStatus !== "dead") {
         const currAp = secAttr.curr.actionPoints
-        promises.push(statusRepo.patch({ charId, charType }, { currAp }))
+        promises.push(statusRepo.patch({ charId }, { currAp }))
       }
       // remove char inactive status if inactive is over and in not uncounscious
       const isInactive = status.combatStatus === "inactive"
@@ -36,7 +35,7 @@ export default function setNewRound(dbType: keyof typeof repositoryMap = "rtdb")
         )
         const isUnconscious = getHealthState(health.hp, health.maxHp) === "woundedUnconscious"
         if (isStillInactive || isUnconscious) return
-        promises.push(statusRepo.patch({ charId, charType }, { combatStatus: "active" }))
+        promises.push(statusRepo.patch({ charId }, { combatStatus: "active" }))
       }
     })
     // create new round

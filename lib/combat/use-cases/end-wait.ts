@@ -22,10 +22,7 @@ export default function endWait(dbType: keyof typeof repositoryMap = "rtdb") {
     }
 
     // set actor new status
-    const charType = actor.meta.isNpc ? "npcs" : "characters"
-    promises.push(
-      statusRepo.setChild({ charId: actor.charId, charType, childKey: "combatStatus" }, "active")
-    )
+    promises.push(statusRepo.setChild({ charId: actor.charId, childKey: "combatStatus" }, "active"))
 
     // reset current action
     const combatId = combat.id

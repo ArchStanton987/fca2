@@ -4,7 +4,6 @@ import healthMap from "lib/character/health/health"
 import getStatusUseCases from "lib/character/status/status-use-cases"
 import { DbStatus } from "lib/character/status/status.types"
 import { applyMod } from "lib/common/utils/char-calc"
-import { CharType } from "lib/shared/db/api-rtdb"
 
 import { getRepository } from "../RepositoryBuilder"
 import Inventory from "./Inventory"
@@ -59,11 +58,9 @@ const getInventoryUseCases = (
   }
 
   return {
-    getAll: (charType: CharType, charId: string) => repository.getAll(charType, charId),
-
+    getAll: (charId: string) => repository.getAll(charId),
     exchange: (character: Playable, payload: ExchangeState, inventory: Inventory) => {
-      const { charId, meta } = character
-      const charType = meta.isNpc ? "npcs" : "characters"
+      const { charId } = character
       const recordsUpdates: {
         category: RecordInventoryCategory
         id?: AmmoType
@@ -116,31 +113,26 @@ const getInventoryUseCases = (
         })
       })
       const promises = [
-        repository.groupUpdateRecords(charType, charId, recordsUpdates),
-        repository.groupAddCollectible(charType, charId, addCollectiblesUpdates),
-        repository.groupRemoveCollectible(charType, charId, removeCollectiblesUpdates)
+        repository.groupUpdateRecords(charId, recordsUpdates),
+        repository.groupAddCollectible(charId, addCollectiblesUpdates),
+        repository.groupRemoveCollectible(charId, removeCollectiblesUpdates)
       ]
       return Promise.all(promises)
     },
 
-    drop: (
-      charType: CharType,
-      charId: string,
-      object: Weapon | Clothing | Consumable | MiscObject
-    ) => {
+    drop: (charId: string, object: Weapon | Clothing | Consumable | MiscObject) => {
       const promises = []
       const category = getObjectCategory(object)
       const isEquipableCategory = category === "weapons" || category === "clothings"
       if ("isEquiped" in object && object.isEquiped && isEquipableCategory) {
-        promises.push(equipedObjectsRepository.remove(charType, charId, category, object.dbKey))
+        promises.push(equipedObjectsRepository.remove(charId, category, object.dbKey))
       }
-      promises.push(repository.remove(charType, charId, category, object))
+      promises.push(repository.remove(charId, category, object))
       return Promise.all(promises)
     },
 
     consume: (character: Playable, consumable: Consumable) => {
-      const { charId, meta } = character
-      const charType = meta.isNpc ? "npcs" : "characters"
+      const { charId } = character
       const { data, remainingUse } = consumable
       const { effectId, modifiers } = data
 
@@ -160,16 +152,15 @@ const getInventoryUseCases = (
           const newValue = Math.min(Math.max(calcValue, minValue), maxValue)
           updates[mod.id] = newValue
         })
-        promises.push(statusUseCases.groupUpdate(character, updates, charType))
+        promises.push(statusUseCases.groupUpdate(character, updates))
       }
 
       // handle object in inventory
       const shouldRemoveObject = remainingUse === undefined || remainingUse <= 1
       if (shouldRemoveObject) {
-        promises.push(getInventoryUseCases(db, createdElements).drop(charType, charId, consumable))
+        promises.push(getInventoryUseCases(db, createdElements).drop(charId, consumable))
       } else {
         repository.updateCollectible(
-          charType,
           charId,
           "consumables",
           consumable,

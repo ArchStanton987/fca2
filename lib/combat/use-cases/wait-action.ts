@@ -11,14 +11,13 @@ export type WaitActionParams = {
 export default function waitAction(dbType: keyof typeof repositoryMap = "rtdb") {
   const statusRepo = repositoryMap[dbType].statusRepository
   return async (params: WaitActionParams) => {
-    const { action, contenders } = params
+    const { action } = params
     const charId = action.actorId
 
     const promises = []
 
     // set actor new status
-    const charType = contenders[charId].char.meta.isNpc ? "npcs" : "characters"
-    promises.push(statusRepo.setChild({ charId, charType, childKey: "combatStatus" }, "wait"))
+    promises.push(statusRepo.setChild({ charId, childKey: "combatStatus" }, "wait"))
 
     return Promise.all(promises)
   }
