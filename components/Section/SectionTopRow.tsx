@@ -28,8 +28,12 @@ const getStyles = (hasTitle: boolean) =>
     }
   })
 
-export default function SectionTopRow(props: { title?: TitleType; titleVariant?: TitleVariant }) {
-  const { title, titleVariant = "default" } = props
+export default function SectionTopRow(props: {
+  title?: TitleType
+  titleVariant?: TitleVariant
+  onPressTitle?: () => void
+}) {
+  const { title, titleVariant = "default", onPressTitle } = props
 
   const styles = getStyles(title !== undefined)
 
@@ -41,7 +45,9 @@ export default function SectionTopRow(props: { title?: TitleType; titleVariant?:
     <View style={styles.container}>
       <SmallLine top left style={styles.smallLine} />
       <SmallLine top right style={styles.smallLine} />
-      {isSimpleTitle ? <SimpleTitle title={title} titleVariant={titleVariant} /> : null}
+      {isSimpleTitle ? (
+        <SimpleTitle title={title} titleVariant={titleVariant} onPress={onPressTitle} />
+      ) : null}
       {isComposedTitle ? <ComposedTitle title={title} /> : null}
       {hasNoTitle ? <View style={[styles.horizLine, styles.extend]} /> : null}
     </View>

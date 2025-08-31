@@ -1,10 +1,10 @@
 import React, { memo, useMemo, useState } from "react"
-import { View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
 import { Clothing } from "lib/objects/data/clothings/clothings.types"
 
+import Col from "components/Col"
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import DrawerPage from "components/DrawerPage"
 import List from "components/List"
@@ -100,16 +100,20 @@ function ClothingsScreen() {
 
       <Spacer x={layout.globalPadding} />
 
-      <View style={{ width: 130 }}>
-        <Section style={{ flex: 1 }} title="détails">
+      <Col style={{ width: 130 }}>
+        <ScrollSection style={{ flex: 1 }} title="détails">
           <ClothingsDetails charClothing={selectedCloth} />
+        </ScrollSection>
+
+        <Spacer y={layout.globalPadding} />
+
+        <Section
+          title="ajouter"
+          contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}
+        >
+          <PlusIcon onPress={onPressAdd} />
         </Section>
-        <Section title="ajouter">
-          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
-            <PlusIcon onPress={onPressAdd} />
-          </View>
-        </Section>
-      </View>
+      </Col>
     </DrawerPage>
   )
 }

@@ -15,6 +15,9 @@ export default class Squad {
       members: computed,
       membersRecord: computed,
       //
+      npc: computed,
+      npcRecord: computed,
+      //
       date: computed,
       //
       data: computed
@@ -22,13 +25,25 @@ export default class Squad {
   }
 
   get members() {
-    return Object.entries(this.dbSquad.members).map(([id, member]) => ({ id, ...member }))
+    return Object.entries(this.dbSquad.members ?? {}).map(([id, member]) => ({ id, ...member }))
   }
 
   get membersRecord(): Record<string, SquadMember> {
     const res: Record<string, SquadMember> = {}
     this.members.forEach(member => {
       res[member.id] = member
+    })
+    return res
+  }
+
+  get npc() {
+    return Object.keys(this.dbSquad.npc ?? {}).map(id => id)
+  }
+
+  get npcRecord(): Record<string, string> {
+    const res: Record<string, string> = {}
+    this.npc.forEach(id => {
+      res[id] = id
     })
     return res
   }

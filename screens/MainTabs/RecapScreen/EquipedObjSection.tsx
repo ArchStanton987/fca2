@@ -58,7 +58,12 @@ function EquipedObjSection() {
       <ScrollSection title="équipement" style={{ flex: 1 }}>
         {weapons.length > 0 ? (
           <List
-            data={weapons}
+            data={weapons.map(({ id, inMagazine, dbKey, data }) => ({
+              id,
+              inMagazine,
+              dbKey,
+              data
+            }))}
             ListHeaderComponent={WeaponsListHeader}
             keyExtractor={item => item.dbKey}
             renderItem={({ item }) => (

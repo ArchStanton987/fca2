@@ -1,19 +1,20 @@
-import Character from "lib/character/Character"
 import { Effect, EffectData, EffectId } from "lib/character/effects/effects.types"
 import { limbsMap, radStates } from "lib/character/health/health"
 import { getMissingHp } from "lib/character/health/health-calc"
 import { getHealthState } from "lib/character/health/health-utils"
 import { DbStatus } from "lib/character/status/status.types"
 
-export const getEffectLengthInMs = (char: Character, effect: EffectData) => {
-  const isChemReliant = char.dbAbilities.traits?.includes("chemReliant")
-  if (!effect.length) return null
-  const isWithdrawal = effect.type === "withdrawal"
-  const lengthInH = isWithdrawal && isChemReliant ? effect.length * 0.5 : effect.length
-  return lengthInH * 60 * 60 * 1000
-}
+import Playable from "../Playable"
+import getEffectsUseCases, { getEffectLengthInMs } from "./effects-use-cases"
 
-export const getExpiringEffects = (char: Character, refDate: Date) =>
+export const calculatedEffects: EffectData["type"][] = [
+  "cripled",
+  "healthState",
+  "radState",
+  "withdrawal"
+]
+
+export const getExpiringEffects = (char: Playable, refDate: Date) =>
   char.effects.filter(effect => {
     const { startTs, endTs, data } = effect
     const { length } = data
@@ -25,7 +26,7 @@ export const getExpiringEffects = (char: Character, refDate: Date) =>
   }) as Effect[]
 
 export const getFollowingEffects = (
-  char: Character,
+  char: Playable,
   newDate: Date,
   allEffects: Record<EffectId, EffectData>
 ) =>
@@ -54,12 +55,9 @@ export const getFollowingEffects = (
     .filter(el => !!el) as { effectId: EffectId; startDate: Date }[]
 
 export const handleLimbsEffects = (
-  character: Character,
+  character: Playable,
   newStatus: DbStatus,
-  effectsUseCases: {
-    add: (char: Character, effectId: EffectId) => Promise<void>
-    remove: (charId: string, effect: Effect) => Promise<void>
-  }
+  effectsUseCases: ReturnType<typeof getEffectsUseCases>
 ): Promise<void>[] => {
   const promises: Promise<void>[] = []
 
@@ -67,11 +65,13 @@ export const handleLimbsEffects = (
     const currValue = character.health.limbsHp[id]
     const newValue = newStatus[id]
 
+    const charType = character.meta.isNpc ? "npcs" : "characters"
+
     if (newValue !== currValue) {
       const currCripledEffect: Effect | undefined = character?.effectsRecord[cripledEffect]
       // remove cripled effect if the new value is greater than 0
       if (currCripledEffect && newValue > 0) {
-        promises.push(effectsUseCases.remove(character.charId, currCripledEffect))
+        promises.push(effectsUseCases.remove(charType, character.charId, currCripledEffect))
       }
       // add cripled effect if the new value is less than or equal to 0
       if (!currCripledEffect && newValue <= 0) {
@@ -84,14 +84,13 @@ export const handleLimbsEffects = (
 }
 
 export const handleHealthStatusEffects = (
-  character: Character,
+  character: Playable,
   newStatus: DbStatus,
-  effectsUseCases: {
-    add: (char: Character, effectId: EffectId) => Promise<void>
-    remove: (charId: string, effect: Effect) => Promise<void>
-  }
+  effectsUseCases: ReturnType<typeof getEffectsUseCases>
 ): Promise<void>[] => {
   const promises: Promise<void>[] = []
+
+  const charType = character.meta.isNpc ? "npcs" : "characters"
 
   const { hp, maxHp } = character.health
   const currHealthState = getHealthState(hp, maxHp)
@@ -107,21 +106,20 @@ export const handleHealthStatusEffects = (
   }
   // remove current health state effect if the new health state is different from the current one
   if (currHealthStateEffect && newHealthState !== currHealthStateEffect.id) {
-    promises.push(effectsUseCases.remove(character.charId, currHealthStateEffect))
+    promises.push(effectsUseCases.remove(charType, character.charId, currHealthStateEffect))
   }
 
   return promises
 }
 
 export const handleRadsEffects = (
-  character: Character,
+  character: Playable,
   newStatus: DbStatus,
-  effectsUseCases: {
-    add: (char: Character, effectId: EffectId) => Promise<void>
-    remove: (charId: string, effect: Effect) => Promise<void>
-  }
+  effectsUseCases: ReturnType<typeof getEffectsUseCases>
 ): Promise<void>[] => {
   const promises: Promise<void>[] = []
+
+  const charType = character.meta.isNpc ? "npcs" : "characters"
 
   const { rads } = character.health
   const newRads = newStatus.rads
@@ -135,7 +133,7 @@ export const handleRadsEffects = (
   }
   // remove current rads state effect if the new rads state is different from the current one
   if (radsStateEffect && newRadsState?.id !== radsStateEffect.id) {
-    promises.push(effectsUseCases.remove(character.charId, radsStateEffect))
+    promises.push(effectsUseCases.remove(charType, character.charId, radsStateEffect))
   }
 
   return promises

@@ -1,31 +1,22 @@
 /* eslint-disable import/prefer-default-export */
-import { DbAbilities } from "lib/character/abilities/abilities.types"
+import Playable from "lib/character/Playable"
 import { KnowledgeId } from "lib/character/abilities/knowledges/knowledge-types"
 import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-levels"
-import { SkillsValues } from "lib/character/abilities/skills/skills.types"
-import { Special } from "lib/character/abilities/special/special.types"
 import traitsMap from "lib/character/abilities/traits/traits"
-import { Symptom } from "lib/character/effects/symptoms.type"
 import { getModAttribute } from "lib/common/utils/char-calc"
 
-import { DbEquipedObjects, DbInventory } from "../objects.types"
+import { DbInventory } from "../objects.types"
 import weaponsMap from "./weapons"
 import { MALUS_PER_MISSING_STRENGTH } from "./weapons-const"
-import { DbWeapon, Weapon } from "./weapons.types"
+import { BeastAttack, DbWeapon, Weapon, WeaponId } from "./weapons.types"
 
 export const dbToWeapon = (
   [dbKey, dbWeapon]: [string, DbWeapon],
-  charData: {
-    dbAbilities: DbAbilities
-    innateSymptoms: Symptom[]
-    currSkills: SkillsValues
-    currSpecial: Special
-    dbEquipedObjects: DbEquipedObjects
-  },
+  charData: Playable,
   dbAmmo: DbInventory["ammo"]
 ): Weapon => {
   const { id } = dbWeapon
-  const weaponSkill = weaponsMap[id].skill
+  const weaponSkill = weaponsMap[id].skillId
   const weaponKnowledges = weaponsMap[id].knowledges
   const { ammoType, minStrength, isTwoHanded } = weaponsMap[id]
   const inMagazine = ammoType !== null ? dbWeapon.inMagazine || 0 : undefined
@@ -33,7 +24,9 @@ export const dbToWeapon = (
   if (ammoType && dbAmmo) {
     ammo = dbAmmo[ammoType] ?? 0
   }
-  const { innateSymptoms, currSkills, dbAbilities, dbEquipedObjects, currSpecial } = charData
+  const { innateSymptoms, skills, dbAbilities, dbEquipedObjects, special } = charData
+  const currSpecial = special.curr
+  const currSkills = skills.curr
   const { knowledges, traits } = dbAbilities
   const knowledgesBonus = weaponKnowledges.reduce((acc, curr: KnowledgeId) => {
     const knowledgeLevel = knowledges[curr]
@@ -56,5 +49,55 @@ export const dbToWeapon = (
   }
   const isEquiped = dbEquipedObjects?.weapons?.[dbKey] !== undefined
   const data = { ...weaponsMap[id], basicApCost, specialApCost }
-  return { inMagazine, data, dbKey, id, skill, isEquiped, ammo }
+  return {
+    inMagazine,
+    data,
+    dbKey,
+    id,
+    skill,
+    isEquiped,
+    ammo,
+    category: "weapon",
+    effects: [],
+    modifiers: []
+  }
+}
+
+export const attackToWeapon = (attack: BeastAttack): Weapon => {
+  const { name, skill, apCost, damage, effects, modifiers } = attack
+  return {
+    id: name as WeaponId,
+    dbKey: name,
+    category: "weapon",
+    skill,
+    isEquiped: true,
+    data: {
+      id: name as WeaponId,
+      label: name,
+      img: "",
+      damageType: "physical",
+      damageBasic: damage,
+      damageBurst: null,
+      ammoType: null,
+      range: null,
+      magazine: null,
+      ammoPerShot: null,
+      ammoPerBurst: null,
+      basicApCost: apCost,
+      specialApCost: null,
+      minStrength: 0,
+      place: 0,
+      weight: 0,
+      value: 0,
+      frequency: 0,
+      skillId: "unarmed",
+      knowledges: [],
+      tags: [],
+      isTwoHanded: false
+    },
+    ammo: 0,
+    inMagazine: undefined,
+    effects: effects || [],
+    modifiers: modifiers || []
+  }
 }

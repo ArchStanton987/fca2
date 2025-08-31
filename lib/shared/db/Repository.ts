@@ -1,5 +1,5 @@
 export type DbEntity = Record<string, any>
-export type BaseParams = Record<string, string>
+export type BaseParams = Record<string, string | number | boolean>
 
 type Sub<T> = {
   subscribe: (callback: () => void) => () => void

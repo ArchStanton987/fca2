@@ -1,3 +1,39 @@
+test chaque action / sous action
+test unarmed
+
+check mrFast AP COST
+update healthChangeEntries with modifiers and effects (beasts...)
+
+beasts special & skills
+
+set max action bonus (20 AP spent => 40)
+
+TODO: type Playable :
+type Attack: {
+  name: string
+  weaponId?: WeaponId
+  skillScore: number // percentage
+  apCost: number
+  damage: string // dice roll string (e.g., '1d6', '2d4+2')
+  effects?: EffectId[]
+  modifiers?: Modifier[]
+}
+type Weapon : 
+get attacks(): Attack[]
+
+
+COMBAT :
+- [HIGH] garder index de la slide lorsque revient dessus
+- [MED] système HP / limbs HP (with crit part?)
+- [MED] assignation upSkills pour perso générés (>100)
+- [LOW] besoin recharger personnage lorsque nouveau combat
+- [LOW] bug lorsque clic sur perso dans dmg form
+
+
+
+BUG peut pas consommer objet créé. Peut pas porter clothing créé ???
+
+
 TODO: remove trap / thrown weapon after usage
 
 
@@ -11,6 +47,8 @@ TODO: add levelup
 TODO: collectibles UI
 
 TODO: sound
+
+
 
 
 

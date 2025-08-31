@@ -1,60 +1,47 @@
-import { DbStatus } from "lib/character/status/status.types"
+import Playable from "lib/character/Playable"
 import repositoryMap from "lib/shared/db/get-repository"
 
-type CombatStatus = {
-  combatStatus?: DbStatus["combatStatus"]
-  currentCombatId?: DbStatus["currentCombatId"]
-}
+import { PlayerCombatData } from "../combats.types"
+import { DEFAULT_INITIATIVE } from "../const/combat-const"
+import startFight from "./start-fight"
 
 export type CreateFightParams = {
   squadId: string
-  id: string
-  timestamp: string
+  date: string
   location?: string
   title: string
   description?: string
-  players: Record<string, CombatStatus>
-  enemies: Record<string, CombatStatus>
+  contenders: Record<string, Playable>
   isStartingNow: boolean
+}
+
+const defaultContenderData = {
+  initiative: DEFAULT_INITIATIVE,
+  actionBonus: 0,
+  acBonusRecord: { 1: 0 }
 }
 
 export default function createFight(dbType: keyof typeof repositoryMap = "rtdb") {
   const combatRepo = repositoryMap[dbType].combatRepository
-  const statusRepo = repositoryMap[dbType].statusRepository
-  const squadRepo = repositoryMap[dbType].squadRepository
 
-  return (params: CreateFightParams) => {
-    const { isStartingNow, id, ...rest } = params
-    const promises = []
-    const players: Record<string, { initiative: number }> = {}
-    const enemies: Record<string, { initiative: number }> = {}
-
-    // update squad fight status
+  return async ({ contenders, isStartingNow, ...rest }: CreateFightParams) => {
+    const players: Record<string, PlayerCombatData> = {}
+    const npcs: Record<string, PlayerCombatData> = {}
+    Object.entries(contenders).forEach(([id, contender]) => {
+      const { isNpc } = contender.meta
+      if (isNpc) {
+        npcs[id] = { ...defaultContenderData }
+      } else {
+        players[id] = { ...defaultContenderData }
+      }
+    })
+    const payload = { ...rest, currActorId: "", players, npcs, rounds: {} }
+    const creationRef = await combatRepo.add({}, payload)
+    const combatId = creationRef?.key
+    if (!combatId) throw new Error("Failed to create combat")
     if (isStartingNow) {
-      promises.push(squadRepo.patch({ id: params.squadId }, { isInFight: true }))
+      await startFight(dbType)({ combatId, contenders })
     }
-
-    // for each player, set combat status, current combat id
-    Object.keys(params.players).forEach(charId => {
-      players[charId] = { initiative: 1000 }
-      if (isStartingNow) {
-        const playerParams = { charId, charType: "characters" as const }
-        const payload = { combatStatus: "active" as const, currentCombatId: id }
-        promises.push(statusRepo.patch(playerParams, payload))
-      }
-    })
-    // for each enemy, set combat status, current combat id
-    Object.keys(params.enemies).forEach(charId => {
-      enemies[charId] = { initiative: 1000 }
-      if (isStartingNow) {
-        const enemyParams = { charId, charType: "enemies" as const }
-        const payload = { combatStatus: "active" as const, currentCombatId: id }
-        promises.push(statusRepo.patch(enemyParams, payload))
-      }
-    })
-    const payload = { ...rest, id, players, enemies, rounds: {} }
-    promises.push(combatRepo.add({ id }, payload))
-
-    return Promise.all(promises)
+    return combatId
   }
 }

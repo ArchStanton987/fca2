@@ -1,4 +1,4 @@
-import Character from "lib/character/Character"
+import Playable from "lib/character/Playable"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
 
 /**
@@ -10,7 +10,7 @@ export const getRandomArbitrary = (min: number, max: number): number =>
 /**
  * Get the average damage of a weapon
  */
-export const getDamageEst = (character: Character, weapon: Weapon): number => {
+export const getDamageEst = (character: Playable, weapon: Weapon): number => {
   const { damageBasic, damageBurst } = weapon.data
   if (!damageBasic && !damageBurst) return 0
   const refDamage = (damageBurst || damageBasic) as string

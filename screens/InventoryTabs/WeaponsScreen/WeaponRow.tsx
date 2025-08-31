@@ -25,6 +25,7 @@ export default function WeaponRow({ weapon, isSelected, onPress, ...rest }: Weap
   const character = useCharacter()
   const { isEquiped, skill, ammo, data } = weapon
   const { label, damageBasic, damageBurst, ammoType } = data
+  const charType = character.meta.isNpc ? "npcs" : "characters"
 
   const handleEquip = async () => {
     try {
@@ -53,7 +54,7 @@ export default function WeaponRow({ weapon, isSelected, onPress, ...rest }: Weap
       <Spacer x={5} />
       <DeleteInput
         isSelected={isSelected}
-        onPress={() => useCases.inventory.throw(character.charId, weapon)}
+        onPress={() => useCases.inventory.drop(charType, character.charId, weapon)}
       />
     </Selectable>
   )

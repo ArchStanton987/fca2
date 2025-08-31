@@ -1,0 +1,23 @@
+import repositoryMap from "lib/shared/db/get-repository"
+
+import Combat from "../Combat"
+import { DbAction } from "../combats.types"
+import { getActionId, getCurrentRoundId } from "../utils/combat-utils"
+
+export type UpdateActionParams = {
+  payload: Partial<DbAction>
+  combat: Combat
+}
+
+export default function updateAction(dbType: keyof typeof repositoryMap = "rtdb") {
+  const actionRepo = repositoryMap[dbType].actionRepository
+
+  return ({ combat, payload }: UpdateActionParams) => {
+    const roundId = getCurrentRoundId(combat)
+    const actionId = getActionId(combat)
+
+    const updatedAction = JSON.parse(JSON.stringify(payload)) // sanitize payload, removes undefined
+
+    return actionRepo.patch({ combatId: combat.id, roundId, id: actionId }, updatedAction)
+  }
+}

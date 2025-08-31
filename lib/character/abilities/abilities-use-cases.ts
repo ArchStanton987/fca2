@@ -4,18 +4,22 @@ import {
   KnowledgeLevelValue
 } from "lib/character/abilities/knowledges/knowledge-types"
 import { SkillsValues } from "lib/character/abilities/skills/skills.types"
+import { CharType } from "lib/shared/db/api-rtdb"
 
 function getAbilitiesUseCases(db: keyof typeof getRepository = "rtdb") {
   const repository = getRepository[db].abilities
 
   return {
-    getAbilities: (charId: string) => repository.getAbilities(charId),
+    getAbilities: (charType: CharType, charId: string) => repository.getAbilities(charType, charId),
 
-    updateUpSkills: (charId: string, newUpSkills: SkillsValues) =>
-      repository.updateUpSkills(charId, newUpSkills),
+    updateUpSkills: (charType: CharType, charId: string, newUpSkills: SkillsValues) =>
+      repository.updateUpSkills(charType, charId, newUpSkills),
 
-    updateKnowledges: (charId: string, newKnowledges: Record<KnowledgeId, KnowledgeLevelValue>) =>
-      repository.updateKnowledges(charId, newKnowledges)
+    updateKnowledges: (
+      charType: CharType,
+      charId: string,
+      newKnowledges: Record<KnowledgeId, KnowledgeLevelValue>
+    ) => repository.updateKnowledges(charType, charId, newKnowledges)
   }
 }
 

@@ -30,10 +30,11 @@ const routes = {
     ammo: `${inventory}/ammo`
   },
   combat: {
-    index: `${combat}/recap`
+    index: `${combat}/recap`,
+    reaction: `${combat}/reaction`,
+    action: `${combat}/action`
   },
   modal: {
-    initiative: `${modal}/initiative`,
     updateEffects: `${modal}/update-effects`,
     updateEffectsConfirmation: `${modal}/update-effects-confirmation`,
     updateSkills: `${modal}/update-skills`,

@@ -1,8 +1,9 @@
 import { getRepository } from "lib/RepositoryBuilder"
-import Character from "lib/character/Character"
 import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
+import { CharType } from "lib/shared/db/api-rtdb"
 import repositoryMap from "lib/shared/db/get-repository"
 
+import Playable from "../Playable"
 import { onStatusUpdate } from "./status-utils"
 import { UpdatableDbStatus } from "./status.types"
 
@@ -14,12 +15,13 @@ function getStatusUseCases(
 
   const statusRepo = repositoryMap[db].statusRepository
   return {
-    getElement: (charId: string, field: keyof UpdatableDbStatus) => repository.get(charId, field),
+    getElement: (charType: CharType, charId: string, field: keyof UpdatableDbStatus) =>
+      repository.get(charType, charId, field),
 
-    get: (charId: string) => repository.getAll(charId),
+    get: (charType: CharType, charId: string) => repository.getAll(charType, charId),
 
     updateElement: <T extends keyof UpdatableDbStatus>(
-      character: Character,
+      character: Playable,
       field: T,
       data: UpdatableDbStatus[T]
     ) => {
@@ -28,9 +30,9 @@ function getStatusUseCases(
       return repository.updateElement(character, field, data)
     },
     groupUpdate: (
-      character: Character,
+      character: Playable,
       data: Partial<UpdatableDbStatus>,
-      charType: "enemies" | "characters" = "characters"
+      charType: "npcs" | "characters"
     ) => statusRepo.patch({ charId: character.charId, charType }, data)
   }
 }

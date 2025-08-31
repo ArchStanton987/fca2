@@ -1,6 +1,6 @@
 import { TouchableHighlight } from "react-native"
 
-import { router, useSegments } from "expo-router"
+import { router, usePathname } from "expo-router"
 
 import List from "components/List"
 import ScrollSection from "components/Section/ScrollSection"
@@ -12,14 +12,14 @@ import { useSquad } from "contexts/SquadContext"
 
 import styles from "./Drawer.styles"
 
-type SectionId = "creation"
+type SectionId = "creation" | "npc" | "combats"
 type DrawerProps = {
   sectionId: SectionId
   navElements: { path: string; label: string }[]
 }
 
 export default function AdminDrawer({ sectionId, navElements }: DrawerProps) {
-  const segments = useSegments()
+  const pathname = usePathname()
   const squad = useSquad()
   const { squadId } = squad
 
@@ -29,14 +29,14 @@ export default function AdminDrawer({ sectionId, navElements }: DrawerProps) {
   }
 
   return (
-    <ScrollSection style={styles.drawerContainer} title="CREATION" titleVariant="shiny">
+    <ScrollSection style={styles.drawerContainer} title={sectionId} titleVariant="shiny">
       <List
         data={navElements}
-        keyExtractor={item => item.label}
+        keyExtractor={item => item.path}
         style={{ flex: 1 }}
         renderItem={({ item }) => {
           const { path } = item
-          const isSelected = segments.includes(path)
+          const isSelected = pathname.includes(path)
           const hasBadge = false
           return (
             <TouchableHighlight

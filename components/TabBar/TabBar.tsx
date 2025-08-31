@@ -9,6 +9,7 @@ import List from "components/List"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { adminRoute, charRoute } from "constants/routes"
+import { useSquad } from "contexts/SquadContext"
 import { SearchParams } from "screens/ScreenParams"
 import layout from "styles/layout"
 
@@ -22,6 +23,8 @@ export default function TabBar(props: BottomTabBarProps & { tabBarId: TabBarId }
   const router = useRouter()
   const localParams = useLocalSearchParams() as SearchParams<DrawerParams>
   const { charId, squadId } = localParams
+  const squad = useSquad()
+  const isNpc = charId && !(charId in squad.membersRecord)
 
   const onPressTab = (routeName: string) => {
     if (tabBarId === "char") {
@@ -31,7 +34,10 @@ export default function TabBar(props: BottomTabBarProps & { tabBarId: TabBarId }
     router.push({ pathname: `${adminRoute}/${routeName}`, params: { squadId } })
   }
 
-  const toHome = () => router.push("/")
+  const toHome = () => {
+    if (!isNpc) return router.push("/")
+    return router.push({ pathname: adminRoute, params: { squadId } })
+  }
 
   return (
     <View style={styles.container}>

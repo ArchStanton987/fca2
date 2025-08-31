@@ -3,6 +3,7 @@ import { TouchableOpacity, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { calculatedEffects } from "lib/character/effects/effects-utils"
 import { EffectId } from "lib/character/effects/effects.types"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
@@ -56,9 +57,12 @@ export default function UpdateEffectsModal() {
     })
   }
 
+  const validEffects = effects.filter(e => !calculatedEffects.includes(e.type))
   const visibleEffects =
     searchValue.length > 2
-      ? effects.filter(effect => effect.label.toLowerCase().includes(searchValue.toLowerCase()))
+      ? validEffects.filter(effect =>
+          effect.label.toLowerCase().includes(searchValue.toLowerCase())
+        )
       : []
 
   return (

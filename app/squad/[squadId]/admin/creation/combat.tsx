@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { ScrollView, View } from "react-native"
 
+import Character from "lib/character/Character"
 import Toast from "react-native-toast-message"
 
 import CheckBox from "components/CheckBox/CheckBox"
@@ -15,43 +16,40 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import TxtInput from "components/TxtInput"
 import PlusIcon from "components/icons/PlusIcon"
+import { useAdmin } from "contexts/AdminContext"
 import { useSquad } from "contexts/SquadContext"
-import useRtdbSub from "hooks/db/useRtdbSub"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
-import { getDDMMYYYY, getHHMM } from "utils/date"
-
-type Challenger = {
-  id: string
-  combatStatus?: "active" | "inactive" | "dead" | undefined
-  currentCombatId?: string
-}
 
 type Form = {
   location?: string
   title: string
   description?: string
-  players: Record<string, Challenger>
-  enemies: Record<string, Challenger>
+  players: Record<string, string>
+  npcs: Record<string, string>
 }
 const defaultForm: Form = {
   location: "",
   title: "",
   description: "",
   players: {},
-  enemies: {}
+  npcs: {}
 }
 
 export default function CombatCreation() {
   const useCases = useGetUseCases()
   const squad = useSquad()
-  const squadPlayers: Form["players"] = {}
-  Object.values(squad.membersRecord).forEach(s => {
-    squadPlayers[s.id] = { id: s.id }
+
+  const { characters, npcs } = useAdmin()
+  const allPlayable = { ...characters, ...npcs }
+
+  const squadPlayers: Record<string, string> = {}
+  Object.keys(characters ?? {}).forEach(id => {
+    squadPlayers[id] = id
   })
-  const enemies = useRtdbSub(useCases.enemy.subAll())
-  const enemyList = Object.entries(enemies ?? {}).map(([id, enemy]) => ({ id, ...enemy }))
+
+  const npcList = Object.entries(npcs ?? {}).map(([id, npc]) => ({ id, ...npc }))
 
   const [form, setForm] = useState<Form>({ ...defaultForm, players: squadPlayers })
   const [isStartingNow, setIsStartingNow] = useState(true)
@@ -60,7 +58,8 @@ export default function CombatCreation() {
     setForm({ ...form, [key]: value })
   }
 
-  const toggleChar = (type: "players" | "enemies", id: string) => {
+  const toggleChar = (type: "players" | "npcs", id: string) => {
+    if (!npcs) return
     if (id in form[type]) {
       setForm(prev => {
         const prevType = { ...prev[type] }
@@ -69,12 +68,19 @@ export default function CombatCreation() {
       })
       return
     }
-    setForm(prev => ({ ...prev, [type]: { ...prev[type], [id]: id } }))
+    let currMaxAp = 0
+    const curr = type === "players" ? characters[id] : npcs[id]
+    if (curr instanceof Character) {
+      currMaxAp = curr.secAttr.curr.actionPoints
+    } else {
+      currMaxAp = curr.data.actionPoints
+    }
+    setForm(prev => ({ ...prev, [type]: { ...prev[type], [id]: { currMaxAp } } }))
   }
 
   const submit = async () => {
     const hasPlayers = Object.keys(form.players).length > 0
-    const hasEnemies = Object.keys(form.enemies).length > 0
+    const hasEnemies = Object.keys(form.npcs).length > 0
     const hasTitle = form.title.length > 0
 
     if (!hasPlayers || !hasEnemies || !hasTitle) {
@@ -83,27 +89,21 @@ export default function CombatCreation() {
     }
 
     const { date, squadId } = squad
-    const d = getDDMMYYYY(date, "-")
-    const h = getHHMM(date, "-")
-    const id = `${squad.squadId}_${d}_${h}`
-    const payload = { id, ...form, timestamp: date.getTime().toString(), isStartingNow, squadId }
-    if (isStartingNow) {
-      Object.entries(payload.enemies).forEach(([key, value]) => {
-        payload.enemies[key] = { ...value, combatStatus: "active", currentCombatId: id }
+    const contendersIds = Object.keys({ ...form.players, ...form.npcs })
+    const contenders = Object.fromEntries(
+      contendersIds.map(id => {
+        const playable = allPlayable[id]
+        if (!playable) throw new Error(`Playable with id ${id} not found`)
+        return [id, playable]
       })
-      Object.entries(payload.players).forEach(([key, value]) => {
-        payload.players[key] = { ...value, combatStatus: "active", currentCombatId: id }
-      })
-    }
+    )
 
-    // TODO: reset AP of all contenders
-
+    const payload = { ...form, date: date.toJSON(), isStartingNow, squadId, contenders }
     try {
       await useCases.combat.create(payload)
       Toast.show({ type: "custom", text1: "Le combat a été créé" })
       setForm({ ...defaultForm, players: squadPlayers })
     } catch (err) {
-      console.error(err)
       Toast.show({ type: "error", text1: "Erreur lors de la création du combat" })
     }
   }
@@ -147,14 +147,14 @@ export default function CombatCreation() {
         <ScrollView horizontal>
           <List
             horizontal
-            data={Object.values(squadPlayers)}
-            keyExtractor={item => item.id}
+            data={Object.keys(squadPlayers)}
+            keyExtractor={item => item}
             separator={<Spacer x={layout.globalPadding} />}
             renderItem={({ item }) => (
               <SelectorButton
-                onPress={() => toggleChar("players", item.id)}
-                isSelected={item.id in form.players}
-                label={item.id}
+                onPress={() => toggleChar("players", item)}
+                isSelected={item in form.players}
+                label={item}
               />
             )}
           />
@@ -162,18 +162,18 @@ export default function CombatCreation() {
 
         <Spacer y={layout.globalPadding} />
 
-        <Txt>ENNEMIS</Txt>
+        <Txt>PNJs</Txt>
         <Spacer y={5} />
         <List
           horizontal
-          data={Object.keys(form.enemies)}
+          data={Object.keys(form.npcs)}
           keyExtractor={item => item}
           separator={<Spacer x={layout.globalPadding} />}
           renderItem={({ item }) => (
             <SelectorButton
-              onPress={() => toggleChar("enemies", item)}
-              isSelected={item in form.enemies}
-              label={enemyList?.find(e => e.id === item)?.name ?? item}
+              onPress={() => toggleChar("npcs", item)}
+              isSelected={item in form.npcs}
+              label={npcs[item].meta.firstname}
             />
           )}
         />
@@ -184,19 +184,19 @@ export default function CombatCreation() {
       <Spacer x={layout.globalPadding} />
 
       <View style={{ width: 160 }}>
-        <ScrollSection style={{ flex: 1 }} title="enemis">
+        <ScrollSection style={{ flex: 1 }} title="PNJs">
           <List
-            data={enemyList}
+            data={npcList}
             keyExtractor={item => item.id}
             separator={<Spacer y={10} />}
             renderItem={({ item }) => {
-              const isSelected = Object.keys(form.enemies).some(e => e === item.id)
+              const isSelected = Object.keys(form.npcs).some(e => e === item.id)
               return (
                 <Txt
                   style={isSelected && { backgroundColor: colors.terColor, color: colors.secColor }}
-                  onPress={() => toggleChar("enemies", item.id)}
+                  onPress={() => toggleChar("npcs", item.id)}
                 >
-                  {item.name}
+                  {item.meta.firstname}
                 </Txt>
               )
             }}

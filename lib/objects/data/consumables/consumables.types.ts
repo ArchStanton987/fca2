@@ -28,8 +28,8 @@ export type ConsumableData = {
 export type DbConsumableData = {
   id: ConsumableId
   label: string
-  effectId: EffectId | null
-  challengeLabel: string | null
+  effectId: EffectId | undefined
+  challengeLabel: string | undefined
   od?: number | false
   addict?: string | false
   value: number
@@ -46,6 +46,7 @@ export type DbConsumableData = {
 export type Consumable = {
   id: string
   dbKey: string
+  category: "consumable"
   remainingUse?: number
   data: ConsumableData
 }

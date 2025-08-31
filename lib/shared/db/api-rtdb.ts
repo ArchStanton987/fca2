@@ -1,10 +1,11 @@
 import { DbChar } from "lib/character/Character"
+import { DbEffect } from "lib/character/effects/effects.types"
 import { DbStatus } from "lib/character/status/status.types"
-import { DbCombatEntry } from "lib/combat/combats.types"
-import { DbEnemy } from "lib/enemy/enemy.types"
+import { DbAction, DbCombatEntry, PlayerCombatData, Roll } from "lib/combat/combats.types"
+import { DbNpc } from "lib/npc/npc.types"
 import { DbSquad } from "lib/squad/squad-types"
 
-type CharType = "characters" | "enemies"
+export type CharType = "characters" | "npcs"
 type CharParams = { charId: string; charType: CharType }
 type Child<T> = { childKey?: T }
 
@@ -16,9 +17,33 @@ export type AdditionalEffectsParams = Child<string>
 export type AdditionalMiscParams = Child<string>
 //
 export type CombatParams = { id?: string; childKey?: keyof DbCombatEntry }
-export type EnemiesParams = { id?: string; childKey?: keyof DbEnemy }
-export type CharacterParams = { id?: string; childKey?: keyof DbChar }
+export type ContenderParams = {
+  combatId: string
+  contenderType: "players" | "npcs"
+  id?: string
+  childKey?: keyof PlayerCombatData
+}
+export type RoundParams = {
+  combatId: string
+  id?: number
+  childKey?: number
+}
+export type ActionParams = {
+  combatId: string
+  roundId: number
+  id?: number
+  childKey?: keyof DbAction
+}
+export type RollParams = {
+  combatId: string
+  roundId: number
+  id?: number
+  childKey?: keyof Roll
+}
+export type NpcParams = { id?: string; childKey?: keyof DbNpc }
+export type CharacterParams = { charType: CharType; id?: string; childKey?: keyof DbChar }
 export type StatusParams = CharParams & { childKey?: keyof DbStatus }
+export type EffectsParams = CharParams & { dbKey?: string; childKey?: keyof DbEffect }
 //
 export type SquadParams = { id?: string; childKey?: keyof DbSquad }
 
@@ -35,14 +60,36 @@ const rtdb = {
   getCombat: ({ id, childKey }: CombatParams) =>
     childKey ? `v2/combat/${id}/${childKey}` : `v2/combat/${id ?? ""}`,
 
-  getEnemy: ({ id, childKey }: EnemiesParams) =>
-    childKey ? `v2/enemies/${id}/${childKey}` : `v2/enemies/${id ?? ""}`,
+  getContender: ({ combatId, contenderType, id, childKey }: ContenderParams) =>
+    id
+      ? `v2/combat/${combatId}/${contenderType}/${id}/${childKey ?? ""}`
+      : `v2/combat/${combatId}/${contenderType}/`,
+  getRound: ({ combatId, id, childKey }: RoundParams) =>
+    id ? `v2/combat/${combatId}/rounds/${id}/${childKey ?? ""}` : `v2/combat/${combatId}/rounds/`,
 
-  getCharacter: ({ id, childKey }: CharacterParams) =>
-    childKey ? `v2/characters/${id}/${childKey}` : `v2/characters/${id ?? ""}`,
+  getAction: ({ combatId, roundId, id, childKey }: ActionParams) =>
+    id
+      ? `v2/combat/${combatId}/rounds/${roundId}/${id}/${childKey ?? ""}`
+      : `v2/combat/${combatId}/rounds/${roundId}/`,
+
+  getRoll: ({ combatId, roundId, id, childKey }: RollParams) =>
+    id
+      ? `v2/combat/${combatId}/rounds/${roundId}/${id}/roll/${childKey ?? ""}`
+      : `v2/combat/${combatId}/rounds/${roundId}/`,
+
+  getEnemy: ({ id, childKey }: NpcParams) =>
+    childKey ? `v2/npcs/${id}/${childKey}` : `v2/npcs/${id ?? ""}`,
+
+  getCharacter: ({ charType, id, childKey }: CharacterParams) =>
+    id ? `v2/${charType}/${id}/${childKey ?? ""}` : `v2/${charType}/`,
 
   getStatus: ({ charId, charType, childKey }: StatusParams) =>
     `v2/${charType}/${charId}/status/${childKey ?? ""}`,
+
+  getEffects: ({ charId, charType, dbKey, childKey }: EffectsParams) =>
+    dbKey
+      ? `v2/${charType}/${charId}/effects/${dbKey}/${childKey ?? ""}`
+      : `v2/${charType}/${charId}/effects/`,
 
   getSquad: ({ id, childKey }: SquadParams) =>
     childKey ? `v2/squads/${id}/${childKey}` : `v2/squads/${id ?? ""}`

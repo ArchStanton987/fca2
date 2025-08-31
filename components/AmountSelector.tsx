@@ -12,8 +12,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 2,
     borderColor: colors.secColor,
-    width: 40,
-    height: 40,
+    width: 35,
+    height: 35,
     padding: 0,
     backgroundColor: colors.primColor
   },

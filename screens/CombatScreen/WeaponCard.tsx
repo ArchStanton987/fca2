@@ -4,10 +4,10 @@ import { Image, TouchableOpacity, View } from "react-native"
 import AntDesign from "@expo/vector-icons/AntDesign"
 import secAttrMap from "lib/character/abilities/sec-attr/sec-attr"
 import {
-  actionsMap,
   getApCost,
   getHasStrengthMalus,
-  getWeaponActionLabel
+  getWeaponActionLabel,
+  weaponActionsMap
 } from "lib/objects/data/weapons/weapons-utils"
 import { Weapon, WeaponActionId } from "lib/objects/data/weapons/weapons.types"
 
@@ -55,7 +55,7 @@ export default function WeaponCard({ weapon, setPrevAp }: WeaponCardProps) {
     if (!selectedAction) return
     setSelectedAction(null)
     switch (selectedAction) {
-      case "load":
+      case "reload":
         await useCases.weapons.load(char, weapon, apCostOverride)
         break
       case "unload":
@@ -70,7 +70,7 @@ export default function WeaponCard({ weapon, setPrevAp }: WeaponCardProps) {
   }
 
   // const actions = getAvailableWeaponActions(weapon, char)
-  const actions = actionsMap
+  const actions = weaponActionsMap
 
   return (
     <Section title={getTitle(weapon.data.label)}>

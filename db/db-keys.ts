@@ -5,35 +5,35 @@ const dbKeys = {
     members: `/v2/squads/${squadId}/members`,
     datetime: `/v2/squads/${squadId}/datetime`
   }),
-  char: (charId: string) => ({
-    index: `/v2/characters/${charId}`,
+  char: (charType: "npcs" | "characters", charId: string) => ({
+    index: `/v2/${charType}/${charId}`,
     abilities: {
-      index: `/v2/characters/${charId}/abilities`,
-      baseSPECIAL: `/v2/characters/${charId}/abilities/baseSPECIAL`,
-      knowledges: `/v2/characters/${charId}/abilities/knowledges`,
-      upSkills: `/v2/characters/${charId}/abilities/upSkills`,
-      perks: `/v2/characters/${charId}/abilities/perks`,
-      traits: `/v2/characters/${charId}/abilities/traits`
+      index: `/v2/${charType}/${charId}/abilities`,
+      baseSPECIAL: `/v2/${charType}/${charId}/abilities/baseSPECIAL`,
+      knowledges: `/v2/${charType}/${charId}/abilities/knowledges`,
+      upSkills: `/v2/${charType}/${charId}/abilities/upSkills`,
+      perks: `/v2/${charType}/${charId}/abilities/perks`,
+      traits: `/v2/${charType}/${charId}/abilities/traits`
     },
-    knowledges: `/v2/characters/${charId}/abilities/knowledges`,
-    baseSpecial: `/v2/characters/${charId}/abilities/baseSPECIAL`,
-    effects: `/v2/characters/${charId}/effects`,
+    knowledges: `/v2/${charType}/${charId}/abilities/knowledges`,
+    baseSpecial: `/v2/${charType}/${charId}/abilities/baseSPECIAL`,
+    effects: `/v2/${charType}/${charId}/effects`,
     inventory: {
-      index: `/v2/characters/${charId}/inventory`,
-      ammo: `/v2/characters/${charId}/inventory/ammo`,
-      caps: `/v2/characters/${charId}/status/caps`,
-      weapons: `/v2/characters/${charId}/inventory/weapons`,
-      clothings: `/v2/characters/${charId}/inventory/clothings`,
-      consumables: `/v2/characters/${charId}/inventory/consumables`,
-      miscObjects: `/v2/characters/${charId}/inventory/miscObjects`
+      index: `/v2/${charType}/${charId}/inventory`,
+      ammo: `/v2/${charType}/${charId}/inventory/ammo`,
+      caps: `/v2/${charType}/${charId}/status/caps`,
+      weapons: `/v2/${charType}/${charId}/inventory/weapons`,
+      clothings: `/v2/${charType}/${charId}/inventory/clothings`,
+      consumables: `/v2/${charType}/${charId}/inventory/consumables`,
+      miscObjects: `/v2/${charType}/${charId}/inventory/miscObjects`
     },
     equipedObjects: {
-      index: `/v2/characters/${charId}/equipedObj`,
-      weapons: `/v2/characters/${charId}/equipedObj/weapons`,
-      clothings: `/v2/characters/${charId}/equipedObj/clothings`
+      index: `/v2/${charType}/${charId}/equipedObj`,
+      weapons: `/v2/${charType}/${charId}/equipedObj/weapons`,
+      clothings: `/v2/${charType}/${charId}/equipedObj/clothings`
     },
     status: {
-      index: `/v2/characters/${charId}/status`
+      index: `/v2/${charType}/${charId}/status`
     }
   })
 }

@@ -6,9 +6,10 @@ export type DbSquadMember = {
 
 export type DbSquad = {
   datetime: string
-  isInFight: boolean
   label: string
   members: Record<string, DbSquadMember>
+  npc: Record<string, string>
+  combats?: Record<string, string>
 }
 
 export type SquadMember = {

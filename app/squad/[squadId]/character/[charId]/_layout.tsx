@@ -1,22 +1,26 @@
-import { useMemo, useState } from "react"
+import { ReactNode, useMemo, useState } from "react"
+import { Platform } from "react-native"
 
 import { Stack, useLocalSearchParams } from "expo-router"
 
 import { NativeStackNavigationOptions } from "@react-navigation/native-stack"
-import Character, { DbChar } from "lib/character/Character"
+import Character from "lib/character/Character"
+import { useCurrCharStore, useSetCurrCharId } from "lib/character/character-store"
+import NonHuman from "lib/npc/NonHuman"
 import Inventory from "lib/objects/Inventory"
 import Toast from "react-native-toast-message"
 
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import { CharacterContext } from "contexts/CharacterContext"
 import { InventoryContext } from "contexts/InventoryContext"
 import { useSquad } from "contexts/SquadContext"
 import useCreatedElements from "hooks/context/useCreatedElements"
 import useRtdbSub from "hooks/db/useRtdbSub"
+import { ActionProvider } from "providers/ActionProvider"
+import CombatProvider from "providers/CombatProvider"
+import { ReactionProvider } from "providers/ReactionProvider"
 import UpdatesProvider from "providers/UpdatesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import LoadingScreen from "screens/LoadingScreen"
-import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
 import { getDDMMYYYY, getHHMM } from "utils/date"
 
@@ -29,45 +33,44 @@ const modalOptions: NativeStackNavigationOptions = {
   }
 }
 
-export default function CharStack() {
-  const { charId } = useLocalSearchParams() as SearchParams<DrawerParams>
-
+function CharProvider({ children, charId }: { children: ReactNode; charId: string }) {
   const useCases = useGetUseCases()
 
   const squad = useSquad()
+  const isNpc = !(charId in squad.membersRecord)
+  const subParams = {
+    id: charId,
+    charType: isNpc ? ("npcs" as const) : ("characters" as const)
+  }
 
   const [currDatetime, setCurrDatetime] = useState(squad.date.toJSON())
 
   // use separate subscriptions to avoid unnecessary bandwidth usage
-  const abilities = useRtdbSub(useCases.abilities.getAbilities(charId))
-  const effects = useRtdbSub(useCases.effects.getAll(charId))
-  const equipedObj = useRtdbSub(useCases.equipedObjects.getAll(charId))
-  const inventory = useRtdbSub(useCases.inventory.getAll(charId))
-  const status = useRtdbSub(useCases.status.get(charId))
+  const abilities = useRtdbSub(useCases.character.subChild({ ...subParams, childKey: "abilities" }))
+  const effects = useRtdbSub(useCases.character.subChild({ ...subParams, childKey: "effects" }))
+  const equipedObj = useRtdbSub(
+    useCases.character.subChild({ ...subParams, childKey: "equipedObj" })
+  )
+  const inventory = useRtdbSub(useCases.character.subChild({ ...subParams, childKey: "inventory" }))
+  const status = useRtdbSub(useCases.character.subChild({ ...subParams, childKey: "status" }))
+  const meta = useRtdbSub(useCases.character.subChild({ ...subParams, childKey: "meta" }))
 
   const newElements = useCreatedElements()
 
   const character = useMemo(() => {
-    const dbCharData = { abilities, effects, equipedObj, status }
-    if (Object.values(dbCharData).some(data => data === undefined)) return null
-    if (!squad) return null
-    return new Character(dbCharData as DbChar, squad, charId, newElements)
-  }, [squad, charId, abilities, effects, equipedObj, status, newElements])
+    if (!status || !meta || !squad) return null
+    if (meta.speciesId !== "human") return new NonHuman(charId, { status, meta }, squad)
+    if (!abilities) return null
+    const dbCharData = { abilities, effects, equipedObj, status, meta }
+    return new Character(charId, dbCharData, squad, newElements)
+  }, [charId, squad, abilities, effects, equipedObj, status, meta, newElements])
 
   const charInventory = useMemo(() => {
-    if (!character || !inventory) return null
-    const { dbAbilities, innateSymptoms, skills, dbEquipedObjects, special } = character
-    const charData = {
-      dbAbilities,
-      innateSymptoms,
-      currSkills: skills.curr,
-      dbEquipedObjects,
-      currSpecial: special.curr
-    }
-    return new Inventory(inventory, charData, newElements)
+    if (!character) return null
+    return new Inventory(inventory ?? { caps: 0 }, character, newElements)
   }, [character, inventory, newElements])
 
-  if (!character || !charInventory || !squad) return <LoadingScreen />
+  if (!character || !squad) return <LoadingScreen />
 
   if (squad.date.toJSON() !== currDatetime) {
     setCurrDatetime(squad.date.toJSON())
@@ -76,33 +79,54 @@ export default function CharStack() {
     Toast.show({
       type: "custom",
       text1: `Le temps passe ! Nous sommes le ${newDate}, il est ${newHour}.`,
-      autoHide: false
+      autoHide: Platform.OS === "web"
     })
   }
 
   return (
     <CharacterContext.Provider value={character}>
-      <InventoryContext.Provider value={charInventory}>
-        <UpdatesProvider>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              contentStyle: { backgroundColor: colors.primColor, padding: 10 }
-            }}
-          >
-            <Stack.Screen name="(nav)" />
-            <Stack.Screen name="(modal)/update-effects" options={modalOptions} />
-            <Stack.Screen name="(modal)/update-effects-confirmation" options={modalOptions} />
-            <Stack.Screen name="(modal)/update-objects" options={modalOptions} />
-            <Stack.Screen name="(modal)/update-objects-confirmation" options={modalOptions} />
-            <Stack.Screen name="(modal)/update-status" options={modalOptions} />
-            <Stack.Screen name="(modal)/update-health" options={modalOptions} />
-            <Stack.Screen name="(modal)/update-skills" options={modalOptions} />
-            <Stack.Screen name="(modal)/update-skills-confirmation" options={modalOptions} />
-            <Stack.Screen name="(modal)/update-knowledges" options={modalOptions} />
-          </Stack>
-        </UpdatesProvider>
-      </InventoryContext.Provider>
+      <InventoryContext.Provider value={charInventory}>{children}</InventoryContext.Provider>
     </CharacterContext.Provider>
+  )
+}
+
+export default function CharStack() {
+  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const currCharId = useCurrCharStore(state => state.charId)
+  const setChar = useSetCurrCharId()
+
+  if (charId && currCharId === null) {
+    setChar(charId)
+  }
+
+  if (!currCharId) return <LoadingScreen />
+  return (
+    <CharProvider charId={currCharId}>
+      <UpdatesProvider>
+        <CombatProvider>
+          <ActionProvider>
+            <ReactionProvider>
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  contentStyle: { backgroundColor: colors.primColor, padding: 10 }
+                }}
+              >
+                <Stack.Screen name="(nav)" />
+                <Stack.Screen name="(modal)/update-effects" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-effects-confirmation" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-objects" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-objects-confirmation" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-status" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-health" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-skills" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-skills-confirmation" options={modalOptions} />
+                <Stack.Screen name="(modal)/update-knowledges" options={modalOptions} />
+              </Stack>
+            </ReactionProvider>
+          </ActionProvider>
+        </CombatProvider>
+      </UpdatesProvider>
+    </CharProvider>
   )
 }

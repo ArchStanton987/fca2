@@ -1,15 +1,41 @@
+import { DbChar } from "./character/Character"
 import getAbilitiesUseCases from "./character/abilities/abilities-use-cases"
 import addAdditionalEffect from "./character/effects/add-additional-effect"
 import getEffectsUseCases from "./character/effects/effects-use-cases"
 import { DbEffectData } from "./character/effects/effects.types"
 import subAdditionalEffects from "./character/effects/sub-additional-effects"
 import getStatusUseCases from "./character/status/status-use-cases"
+import subCharacter from "./character/use-cases/sub-character"
+import subCharacterChild, {
+  SubCharacterChildParams
+} from "./character/use-cases/sub-character-child"
+import subCharacters from "./character/use-cases/sub-characters"
+import { DbAction } from "./combat/combats.types"
+import adminEndFight, { AdminEndFightParams } from "./combat/use-cases/admin-end-fight"
+import applyDamageEntries, {
+  ApplyDamageEntriesParams
+} from "./combat/use-cases/apply-damage-entries"
 import createFight, { CreateFightParams } from "./combat/use-cases/create-fight"
+import deleteFight, { DeleteFightParams } from "./combat/use-cases/delete-fight"
+import doCombatAction, { CombatActionParams } from "./combat/use-cases/do-combat-action"
+import endWait, { EndWaitParams } from "./combat/use-cases/end-wait"
+import prepareAction, { PrepareActionParams } from "./combat/use-cases/prepare-action"
+import resetDifficulty, { ResetDifficultyParams } from "./combat/use-cases/reset-difficulty"
+import saveAction, { SaveActionParams } from "./combat/use-cases/save-action"
+import setAction, { SetActionParams } from "./combat/use-cases/set-action"
+import setDifficulty, { SetDifficultyParams } from "./combat/use-cases/set-difficulty"
+import startFight, { StartFightParams } from "./combat/use-cases/start-fight"
+import subAllFights from "./combat/use-cases/sub-all-fights"
 import subFight, { SubFightParams } from "./combat/use-cases/sub-fight"
+import updateAction, { UpdateActionParams } from "./combat/use-cases/update-action"
 import updateContender, { UpdateContenderParams } from "./combat/use-cases/update-contender"
 import updateFight, { UpdateFightParams } from "./combat/use-cases/update-fight"
-import createEnemy, { CreateEnemyParams } from "./enemy/use-cases/create-enemy"
-import subAllEnemies from "./enemy/use-cases/sub-all-enemies"
+import waitAction, { WaitActionParams } from "./combat/use-cases/wait-action"
+import createNpc, { CreateNpcParams } from "./npc/use-cases/create-npc"
+import deleteNpc, { DeleteNpcParams } from "./npc/use-cases/delete-npc"
+import subAllNpcs from "./npc/use-cases/sub-all-npcs"
+import subNpc from "./npc/use-cases/sub-npc"
+import subNpcs from "./npc/use-cases/sub-npcs"
 import { defaultCreatedElements } from "./objects/created-elements"
 import addAdditionalClothing from "./objects/data/clothings/add-additional-clothings"
 import { DbClothingData } from "./objects/data/clothings/clothings.types"
@@ -27,7 +53,8 @@ import {
   AdditionalClothingsParams,
   AdditionalConsumablesParams,
   AdditionalEffectsParams,
-  AdditionalMiscParams
+  AdditionalMiscParams,
+  CharacterParams
 } from "./shared/db/api-rtdb"
 import { DbType } from "./shared/db/db.types"
 import getSquadUseCases from "./squad/squad-use-cases"
@@ -60,13 +87,43 @@ export default function getUseCases(
     },
     combat: {
       sub: (data: SubFightParams) => subFight(dbType)(data),
+      subAll: () => subAllFights(dbType)(),
+      startFight: (data: StartFightParams) => startFight(dbType)(data),
+      adminEndFight: (data: AdminEndFightParams) => adminEndFight(dbType)(data),
       create: (data: CreateFightParams) => createFight(dbType)(data),
       update: (data: UpdateFightParams) => updateFight(dbType)(data),
-      updateContender: (data: UpdateContenderParams) => updateContender(dbType)(data)
+      delete: (data: DeleteFightParams) => deleteFight(dbType)(data),
+      updateContender: (data: UpdateContenderParams) => updateContender(dbType)(data),
+      // ACTIONS
+      doCombatAction: (data: CombatActionParams) => doCombatAction(dbType, createdElements)(data),
+      waitAction: (data: WaitActionParams) => waitAction(dbType)(data),
+      endWait: (data: EndWaitParams) => endWait(dbType)(data),
+      prepareAction: (data: PrepareActionParams) => prepareAction(dbType)(data),
+      // ACTION HELPERS
+      updateAction: (data: UpdateActionParams) => updateAction(dbType)(data),
+      setAction: <K extends keyof DbAction>(data: SetActionParams<K>) => setAction(dbType)(data),
+      saveAction: (data: SaveActionParams) => saveAction(dbType)(data),
+      setDifficulty: (data: SetDifficultyParams) => setDifficulty(dbType)(data),
+      resetDifficulty: (data: ResetDifficultyParams) => resetDifficulty(dbType)(data),
+      // GM
+      applyDamageEntries: (data: ApplyDamageEntriesParams) =>
+        applyDamageEntries(dbType, createdElements)(data)
     },
-    enemy: {
-      subAll: () => subAllEnemies(dbType)(),
-      create: (data: CreateEnemyParams) => createEnemy(dbType)(data)
+    npc: {
+      subAll: () => subAllNpcs(dbType)(),
+      subNpcs: (ids: string[]) => subNpcs(dbType)(ids),
+      sub: (id: string) => subNpc(dbType)(id),
+      create: (data: CreateNpcParams) => createNpc(dbType)(data),
+      delete: (params: DeleteNpcParams) => deleteNpc(dbType)(params)
+    },
+    character: {
+      subCharacters: (ids: string[]) => subCharacters(dbType)(ids),
+      sub: (params: CharacterParams) => subCharacter(dbType)(params),
+      subChild: <T extends keyof DbChar>(params: SubCharacterChildParams<T>) =>
+        subCharacterChild(dbType)(params)
     }
+    // effects: {
+    //   addEffectsToChar: (params: AddEffectsParams) => addEffects(dbType, createdElements)(params)
+    // }
   }
 }

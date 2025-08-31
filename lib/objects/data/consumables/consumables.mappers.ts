@@ -5,8 +5,8 @@ export default class ConsumablesMapper {
     return {
       id: payload.id as ConsumableId,
       label: payload.label,
-      effectId: payload.effectId,
-      challengeLabel: payload.challengeLabel,
+      effectId: payload.effectId ?? null,
+      challengeLabel: payload.challengeLabel ?? null,
       od: payload.od ?? false,
       addict: payload.addict ?? false,
       value: payload.value,

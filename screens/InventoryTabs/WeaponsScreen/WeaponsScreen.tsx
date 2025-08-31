@@ -121,10 +121,11 @@ function WeaponsScreen() {
 
         <Spacer y={layout.globalPadding} />
 
-        <Section title="ajouter">
-          <View style={{ alignItems: "center" }}>
-            <PlusIcon onPress={onPressAdd} />
-          </View>
+        <Section
+          title="ajouter"
+          contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}
+        >
+          <PlusIcon onPress={onPressAdd} />
         </Section>
       </View>
     </DrawerPage>

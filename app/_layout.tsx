@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { ReactNode, useEffect } from "react"
 import { Platform, View } from "react-native"
 
 import { Slot, SplashScreen } from "expo-router"
@@ -21,6 +21,11 @@ import AuthContainer from "../providers/AuthProvider"
 let didInit = false
 
 SplashScreen.preventAutoHideAsync()
+
+const WithKeepAwake = ({ children }: { children: ReactNode }) => {
+  useKeepAwake()
+  return children
+}
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts(fonts)
@@ -45,12 +50,27 @@ export default function RootLayout() {
     }
   }, [fontsLoaded])
 
-  useKeepAwake()
-
   if (!fontsLoaded) {
     return <LoadingScreen />
   }
 
+  if (Platform.OS !== "web") {
+    return (
+      <WithKeepAwake>
+        <View style={{ flex: 1, backgroundColor: colors.primColor }}>
+          <AuthContainer>
+            <AdditionalElementsProvider>
+              <UseCasesProvider>
+                <StatusBar hidden />
+                <Slot />
+                <Toast config={toastConfig} />
+              </UseCasesProvider>
+            </AdditionalElementsProvider>
+          </AuthContainer>
+        </View>
+      </WithKeepAwake>
+    )
+  }
   return (
     <View style={{ flex: 1, backgroundColor: colors.primColor }}>
       <AuthContainer>

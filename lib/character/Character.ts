@@ -15,7 +15,7 @@ import { getLevelAndThresholds } from "lib/character/status/status-calc"
 import { getRemainingTime } from "lib/common/utils/time-calc"
 import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
 import { ClothingData, ClothingId } from "lib/objects/data/clothings/clothings.types"
-import { DbEquipedObjects } from "lib/objects/data/objects.types"
+import { DbEquipedObjects, DbInventory } from "lib/objects/data/objects.types"
 import weaponsMap from "lib/objects/data/weapons/weapons"
 import { dbToWeapon } from "lib/objects/data/weapons/weapons.mappers"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
@@ -23,6 +23,7 @@ import { computed, makeObservable, observable } from "mobx"
 
 import { getModAttribute } from "../common/utils/char-calc"
 import clothingsMap from "../objects/data/clothings/clothings"
+import Playable from "./Playable"
 import Squad from "./Squad"
 import { DbAbilities } from "./abilities/abilities.types"
 import { KnowledgeId } from "./abilities/knowledges/knowledge-types"
@@ -37,8 +38,10 @@ import traitsMap from "./abilities/traits/traits"
 import effectsMap from "./effects/effects"
 import { DbEffects, Effect, EffectData, EffectId } from "./effects/effects.types"
 import { Symptom } from "./effects/symptoms.type"
+import { healthStates, limbsMap, radStates } from "./health/health"
 import { getMaxHP, getMissingHp } from "./health/health-calc"
 import { Health } from "./health/health-types"
+import { DbCharMeta } from "./meta/meta"
 import { DbStatus } from "./status/status.types"
 
 export type DbChar = {
@@ -46,34 +49,49 @@ export type DbChar = {
   effects?: DbEffects
   equipedObj?: DbEquipedObjects
   status: DbStatus
+  meta: DbCharMeta
   combats?: Record<string, string>
-}
+} & { inventory: DbInventory }
 
-export default class Character {
+export default class Character implements Playable {
   charId: string
+  fullname: string
+  isEnemy: boolean
   dbAbilities: DbAbilities
   dbEffects: DbEffects
   dbEquipedObjects: DbEquipedObjects
   status: DbStatus
   date: Date
   squadId: Squad["squadId"]
+  meta: DbCharMeta
+  combats: Record<string, string>
 
   allClothings: Record<ClothingId, ClothingData>
   allEffects: Record<EffectId, EffectData>
 
   constructor(
-    obj: DbChar,
-    squad: Squad,
-    charId: string,
+    id: string,
+    obj: Omit<DbChar, "inventory">,
+    squad: { date: Date; squadId: string; membersRecord: Record<string, any> },
     newElements: CreatedElements = defaultCreatedElements
   ) {
     const { newClothings, newEffects } = newElements
-    this.charId = charId
-    this.dbAbilities = obj.abilities
+    const { lastname, firstname } = obj.meta
+    this.charId = id
+    this.fullname = lastname ? `${firstname} ${lastname}` : firstname
+    this.isEnemy = !(this.charId in squad.membersRecord)
+    this.dbAbilities = {
+      ...obj.abilities,
+      traits: obj.abilities.traits ?? [],
+      perks: obj.abilities.perks ?? [],
+      knowledges: obj.abilities.knowledges ?? {}
+    }
     this.dbEffects = obj.effects || {}
     this.dbEquipedObjects = obj.equipedObj || {}
     this.status = obj.status
     this.squadId = squad.squadId
+    this.meta = obj.meta
+    this.combats = obj.combats || {}
     this.date = squad.date
     this.allClothings = { ...clothingsMap, ...newClothings }
     this.allEffects = { ...effectsMap, ...newEffects }
@@ -138,6 +156,26 @@ export default class Character {
   }
 
   get effects(): Effect[] {
+    // get all calculated effects
+    // hp effects
+    const { hp, maxHp } = this.health
+    const currHpPercent = (hp / maxHp) * 100
+    const healthState = Object.values(healthStates).find(el => currHpPercent < el.min)
+    const hpEffects = healthState ? [{ id: healthState.id, data: effectsMap[healthState.id] }] : []
+    // // cripled effects
+    const { limbsHp } = this.health
+    const noHpLimbs = Object.values(limbsMap).filter(el => limbsHp[el.id] === 0)
+    const cripledEffects = noHpLimbs.map(el => ({
+      id: limbsMap[el.id].cripledEffect,
+      data: effectsMap[limbsMap[el.id].cripledEffect]
+    }))
+    // // rads effects
+    const { rads } = this.health
+    const radsState = radStates.find(el => rads > el.threshold)
+    const radsEffects = radsState ? [{ id: radsState.id, data: this.allEffects[radsState.id] }] : []
+    // // get all calculated effects objects
+    const calculatedEffects = [...hpEffects, ...cripledEffects, ...radsEffects]
+
     // get all db stored effects
     const effectsIds = Object.entries(this.dbEffects).map(([dbKey, value]) => {
       let timeRemaining = null
@@ -157,7 +195,7 @@ export default class Character {
 
       return { ...value, timeRemaining, dbKey, data: this.allEffects[value.id], startTs, endTs }
     })
-    return effectsIds
+    return [...calculatedEffects, ...effectsIds]
   }
 
   get symptoms(): Symptom[] {
@@ -305,13 +343,6 @@ export default class Character {
   }
 
   get unarmed(): Weapon {
-    const charData = {
-      dbAbilities: this.dbAbilities,
-      innateSymptoms: this.innateSymptoms,
-      currSkills: this.skills.curr,
-      currSpecial: this.special.curr,
-      dbEquipedObjects: this.dbEquipedObjects
-    }
-    return dbToWeapon(["unarmed", { id: "unarmed" }], charData, undefined)
+    return dbToWeapon(["unarmed", { id: "unarmed" }], this, undefined)
   }
 }

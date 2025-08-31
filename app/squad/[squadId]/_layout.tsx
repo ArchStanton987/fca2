@@ -1,8 +1,9 @@
-import { useMemo } from "react"
+import { Fragment, useMemo } from "react"
 
 import { Slot, useLocalSearchParams } from "expo-router"
 
 import Squad from "lib/character/Squad"
+import { useCurrCharStore } from "lib/character/character-store"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import { SquadContext } from "contexts/SquadContext"
@@ -16,6 +17,8 @@ export default function SquadLayout() {
   const { squadId } = useLocalSearchParams() as SearchParams<DrawerParams>
   const dbSquad = useRtdbSub(useCases.squad.get(squadId))
 
+  const currCharId = useCurrCharStore(state => state.charId)
+
   const squad = useMemo(() => {
     if (!dbSquad) return null
     return new Squad(dbSquad, squadId)
@@ -25,7 +28,9 @@ export default function SquadLayout() {
 
   return (
     <SquadContext.Provider value={squad}>
-      <Slot />
+      <Fragment key={currCharId}>
+        <Slot />
+      </Fragment>
     </SquadContext.Provider>
   )
 }

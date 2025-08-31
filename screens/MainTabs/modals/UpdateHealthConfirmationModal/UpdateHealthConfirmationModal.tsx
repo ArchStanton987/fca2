@@ -32,7 +32,8 @@ export default function UpdateHealthConfirmationModal() {
         newStatus[key as HealthStatusId] = Math.max(value.initValue + value.count, 0)
       }
     })
-    await useCases.status.groupUpdate(character, newStatus)
+    const charType = character.meta.isNpc ? "npcs" : "characters"
+    await useCases.status.groupUpdate(character, newStatus, charType)
     dispatch({ type: "reset" })
     router.dismiss(2)
   }

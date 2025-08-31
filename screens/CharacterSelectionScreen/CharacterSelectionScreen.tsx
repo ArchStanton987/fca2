@@ -2,6 +2,8 @@ import { View } from "react-native"
 
 import { useLocalSearchParams, useRouter } from "expo-router"
 
+import { useSetCurrCharId } from "lib/character/character-store"
+
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import RevertColorsPressable from "components/wrappers/RevertColorsPressable/RevertColorsPressable"
@@ -22,7 +24,10 @@ export default function CharacterSelectionScreen() {
     ? Object.entries(squadMembers).map(([id, member]) => ({ ...member, id }))
     : []
 
+  const setChar = useSetCurrCharId()
+
   const toChar = (charId: string) => {
+    setChar(charId)
     router.push({ pathname: routes.main.index, params: { charId, squadId } })
   }
 

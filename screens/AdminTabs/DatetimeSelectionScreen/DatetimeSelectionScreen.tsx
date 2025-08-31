@@ -27,7 +27,7 @@ const selectors = [1, 5, 20, 60]
 function DatetimeSelectionScreen() {
   const useCases = useGetUseCases()
   const squad = useSquad()
-  const { characters } = useAdmin()
+  const { characters, npcs } = useAdmin()
 
   const [newDate, setNewDate] = useState<Date>(squad.date)
   const [selectedTimespan, setSelectedTimespan] = useState<Timespan>("MIN")
@@ -58,7 +58,11 @@ function DatetimeSelectionScreen() {
   const onPressSave = async () => {
     if (!newDate) return
     try {
-      await useCases.squad.updateDate(squad.squadId, newDate, Object.values(characters))
+      await useCases.squad.updateDate(
+        squad.squadId,
+        newDate,
+        Object.values({ ...characters, ...npcs })
+      )
       Toast.show({
         type: "custom",
         text1: "Le temps a bien été modifié"

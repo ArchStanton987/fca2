@@ -1,9 +1,10 @@
 import { getRepository } from "lib/RepositoryBuilder"
-import Character from "lib/character/Character"
+import Playable from "lib/character/Playable"
 import clothingsMap from "lib/objects/data/clothings/clothings"
 import { Clothing, ClothingId } from "lib/objects/data/clothings/clothings.types"
 import weaponsMap from "lib/objects/data/weapons/weapons"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
+import { CharType } from "lib/shared/db/api-rtdb"
 
 import { CreatedElements, defaultCreatedElements } from "./created-elements"
 import { EquipableCategory, EquipableObject } from "./fbEquipedObjectsRepository"
@@ -20,17 +21,23 @@ const getEquipedObjectsUseCases = (
   const allClothings = { ...clothingsMap, ...newClothings } as unknown as typeof clothingsMap
 
   return {
-    get: (charId: string, category: EquipableCategory, dbKey: EquipableObject["dbKey"]) =>
-      repository.get(charId, category, dbKey),
+    get: (
+      charType: CharType,
+      charId: string,
+      category: EquipableCategory,
+      dbKey: EquipableObject["dbKey"]
+    ) => repository.get(charType, charId, category, dbKey),
 
-    getByCategory: (charId: string, category: EquipableCategory) =>
-      repository.getByCategory(charId, category),
+    getByCategory: (charType: CharType, charId: string, category: EquipableCategory) =>
+      repository.getByCategory(charType, charId, category),
 
-    getAll: (charId: string) => repository.getAll(charId),
+    getAll: (charType: CharType, charId: string) => repository.getAll(charType, charId),
 
-    toggle: async (char: Character, object: Weapon | Clothing) => {
+    toggle: async (char: Playable, object: Weapon | Clothing) => {
+      const { charId, equipedObjects, meta } = char
+      const charType = meta.isNpc ? "npcs" : "characters"
       const category = getObjectCategory(object)
-      const { weapons, clothings } = char.equipedObjects
+      const { weapons, clothings } = equipedObjects
       const { dbKey } = object
       if (!object.isEquiped) {
         if (category === "weapons") {
@@ -54,13 +61,17 @@ const getEquipedObjectsUseCases = (
             )
         }
 
-        return repository.add(char.charId, category, object)
+        return repository.add(charType, charId, category, object)
       }
-      return repository.remove(char.charId, category, dbKey)
+      return repository.remove(charType, charId, category, dbKey)
     },
 
-    remove: (charId: string, category: EquipableCategory, dbKey: EquipableObject["dbKey"]) =>
-      repository.remove(charId, category, dbKey)
+    remove: (
+      charType: CharType,
+      charId: string,
+      category: EquipableCategory,
+      dbKey: EquipableObject["dbKey"]
+    ) => repository.remove(charType, charId, category, dbKey)
   }
 }
 

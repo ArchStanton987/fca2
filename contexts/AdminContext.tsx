@@ -1,9 +1,11 @@
 import { createContext, useContext } from "react"
 
 import Character from "lib/character/Character"
+import NonHuman from "lib/npc/NonHuman"
 
 export type AdminContextType = {
   characters: Record<string, Character>
+  npcs: Record<string, Character | NonHuman>
 }
 export const AdminContext = createContext<AdminContextType | null>(null)
 export const useAdmin = () => {

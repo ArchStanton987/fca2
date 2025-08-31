@@ -1,0 +1,25 @@
+import { BackgroundId } from "../status/status.types"
+
+export const species = {
+  human: "Humain",
+  robot: "Robot",
+  animal: "Animal",
+  mutie: "Mutant",
+  ghoul: "Goule"
+}
+
+export const withDodgeSpecies: SpeciesId[] = ["human", "mutie", "ghoul"]
+
+export type SpeciesId = keyof typeof species
+
+export type DbCharMeta = {
+  speciesId: SpeciesId
+  templateId: "player" | string
+  background: BackgroundId
+  squadId: string
+  firstname: string
+  lastname: string
+  description?: string
+  isNpc: boolean
+  isEnemy: boolean
+}

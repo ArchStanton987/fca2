@@ -1,5 +1,5 @@
 import { getRepository } from "lib/RepositoryBuilder"
-import Character from "lib/character/Character"
+import Playable from "lib/character/Playable"
 import effectsMap from "lib/character/effects/effects"
 import getEffectsUseCases from "lib/character/effects/effects-use-cases"
 import { getExpiringEffects, getFollowingEffects } from "lib/character/effects/effects-utils"
@@ -20,7 +20,7 @@ function getSquadUseCases(
 
     getAll: () => squadRepo.getAll(),
 
-    updateDate: (squadId: string, date: Date, characters: Character[]) => {
+    updateDate: (squadId: string, date: Date, characters: Playable[]) => {
       const effectsUseCases = getEffectsUseCases(db, createdElements)
       const statusUseCases = getStatusUseCases(db, createdElements)
 
@@ -40,7 +40,8 @@ function getSquadUseCases(
         // if character has poison or missing hp, his health might need to be updated
         if (hasPoison || isMissingHp) {
           const newLimbsHp = getNewLimbsHp(char, date)
-          promises.push(statusUseCases.groupUpdate(char, newLimbsHp))
+          const charType = char.meta.isNpc ? "npcs" : "characters"
+          promises.push(statusUseCases.groupUpdate(char, newLimbsHp, charType))
         }
       })
 

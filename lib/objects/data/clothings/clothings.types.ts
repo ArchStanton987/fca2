@@ -46,6 +46,7 @@ export type DbClothingData = {
 export type Clothing = {
   id: ClothingId
   dbKey: string
+  category: "clothing"
   isEquiped: boolean
   data: ClothingData
 }
