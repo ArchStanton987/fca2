@@ -1,5 +1,4 @@
 TODO: remove trap / thrown weapon after usage
-TODO: création objets on the fly
 
 
 perks & traits page
