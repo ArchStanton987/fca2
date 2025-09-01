@@ -1,41 +1,41 @@
 import Playable from "lib/character/Playable"
+import { CombatStatus } from "lib/character/combat-status/combat-status.types"
 import { getHealthState } from "lib/character/health/health-utils"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import Combat, { defaultAction } from "../Combat"
-import { PlayerCombatData } from "../combats.types"
 import { getCurrentRoundId } from "../utils/combat-utils"
 
 export type SetNewRoundParams = {
-  contenders: Record<string, { char: Playable; combatData: PlayerCombatData }>
+  contenders: Record<string, { char: Playable; combatStatus: CombatStatus }>
   combat: Combat
 }
 
 export default function setNewRound(dbType: keyof typeof repositoryMap = "rtdb") {
-  const statusRepo = repositoryMap[dbType].statusRepository
+  const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
+
   const roundRepo = repositoryMap[dbType].roundRepository
 
   return async ({ contenders, combat }: SetNewRoundParams) => {
     const promises = []
     const nextRoundId = getCurrentRoundId(combat) + 1
-    Object.entries(contenders).forEach(([charId, { char }]) => {
-      const { meta, status, secAttr, health } = char
+    Object.entries(contenders).forEach(([charId, { char, combatStatus }]) => {
+      const { secAttr, health } = char
       // reset AP for all contenders who are not dead
-      if (status.combatStatus !== "dead") {
-        const currAp = secAttr.curr.actionPoints
-        promises.push(statusRepo.patch({ charId }, { currAp }))
+      if (combatStatus.combatStatus !== "dead") {
+        const maxAp = secAttr.curr.actionPoints
+        promises.push(combatStatusRepo.patch({ charId }, { currAp: maxAp }))
       }
       // remove char inactive status if inactive is over and in not uncounscious
-      const isInactive = status.combatStatus === "inactive"
+      const isInactive = combatStatus.combatStatus === "inactive"
       if (isInactive) {
-        const type = meta.isNpc ? "npcs" : "players"
-        const { inactiveRecord = {} } = combat[type][charId]
+        const { inactiveRecord } = combatStatus
         const isStillInactive = Object.values(inactiveRecord).some(
-          r => nextRoundId >= r.inactiveRoundStart && nextRoundId <= r.inactiveRoundEnd
+          r => nextRoundId >= r.roundStart && nextRoundId <= r.roundEnd
         )
         const isUnconscious = getHealthState(health.hp, health.maxHp) === "woundedUnconscious"
         if (isStillInactive || isUnconscious) return
-        promises.push(statusRepo.patch({ charId }, { combatStatus: "active" }))
+        promises.push(combatStatusRepo.patch({ charId }, { combatStatus: "active" }))
       }
     })
     // create new round

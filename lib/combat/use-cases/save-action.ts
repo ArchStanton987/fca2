@@ -1,20 +1,20 @@
-import Playable from "lib/character/Playable"
+import { CombatStatus } from "lib/character/combat-status/combat-status.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import Combat from "../Combat"
 import { DbAction } from "../combats.types"
 import { getActionId, getCurrentRoundId } from "../utils/combat-utils"
-import updateContender from "./update-contender"
 
 export type SaveActionParams = {
   action: DbAction & { actorId: string }
-  contenders: Record<string, { char: Playable }>
+  contenders: Record<string, CombatStatus>
   combat: Combat
 }
 
 export default function saveAction(dbType: keyof typeof repositoryMap = "rtdb") {
   const actionRepo = repositoryMap[dbType].actionRepository
   const combatRepo = repositoryMap[dbType].combatRepository
+  const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
 
   return async ({ action, combat, contenders }: SaveActionParams) => {
     const promises = []
@@ -24,7 +24,7 @@ export default function saveAction(dbType: keyof typeof repositoryMap = "rtdb") 
     const actionId = getActionId(combat)
 
     // if is part of a combined action & has still ap, set current actor id in combat, else reset it
-    const { currAp } = contenders[actorId].char.status
+    const { currAp } = contenders[actorId]
     const hasRemainingAp = currAp - apCost > 0
     if (isCombinedAction && hasRemainingAp) {
       promises.push(combatRepo.patch({ id: combat.id }, { currActorId: actorId }))
@@ -34,8 +34,7 @@ export default function saveAction(dbType: keyof typeof repositoryMap = "rtdb") 
 
     // if has rolled dices, reset action bonus
     if (action.roll !== false && typeof action?.roll?.dice === "number") {
-      const { char } = contenders[actorId]
-      promises.push(updateContender(dbType)({ char, combat, payload: { actionBonus: 0 } }))
+      promises.push(combatStatusRepo.deleteChild({ charId: actorId, childKey: "actionBonus" }))
     }
 
     // TODO: check if could be merge prior player request

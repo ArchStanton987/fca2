@@ -1,3 +1,4 @@
+characters - npcs => playable
 test chaque action / sous action
 test unarmed
 

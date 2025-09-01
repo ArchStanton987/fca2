@@ -3,6 +3,7 @@ import { TouchableOpacity } from "react-native"
 import { router, useLocalSearchParams } from "expo-router"
 
 import { useSetCurrCharId } from "lib/character/character-store"
+import { useCombatStatus } from "lib/character/combat-status/use-cases/sub-combat-status"
 
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
@@ -20,6 +21,8 @@ export default function EnemyScreen() {
 
   const squad = useSquad()
   const { npcs } = useAdmin()
+  const currNpc = npcs[npcId]
+  const combatStatus = useCombatStatus(npcId)
 
   const setChar = useSetCurrCharId()
 
@@ -35,7 +38,7 @@ export default function EnemyScreen() {
     useCases.npc.delete({ squad, playable: npcs[npcId] })
   }
 
-  if (!npcs[npcId]) {
+  if (!npcs[npcId] || combatStatus.isLoading) {
     return (
       <DrawerPage>
         <Section style={{ flex: 1 }} title="informations">
@@ -45,8 +48,7 @@ export default function EnemyScreen() {
     )
   }
 
-  const currNpc = npcs[npcId]
-  const isFighting = !!currNpc.status.currentCombatId
+  const isFighting = !!combatStatus.data?.combatId
   const { firstname, description, templateId } = currNpc.meta
 
   return (

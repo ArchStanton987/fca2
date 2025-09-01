@@ -1,0 +1,3503 @@
+{
+  "characters": {
+    "doz": {
+      "abilities": {
+        "baseSPECIAL": {
+          "agility": 7,
+          "charisma": 3,
+          "endurance": 5,
+          "intelligence": 10,
+          "luck": 3,
+          "perception": 7,
+          "strength": 5
+        },
+        "knowledges": {
+          "kBarter": 2,
+          "kBladedWeapons": 1,
+          "kBluntWeapons": 1,
+          "kClimbing": 1,
+          "kFirearms": 1,
+          "kFirstAid": 2,
+          "kHear": 2,
+          "kRunning": 2,
+          "kSee": 1,
+          "kSmell": 1,
+          "kStrength": 1,
+          "kStunt": 1,
+          "kSwimming": 1,
+          "kTracking": 1
+        },
+        "traits": ["strongHand"],
+        "upSkills": {
+          "aid": 10,
+          "barter": 0,
+          "bigGuns": 0,
+          "manipulation": 0,
+          "melee": 5,
+          "perceptionSkill": 10,
+          "physical": 0,
+          "reflexion": 10,
+          "smallGuns": 5,
+          "speech": 5,
+          "steal": 0,
+          "stealth": 5,
+          "survival": 5,
+          "throw": 0,
+          "trap": 0,
+          "unarmed": 0
+        }
+      },
+      "equipedObj": {
+        "clothings": {
+          "-NN2tYI2grCrMJOnWFo-": {
+            "id": "leatherArmor"
+          }
+        }
+      },
+      "inventory": {
+        "ammo": {
+          "44": 0,
+          "45": 0,
+          "50": 15,
+          "223": 5,
+          "303": 6,
+          "10mm": 5,
+          "12g": 0,
+          "14mm": 5,
+          "30_06": 0,
+          "40mm": 0,
+          "5_56mm": 0,
+          "7_62mm": 0,
+          "9mm": 0,
+          "bb": 10,
+          "bolt": 0,
+          "darts": 5,
+          "ec2mm": 5,
+          "energyCell": 0,
+          "gas": 3,
+          "hci": 5,
+          "microFusion": 0,
+          "missile": 5,
+          "shell60mm": 10
+        },
+        "clothings": {
+          "-NN2tYI2grCrMJOnWFo-": {
+            "id": "leatherArmor"
+          }
+        },
+        "consumables": {
+          "-NN2pYcPiE0rBlrGVTMA": {
+            "id": "voodoo",
+            "remainingUse": 1
+          },
+          "-NN2pYcPiE0rBlrGVTMB": {
+            "id": "vodka",
+            "remainingUse": 3
+          },
+          "-NN2pYcPiE0rBlrGVTMC": {
+            "id": "banquetWine",
+            "remainingUse": 7
+          },
+          "-NN2pYcPiE0rBlrGVTMD": {
+            "id": "caliWine",
+            "remainingUse": 7
+          },
+          "-NN2pYcPiE0rBlrGVTME": {
+            "id": "caliWine",
+            "remainingUse": 7
+          },
+          "-NN2pYcPiE0rBlrGVTMF": {
+            "id": "twistGut",
+            "remainingUse": 3
+          },
+          "-NN2pYcPiE0rBlrGVTMG": {
+            "id": "homePunch",
+            "remainingUse": 1
+          },
+          "-NWHbwLfhSyGXooW2jUe": {
+            "id": "hipsterBrew",
+            "remainingUse": 1
+          },
+          "-NWHbwLgP80Ue3833Cf_": {
+            "id": "hipsterBrew",
+            "remainingUse": 1
+          },
+          "-NWHbwLgP80Ue3833Cfa": {
+            "id": "hipsterBrew",
+            "remainingUse": 1
+          },
+          "-NWOTtriTG5SmXm4K80f": {
+            "id": "beer",
+            "remainingUse": 1
+          },
+          "-NWOTtriTG5SmXm4K80i": {
+            "id": "rum",
+            "remainingUse": 3
+          },
+          "-NWOTtriTG5SmXm4K80j": {
+            "id": "schnaps",
+            "remainingUse": 3
+          }
+        },
+        "objects": {
+          "-NWIyDc9N_IRXH6V9TJw": {
+            "id": "backpack"
+          },
+          "-NWIzD6YVTcFbT4sfvM3": {
+            "id": "brahmin"
+          },
+          "-NWIzD6ZroSOZJO-197_": {
+            "id": "militaryBelt"
+          },
+          "-NWIzD6ZroSOZJO-197a": {
+            "id": "holster"
+          },
+          "-NWIzD6_tgTucQ1Yphiy": {
+            "id": "ballgag"
+          },
+          "-NWIzD6_tgTucQ1Yphiz": {
+            "id": "condomBox"
+          },
+          "-NWIzD6_tgTucQ1Yphj-": {
+            "id": "sardinesCan"
+          },
+          "-NWIzD6_tgTucQ1Yphj0": {
+            "id": "canOpener"
+          },
+          "-NWIzSO17w4RcvGB__LU": {
+            "id": "boots"
+          },
+          "-NWIzSO2-yUeeUroc-U8": {
+            "id": "glassBottle"
+          },
+          "-NWIzSO2-yUeeUroc-U9": {
+            "id": "bottomSculpture"
+          },
+          "-NWIzSO2-yUeeUroc-UA": {
+            "id": "papysBusinessCard"
+          },
+          "-NWIzSO2-yUeeUroc-UB": {
+            "id": "rope"
+          },
+          "-NWIzSO2-yUeeUroc-UC": {
+            "id": "rope"
+          },
+          "-NWIzSO3Zu1_6Ffyi1T-": {
+            "id": "catsPaw"
+          },
+          "-NWIzSO3Zu1_6Ffyi1T0": {
+            "id": "catsPaw"
+          },
+          "-NWIzSO3Zu1_6Ffyi1T1": {
+            "id": "handcuffs"
+          },
+          "-NWIzSO3Zu1_6Ffyi1T2": {
+            "id": "handcuffs"
+          },
+          "-NWIzSO3Zu1_6Ffyi1T3": {
+            "id": "pipboy"
+          }
+        },
+        "weapons": {
+          "-NWDs4fK_AS6llsQvJQb": {
+            "id": "10mm"
+          },
+          "-NWDsNIc_zq5rUvFBTrz": {
+            "id": "yk32"
+          },
+          "-NWNxqA3MAJl6Jhc9hzd": {
+            "id": "dynamite"
+          },
+          "-NWNxqA3MAJl6Jhc9hze": {
+            "id": "dynamite"
+          },
+          "-NWNxqA3MAJl6Jhc9hzf": {
+            "id": "dynamite"
+          },
+          "-NWNxqA4JB4JZLkPoR6q": {
+            "id": "dynamite"
+          },
+          "-NwV5aO7GBCKHDSJKUgJ": {
+            "id": "greaseGun"
+          },
+          "-NwV5aOANhMfpWKuMWcQ": {
+            "id": "smithWessonM29"
+          }
+        }
+      },
+      "status": {
+        "background": "jackal",
+        "caps": 5,
+        "currAp": 9,
+        "exp": 0,
+        "groinHp": 15,
+        "headHp": 15,
+        "leftArmHp": 20,
+        "leftLegHp": 20,
+        "leftTorsoHp": 25,
+        "level": 1,
+        "poison": 0,
+        "rads": 0,
+        "rightArmHp": 20,
+        "rightLegHp": 20,
+        "rightTorsoHp": 30
+      }
+    },
+    "lars": {
+      "abilities": {
+        "baseSPECIAL": {
+          "agility": 10,
+          "charisma": 2,
+          "endurance": 9,
+          "intelligence": 5,
+          "luck": 2,
+          "perception": 4,
+          "strength": 8
+        },
+        "knowledges": {
+          "kBarter": 1,
+          "kBladedWeapons": 1,
+          "kBluntWeapons": 1,
+          "kClimbing": 1,
+          "kHear": 1,
+          "kJiuJutsu": 3,
+          "kRunning": 2,
+          "kSee": 1,
+          "kSmell": 1,
+          "kStrength": 2,
+          "kStunt": 1,
+          "kSwimming": 1,
+          "kTracking": 2
+        },
+        "traits": ["bruiser"],
+        "upSkills": {
+          "aid": 0,
+          "barter": 0,
+          "bigGuns": 0,
+          "manipulation": 0,
+          "melee": 0,
+          "perceptionSkill": 0,
+          "physical": 16,
+          "reflexion": 0,
+          "smallGuns": 0,
+          "speech": 0,
+          "steal": 0,
+          "stealth": 0,
+          "survival": 22,
+          "throw": 0,
+          "trap": 0,
+          "unarmed": 37
+        }
+      },
+      "equipedObj": {
+        "clothings": {
+          "-NMoypc_JyUudg-neeA-": {
+            "id": "leatherJacket"
+          },
+          "-NMpRmN1mdFILPmh0Sgz": {
+            "id": "leatherJacket"
+          }
+        },
+        "weapons": {
+          "-NMpS2w9Vs7BJ7fnjsDp": {
+            "id": "machete"
+          },
+          "-NrN2Upjr4I-57EjpEyv": {
+            "id": "spikedKnuckles"
+          }
+        }
+      },
+      "inventory": {
+        "ammo": {
+          "44": 0,
+          "45": 0,
+          "50": 0,
+          "223": 0,
+          "303": 0,
+          "10mm": 0,
+          "12g": 0,
+          "14mm": 0,
+          "30_06": 0,
+          "40mm": 0,
+          "5_56mm": 0,
+          "7_62mm": 0,
+          "9mm": 0,
+          "bb": 0,
+          "bolt": 0,
+          "darts": 0,
+          "ec2mm": 0,
+          "energyCell": 0,
+          "gas": 0,
+          "hci": 0,
+          "microFusion": 0,
+          "missile": 0,
+          "shell60mm": 0
+        },
+        "clothings": {
+          "-NMpRmN1mdFILPmh0Sgz": {
+            "id": "leatherJacket"
+          }
+        },
+        "consumables": {
+          "-NMp2PbYOGtkjZbmTsyX": {
+            "id": "ration",
+            "remainingUse": 1
+          },
+          "-NMpSuBhVhLAEWw7IQ36": {
+            "id": "ration",
+            "remainingUse": 1
+          },
+          "-NMpfuE3IfuZZPd93kHo": {
+            "id": "hipsterBrew",
+            "remainingUse": 1
+          },
+          "-NVpZUQAqGlj4SF2b5ZM": {
+            "id": "stimpack",
+            "remainingUse": 1
+          },
+          "-NrN-b9ZpjeyVFgJ4T-2": {
+            "id": "ration",
+            "remainingUse": 1
+          },
+          "-NrN2qyYvTFBFRviYQeF": {
+            "id": "stimpack",
+            "remainingUse": 1
+          },
+          "-NsUpdW3xcCkcXVQGjgx": {
+            "id": "ration",
+            "remainingUse": 1
+          },
+          "-NsUt86OSK65E33gkaO6": {
+            "id": "healingPowder",
+            "remainingUse": 1
+          },
+          "-NsUu1UY6zTUin0n6WyX": {
+            "id": "whisky",
+            "remainingUse": 3
+          },
+          "-NsUu1UbIx8_ZHWmVJNu": {
+            "id": "whisky",
+            "remainingUse": 3
+          },
+          "-NsUvxtiNLDg77c_-epa": {
+            "id": "stimpack",
+            "remainingUse": 1
+          },
+          "-NsV4mh3c4VXO9IZKku5": {
+            "id": "voodoo",
+            "remainingUse": 1
+          },
+          "-NsV54es2yYy5Xht_gQQ": {
+            "id": "amphetagum",
+            "remainingUse": 1
+          },
+          "-NsV54es2yYy5Xht_gQR": {
+            "id": "healingPowder",
+            "remainingUse": 1
+          },
+          "-NsV8phlqlxJJ5t4oYUU": {
+            "id": "caliWine",
+            "remainingUse": 6
+          }
+        },
+        "weapons": {
+          "-NMpRJCfUfyriDkRiHDz": {
+            "id": "crowbar"
+          },
+          "-NrMiQCsBNtsHQNGtEqy": {
+            "id": "bowingGloves"
+          },
+          "-NrN2Upjr4I-57EjpEyv": {
+            "id": "spikedKnuckles"
+          }
+        }
+      },
+      "status": {
+        "background": "jackal",
+        "caps": 155,
+        "currAp": 10,
+        "exp": 2600,
+        "groinHp": 15,
+        "headHp": 15,
+        "leftArmHp": 20,
+        "leftLegHp": 20,
+        "leftTorsoHp": 25,
+        "level": 1,
+        "poison": 0,
+        "rads": 0,
+        "rightArmHp": 20,
+        "rightLegHp": 20,
+        "rightTorsoHp": 30
+      }
+    },
+    "lucytools": {
+      "abilities": {
+        "baseSPECIAL": {
+          "agility": 6,
+          "charisma": 5,
+          "endurance": 5,
+          "intelligence": 8,
+          "luck": 4,
+          "perception": 6,
+          "strength": 6
+        },
+        "knowledges": {
+          "kBarter": 1,
+          "kBladedWeapons": 2,
+          "kBluntWeapons": 1,
+          "kElectronicLocks": 1,
+          "kElectronics": 2,
+          "kFirearms": 3,
+          "kHear": 3,
+          "kMecanicLocks": 1,
+          "kRepair": 3,
+          "kRunning": 2,
+          "kSee": 3,
+          "kSmell": 3,
+          "kStrength": 1,
+          "kStunt": 1,
+          "kThrowingWeapons": 1,
+          "kUnarmed": 2
+        },
+        "perks": ["concentration", "falconEye"],
+        "traits": ["lunatic", "smallFrame"],
+        "upSkills": {
+          "aid": 12,
+          "barter": 0,
+          "bigGuns": 0,
+          "manipulation": 18,
+          "melee": 9,
+          "perceptionSkill": 18,
+          "physical": 7,
+          "reflexion": 15,
+          "smallGuns": 34,
+          "speech": 0,
+          "steal": 0,
+          "stealth": 23,
+          "survival": 2,
+          "throw": 14,
+          "trap": 15,
+          "unarmed": 1
+        }
+      },
+      "inventory": {
+        "ammo": {
+          "44": 0,
+          "45": 0,
+          "50": 0,
+          "223": 0,
+          "303": 0,
+          "10mm": 0,
+          "12g": 0,
+          "14mm": 0,
+          "30_06": 0,
+          "40mm": 0,
+          "5_56mm": 0,
+          "7_62mm": 0,
+          "9mm": 0,
+          "bb": 0,
+          "bolt": 0,
+          "darts": 0,
+          "ec2mm": 0,
+          "energyCell": 2,
+          "gas": 0,
+          "hci": 0,
+          "microFusion": 2,
+          "missile": 0,
+          "shell60mm": 0
+        }
+      },
+      "status": {
+        "background": "vaultDweller",
+        "caps": 14340,
+        "currAp": 8,
+        "exp": 21010,
+        "groinHp": 15,
+        "headHp": 15,
+        "leftArmHp": 20,
+        "leftLegHp": 20,
+        "leftTorsoHp": 25,
+        "level": 7,
+        "poison": 0,
+        "rads": 0,
+        "rightArmHp": 20,
+        "rightLegHp": 20,
+        "rightTorsoHp": 30
+      }
+    },
+    "mantequilla": {
+      "abilities": {
+        "baseSPECIAL": {
+          "agility": 8,
+          "charisma": 4,
+          "endurance": 5,
+          "intelligence": 5,
+          "luck": 7,
+          "perception": 8,
+          "strength": 3
+        },
+        "knowledges": {
+          "kBarter": 1,
+          "kBladedWeapons": 1,
+          "kFirearms": 3,
+          "kHear": 3,
+          "kIntimidate": 3,
+          "kPickpocket": 2,
+          "kRunning": 1,
+          "kSee": 3,
+          "kShoplifting": 2,
+          "kSmell": 3,
+          "kSneakAttack": 3,
+          "kStrength": 1,
+          "kStunt": 1,
+          "kUnarmed": 1
+        },
+        "perks": ["concentration", "moreCrits"],
+        "traits": ["finesse"],
+        "upSkills": {
+          "aid": 0,
+          "barter": 0,
+          "bigGuns": 0,
+          "manipulation": 0,
+          "melee": 0,
+          "perceptionSkill": 18,
+          "physical": 0,
+          "reflexion": 0,
+          "smallGuns": 53,
+          "speech": 0,
+          "steal": 17,
+          "stealth": 47,
+          "survival": 0,
+          "throw": 0,
+          "trap": 0,
+          "unarmed": 0
+        }
+      },
+      "inventory": {
+        "ammo": {
+          "44": 0,
+          "45": 0,
+          "50": 0,
+          "223": 0,
+          "303": 0,
+          "10mm": 0,
+          "12g": 5,
+          "14mm": 0,
+          "30_06": 0,
+          "40mm": 0,
+          "5_56mm": 0,
+          "7_62mm": 0,
+          "9mm": 0,
+          "bb": 0,
+          "bolt": 0,
+          "darts": 0,
+          "ec2mm": 0,
+          "energyCell": 0,
+          "gas": 0,
+          "hci": 0,
+          "microFusion": 0,
+          "missile": 0,
+          "shell60mm": 0
+        }
+      },
+      "status": {
+        "background": "vaultDweller",
+        "caps": 20461,
+        "currAp": 9,
+        "exp": 17760,
+        "groinHp": 15,
+        "headHp": 15,
+        "leftArmHp": 20,
+        "leftLegHp": 20,
+        "leftTorsoHp": 25,
+        "level": 6,
+        "poison": 0,
+        "rads": 2,
+        "rightArmHp": 20,
+        "rightLegHp": 20,
+        "rightTorsoHp": 30
+      }
+    },
+    "markusabraham": {
+      "abilities": {
+        "baseSPECIAL": {
+          "agility": 6,
+          "charisma": 7,
+          "endurance": 6,
+          "intelligence": 4,
+          "luck": 4,
+          "perception": 5,
+          "strength": 8
+        },
+        "knowledges": {
+          "kBarter": 1,
+          "kBladedWeapons": 3,
+          "kBluntWeapons": 1,
+          "kClimbing": 1,
+          "kEnergyWeapons": 1,
+          "kFirearms": 1,
+          "kHear": 1,
+          "kRunning": 1,
+          "kSee": 1,
+          "kSmell": 1,
+          "kStrength": 1,
+          "kStunt": 1,
+          "kSwimming": 1,
+          "kThrowingWeapons": 2,
+          "kTwoHandedWeapons": 1,
+          "kUnarmed": 4
+        },
+        "perks": ["physEducation"],
+        "traits": ["fastMetabolism", "skilled"],
+        "upSkills": {
+          "aid": 0,
+          "barter": 0,
+          "bigGuns": 0,
+          "manipulation": 0,
+          "melee": 46,
+          "perceptionSkill": 0,
+          "physical": 21,
+          "reflexion": 0,
+          "smallGuns": 0,
+          "speech": 67,
+          "steal": 0,
+          "stealth": 0,
+          "survival": 0,
+          "throw": 14,
+          "trap": 0,
+          "unarmed": 26
+        }
+      },
+      "inventory": {
+        "ammo": {
+          "44": 0,
+          "45": 0,
+          "50": 0,
+          "223": 0,
+          "303": 0,
+          "10mm": 0,
+          "12g": 0,
+          "14mm": 0,
+          "30_06": 0,
+          "40mm": 0,
+          "5_56mm": 0,
+          "7_62mm": 0,
+          "9mm": 0,
+          "bb": 0,
+          "bolt": 0,
+          "darts": 0,
+          "ec2mm": 0,
+          "energyCell": 0,
+          "gas": 0,
+          "hci": 0,
+          "microFusion": 0,
+          "missile": 0,
+          "shell60mm": 0
+        }
+      },
+      "status": {
+        "background": "vaultDweller",
+        "caps": 2267,
+        "currAp": 8,
+        "exp": 21620,
+        "groinHp": 15,
+        "headHp": 15,
+        "leftArmHp": 20,
+        "leftLegHp": 20,
+        "leftTorsoHp": 25,
+        "level": 7,
+        "poison": 0,
+        "rads": 2,
+        "rightArmHp": 20,
+        "rightLegHp": 20,
+        "rightTorsoHp": 30
+      }
+    },
+    "nitro": {
+      "abilities": {
+        "baseSPECIAL": {
+          "agility": 9,
+          "charisma": 2,
+          "endurance": 5,
+          "intelligence": 5,
+          "luck": 5,
+          "perception": 10,
+          "strength": 4
+        },
+        "knowledges": {
+          "kBarter": 1,
+          "kBladedWeapons": 1,
+          "kBluntWeapons": 1,
+          "kClimbing": 1,
+          "kFirearms": 3,
+          "kHear": 1,
+          "kRunning": 1,
+          "kSee": 1,
+          "kSmell": 1,
+          "kStrength": 1,
+          "kStunt": 1,
+          "kSwimming": 1,
+          "kThrowingWeapons": 2,
+          "kTracking": 2
+        },
+        "traits": ["smallFrame", "mrFast"],
+        "upSkills": {
+          "aid": 0,
+          "barter": 0,
+          "bigGuns": 0,
+          "manipulation": 10,
+          "melee": 0,
+          "perceptionSkill": 0,
+          "physical": 0,
+          "reflexion": 0,
+          "smallGuns": 25,
+          "speech": 0,
+          "steal": 0,
+          "stealth": 0,
+          "survival": 0,
+          "throw": 25,
+          "trap": 15,
+          "unarmed": 0
+        }
+      },
+      "effects": {
+        "-NsV8eQtvWhYnX4qu7N0": {
+          "id": "voodoo",
+          "startTs": 7996969637
+        }
+      },
+      "equipedObj": {
+        "clothings": {
+          "-NMoyYMzJT54e0gWK3bd": {
+            "id": "leatherJacket"
+          }
+        },
+        "weapons": {
+          "-NMpRE6aN8hXjM5yGWkP": {
+            "id": "10mm"
+          },
+          "-NVpYr39bvk1_XG-MDJB": {
+            "id": "boomerang"
+          }
+        }
+      },
+      "inventory": {
+        "ammo": {
+          "44": 0,
+          "45": 0,
+          "50": 0,
+          "223": 0,
+          "303": 0,
+          "10mm": 32,
+          "12g": 1,
+          "14mm": 0,
+          "30_06": 0,
+          "40mm": 0,
+          "5_56mm": 0,
+          "7_62mm": 0,
+          "9mm": 0,
+          "bb": 0,
+          "bolt": 0,
+          "darts": 0,
+          "ec2mm": 0,
+          "energyCell": 0,
+          "gas": 0,
+          "hci": 0,
+          "microFusion": 0,
+          "missile": 0,
+          "shell60mm": 0
+        },
+        "clothings": {
+          "-NMpRmTvvCLssIIjJxu_": {
+            "id": "leatherJacket"
+          }
+        },
+        "consumables": {
+          "-NVpZfnXFbmiEVzzjC07": {
+            "id": "healingPowder",
+            "remainingUse": 1
+          },
+          "-NrN2KRR_PC1koM1UznW": {
+            "id": "stimpack",
+            "remainingUse": 1
+          },
+          "-NsUt3zoXLkP1pbvFSCM": {
+            "id": "healingPowder",
+            "remainingUse": 1
+          },
+          "-NsUt3zrybvHfUpkq6cy": {
+            "id": "healingPowder",
+            "remainingUse": 1
+          },
+          "-NsV5CzMCH5yGC5EJBOq": {
+            "id": "voodoo",
+            "remainingUse": 1
+          },
+          "-NsV5Ft7fuAavbRx6JEe": {
+            "id": "caliWine",
+            "remainingUse": 7
+          }
+        },
+        "weapons": {
+          "-NMpRE6aN8hXjM5yGWkP": {
+            "id": "10mm"
+          },
+          "-NMpRE6dE6c0Ugbxla-y": {
+            "id": "10mm"
+          },
+          "-NMp_jiMxg2di0SvKoZA": {
+            "id": "dynamite"
+          },
+          "-NVpYr39bvk1_XG-MDJB": {
+            "id": "boomerang"
+          },
+          "-NVq2gagxWcsNl0FskaD": {
+            "id": "knife"
+          },
+          "-NsUvMxa1N5nkvK9JCNY": {
+            "id": "throwingKnife"
+          },
+          "-NsUvMxcpOyhl58IJw58": {
+            "id": "throwingKnife"
+          },
+          "-NsUvMxdjrry_vuJRCYZ": {
+            "id": "throwingKnife"
+          },
+          "-NsV39WFtq75Z3ciAVPe": {
+            "id": "sawedShotgun"
+          },
+          "-NsV557cbbIPDTYlM1Xk": {
+            "id": "spear"
+          }
+        }
+      },
+      "status": {
+        "background": "jackal",
+        "caps": 493,
+        "currAp": 9,
+        "exp": 1800,
+        "groinHp": 15,
+        "headHp": 15,
+        "leftArmHp": 20,
+        "leftLegHp": 20,
+        "leftTorsoHp": 25,
+        "level": 1,
+        "poison": 0,
+        "rads": 0,
+        "rightArmHp": 20,
+        "rightLegHp": 20,
+        "rightTorsoHp": 30
+      }
+    }
+  },
+  "squads": {
+    "jackalRecruits": {
+      "datetime": 7996989737,
+      "isInFight": false,
+      "label": "Les recrues Jackals",
+      "members": {
+        "doz": {
+          "exp": 0,
+          "firstname": "Doz",
+          "lastname": ""
+        },
+        "lars": {
+          "exp": 2600,
+          "firstname": "Lars",
+          "lastname": ""
+        },
+        "nitro": {
+          "exp": 1800,
+          "firstname": "Nitro",
+          "lastname": ""
+        }
+      }
+    },
+    "vault18Explorators": {
+      "datetime": 5371814100,
+      "isInFight": false,
+      "label": "Les explorateurs de l'Abri 18",
+      "members": {
+        "lucytools": {
+          "exp": 21010,
+          "firstname": "Lucy",
+          "lastname": "Tools"
+        },
+        "mantequilla": {
+          "exp": 17760,
+          "firstname": "Mantequilla",
+          "lastname": ""
+        },
+        "markusabraham": {
+          "exp": 21620,
+          "firstname": "Markus",
+          "lastname": "Abraham"
+        }
+      }
+    }
+  },
+  "v2": {
+    "additional": {
+      "clothings": {
+        "bananaBag": {
+          "armorClass": 0,
+          "fireDamageResist": 0,
+          "id": "bananaBag",
+          "label": "Sac banane",
+          "laserDamageResist": 0,
+          "malus": 0,
+          "physicalDamageResist": 0,
+          "place": 1,
+          "plasmaDamageResist": 0,
+          "protects": {
+            "groin": "groin"
+          },
+          "symptoms": {
+            "special": {
+              "id": "charisma",
+              "operation": "add",
+              "value": -2
+            }
+          },
+          "threshold": 0,
+          "type": "carry",
+          "value": 123,
+          "weight": 0
+        },
+        "desperadosHat": {
+          "armorClass": 0,
+          "fireDamageResist": 0,
+          "id": "desperadosHat",
+          "label": "Chapeau de desperados",
+          "laserDamageResist": 0,
+          "malus": 0,
+          "physicalDamageResist": 0,
+          "place": 1.5,
+          "plasmaDamageResist": 0,
+          "protects": {
+            "head": "head"
+          },
+          "symptoms": {
+            "perceptionSkill": {
+              "id": "perceptionSkill",
+              "operation": "add",
+              "value": 1
+            }
+          },
+          "threshold": 0,
+          "type": "light",
+          "value": 100,
+          "weight": 0.3
+        }
+      },
+      "consumables": {
+        "blueMushroom": {
+          "addict": false,
+          "description": "Un champignon avec une forme assez commune, à l'exception de reflets bleus bien marqués. ",
+          "id": "blueMushroom",
+          "label": "Champibleu",
+          "maxUsage": 1,
+          "modifiers": {
+            "rads": {
+              "id": "rads",
+              "operation": "add",
+              "value": -15
+            }
+          },
+          "od": false,
+          "place": 0.1,
+          "tags": {
+            "heal": "heal"
+          },
+          "value": 150,
+          "weight": 0.08
+        },
+        "cram": {
+          "addict": false,
+          "description": "Un grand classique, toujours aussi peu ragoûtant. Convient à l'alimentation des animaux de compagnie mais aussi de leurs maîtres.",
+          "id": "cram",
+          "label": "Cram",
+          "maxUsage": 1,
+          "modifiers": {
+            "rads": {
+              "id": "rads",
+              "operation": "add",
+              "value": 3
+            }
+          },
+          "od": false,
+          "place": 0.4,
+          "tags": {
+            "heal": "heal"
+          },
+          "value": 25,
+          "weight": 0.8
+        },
+        "weirdElixir": {
+          "addict": false,
+          "challengeLabel": "Ouvre chakrats",
+          "description": "Un élixir étrange qui ouvre les chakras",
+          "id": "weirdElixir",
+          "label": "Élixir étrange",
+          "maxUsage": 1,
+          "od": false,
+          "place": 0.1,
+          "tags": ["drugs"],
+          "value": 100,
+          "weight": 0.1
+        }
+      },
+      "effects": {
+        "cursed": {
+          "description": "Vous êtes maudits. Vous avez dû faire quelque chose qui a sacrément offensé le MJ.",
+          "id": "cursed",
+          "label": "Maudit",
+          "nextEffectId": "",
+          "symptoms": {
+            "secAttr": {
+              "id": "critChance",
+              "operation": "add",
+              "value": -10
+            },
+            "skills": {
+              "id": "speech",
+              "operation": "add",
+              "value": -10
+            },
+            "special": {
+              "id": "luck",
+              "operation": "abs",
+              "value": 1
+            }
+          },
+          "type": "other"
+        },
+        "inspired": {
+          "description": "Vous êtes inspiré, votre réflexion est augmentée de 5.",
+          "id": "inspired",
+          "label": "Inspiré",
+          "length": 3,
+          "symptoms": {
+            "reflexion": {
+              "id": "reflexion",
+              "operation": "add",
+              "value": 5
+            }
+          }
+        }
+      },
+      "miscObjects": {
+        "fakeGems": {
+          "description": "Des pierres brillantes trouvées chez une diseuse de bonaventure. C'est plutôt joli, certains pensent que ça porte bohneur, alors que d'autres...",
+          "id": "fakeGems",
+          "label": "Caillasses brillantes",
+          "place": 0.3,
+          "value": 50,
+          "weight": 0.3
+        }
+      }
+    },
+    "characters": {
+      "doz": {
+        "abilities": {
+          "baseSPECIAL": {
+            "agility": 7,
+            "charisma": 3,
+            "endurance": 5,
+            "intelligence": 10,
+            "luck": 3,
+            "perception": 7,
+            "strength": 5
+          },
+          "knowledges": {
+            "kBarter": 1,
+            "kHear": 1,
+            "kRunning": 1,
+            "kSee": 1,
+            "kSmell": 1,
+            "kStrength": 1,
+            "kStunt": 1,
+            "kSurgery": 4
+          },
+          "traits": ["lateralized"],
+          "upSkills": {
+            "aid": 0,
+            "barter": 0,
+            "bigGuns": 0,
+            "manipulation": 0,
+            "melee": 0,
+            "perceptionSkill": 0,
+            "physical": 0,
+            "reflexion": 19,
+            "smallGuns": 7,
+            "speech": 29,
+            "steal": 0,
+            "stealth": 0,
+            "survival": 5,
+            "throw": 0,
+            "trap": 0,
+            "unarmed": 0
+          }
+        },
+        "combats": {
+          "id": "-OXy1Oged1EBOKwKb4hE"
+        },
+        "effects": {
+          "-OE3PY6toCOwZi9fQM83": {
+            "endTs": "2223-10-03T12:42:17.000Z",
+            "id": "psycho",
+            "startTs": "2223-10-03T08:42:17.000Z"
+          },
+          "-OE3PY6toCOwZi9fQM84": {
+            "id": "dirty",
+            "startTs": "2223-10-03T08:42:17.000Z"
+          },
+          "-OXyBpq_2Nh2_GX6Scz3": {
+            "endTs": "2223-10-03T15:44:17.000Z",
+            "id": "healingPowder",
+            "startTs": "2223-10-03T10:44:17.000Z"
+          }
+        },
+        "equipedObj": {
+          "clothings": {
+            "-Ny1SHFg6OH7_KfKXan2": {
+              "id": "holster"
+            },
+            "-Ny1SHFg6OH7_KfKXan3": {
+              "id": "militaryBelt"
+            },
+            "-Ny1cscGQX8WHsqOOr2Y": {
+              "id": "purse"
+            },
+            "-OLa5KDmLWHcmoKKh14m": {
+              "id": "backpack"
+            },
+            "-a_desperadosHat": {
+              "id": "desperadosHat"
+            }
+          }
+        },
+        "inventory": {
+          "ammo": {
+            "44": 0,
+            "45": 0,
+            "50": 0,
+            "223": 0,
+            "303": 0,
+            "-Ny1dga9puZiGEoTeK-N": {
+              "id": "50"
+            },
+            "-Ny1dgaAZ7hRxNIDD_ur": {
+              "id": "bb"
+            },
+            "-Ny1e4IMgLbGTgP8YxlX": {
+              "id": "50"
+            },
+            "-Ny1e4IMgLbGTgP8YxlY": {
+              "id": "bb"
+            },
+            "-Ny6DYg8gWdVb6RvroY2": {
+              "id": "50"
+            },
+            "-Ny6DgBHJLRrshP38BJH": {
+              "id": "10mm"
+            },
+            "-Ny6DgBI-ytWz4pDzRzw": {
+              "id": "10mm"
+            },
+            "-Ny6DgBI-ytWz4pDzRzx": {
+              "id": "10mm"
+            },
+            "-Ny6DgBI-ytWz4pDzRzy": {
+              "id": "10mm"
+            },
+            "-Ny6DgBI-ytWz4pDzRzz": {
+              "id": "10mm"
+            },
+            "-Ny6IbIbOR06DVlPlGCc": {
+              "id": "shell60mm"
+            },
+            "-Ny6IbIbOR06DVlPlGCd": {
+              "id": "shell60mm"
+            },
+            "-Ny6cF-itWYKnZivkSD1": {
+              "id": "shell60mm"
+            },
+            "-Ny6cF-itWYKnZivkSD2": {
+              "id": "shell60mm"
+            },
+            "10mm": 15,
+            "12g": 15,
+            "14mm": 0,
+            "30_06": 0,
+            "40mm": 0,
+            "5_56mm": 47,
+            "7_62mm": 0,
+            "9mm": 16,
+            "bb": 0,
+            "bolt": 0,
+            "darts": 0,
+            "ec2mm": 0,
+            "energyCell": 0,
+            "gas": 0,
+            "hci": 0,
+            "microFusion": 0,
+            "missile": 0,
+            "shell60mm": 0
+          },
+          "caps": 41,
+          "clothings": {
+            "-Ny1SHFg6OH7_KfKXan2": {
+              "id": "holster"
+            },
+            "-Ny1SHFg6OH7_KfKXan3": {
+              "id": "militaryBelt"
+            },
+            "-Ny1cscGQX8WHsqOOr2Y": {
+              "id": "purse"
+            },
+            "-OLa5KDmLWHcmoKKh14m": {
+              "id": "backpack"
+            },
+            "-a_desperadosHat": {
+              "id": "desperadosHat"
+            }
+          },
+          "consumables": {
+            "-O9V_itmAyEcUvOwoW-O": {
+              "id": "amphetagum",
+              "remainingUse": 1
+            },
+            "-O9V_itn6iTwzZ-IeC_N": {
+              "id": "buffout",
+              "remainingUse": 1
+            },
+            "-O9V_itn6iTwzZ-IeC_O": {
+              "id": "mentats",
+              "remainingUse": 1
+            },
+            "-O9V_itn6iTwzZ-IeC_P": {
+              "id": "psycho",
+              "remainingUse": 1
+            },
+            "-O9V_itn6iTwzZ-IeC_R": {
+              "id": "beer",
+              "remainingUse": 1
+            },
+            "-OKT-cv5e25va-d7PzRR": {
+              "id": "banquetWine",
+              "remainingUse": 7
+            },
+            "-OKT-cv6gBlHaWUFHcfv": {
+              "id": "beer",
+              "remainingUse": 1
+            },
+            "-OL_mXlJYO9CvM1n0djt": {
+              "id": "cram",
+              "remainingUse": 1
+            },
+            "-OXyEFfqAAlOMzzb49xZ": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-OXyEFfqAAlOMzzb49x_": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-OYHIWXsGAbtBu9ckcDo": {
+              "id": "blueMushroom",
+              "remainingUse": 1
+            },
+            "-a_weirdElixir": {
+              "id": "weirdElixir"
+            }
+          },
+          "miscObjects": {
+            "-OKT-JhkLAddRFvjJ9uT": {
+              "id": "condomBox"
+            },
+            "-OKT-JhkLAddRFvjJ9uU": {
+              "id": "brahmin"
+            },
+            "-OKT-Mqo4YgIh5YmxIii": {
+              "id": "pipboy"
+            },
+            "-OL_xPhaaYDZ3nDj8qkK": {
+              "id": "fakeGems"
+            },
+            "-OL_xPhaaYDZ3nDj8qkL": {
+              "id": "fakeGems"
+            }
+          },
+          "weapons": {
+            "-OE9WJIWI7x_CtQVtM1i": {
+              "id": "10mm",
+              "inMagazine": 11
+            },
+            "-OE9WJIXAv6BRGeoOe1s": {
+              "id": "greaseGun",
+              "inMagazine": 15
+            },
+            "-OEA13NFPpcbukDQtOLT": {
+              "id": "brassKnuckles"
+            },
+            "-OEAEWtXN8CjhhFxg6Yd": {
+              "id": "ak47",
+              "inMagazine": 25
+            },
+            "-OEce_gI0raBBrIHqb-r": {
+              "id": "12gRiffle",
+              "inMagazine": 2
+            },
+            "-OY7kWEw7P01G6I7BG8x": {
+              "id": "skorpion",
+              "inMagazine": 11
+            }
+          }
+        },
+        "meta": {
+          "background": "jackal",
+          "firstname": "Doz",
+          "id": "doz",
+          "lastname": "",
+          "speciesId": "human",
+          "squadId": "jackalRecruits",
+          "templateId": "player"
+        },
+        "status": {
+          "background": "jackal",
+          "currAp": 10,
+          "exp": 54,
+          "groinHp": 15,
+          "headHp": 15,
+          "leftArmHp": 20,
+          "leftLegHp": 20,
+          "leftTorsoHp": 25,
+          "level": 1,
+          "poison": 0,
+          "rads": 4,
+          "rightArmHp": 10,
+          "rightLegHp": 17,
+          "rightTorsoHp": 30
+        }
+      },
+      "lars": {
+        "abilities": {
+          "baseSPECIAL": {
+            "agility": 10,
+            "charisma": 2,
+            "endurance": 9,
+            "intelligence": 5,
+            "luck": 2,
+            "perception": 4,
+            "strength": 8
+          },
+          "knowledges": {
+            "kBladedWeapons": 1,
+            "kBluntWeapons": 1,
+            "kClimbing": 1,
+            "kHear": 1,
+            "kJiuJutsu": 3,
+            "kRunning": 2,
+            "kSee": 1,
+            "kSmell": 1,
+            "kStrength": 2,
+            "kStunt": 1,
+            "kSwimming": 1,
+            "kTracking": 2
+          },
+          "traits": ["bruiser"],
+          "upSkills": {
+            "aid": 0,
+            "barter": 0,
+            "bigGuns": 0,
+            "manipulation": 0,
+            "melee": 0,
+            "perceptionSkill": 0,
+            "physical": 26,
+            "reflexion": 0,
+            "smallGuns": 0,
+            "speech": 0,
+            "steal": 0,
+            "stealth": 0,
+            "survival": 22,
+            "throw": 0,
+            "trap": 0,
+            "unarmed": 42
+          }
+        },
+        "effects": {
+          "-O7ombmwCTfsxiZEUX3_": {
+            "id": "dirty",
+            "startTs": "2223-09-27T08:11:17.000Z"
+          }
+        },
+        "equipedObj": {
+          "clothings": {
+            "-NMpRmN1mdFILPmh0Sgz": {
+              "id": "leatherJacket"
+            },
+            "-O9WlNptqTeh_uSy-lBn": {
+              "id": "purse"
+            }
+          },
+          "weapons": {
+            "-O9WkWcQP0aRjQ2l6rFl": {
+              "id": "brassKnuckles"
+            }
+          }
+        },
+        "inventory": {
+          "ammo": {
+            "44": 0,
+            "45": 0,
+            "50": 0,
+            "223": 0,
+            "303": 0,
+            "10mm": 0,
+            "12g": 0,
+            "14mm": 0,
+            "30_06": 0,
+            "40mm": 0,
+            "5_56mm": 0,
+            "7_62mm": 0,
+            "9mm": 0,
+            "bb": 0,
+            "bolt": 0,
+            "darts": 0,
+            "ec2mm": 0,
+            "energyCell": 20,
+            "gas": 0,
+            "hci": 0,
+            "microFusion": 0,
+            "missile": 0,
+            "shell60mm": 0
+          },
+          "caps": 770,
+          "clothings": {
+            "-NMpRmN1mdFILPmh0Sgz": {
+              "id": "leatherJacket"
+            },
+            "-O9WlNptqTeh_uSy-lBn": {
+              "id": "purse"
+            }
+          },
+          "consumables": {
+            "-NVpZUQAqGlj4SF2b5ZM": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-NrN2qyYvTFBFRviYQeF": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-NsUu1UbIx8_ZHWmVJNu": {
+              "id": "whisky",
+              "remainingUse": 2
+            },
+            "-NsUvxtiNLDg77c_-epa": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-O7ozbt-rxX5NH7TFt90": {
+              "id": "ration",
+              "remainingUse": 1
+            },
+            "-O7p0fEwTEUjpTkHe5mt": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-O7p0fExRyG3VL68hfJC": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-O7pC3pAHzUhAWplRYDI": {
+              "id": "ration",
+              "remainingUse": 1
+            },
+            "-O9W0E6DyoYc1yv0impo": {
+              "id": "caliWine",
+              "remainingUse": 5
+            },
+            "-O9WBT8NUftmdjh3hqQJ": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-O9WBcYQoMGjmsT1hzUv": {
+              "id": "antidote",
+              "remainingUse": 1
+            },
+            "-O9WCK0NAWy3K2pvoh1Y": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-O9WCOiVJkYnbGJoTwQL": {
+              "id": "antidote",
+              "remainingUse": 1
+            }
+          },
+          "miscObjects": {
+            "-O7k7H5sp8eXQW1HnVKd": {
+              "id": "pipboy"
+            },
+            "-O9WgA2bMA82ZESU7RK3": {
+              "id": "nukieNukaCola"
+            }
+          },
+          "weapons": {
+            "-O9WkWcQP0aRjQ2l6rFl": {
+              "id": "brassKnuckles"
+            }
+          }
+        },
+        "meta": {
+          "background": "jackal",
+          "firstname": "Lars",
+          "id": "lars",
+          "lastname": "",
+          "speciesId": "human",
+          "squadId": "jackalRecruits",
+          "templateId": "player"
+        },
+        "status": {
+          "background": "jackal",
+          "currAp": 10,
+          "exp": 3310,
+          "groinHp": 15,
+          "headHp": 15,
+          "leftArmHp": 20,
+          "leftLegHp": 20,
+          "leftTorsoHp": 23,
+          "level": 1,
+          "poison": 0,
+          "rads": 105,
+          "rightArmHp": 20,
+          "rightLegHp": 20,
+          "rightTorsoHp": 32
+        }
+      },
+      "lucytools": {
+        "abilities": {
+          "baseSPECIAL": {
+            "agility": 6,
+            "charisma": 5,
+            "endurance": 5,
+            "intelligence": 8,
+            "luck": 4,
+            "perception": 6,
+            "strength": 6
+          },
+          "knowledges": {
+            "kBarter": 1,
+            "kBladedWeapons": 2,
+            "kBluntWeapons": 1,
+            "kElectronicLocks": 1,
+            "kElectronics": 2,
+            "kFirearms": 3,
+            "kHear": 3,
+            "kMecanicLocks": 1,
+            "kRepair": 3,
+            "kRunning": 2,
+            "kSee": 3,
+            "kSmell": 3,
+            "kStrength": 1,
+            "kStunt": 1,
+            "kThrowingWeapons": 1,
+            "kUnarmed": 2
+          },
+          "perks": ["concentration", "falconEye"],
+          "traits": ["lunatic", "smallFrame"],
+          "upSkills": {
+            "aid": 12,
+            "barter": 0,
+            "bigGuns": 0,
+            "manipulation": 18,
+            "melee": 9,
+            "perceptionSkill": 18,
+            "physical": 7,
+            "reflexion": 15,
+            "smallGuns": 34,
+            "speech": 0,
+            "steal": 0,
+            "stealth": 23,
+            "survival": 2,
+            "throw": 14,
+            "trap": 15,
+            "unarmed": 1
+          }
+        },
+        "inventory": {
+          "ammo": {
+            "44": 0,
+            "45": 0,
+            "50": 0,
+            "223": 0,
+            "303": 0,
+            "10mm": 0,
+            "12g": 0,
+            "14mm": 0,
+            "30_06": 0,
+            "40mm": 0,
+            "5_56mm": 0,
+            "7_62mm": 0,
+            "9mm": 0,
+            "bb": 0,
+            "bolt": 0,
+            "darts": 0,
+            "ec2mm": 0,
+            "energyCell": 2,
+            "gas": 0,
+            "hci": 0,
+            "microFusion": 2,
+            "missile": 0,
+            "shell60mm": 0
+          },
+          "caps": 14340
+        },
+        "meta": {
+          "background": "vaultDweller",
+          "firstname": "Lucy",
+          "id": "lucytools",
+          "lastname": "Tools",
+          "speciesId": "human",
+          "squadId": "vault18Explorators",
+          "templateId": "player"
+        },
+        "status": {
+          "background": "vaultDweller",
+          "currAp": 8,
+          "exp": 21010,
+          "groinHp": 15,
+          "headHp": 15,
+          "leftArmHp": 20,
+          "leftLegHp": 20,
+          "leftTorsoHp": 25,
+          "level": 7,
+          "poison": 0,
+          "rads": 0,
+          "rightArmHp": 20,
+          "rightLegHp": 20,
+          "rightTorsoHp": 30
+        }
+      },
+      "mantequilla": {
+        "abilities": {
+          "baseSPECIAL": {
+            "agility": 8,
+            "charisma": 4,
+            "endurance": 5,
+            "intelligence": 5,
+            "luck": 7,
+            "perception": 8,
+            "strength": 3
+          },
+          "knowledges": {
+            "kBarter": 1,
+            "kBladedWeapons": 1,
+            "kFirearms": 3,
+            "kHear": 3,
+            "kIntimidate": 3,
+            "kPickpocket": 2,
+            "kRunning": 1,
+            "kSee": 3,
+            "kShoplifting": 2,
+            "kSmell": 3,
+            "kSneakAttack": 3,
+            "kStrength": 1,
+            "kStunt": 1,
+            "kUnarmed": 1
+          },
+          "perks": ["concentration", "moreCrits"],
+          "traits": ["finesse"],
+          "upSkills": {
+            "aid": 0,
+            "barter": 0,
+            "bigGuns": 0,
+            "manipulation": 0,
+            "melee": 0,
+            "perceptionSkill": 18,
+            "physical": 0,
+            "reflexion": 0,
+            "smallGuns": 53,
+            "speech": 0,
+            "steal": 17,
+            "stealth": 47,
+            "survival": 0,
+            "throw": 0,
+            "trap": 0,
+            "unarmed": 0
+          }
+        },
+        "inventory": {
+          "ammo": {
+            "44": 0,
+            "45": 0,
+            "50": 0,
+            "223": 0,
+            "303": 0,
+            "10mm": 0,
+            "12g": 5,
+            "14mm": 0,
+            "30_06": 0,
+            "40mm": 0,
+            "5_56mm": 0,
+            "7_62mm": 0,
+            "9mm": 0,
+            "bb": 0,
+            "bolt": 0,
+            "darts": 0,
+            "ec2mm": 0,
+            "energyCell": 0,
+            "gas": 0,
+            "hci": 0,
+            "microFusion": 0,
+            "missile": 0,
+            "shell60mm": 0
+          },
+          "caps": 20461
+        },
+        "meta": {
+          "background": "vaultDweller",
+          "firstname": "Mantequilla",
+          "id": "mantequilla",
+          "lastname": "",
+          "speciesId": "human",
+          "squadId": "vault18Explorators",
+          "templateId": "player"
+        },
+        "status": {
+          "background": "vaultDweller",
+          "currAp": 9,
+          "exp": 17760,
+          "groinHp": 15,
+          "headHp": 15,
+          "leftArmHp": 20,
+          "leftLegHp": 20,
+          "leftTorsoHp": 25,
+          "level": 6,
+          "poison": 0,
+          "rads": 2,
+          "rightArmHp": 20,
+          "rightLegHp": 20,
+          "rightTorsoHp": 30
+        }
+      },
+      "markusabraham": {
+        "abilities": {
+          "baseSPECIAL": {
+            "agility": 6,
+            "charisma": 7,
+            "endurance": 6,
+            "intelligence": 4,
+            "luck": 4,
+            "perception": 5,
+            "strength": 8
+          },
+          "knowledges": {
+            "kBarter": 1,
+            "kBladedWeapons": 3,
+            "kBluntWeapons": 1,
+            "kClimbing": 1,
+            "kEnergyWeapons": 1,
+            "kFirearms": 1,
+            "kHear": 1,
+            "kRunning": 1,
+            "kSee": 1,
+            "kSmell": 1,
+            "kStrength": 1,
+            "kStunt": 1,
+            "kSwimming": 1,
+            "kThrowingWeapons": 2,
+            "kTwoHandedWeapons": 1,
+            "kUnarmed": 4
+          },
+          "perks": ["physEducation"],
+          "traits": ["fastMetabolism", "skilled"],
+          "upSkills": {
+            "aid": 0,
+            "barter": 0,
+            "bigGuns": 0,
+            "manipulation": 0,
+            "melee": 46,
+            "perceptionSkill": 0,
+            "physical": 21,
+            "reflexion": 0,
+            "smallGuns": 0,
+            "speech": 67,
+            "steal": 0,
+            "stealth": 0,
+            "survival": 0,
+            "throw": 14,
+            "trap": 0,
+            "unarmed": 26
+          }
+        },
+        "inventory": {
+          "ammo": {
+            "44": 0,
+            "45": 0,
+            "50": 0,
+            "223": 0,
+            "303": 0,
+            "10mm": 0,
+            "12g": 0,
+            "14mm": 0,
+            "30_06": 0,
+            "40mm": 0,
+            "5_56mm": 0,
+            "7_62mm": 0,
+            "9mm": 0,
+            "bb": 0,
+            "bolt": 0,
+            "darts": 0,
+            "ec2mm": 0,
+            "energyCell": 0,
+            "gas": 0,
+            "hci": 0,
+            "microFusion": 0,
+            "missile": 0,
+            "shell60mm": 0
+          },
+          "caps": 2267
+        },
+        "meta": {
+          "background": "vaultDweller",
+          "firstname": "Markus",
+          "id": "markusabraham",
+          "lastname": "Abraham",
+          "speciesId": "human",
+          "squadId": "vault18Explorators",
+          "templateId": "player"
+        },
+        "status": {
+          "background": "vaultDweller",
+          "currAp": 8,
+          "exp": 21620,
+          "groinHp": 15,
+          "headHp": 15,
+          "leftArmHp": 20,
+          "leftLegHp": 20,
+          "leftTorsoHp": 25,
+          "level": 7,
+          "poison": 0,
+          "rads": 2,
+          "rightArmHp": 20,
+          "rightLegHp": 20,
+          "rightTorsoHp": 30
+        }
+      },
+      "nitro": {
+        "abilities": {
+          "baseSPECIAL": {
+            "agility": 9,
+            "charisma": 2,
+            "endurance": 5,
+            "intelligence": 5,
+            "luck": 5,
+            "perception": 10,
+            "strength": 4
+          },
+          "knowledges": {
+            "kBarter": 1,
+            "kBladedWeapons": 1,
+            "kBluntWeapons": 1,
+            "kClimbing": 1,
+            "kFirearms": 3,
+            "kHear": 1,
+            "kRunning": 1,
+            "kSee": 1,
+            "kSmell": 1,
+            "kStrength": 1,
+            "kStunt": 1,
+            "kSwimming": 1,
+            "kThrowingWeapons": 2,
+            "kTracking": 2
+          },
+          "traits": ["smallFrame", "mrFast"],
+          "upSkills": {
+            "aid": 0,
+            "barter": 0,
+            "bigGuns": 0,
+            "manipulation": 10,
+            "melee": 0,
+            "perceptionSkill": 5,
+            "physical": 0,
+            "reflexion": 0,
+            "smallGuns": 35,
+            "speech": 0,
+            "steal": 0,
+            "stealth": 0,
+            "survival": 0,
+            "throw": 25,
+            "trap": 15,
+            "unarmed": 0
+          }
+        },
+        "effects": {
+          "-O7k5Ob5uKS3pMlYryuH": {
+            "id": "dirty",
+            "startTs": "2223-06-05T19:31:17.000Z"
+          }
+        },
+        "equipedObj": {
+          "clothings": {
+            "-NMpRmTvvCLssIIjJxu_": {
+              "id": "leatherJacket"
+            },
+            "-O9WlUGluaOaUNhnV-Tx": {
+              "id": "purse"
+            }
+          },
+          "weapons": {
+            "-NsV39WFtq75Z3ciAVPe": {
+              "id": "sawedShotgun"
+            },
+            "-O9WakgimIq988HuIp4e": {
+              "id": "44Magnum",
+              "inMagazine": 6
+            }
+          }
+        },
+        "inventory": {
+          "ammo": {
+            "44": 0,
+            "45": 0,
+            "50": 0,
+            "223": 0,
+            "303": 0,
+            "10mm": 54,
+            "12g": 8,
+            "14mm": 0,
+            "30_06": 0,
+            "40mm": 0,
+            "5_56mm": 0,
+            "7_62mm": 0,
+            "9mm": 0,
+            "bb": 0,
+            "bolt": 0,
+            "darts": 0,
+            "ec2mm": 0,
+            "energyCell": 13,
+            "gas": 0,
+            "hci": 0,
+            "microFusion": 0,
+            "missile": 0,
+            "shell60mm": 0
+          },
+          "caps": 595,
+          "clothings": {
+            "-NMpRmTvvCLssIIjJxu_": {
+              "id": "leatherJacket"
+            },
+            "-O9WlUGluaOaUNhnV-Tx": {
+              "id": "purse"
+            }
+          },
+          "consumables": {
+            "-NsUt3zoXLkP1pbvFSCM": {
+              "id": "healingPowder",
+              "remainingUse": 1
+            },
+            "-NsUt3zrybvHfUpkq6cy": {
+              "id": "healingPowder",
+              "remainingUse": 1
+            },
+            "-O7p0XK4fLP2e2ipQkIv": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-O7pC6B27OSW31Y3ZQVM": {
+              "id": "ration",
+              "remainingUse": 1
+            },
+            "-O8OIZspg8I_pa_6CPnc": {
+              "id": "mecaLockpickKit",
+              "remainingUse": 10
+            },
+            "-O9WBTrWUqEI7ZxQsqp3": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-O9WBWqSMirbvihDOh5e": {
+              "id": "antidote",
+              "remainingUse": 1
+            },
+            "-O9WCKKKxf2_xj-xJPPW": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-O9WCRvC70UJpRnjp9qE": {
+              "id": "antidote",
+              "remainingUse": 1
+            },
+            "-O9WCXKWc2yjAVu-FAE0": {
+              "id": "radAway",
+              "remainingUse": 1
+            },
+            "-O9WcxAZNmLfMdA2cDoT": {
+              "id": "firstAidKit",
+              "remainingUse": 10
+            }
+          },
+          "miscObjects": {
+            "-O7k69MntNslCxfKJrGQ": {
+              "id": "pipboy"
+            },
+            "-O9WgbtQLLrfmfLVS-5_": {
+              "id": "nukieNukaCola"
+            }
+          },
+          "weapons": {
+            "-NMpRE6aN8hXjM5yGWkP": {
+              "id": "10mm",
+              "inMagazine": 12
+            },
+            "-NMp_jiMxg2di0SvKoZA": {
+              "id": "dynamite"
+            },
+            "-NVq2gagxWcsNl0FskaD": {
+              "id": "knife"
+            },
+            "-NsUvMxa1N5nkvK9JCNY": {
+              "id": "throwingKnife"
+            },
+            "-NsUvMxcpOyhl58IJw58": {
+              "id": "throwingKnife"
+            },
+            "-NsV39WFtq75Z3ciAVPe": {
+              "id": "sawedShotgun",
+              "inMagazine": 2
+            },
+            "-NsV557cbbIPDTYlM1Xk": {
+              "id": "spear"
+            },
+            "-O9WakgimIq988HuIp4e": {
+              "id": "44Magnum",
+              "inMagazine": 6
+            }
+          }
+        },
+        "meta": {
+          "background": "jackal",
+          "firstname": "Nitro",
+          "id": "nitro",
+          "lastname": "",
+          "speciesId": "human",
+          "squadId": "jackalRecruits",
+          "templateId": "player"
+        },
+        "status": {
+          "background": "jackal",
+          "currAp": 4,
+          "exp": 3250,
+          "groinHp": 15,
+          "headHp": 15,
+          "leftArmHp": 20,
+          "leftLegHp": 20,
+          "leftTorsoHp": 25,
+          "level": 1,
+          "poison": 0,
+          "rads": 105,
+          "rightArmHp": 20,
+          "rightLegHp": 20,
+          "rightTorsoHp": 30
+        }
+      }
+    },
+    "npcs": {
+      "-OXy1CykP8-xTWaCLEzY": {
+        "combats": {
+          "id": "-OXy1Oged1EBOKwKb4hE"
+        },
+        "meta": {
+          "background": "other",
+          "description": "Il est méchant, et il mords.",
+          "firstname": "Waf",
+          "isEnemy": true,
+          "isNpc": true,
+          "lastname": "",
+          "speciesId": "animal",
+          "squadId": "jackalRecruits",
+          "templateId": "wildDog"
+        },
+        "status": {
+          "background": "other",
+          "currAp": 6,
+          "exp": 1,
+          "groinHp": 15,
+          "headHp": 15,
+          "leftArmHp": 20,
+          "leftLegHp": 20,
+          "leftTorsoHp": 25,
+          "level": 1,
+          "rads": 10,
+          "rightArmHp": 15,
+          "rightLegHp": 20,
+          "rightTorsoHp": 30
+        }
+      },
+      "-OXy1IgCEyEcmbqn2-O9": {
+        "combats": {
+          "id": "-OXy1Oged1EBOKwKb4hE"
+        },
+        "meta": {
+          "background": "other",
+          "description": "Il est tout rouillé et il a du mal.",
+          "firstname": "CyberWaf",
+          "isEnemy": true,
+          "isNpc": true,
+          "lastname": "",
+          "speciesId": "robot",
+          "squadId": "jackalRecruits",
+          "templateId": "cyberdog"
+        },
+        "status": {
+          "background": "other",
+          "currAp": 7,
+          "exp": 1,
+          "groinHp": 15,
+          "headHp": 15,
+          "leftArmHp": 20,
+          "leftLegHp": 20,
+          "leftTorsoHp": 25,
+          "level": 1,
+          "rads": 10,
+          "rightArmHp": 20,
+          "rightLegHp": 20,
+          "rightTorsoHp": 30
+        }
+      }
+    },
+    "squads": {
+      "jackalRecruits": {
+        "datetime": "2223-10-03T10:46:17.000Z",
+        "isInFight": false,
+        "label": "Les recrues Jackals",
+        "members": {
+          "doz": {
+            "exp": 54,
+            "firstname": "Doz",
+            "lastname": ""
+          },
+          "lars": {
+            "exp": 3310,
+            "firstname": "Lars",
+            "lastname": ""
+          },
+          "nitro": {
+            "exp": 3250,
+            "firstname": "Nitro",
+            "lastname": ""
+          }
+        },
+        "npc": {
+          "-OXy1CykP8-xTWaCLEzY": "-OXy1CykP8-xTWaCLEzY",
+          "-OXy1IgCEyEcmbqn2-O9": "-OXy1IgCEyEcmbqn2-O9"
+        }
+      },
+      "vault18Explorators": {
+        "datetime": "2140-03-23T18:35:00.000Z",
+        "isInFight": false,
+        "label": "Les explorateurs de l'Abri 18",
+        "members": {
+          "lucytools": {
+            "exp": 21010,
+            "firstname": "Lucy",
+            "lastname": "Tools"
+          },
+          "mantequilla": {
+            "exp": 17760,
+            "firstname": "Mantequilla",
+            "lastname": ""
+          },
+          "markusabraham": {
+            "exp": 21620,
+            "firstname": "Markus",
+            "lastname": "Abraham"
+          }
+        }
+      }
+    }
+  },
+  "v3": {
+    "additional": {
+      "clothings": {
+        "bananaBag": {
+          "armorClass": 0,
+          "fireDamageResist": 0,
+          "id": "bananaBag",
+          "label": "Sac banane",
+          "laserDamageResist": 0,
+          "malus": 0,
+          "physicalDamageResist": 0,
+          "place": 1,
+          "plasmaDamageResist": 0,
+          "protects": {
+            "groin": "groin"
+          },
+          "symptoms": {
+            "special": {
+              "id": "charisma",
+              "operation": "add",
+              "value": -2
+            }
+          },
+          "threshold": 0,
+          "type": "carry",
+          "value": 123,
+          "weight": 0
+        },
+        "desperadosHat": {
+          "armorClass": 0,
+          "fireDamageResist": 0,
+          "id": "desperadosHat",
+          "label": "Chapeau de desperados",
+          "laserDamageResist": 0,
+          "malus": 0,
+          "physicalDamageResist": 0,
+          "place": 1.5,
+          "plasmaDamageResist": 0,
+          "protects": {
+            "head": "head"
+          },
+          "symptoms": {
+            "perceptionSkill": {
+              "id": "perceptionSkill",
+              "operation": "add",
+              "value": 1
+            }
+          },
+          "threshold": 0,
+          "type": "light",
+          "value": 100,
+          "weight": 0.3
+        }
+      },
+      "consumables": {
+        "blueMushroom": {
+          "addict": false,
+          "description": "Un champignon avec une forme assez commune, à l'exception de reflets bleus bien marqués. ",
+          "id": "blueMushroom",
+          "label": "Champibleu",
+          "maxUsage": 1,
+          "modifiers": {
+            "rads": {
+              "id": "rads",
+              "operation": "add",
+              "value": -15
+            }
+          },
+          "od": false,
+          "place": 0.1,
+          "tags": {
+            "heal": "heal"
+          },
+          "value": 150,
+          "weight": 0.08
+        },
+        "cram": {
+          "addict": false,
+          "description": "Un grand classique, toujours aussi peu ragoûtant. Convient à l'alimentation des animaux de compagnie mais aussi de leurs maîtres.",
+          "id": "cram",
+          "label": "Cram",
+          "maxUsage": 1,
+          "modifiers": {
+            "rads": {
+              "id": "rads",
+              "operation": "add",
+              "value": 3
+            }
+          },
+          "od": false,
+          "place": 0.4,
+          "tags": {
+            "heal": "heal"
+          },
+          "value": 25,
+          "weight": 0.8
+        },
+        "weirdElixir": {
+          "addict": false,
+          "challengeLabel": "Ouvre chakrats",
+          "description": "Un élixir étrange qui ouvre les chakras",
+          "id": "weirdElixir",
+          "label": "Élixir étrange",
+          "maxUsage": 1,
+          "od": false,
+          "place": 0.1,
+          "tags": ["drugs"],
+          "value": 100,
+          "weight": 0.1
+        }
+      },
+      "effects": {
+        "cursed": {
+          "description": "Vous êtes maudits. Vous avez dû faire quelque chose qui a sacrément offensé le MJ.",
+          "id": "cursed",
+          "label": "Maudit",
+          "nextEffectId": "",
+          "symptoms": {
+            "secAttr": {
+              "id": "critChance",
+              "operation": "add",
+              "value": -10
+            },
+            "skills": {
+              "id": "speech",
+              "operation": "add",
+              "value": -10
+            },
+            "special": {
+              "id": "luck",
+              "operation": "abs",
+              "value": 1
+            }
+          },
+          "type": "other"
+        },
+        "inspired": {
+          "description": "Vous êtes inspiré, votre réflexion est augmentée de 5.",
+          "id": "inspired",
+          "label": "Inspiré",
+          "length": 3,
+          "symptoms": {
+            "reflexion": {
+              "id": "reflexion",
+              "operation": "add",
+              "value": 5
+            }
+          }
+        }
+      },
+      "miscObjects": {
+        "fakeGems": {
+          "description": "Des pierres brillantes trouvées chez une diseuse de bonaventure. C'est plutôt joli, certains pensent que ça porte bohneur, alors que d'autres...",
+          "id": "fakeGems",
+          "label": "Caillasses brillantes",
+          "place": 0.3,
+          "value": 50,
+          "weight": 0.3
+        }
+      }
+    },
+    "playables": {
+      "doz": {
+        "abilities": {
+          "baseSPECIAL": {
+            "agility": 7,
+            "charisma": 3,
+            "endurance": 5,
+            "intelligence": 10,
+            "luck": 3,
+            "perception": 7,
+            "strength": 5
+          },
+          "knowledges": {
+            "kBarter": 1,
+            "kHear": 1,
+            "kRunning": 1,
+            "kSee": 1,
+            "kSmell": 1,
+            "kStrength": 1,
+            "kStunt": 1,
+            "kSurgery": 4
+          },
+          "traits": ["lateralized"],
+          "upSkills": {
+            "aid": 0,
+            "barter": 0,
+            "bigGuns": 0,
+            "manipulation": 0,
+            "melee": 0,
+            "perceptionSkill": 0,
+            "physical": 0,
+            "reflexion": 19,
+            "smallGuns": 7,
+            "speech": 29,
+            "steal": 0,
+            "stealth": 0,
+            "survival": 5,
+            "throw": 0,
+            "trap": 0,
+            "unarmed": 0
+          }
+        },
+        "combats": {
+          "id": "-OXy1Oged1EBOKwKb4hE"
+        },
+        "effects": {
+          "-OE3PY6toCOwZi9fQM83": {
+            "endTs": "2223-10-03T12:42:17.000Z",
+            "id": "psycho",
+            "startTs": "2223-10-03T08:42:17.000Z"
+          },
+          "-OE3PY6toCOwZi9fQM84": {
+            "id": "dirty",
+            "startTs": "2223-10-03T08:42:17.000Z"
+          },
+          "-OXyBpq_2Nh2_GX6Scz3": {
+            "endTs": "2223-10-03T15:44:17.000Z",
+            "id": "healingPowder",
+            "startTs": "2223-10-03T10:44:17.000Z"
+          }
+        },
+        "equipedObj": {
+          "clothings": {
+            "-Ny1SHFg6OH7_KfKXan2": {
+              "id": "holster"
+            },
+            "-Ny1SHFg6OH7_KfKXan3": {
+              "id": "militaryBelt"
+            },
+            "-Ny1cscGQX8WHsqOOr2Y": {
+              "id": "purse"
+            },
+            "-OLa5KDmLWHcmoKKh14m": {
+              "id": "backpack"
+            },
+            "-a_desperadosHat": {
+              "id": "desperadosHat"
+            }
+          }
+        },
+        "inventory": {
+          "ammo": {
+            "44": 0,
+            "45": 0,
+            "50": 0,
+            "223": 0,
+            "303": 0,
+            "-Ny1dga9puZiGEoTeK-N": {
+              "id": "50"
+            },
+            "-Ny1dgaAZ7hRxNIDD_ur": {
+              "id": "bb"
+            },
+            "-Ny1e4IMgLbGTgP8YxlX": {
+              "id": "50"
+            },
+            "-Ny1e4IMgLbGTgP8YxlY": {
+              "id": "bb"
+            },
+            "-Ny6DYg8gWdVb6RvroY2": {
+              "id": "50"
+            },
+            "-Ny6DgBHJLRrshP38BJH": {
+              "id": "10mm"
+            },
+            "-Ny6DgBI-ytWz4pDzRzw": {
+              "id": "10mm"
+            },
+            "-Ny6DgBI-ytWz4pDzRzx": {
+              "id": "10mm"
+            },
+            "-Ny6DgBI-ytWz4pDzRzy": {
+              "id": "10mm"
+            },
+            "-Ny6DgBI-ytWz4pDzRzz": {
+              "id": "10mm"
+            },
+            "-Ny6IbIbOR06DVlPlGCc": {
+              "id": "shell60mm"
+            },
+            "-Ny6IbIbOR06DVlPlGCd": {
+              "id": "shell60mm"
+            },
+            "-Ny6cF-itWYKnZivkSD1": {
+              "id": "shell60mm"
+            },
+            "-Ny6cF-itWYKnZivkSD2": {
+              "id": "shell60mm"
+            },
+            "10mm": 15,
+            "12g": 15,
+            "14mm": 0,
+            "30_06": 0,
+            "40mm": 0,
+            "5_56mm": 47,
+            "7_62mm": 0,
+            "9mm": 16,
+            "bb": 0,
+            "bolt": 0,
+            "darts": 0,
+            "ec2mm": 0,
+            "energyCell": 0,
+            "gas": 0,
+            "hci": 0,
+            "microFusion": 0,
+            "missile": 0,
+            "shell60mm": 0
+          },
+          "caps": 41,
+          "clothings": {
+            "-Ny1SHFg6OH7_KfKXan2": {
+              "id": "holster"
+            },
+            "-Ny1SHFg6OH7_KfKXan3": {
+              "id": "militaryBelt"
+            },
+            "-Ny1cscGQX8WHsqOOr2Y": {
+              "id": "purse"
+            },
+            "-OLa5KDmLWHcmoKKh14m": {
+              "id": "backpack"
+            },
+            "-a_desperadosHat": {
+              "id": "desperadosHat"
+            }
+          },
+          "consumables": {
+            "-O9V_itmAyEcUvOwoW-O": {
+              "id": "amphetagum",
+              "remainingUse": 1
+            },
+            "-O9V_itn6iTwzZ-IeC_N": {
+              "id": "buffout",
+              "remainingUse": 1
+            },
+            "-O9V_itn6iTwzZ-IeC_O": {
+              "id": "mentats",
+              "remainingUse": 1
+            },
+            "-O9V_itn6iTwzZ-IeC_P": {
+              "id": "psycho",
+              "remainingUse": 1
+            },
+            "-O9V_itn6iTwzZ-IeC_R": {
+              "id": "beer",
+              "remainingUse": 1
+            },
+            "-OKT-cv5e25va-d7PzRR": {
+              "id": "banquetWine",
+              "remainingUse": 7
+            },
+            "-OKT-cv6gBlHaWUFHcfv": {
+              "id": "beer",
+              "remainingUse": 1
+            },
+            "-OL_mXlJYO9CvM1n0djt": {
+              "id": "cram",
+              "remainingUse": 1
+            },
+            "-OXyEFfqAAlOMzzb49xZ": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-OXyEFfqAAlOMzzb49x_": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-OYHIWXsGAbtBu9ckcDo": {
+              "id": "blueMushroom",
+              "remainingUse": 1
+            },
+            "-a_weirdElixir": {
+              "id": "weirdElixir"
+            }
+          },
+          "miscObjects": {
+            "-OKT-JhkLAddRFvjJ9uT": {
+              "id": "condomBox"
+            },
+            "-OKT-JhkLAddRFvjJ9uU": {
+              "id": "brahmin"
+            },
+            "-OKT-Mqo4YgIh5YmxIii": {
+              "id": "pipboy"
+            },
+            "-OL_xPhaaYDZ3nDj8qkK": {
+              "id": "fakeGems"
+            },
+            "-OL_xPhaaYDZ3nDj8qkL": {
+              "id": "fakeGems"
+            }
+          },
+          "weapons": {
+            "-OE9WJIWI7x_CtQVtM1i": {
+              "id": "10mm",
+              "inMagazine": 11
+            },
+            "-OE9WJIXAv6BRGeoOe1s": {
+              "id": "greaseGun",
+              "inMagazine": 15
+            },
+            "-OEA13NFPpcbukDQtOLT": {
+              "id": "brassKnuckles"
+            },
+            "-OEAEWtXN8CjhhFxg6Yd": {
+              "id": "ak47",
+              "inMagazine": 25
+            },
+            "-OEce_gI0raBBrIHqb-r": {
+              "id": "12gRiffle",
+              "inMagazine": 2
+            },
+            "-OY7kWEw7P01G6I7BG8x": {
+              "id": "skorpion",
+              "inMagazine": 11
+            }
+          }
+        },
+        "meta": {
+          "background": "jackal",
+          "firstname": "Doz",
+          "id": "doz",
+          "lastname": "",
+          "speciesId": "human",
+          "squadId": "jackalRecruits",
+          "templateId": "player"
+        },
+        "status": {
+          "background": "jackal",
+          "currAp": 10,
+          "exp": 54,
+          "groinHp": 15,
+          "headHp": 15,
+          "leftArmHp": 20,
+          "leftLegHp": 20,
+          "leftTorsoHp": 25,
+          "level": 1,
+          "poison": 0,
+          "rads": 4,
+          "rightArmHp": 10,
+          "rightLegHp": 17,
+          "rightTorsoHp": 30
+        }
+      },
+      "lars": {
+        "abilities": {
+          "baseSPECIAL": {
+            "agility": 10,
+            "charisma": 2,
+            "endurance": 9,
+            "intelligence": 5,
+            "luck": 2,
+            "perception": 4,
+            "strength": 8
+          },
+          "knowledges": {
+            "kBladedWeapons": 1,
+            "kBluntWeapons": 1,
+            "kClimbing": 1,
+            "kHear": 1,
+            "kJiuJutsu": 3,
+            "kRunning": 2,
+            "kSee": 1,
+            "kSmell": 1,
+            "kStrength": 2,
+            "kStunt": 1,
+            "kSwimming": 1,
+            "kTracking": 2
+          },
+          "traits": ["bruiser"],
+          "upSkills": {
+            "aid": 0,
+            "barter": 0,
+            "bigGuns": 0,
+            "manipulation": 0,
+            "melee": 0,
+            "perceptionSkill": 0,
+            "physical": 26,
+            "reflexion": 0,
+            "smallGuns": 0,
+            "speech": 0,
+            "steal": 0,
+            "stealth": 0,
+            "survival": 22,
+            "throw": 0,
+            "trap": 0,
+            "unarmed": 42
+          }
+        },
+        "effects": {
+          "-O7ombmwCTfsxiZEUX3_": {
+            "id": "dirty",
+            "startTs": "2223-09-27T08:11:17.000Z"
+          }
+        },
+        "equipedObj": {
+          "clothings": {
+            "-NMpRmN1mdFILPmh0Sgz": {
+              "id": "leatherJacket"
+            },
+            "-O9WlNptqTeh_uSy-lBn": {
+              "id": "purse"
+            }
+          },
+          "weapons": {
+            "-O9WkWcQP0aRjQ2l6rFl": {
+              "id": "brassKnuckles"
+            }
+          }
+        },
+        "inventory": {
+          "ammo": {
+            "44": 0,
+            "45": 0,
+            "50": 0,
+            "223": 0,
+            "303": 0,
+            "10mm": 0,
+            "12g": 0,
+            "14mm": 0,
+            "30_06": 0,
+            "40mm": 0,
+            "5_56mm": 0,
+            "7_62mm": 0,
+            "9mm": 0,
+            "bb": 0,
+            "bolt": 0,
+            "darts": 0,
+            "ec2mm": 0,
+            "energyCell": 20,
+            "gas": 0,
+            "hci": 0,
+            "microFusion": 0,
+            "missile": 0,
+            "shell60mm": 0
+          },
+          "caps": 770,
+          "clothings": {
+            "-NMpRmN1mdFILPmh0Sgz": {
+              "id": "leatherJacket"
+            },
+            "-O9WlNptqTeh_uSy-lBn": {
+              "id": "purse"
+            }
+          },
+          "consumables": {
+            "-NVpZUQAqGlj4SF2b5ZM": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-NrN2qyYvTFBFRviYQeF": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-NsUu1UbIx8_ZHWmVJNu": {
+              "id": "whisky",
+              "remainingUse": 2
+            },
+            "-NsUvxtiNLDg77c_-epa": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-O7ozbt-rxX5NH7TFt90": {
+              "id": "ration",
+              "remainingUse": 1
+            },
+            "-O7p0fEwTEUjpTkHe5mt": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-O7p0fExRyG3VL68hfJC": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-O7pC3pAHzUhAWplRYDI": {
+              "id": "ration",
+              "remainingUse": 1
+            },
+            "-O9W0E6DyoYc1yv0impo": {
+              "id": "caliWine",
+              "remainingUse": 5
+            },
+            "-O9WBT8NUftmdjh3hqQJ": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-O9WBcYQoMGjmsT1hzUv": {
+              "id": "antidote",
+              "remainingUse": 1
+            },
+            "-O9WCK0NAWy3K2pvoh1Y": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-O9WCOiVJkYnbGJoTwQL": {
+              "id": "antidote",
+              "remainingUse": 1
+            }
+          },
+          "miscObjects": {
+            "-O7k7H5sp8eXQW1HnVKd": {
+              "id": "pipboy"
+            },
+            "-O9WgA2bMA82ZESU7RK3": {
+              "id": "nukieNukaCola"
+            }
+          },
+          "weapons": {
+            "-O9WkWcQP0aRjQ2l6rFl": {
+              "id": "brassKnuckles"
+            }
+          }
+        },
+        "meta": {
+          "background": "jackal",
+          "firstname": "Lars",
+          "id": "lars",
+          "lastname": "",
+          "speciesId": "human",
+          "squadId": "jackalRecruits",
+          "templateId": "player"
+        },
+        "status": {
+          "background": "jackal",
+          "currAp": 10,
+          "exp": 3310,
+          "groinHp": 15,
+          "headHp": 15,
+          "leftArmHp": 20,
+          "leftLegHp": 20,
+          "leftTorsoHp": 23,
+          "level": 1,
+          "poison": 0,
+          "rads": 105,
+          "rightArmHp": 20,
+          "rightLegHp": 20,
+          "rightTorsoHp": 32
+        }
+      },
+      "lucytools": {
+        "abilities": {
+          "baseSPECIAL": {
+            "agility": 6,
+            "charisma": 5,
+            "endurance": 5,
+            "intelligence": 8,
+            "luck": 4,
+            "perception": 6,
+            "strength": 6
+          },
+          "knowledges": {
+            "kBarter": 1,
+            "kBladedWeapons": 2,
+            "kBluntWeapons": 1,
+            "kElectronicLocks": 1,
+            "kElectronics": 2,
+            "kFirearms": 3,
+            "kHear": 3,
+            "kMecanicLocks": 1,
+            "kRepair": 3,
+            "kRunning": 2,
+            "kSee": 3,
+            "kSmell": 3,
+            "kStrength": 1,
+            "kStunt": 1,
+            "kThrowingWeapons": 1,
+            "kUnarmed": 2
+          },
+          "perks": ["concentration", "falconEye"],
+          "traits": ["lunatic", "smallFrame"],
+          "upSkills": {
+            "aid": 12,
+            "barter": 0,
+            "bigGuns": 0,
+            "manipulation": 18,
+            "melee": 9,
+            "perceptionSkill": 18,
+            "physical": 7,
+            "reflexion": 15,
+            "smallGuns": 34,
+            "speech": 0,
+            "steal": 0,
+            "stealth": 23,
+            "survival": 2,
+            "throw": 14,
+            "trap": 15,
+            "unarmed": 1
+          }
+        },
+        "inventory": {
+          "ammo": {
+            "44": 0,
+            "45": 0,
+            "50": 0,
+            "223": 0,
+            "303": 0,
+            "10mm": 0,
+            "12g": 0,
+            "14mm": 0,
+            "30_06": 0,
+            "40mm": 0,
+            "5_56mm": 0,
+            "7_62mm": 0,
+            "9mm": 0,
+            "bb": 0,
+            "bolt": 0,
+            "darts": 0,
+            "ec2mm": 0,
+            "energyCell": 2,
+            "gas": 0,
+            "hci": 0,
+            "microFusion": 2,
+            "missile": 0,
+            "shell60mm": 0
+          },
+          "caps": 14340
+        },
+        "meta": {
+          "background": "vaultDweller",
+          "firstname": "Lucy",
+          "id": "lucytools",
+          "lastname": "Tools",
+          "speciesId": "human",
+          "squadId": "vault18Explorators",
+          "templateId": "player"
+        },
+        "status": {
+          "background": "vaultDweller",
+          "currAp": 8,
+          "exp": 21010,
+          "groinHp": 15,
+          "headHp": 15,
+          "leftArmHp": 20,
+          "leftLegHp": 20,
+          "leftTorsoHp": 25,
+          "level": 7,
+          "poison": 0,
+          "rads": 0,
+          "rightArmHp": 20,
+          "rightLegHp": 20,
+          "rightTorsoHp": 30
+        }
+      },
+      "mantequilla": {
+        "abilities": {
+          "baseSPECIAL": {
+            "agility": 8,
+            "charisma": 4,
+            "endurance": 5,
+            "intelligence": 5,
+            "luck": 7,
+            "perception": 8,
+            "strength": 3
+          },
+          "knowledges": {
+            "kBarter": 1,
+            "kBladedWeapons": 1,
+            "kFirearms": 3,
+            "kHear": 3,
+            "kIntimidate": 3,
+            "kPickpocket": 2,
+            "kRunning": 1,
+            "kSee": 3,
+            "kShoplifting": 2,
+            "kSmell": 3,
+            "kSneakAttack": 3,
+            "kStrength": 1,
+            "kStunt": 1,
+            "kUnarmed": 1
+          },
+          "perks": ["concentration", "moreCrits"],
+          "traits": ["finesse"],
+          "upSkills": {
+            "aid": 0,
+            "barter": 0,
+            "bigGuns": 0,
+            "manipulation": 0,
+            "melee": 0,
+            "perceptionSkill": 18,
+            "physical": 0,
+            "reflexion": 0,
+            "smallGuns": 53,
+            "speech": 0,
+            "steal": 17,
+            "stealth": 47,
+            "survival": 0,
+            "throw": 0,
+            "trap": 0,
+            "unarmed": 0
+          }
+        },
+        "inventory": {
+          "ammo": {
+            "44": 0,
+            "45": 0,
+            "50": 0,
+            "223": 0,
+            "303": 0,
+            "10mm": 0,
+            "12g": 5,
+            "14mm": 0,
+            "30_06": 0,
+            "40mm": 0,
+            "5_56mm": 0,
+            "7_62mm": 0,
+            "9mm": 0,
+            "bb": 0,
+            "bolt": 0,
+            "darts": 0,
+            "ec2mm": 0,
+            "energyCell": 0,
+            "gas": 0,
+            "hci": 0,
+            "microFusion": 0,
+            "missile": 0,
+            "shell60mm": 0
+          },
+          "caps": 20461
+        },
+        "meta": {
+          "background": "vaultDweller",
+          "firstname": "Mantequilla",
+          "id": "mantequilla",
+          "lastname": "",
+          "speciesId": "human",
+          "squadId": "vault18Explorators",
+          "templateId": "player"
+        },
+        "status": {
+          "background": "vaultDweller",
+          "currAp": 9,
+          "exp": 17760,
+          "groinHp": 15,
+          "headHp": 15,
+          "leftArmHp": 20,
+          "leftLegHp": 20,
+          "leftTorsoHp": 25,
+          "level": 6,
+          "poison": 0,
+          "rads": 2,
+          "rightArmHp": 20,
+          "rightLegHp": 20,
+          "rightTorsoHp": 30
+        }
+      },
+      "markusabraham": {
+        "abilities": {
+          "baseSPECIAL": {
+            "agility": 6,
+            "charisma": 7,
+            "endurance": 6,
+            "intelligence": 4,
+            "luck": 4,
+            "perception": 5,
+            "strength": 8
+          },
+          "knowledges": {
+            "kBarter": 1,
+            "kBladedWeapons": 3,
+            "kBluntWeapons": 1,
+            "kClimbing": 1,
+            "kEnergyWeapons": 1,
+            "kFirearms": 1,
+            "kHear": 1,
+            "kRunning": 1,
+            "kSee": 1,
+            "kSmell": 1,
+            "kStrength": 1,
+            "kStunt": 1,
+            "kSwimming": 1,
+            "kThrowingWeapons": 2,
+            "kTwoHandedWeapons": 1,
+            "kUnarmed": 4
+          },
+          "perks": ["physEducation"],
+          "traits": ["fastMetabolism", "skilled"],
+          "upSkills": {
+            "aid": 0,
+            "barter": 0,
+            "bigGuns": 0,
+            "manipulation": 0,
+            "melee": 46,
+            "perceptionSkill": 0,
+            "physical": 21,
+            "reflexion": 0,
+            "smallGuns": 0,
+            "speech": 67,
+            "steal": 0,
+            "stealth": 0,
+            "survival": 0,
+            "throw": 14,
+            "trap": 0,
+            "unarmed": 26
+          }
+        },
+        "inventory": {
+          "ammo": {
+            "44": 0,
+            "45": 0,
+            "50": 0,
+            "223": 0,
+            "303": 0,
+            "10mm": 0,
+            "12g": 0,
+            "14mm": 0,
+            "30_06": 0,
+            "40mm": 0,
+            "5_56mm": 0,
+            "7_62mm": 0,
+            "9mm": 0,
+            "bb": 0,
+            "bolt": 0,
+            "darts": 0,
+            "ec2mm": 0,
+            "energyCell": 0,
+            "gas": 0,
+            "hci": 0,
+            "microFusion": 0,
+            "missile": 0,
+            "shell60mm": 0
+          },
+          "caps": 2267
+        },
+        "meta": {
+          "background": "vaultDweller",
+          "firstname": "Markus",
+          "id": "markusabraham",
+          "lastname": "Abraham",
+          "speciesId": "human",
+          "squadId": "vault18Explorators",
+          "templateId": "player"
+        },
+        "status": {
+          "background": "vaultDweller",
+          "currAp": 8,
+          "exp": 21620,
+          "groinHp": 15,
+          "headHp": 15,
+          "leftArmHp": 20,
+          "leftLegHp": 20,
+          "leftTorsoHp": 25,
+          "level": 7,
+          "poison": 0,
+          "rads": 2,
+          "rightArmHp": 20,
+          "rightLegHp": 20,
+          "rightTorsoHp": 30
+        }
+      },
+      "nitro": {
+        "abilities": {
+          "baseSPECIAL": {
+            "agility": 9,
+            "charisma": 2,
+            "endurance": 5,
+            "intelligence": 5,
+            "luck": 5,
+            "perception": 10,
+            "strength": 4
+          },
+          "knowledges": {
+            "kBarter": 1,
+            "kBladedWeapons": 1,
+            "kBluntWeapons": 1,
+            "kClimbing": 1,
+            "kFirearms": 3,
+            "kHear": 1,
+            "kRunning": 1,
+            "kSee": 1,
+            "kSmell": 1,
+            "kStrength": 1,
+            "kStunt": 1,
+            "kSwimming": 1,
+            "kThrowingWeapons": 2,
+            "kTracking": 2
+          },
+          "traits": ["smallFrame", "mrFast"],
+          "upSkills": {
+            "aid": 0,
+            "barter": 0,
+            "bigGuns": 0,
+            "manipulation": 10,
+            "melee": 0,
+            "perceptionSkill": 5,
+            "physical": 0,
+            "reflexion": 0,
+            "smallGuns": 35,
+            "speech": 0,
+            "steal": 0,
+            "stealth": 0,
+            "survival": 0,
+            "throw": 25,
+            "trap": 15,
+            "unarmed": 0
+          }
+        },
+        "effects": {
+          "-O7k5Ob5uKS3pMlYryuH": {
+            "id": "dirty",
+            "startTs": "2223-06-05T19:31:17.000Z"
+          }
+        },
+        "equipedObj": {
+          "clothings": {
+            "-NMpRmTvvCLssIIjJxu_": {
+              "id": "leatherJacket"
+            },
+            "-O9WlUGluaOaUNhnV-Tx": {
+              "id": "purse"
+            }
+          },
+          "weapons": {
+            "-NsV39WFtq75Z3ciAVPe": {
+              "id": "sawedShotgun"
+            },
+            "-O9WakgimIq988HuIp4e": {
+              "id": "44Magnum",
+              "inMagazine": 6
+            }
+          }
+        },
+        "inventory": {
+          "ammo": {
+            "44": 0,
+            "45": 0,
+            "50": 0,
+            "223": 0,
+            "303": 0,
+            "10mm": 54,
+            "12g": 8,
+            "14mm": 0,
+            "30_06": 0,
+            "40mm": 0,
+            "5_56mm": 0,
+            "7_62mm": 0,
+            "9mm": 0,
+            "bb": 0,
+            "bolt": 0,
+            "darts": 0,
+            "ec2mm": 0,
+            "energyCell": 13,
+            "gas": 0,
+            "hci": 0,
+            "microFusion": 0,
+            "missile": 0,
+            "shell60mm": 0
+          },
+          "caps": 595,
+          "clothings": {
+            "-NMpRmTvvCLssIIjJxu_": {
+              "id": "leatherJacket"
+            },
+            "-O9WlUGluaOaUNhnV-Tx": {
+              "id": "purse"
+            }
+          },
+          "consumables": {
+            "-NsUt3zoXLkP1pbvFSCM": {
+              "id": "healingPowder",
+              "remainingUse": 1
+            },
+            "-NsUt3zrybvHfUpkq6cy": {
+              "id": "healingPowder",
+              "remainingUse": 1
+            },
+            "-O7p0XK4fLP2e2ipQkIv": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-O7pC6B27OSW31Y3ZQVM": {
+              "id": "ration",
+              "remainingUse": 1
+            },
+            "-O8OIZspg8I_pa_6CPnc": {
+              "id": "mecaLockpickKit",
+              "remainingUse": 10
+            },
+            "-O9WBTrWUqEI7ZxQsqp3": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-O9WBWqSMirbvihDOh5e": {
+              "id": "antidote",
+              "remainingUse": 1
+            },
+            "-O9WCKKKxf2_xj-xJPPW": {
+              "id": "stimpack",
+              "remainingUse": 1
+            },
+            "-O9WCRvC70UJpRnjp9qE": {
+              "id": "antidote",
+              "remainingUse": 1
+            },
+            "-O9WCXKWc2yjAVu-FAE0": {
+              "id": "radAway",
+              "remainingUse": 1
+            },
+            "-O9WcxAZNmLfMdA2cDoT": {
+              "id": "firstAidKit",
+              "remainingUse": 10
+            }
+          },
+          "miscObjects": {
+            "-O7k69MntNslCxfKJrGQ": {
+              "id": "pipboy"
+            },
+            "-O9WgbtQLLrfmfLVS-5_": {
+              "id": "nukieNukaCola"
+            }
+          },
+          "weapons": {
+            "-NMpRE6aN8hXjM5yGWkP": {
+              "id": "10mm",
+              "inMagazine": 12
+            },
+            "-NMp_jiMxg2di0SvKoZA": {
+              "id": "dynamite"
+            },
+            "-NVq2gagxWcsNl0FskaD": {
+              "id": "knife"
+            },
+            "-NsUvMxa1N5nkvK9JCNY": {
+              "id": "throwingKnife"
+            },
+            "-NsUvMxcpOyhl58IJw58": {
+              "id": "throwingKnife"
+            },
+            "-NsV39WFtq75Z3ciAVPe": {
+              "id": "sawedShotgun",
+              "inMagazine": 2
+            },
+            "-NsV557cbbIPDTYlM1Xk": {
+              "id": "spear"
+            },
+            "-O9WakgimIq988HuIp4e": {
+              "id": "44Magnum",
+              "inMagazine": 6
+            }
+          }
+        },
+        "meta": {
+          "background": "jackal",
+          "firstname": "Nitro",
+          "id": "nitro",
+          "lastname": "",
+          "speciesId": "human",
+          "squadId": "jackalRecruits",
+          "templateId": "player"
+        },
+        "status": {
+          "background": "jackal",
+          "currAp": 4,
+          "exp": 3250,
+          "groinHp": 15,
+          "headHp": 15,
+          "leftArmHp": 20,
+          "leftLegHp": 20,
+          "leftTorsoHp": 25,
+          "level": 1,
+          "poison": 0,
+          "rads": 105,
+          "rightArmHp": 20,
+          "rightLegHp": 20,
+          "rightTorsoHp": 30
+        }
+      },
+      "-OXy1CykP8-xTWaCLEzY": {
+        "combats": {
+          "id": "-OXy1Oged1EBOKwKb4hE"
+        },
+        "meta": {
+          "background": "other",
+          "description": "Il est méchant, et il mords.",
+          "firstname": "Waf",
+          "isEnemy": true,
+          "isNpc": true,
+          "lastname": "",
+          "speciesId": "animal",
+          "squadId": "jackalRecruits",
+          "templateId": "wildDog"
+        },
+        "status": {
+          "background": "other",
+          "currAp": 6,
+          "exp": 1,
+          "groinHp": 15,
+          "headHp": 15,
+          "leftArmHp": 20,
+          "leftLegHp": 20,
+          "leftTorsoHp": 25,
+          "level": 1,
+          "rads": 10,
+          "rightArmHp": 15,
+          "rightLegHp": 20,
+          "rightTorsoHp": 30
+        }
+      },
+      "-OXy1IgCEyEcmbqn2-O9": {
+        "combats": {
+          "id": "-OXy1Oged1EBOKwKb4hE"
+        },
+        "meta": {
+          "background": "other",
+          "description": "Il est tout rouillé et il a du mal.",
+          "firstname": "CyberWaf",
+          "isEnemy": true,
+          "isNpc": true,
+          "lastname": "",
+          "speciesId": "robot",
+          "squadId": "jackalRecruits",
+          "templateId": "cyberdog"
+        },
+        "status": {
+          "background": "other",
+          "currAp": 7,
+          "exp": 1,
+          "groinHp": 15,
+          "headHp": 15,
+          "leftArmHp": 20,
+          "leftLegHp": 20,
+          "leftTorsoHp": 25,
+          "level": 1,
+          "rads": 10,
+          "rightArmHp": 20,
+          "rightLegHp": 20,
+          "rightTorsoHp": 30
+        }
+      }
+    },
+    "squads": {
+      "jackalRecruits": {
+        "datetime": "2223-10-03T10:46:17.000Z",
+        "isInFight": false,
+        "label": "Les recrues Jackals",
+        "members": {
+          "doz": {
+            "exp": 54,
+            "firstname": "Doz",
+            "lastname": ""
+          },
+          "lars": {
+            "exp": 3310,
+            "firstname": "Lars",
+            "lastname": ""
+          },
+          "nitro": {
+            "exp": 3250,
+            "firstname": "Nitro",
+            "lastname": ""
+          }
+        },
+        "npc": {
+          "-OXy1CykP8-xTWaCLEzY": "-OXy1CykP8-xTWaCLEzY",
+          "-OXy1IgCEyEcmbqn2-O9": "-OXy1IgCEyEcmbqn2-O9"
+        }
+      },
+      "vault18Explorators": {
+        "datetime": "2140-03-23T18:35:00.000Z",
+        "isInFight": false,
+        "label": "Les explorateurs de l'Abri 18",
+        "members": {
+          "lucytools": {
+            "exp": 21010,
+            "firstname": "Lucy",
+            "lastname": "Tools"
+          },
+          "mantequilla": {
+            "exp": 17760,
+            "firstname": "Mantequilla",
+            "lastname": ""
+          },
+          "markusabraham": {
+            "exp": 21620,
+            "firstname": "Markus",
+            "lastname": "Abraham"
+          }
+        }
+      }
+    }
+  }
+}

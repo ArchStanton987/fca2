@@ -1,16 +1,17 @@
 import Playable from "lib/character/Playable"
+import { CombatStatus, DbCombatStatus } from "lib/character/combat-status/combat-status.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import Combat from "../Combat"
 
 export type DeleteFightParams = {
   combat: Combat
-  contenders: Record<string, Playable>
+  contenders: Record<string, { char: Playable; combatStatus: CombatStatus }>
 }
 
 export default function deleteFight(dbType: keyof typeof repositoryMap = "rtdb") {
   const combatRepo = repositoryMap[dbType].combatRepository
-  const statusRepo = repositoryMap[dbType].statusRepository
+  const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
   const characterRepo = repositoryMap[dbType].characterRepository
 
   return ({ combat, contenders }: DeleteFightParams) => {
@@ -19,7 +20,8 @@ export default function deleteFight(dbType: keyof typeof repositoryMap = "rtdb")
     // delete combat entry
     promises.push(combatRepo.delete({ id: combat.id }))
 
-    Object.entries(contenders).forEach(([charId, { status, secAttr, combats }]) => {
+    Object.entries(contenders).forEach(([charId, { char, combatStatus }]) => {
+      const { secAttr, combats } = char
       // remove fight ID in characters combat archive
       if (combats[combat.id]) {
         const newCombats = { ...combats }
@@ -28,10 +30,10 @@ export default function deleteFight(dbType: keyof typeof repositoryMap = "rtdb")
       }
 
       // reset character ap, currFightId, combatStatus IF current combat is the one being deleted
-      if (status.currentCombatId !== combat.id) return
-      promises.push(statusRepo.patch({ charId }, { currAp: secAttr.curr.actionPoints }))
-      promises.push(statusRepo.deleteChild({ charId, childKey: "combatStatus" }))
-      promises.push(statusRepo.deleteChild({ charId, childKey: "currentCombatId" }))
+      if (combatStatus.combatId === combat.id) {
+        const defaultCombatStatus: DbCombatStatus = { currAp: secAttr.curr.actionPoints }
+        promises.push(combatStatusRepo.set({ charId }, defaultCombatStatus))
+      }
     })
 
     return Promise.all(promises)

@@ -1,5 +1,5 @@
 import Action from "./Action"
-import { DbCombatEntry, PlayerCombatData } from "./combats.types"
+import { DbCombatEntry } from "./combats.types"
 
 export const defaultAction = {
   actionType: "",
@@ -20,8 +20,8 @@ export default class Combat {
   title: string
   description: string
   currActorId: string
-  players: Record<string, PlayerCombatData>
-  npcs: Record<string, PlayerCombatData>
+  players: Record<string, string>
+  npcs: Record<string, string>
   rounds: Record<number, Record<number, Action>>
 
   constructor(payload: DbCombatEntry & { id: string }) {

@@ -1,8 +1,6 @@
 import Playable from "lib/character/Playable"
 import repositoryMap from "lib/shared/db/get-repository"
 
-import { PlayerCombatData } from "../combats.types"
-import { DEFAULT_INITIATIVE } from "../const/combat-const"
 import startFight from "./start-fight"
 
 export type CreateFightParams = {
@@ -15,24 +13,18 @@ export type CreateFightParams = {
   isStartingNow: boolean
 }
 
-const defaultContenderData = {
-  initiative: DEFAULT_INITIATIVE,
-  actionBonus: 0,
-  acBonusRecord: { 1: 0 }
-}
-
 export default function createFight(dbType: keyof typeof repositoryMap = "rtdb") {
   const combatRepo = repositoryMap[dbType].combatRepository
 
   return async ({ contenders, isStartingNow, ...rest }: CreateFightParams) => {
-    const players: Record<string, PlayerCombatData> = {}
-    const npcs: Record<string, PlayerCombatData> = {}
+    const players: Record<string, string> = {}
+    const npcs: Record<string, string> = {}
     Object.entries(contenders).forEach(([id, contender]) => {
       const { isNpc } = contender.meta
       if (isNpc) {
-        npcs[id] = { ...defaultContenderData }
+        npcs[id] = id
       } else {
-        players[id] = { ...defaultContenderData }
+        players[id] = id
       }
     })
     const payload = { ...rest, currActorId: "", players, npcs, rounds: {} }

@@ -6,18 +6,6 @@ type CharId = string
 type NpcId = string
 type ItemId = string
 type AimZone = keyof LimbsHp
-type RoundId = number
-type AcBonus = number
-
-type InactiveRecord = Record<number, { inactiveRoundStart: number; inactiveRoundEnd: number }>
-type ArmorClassBonusRecord = Record<RoundId, AcBonus>
-
-export type PlayerCombatData = {
-  initiative: number
-  inactiveRecord?: InactiveRecord
-  actionBonus: number
-  acBonusRecord: ArmorClassBonusRecord
-}
 
 export type Roll = {
   sumAbilities: number
@@ -70,7 +58,7 @@ export type DbCombatEntry = {
   title: string
   description?: string
   currActorId: string
-  players: Record<CharId, PlayerCombatData>
-  npcs: Record<NpcId, PlayerCombatData>
+  players: Record<CharId, CharId>
+  npcs: Record<NpcId, NpcId>
   rounds?: Record<number, Record<number, DbAction>>
 }

@@ -28,7 +28,6 @@ import startFight, { StartFightParams } from "./combat/use-cases/start-fight"
 import subAllFights from "./combat/use-cases/sub-all-fights"
 import subFight, { SubFightParams } from "./combat/use-cases/sub-fight"
 import updateAction, { UpdateActionParams } from "./combat/use-cases/update-action"
-import updateContender, { UpdateContenderParams } from "./combat/use-cases/update-contender"
 import updateFight, { UpdateFightParams } from "./combat/use-cases/update-fight"
 import waitAction, { WaitActionParams } from "./combat/use-cases/wait-action"
 import createNpc, { CreateNpcParams } from "./npc/use-cases/create-npc"
@@ -93,7 +92,6 @@ export default function getUseCases(
       create: (data: CreateFightParams) => createFight(dbType)(data),
       update: (data: UpdateFightParams) => updateFight(dbType)(data),
       delete: (data: DeleteFightParams) => deleteFight(dbType)(data),
-      updateContender: (data: UpdateContenderParams) => updateContender(dbType)(data),
       // ACTIONS
       doCombatAction: (data: CombatActionParams) => doCombatAction(dbType, createdElements)(data),
       waitAction: (data: WaitActionParams) => waitAction(dbType)(data),

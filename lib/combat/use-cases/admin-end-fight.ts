@@ -1,32 +1,29 @@
 import { ThenableReference } from "firebase/database"
-import Playable from "lib/character/Playable"
+import { CombatStatus, DbCombatStatus } from "lib/character/combat-status/combat-status.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
-import Combat from "../Combat"
-
 export type AdminEndFightParams = {
-  combat: Combat
   shouldDeleteNpcs?: boolean
-  contenders: Record<string, Playable>
+  combatId: string
+  contenders: Record<string, { combatStatus: CombatStatus; maxAp: number }>
 }
 
 export default function adminEndFight(dbType: keyof typeof repositoryMap = "rtdb") {
-  const statusRepo = repositoryMap[dbType].statusRepository
+  const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
   const characterRepo = repositoryMap[dbType].characterRepository
 
-  return ({ combat, contenders }: AdminEndFightParams) => {
+  return ({ combatId, contenders }: AdminEndFightParams) => {
     const promises: (Promise<void> | ThenableReference)[] = []
-    Object.entries(contenders).forEach(([charId, { secAttr, combats, status }]) => {
+    Object.entries(contenders).forEach(([charId, contender]) => {
       // reset character ap, currFightId, combatStatus
-      if (status.currentCombatId === combat.id) {
-        promises.push(statusRepo.patch({ charId }, { currAp: secAttr.curr.actionPoints }))
-        promises.push(statusRepo.deleteChild({ charId, childKey: "combatStatus" }))
-        promises.push(statusRepo.deleteChild({ charId, childKey: "currentCombatId" }))
+      if (combatId === contender.combatStatus.combatId) {
+        const defaultCombatStatus: DbCombatStatus = { currAp: contender.maxAp }
+        promises.push(combatStatusRepo.set({ charId }, defaultCombatStatus))
       }
-      const { id } = combat
-      const newCombats = { ...combats, id }
       // add fight ID in characters combat archive
-      promises.push(characterRepo.patch({ id: charId }, { combats: newCombats }))
+      promises.push(
+        characterRepo.patchChild({ id: charId, childKey: "combats" }, { [combatId]: combatId })
+      )
     })
 
     // TODO: allow npc deletion

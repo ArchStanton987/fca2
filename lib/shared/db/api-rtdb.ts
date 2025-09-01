@@ -1,7 +1,8 @@
 import { DbChar } from "lib/character/Character"
+import { DbCombatStatus } from "lib/character/combat-status/combat-status.types"
 import { DbEffect } from "lib/character/effects/effects.types"
 import { DbStatus } from "lib/character/status/status.types"
-import { DbAction, DbCombatEntry, PlayerCombatData, Roll } from "lib/combat/combats.types"
+import { DbAction, DbCombatEntry, Roll } from "lib/combat/combats.types"
 import { DbNpc } from "lib/npc/npc.types"
 import { DbSquad } from "lib/squad/squad-types"
 
@@ -16,12 +17,6 @@ export type AdditionalEffectsParams = Child<string>
 export type AdditionalMiscParams = Child<string>
 //
 export type CombatParams = { id?: string; childKey?: keyof DbCombatEntry }
-export type ContenderParams = {
-  combatId: string
-  contenderType: "players" | "npcs"
-  id?: string
-  childKey?: keyof PlayerCombatData
-}
 export type RoundParams = {
   combatId: string
   id?: number
@@ -42,6 +37,7 @@ export type RollParams = {
 export type NpcParams = { id?: string; childKey?: keyof DbNpc }
 export type CharacterParams = { id?: string; childKey?: keyof DbChar }
 export type StatusParams = CharParams & { childKey?: keyof DbStatus }
+export type CombatStatusParams = CharParams & { childKey?: keyof DbCombatStatus }
 export type EffectsParams = CharParams & { dbKey?: string; childKey?: keyof DbEffect }
 //
 export type SquadParams = { id?: string; childKey?: keyof DbSquad }
@@ -59,10 +55,6 @@ const rtdb = {
   getCombat: ({ id, childKey }: CombatParams) =>
     childKey ? `v3/combat/${id}/${childKey}` : `v3/combat/${id ?? ""}`,
 
-  getContender: ({ combatId, contenderType, id, childKey }: ContenderParams) =>
-    id
-      ? `v3/combat/${combatId}/${contenderType}/${id}/${childKey ?? ""}`
-      : `v3/combat/${combatId}/${contenderType}/`,
   getRound: ({ combatId, id, childKey }: RoundParams) =>
     id ? `v3/combat/${combatId}/rounds/${id}/${childKey ?? ""}` : `v3/combat/${combatId}/rounds/`,
 
@@ -84,6 +76,8 @@ const rtdb = {
 
   getStatus: ({ charId, childKey }: StatusParams) =>
     `v3/playables/${charId}/status/${childKey ?? ""}`,
+  getCombatStatus: ({ charId, childKey }: CombatStatusParams) =>
+    `v3/playables/${charId}/combatStatus/${childKey ?? ""}`,
 
   getEffects: ({ charId, dbKey, childKey }: EffectsParams) =>
     dbKey

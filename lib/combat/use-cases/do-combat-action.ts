@@ -1,4 +1,5 @@
 import Playable from "lib/character/Playable"
+import { CombatStatus } from "lib/character/combat-status/combat-status.types"
 import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
 import { Clothing } from "lib/objects/data/clothings/clothings.types"
 import { Consumable } from "lib/objects/data/consumables/consumables.types"
@@ -8,7 +9,7 @@ import { Weapon } from "lib/objects/data/weapons/weapons.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import Combat from "../Combat"
-import { DbAction, PlayerCombatData } from "../combats.types"
+import { DbAction } from "../combats.types"
 import { getActivePlayersWithAp, getIsActionEndingRound } from "../utils/combat-utils"
 import applyDamageEntries from "./apply-damage-entries"
 import itemAction from "./item-action"
@@ -21,7 +22,7 @@ import weaponAction from "./weapon-action"
 export type CombatActionParams = {
   action: DbAction & { actorId: string }
   combat: Combat
-  contenders: Record<string, { char: Playable; combatData: PlayerCombatData }>
+  contenders: Record<string, { char: Playable; combatStatus: CombatStatus }>
   item?: Clothing | Consumable | MiscObject | Weapon
 }
 
@@ -29,17 +30,22 @@ export default function doCombatAction(
   dbType: keyof typeof repositoryMap = "rtdb",
   newElements: CreatedElements = defaultCreatedElements
 ) {
-  const statusRepo = repositoryMap[dbType].statusRepository
+  const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
 
   return async ({ action, combat, contenders, item }: CombatActionParams) => {
     const { apCost = 0, actorId, actionType, actionSubtype } = action
-    const { charId, status, meta } = contenders[actorId].char
+    const { char, combatStatus } = contenders[actorId]
+    const { charId, meta } = char
 
     const storedAction = combat?.currAction
 
-    if (apCost > status.currAp) throw new Error("Not enough AP to perform this action")
+    if (apCost > combatStatus.currAp) throw new Error("Not enough AP to perform this action")
 
-    const isEndingRound = getIsActionEndingRound(contenders, { apCost, ...action })
+    const contendersCombatStatus: Record<string, CombatStatus> = {}
+    Object.entries(contenders).forEach(([id, c]) => {
+      contendersCombatStatus[id] = c.combatStatus
+    })
+    const isEndingRound = getIsActionEndingRound(contendersCombatStatus, { apCost, ...action })
 
     const promises = []
 
@@ -61,14 +67,14 @@ export default function doCombatAction(
 
       case "wait": {
         if (isEndingRound) throw new Error("End of the round: invalid action")
-        const activePlayersWithAp = getActivePlayersWithAp(contenders)
+        const activePlayersWithAp = getActivePlayersWithAp(contendersCombatStatus)
         if (activePlayersWithAp.length <= 1) throw new Error("No other players with AP")
         promises.push(waitAction(dbType)({ action, contenders }))
         break
       }
 
       case "prepare":
-        promises.push(prepareAction(dbType)({ action, contenders, combat }))
+        promises.push(prepareAction(dbType)({ action, contendersCombatStatus, combat }))
         break
 
       case "item":
@@ -96,14 +102,14 @@ export default function doCombatAction(
       promises.push(setNewRound(dbType)({ contenders, combat }))
     } else {
       // set actor action points
-      const newAp = status.currAp - apCost
-      promises.push(statusRepo.setChild({ charId, childKey: "currAp" }, newAp))
+      const newAp = combatStatus.currAp - apCost
+      promises.push(combatStatusRepo.patch({ charId }, { currAp: newAp }))
 
       // set opponent action points if has reaction roll
       if (storedAction?.reactionRoll) {
         const { opponentId, opponentApCost } = storedAction.reactionRoll
         const oppNewAp = contenders[opponentId].char.secAttr.curr.actionPoints - opponentApCost
-        await statusRepo.patch({ charId: opponentId }, { currAp: oppNewAp })
+        await combatStatusRepo.patch({ charId: opponentId }, { currAp: oppNewAp })
       }
     }
 

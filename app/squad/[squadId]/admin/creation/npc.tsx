@@ -83,10 +83,8 @@ export default function NpcCreation() {
     if (form.speciesId === "human") {
       payload = { ...generateDbHuman(finalLevel, form.templateId), meta }
     } else {
-      const template = enemyTemplates[form.speciesId][form.templateId]
       const status: DbStatus = {
         background: form.background,
-        currAp: template.actionPoints,
         exp: 1,
         level: 1,
         ...limbsDefault,
