@@ -1,5 +1,7 @@
 import { StyleSheet, TouchableOpacity } from "react-native"
 
+import { useContendersCombatStatus } from "lib/character/combat-status/use-cases/sub-combat-status"
+
 import Col from "components/Col"
 import List from "components/List"
 import Section from "components/Section"
@@ -13,6 +15,7 @@ import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
+import LoadingScreen from "screens/LoadingScreen"
 import colors from "styles/colors"
 import layout from "styles/layout"
 
@@ -43,9 +46,12 @@ export default function PickTargetSlide({ slideIndex }: SlideProps) {
   const { isEnemy } = meta
   const { combat, players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
+  const contendersIds = Object.keys(contenders)
 
   const { targetId } = useActionForm()
   const { setForm } = useActionApi()
+
+  const allCombatStatus = useContendersCombatStatus(contendersIds)
 
   const onPressPlayer = (id: string) => {
     setForm({ targetId: id })
@@ -57,34 +63,36 @@ export default function PickTargetSlide({ slideIndex }: SlideProps) {
     scrollNext?.()
   }
 
-  const aliveContenders = Object.values(contenders).filter(c => {
-    const isAlive = c.char.status.combatStatus !== "dead"
-    const isNotCurrPlayer = c.char.charId !== charId
+  if (allCombatStatus.some(e => e.isLoading)) return <LoadingScreen />
+
+  const aliveContenders = Object.values(contenders).filter((c, i) => {
+    const isAlive = allCombatStatus[i].data?.combatStatus !== "dead"
+    const isNotCurrPlayer = c.charId !== charId
     return isAlive && isNotCurrPlayer
   })
   const hostiles = Object.values(aliveContenders).filter(c =>
-    isEnemy ? !c.char.meta.isEnemy : c.char.meta.isEnemy
+    isEnemy ? !c.meta.isEnemy : c.meta.isEnemy
   )
   const nonHostiles = Object.values(aliveContenders).filter(c =>
-    isEnemy ? c.char.meta.isEnemy : !c.char.meta.isEnemy
+    isEnemy ? c.meta.isEnemy : !c.meta.isEnemy
   )
-  const targetList = [...hostiles, { char: { fullname: "autre", charId: "other" } }, ...nonHostiles]
+  const targetList = [...hostiles, { fullname: "autre", charId: "other" }, ...nonHostiles]
 
   return (
     <DrawerSlide>
       <ScrollSection title="choisissez la cible" style={{ flex: 1 }}>
         <List
           data={targetList}
-          keyExtractor={e => e.char.charId}
+          keyExtractor={e => e.charId}
           separator={<Spacer y={15} />}
           renderItem={({ item }) => {
-            const isSelected = targetId === item.char.charId
+            const isSelected = targetId === item.charId
             return (
               <TouchableOpacity
-                onPress={() => onPressPlayer(item.char.charId)}
+                onPress={() => onPressPlayer(item.charId)}
                 style={[styles.button, isSelected && styles.selected]}
               >
-                <Txt>{item.char.fullname}</Txt>
+                <Txt>{item.fullname}</Txt>
               </TouchableOpacity>
             )
           }}

@@ -12,23 +12,12 @@ const combatStatusOptions = (charId: string) =>
     staleTime: Infinity
   })
 
-export function useCombatStatus(charId: string) {
+export function useCombatStatus<R>(charId: string, select?: (state: CombatStatus) => R) {
   const q = combatStatusOptions(charId)
   const cb = useCallback((payload: DbCombatStatus) => new CombatStatus(payload), [])
   useSub<CombatStatus, DbCombatStatus>({ queryKey: q.queryKey, cb })
-  return useQuery(q)
+  return useQuery({ ...q, select })
 }
-
-export const useCurrentActionPoints = (charId: string) =>
-  useQuery({
-    ...combatStatusOptions(charId),
-    select: data => data.currAp
-  })
-export const useCurrentCombatId = (charId: string) =>
-  useQuery({
-    ...combatStatusOptions(charId),
-    select: data => data.combatId
-  })
 
 export const useContendersCombatStatus = (ids: string[]) =>
   useQueries({
