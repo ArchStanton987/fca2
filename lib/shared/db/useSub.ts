@@ -36,6 +36,23 @@ export function useSub<T, Db>(params: UseSubParams<T, Db>) {
   }, [path, queryKey, queryClient, cb])
 }
 
+export function useMultiSub<T, Db>(paramsArray: UseSubParams<T, Db>[]) {
+  const queryClient = useQueryClient()
+
+  useEffect(() => {
+    const unsubscribers = paramsArray.map(({ queryKey, path, cb }) =>
+      subscribeToPath<Db>(path ?? queryKey.join("/"), data => {
+        const newData = cb?.(data) ?? data
+        queryClient.setQueryData(queryKey, newData)
+      })
+    )
+
+    return () => {
+      unsubscribers.forEach(unsub => unsub())
+    }
+  }, [paramsArray, queryClient])
+}
+
 // const combatQueries = {
 //   combat: (id: string) =>
 //     queryOptions({
