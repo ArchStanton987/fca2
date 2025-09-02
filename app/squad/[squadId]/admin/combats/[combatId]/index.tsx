@@ -4,7 +4,6 @@ import { useLocalSearchParams } from "expo-router"
 
 import Playable from "lib/character/Playable"
 import { CombatStatus } from "lib/character/combat-status/combat-status.types"
-import { useContendersCombatStatus } from "lib/character/combat-status/use-cases/sub-combat-status"
 import Combat from "lib/combat/Combat"
 import Toast from "react-native-toast-message"
 
@@ -15,11 +14,12 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useAdmin } from "contexts/AdminContext"
 import useRtdbSub from "hooks/db/useRtdbSub"
+import CombatStatusProvider, { useCombatStatus } from "providers/CombatStatusProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
 import { getDDMMYYYY, getHHMM } from "utils/date"
 
-export default function AdminCombatScreen() {
+function AdminCombat() {
   const useCases = useGetUseCases()
   const { combatId } = useLocalSearchParams<{ combatId: string }>()
 
@@ -29,9 +29,9 @@ export default function AdminCombatScreen() {
   const combat = dbCombat ? new Combat({ ...dbCombat, id: combatId }) : null
   const contendersRecord = combat ? { ...combat.players, ...combat.npcs } : {}
   const contendersIds = Object.keys(contendersRecord)
-  const contendersCombatStatus = useContendersCombatStatus(contendersIds)
+  const contendersCombatStatus = useCombatStatus()
 
-  if (!combat || contendersCombatStatus.some(e => e.isLoading)) {
+  if (!combat) {
     return (
       <DrawerPage>
         <Section style={{ flex: 1 }} title="informations">
@@ -47,14 +47,14 @@ export default function AdminCombatScreen() {
   const contendersPlayable: Record<string, Playable> = {}
   contendersIds.forEach((id, i) => {
     const playable = allPlayable[id]
-    const combatStatus = contendersCombatStatus[i].data
+    const combatStatus = contendersCombatStatus[i]
     if (!playable || !combatStatus) throw new Error(`Playable with id ${id} not found`)
     contendersStatus[id] = { combatStatus, maxAp: playable.secAttr.curr.actionPoints }
     contenders[id] = { char: playable, combatStatus }
     contendersPlayable[id] = playable
   })
 
-  const isFightActive = contendersCombatStatus.some(e => e.data?.combatId === combatId)
+  const isFightActive = Object.values(contendersCombatStatus).some(e => e.combatId === combatId)
 
   const deleteCombat = async () => {
     try {
@@ -118,5 +118,13 @@ export default function AdminCombatScreen() {
         </TouchableOpacity>
       </ScrollSection>
     </DrawerPage>
+  )
+}
+
+export default function AdminCombatScreen() {
+  return (
+    <CombatStatusProvider>
+      <AdminCombat />
+    </CombatStatusProvider>
   )
 }

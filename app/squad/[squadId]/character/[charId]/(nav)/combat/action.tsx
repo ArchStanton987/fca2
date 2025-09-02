@@ -3,9 +3,9 @@ import { ReactNode } from "react"
 import { Redirect } from "expo-router"
 
 import {
+  getDefaultPlayingId,
   getInitiativePrompts,
-  getPlayerCanReact,
-  getPlayingOrder
+  getPlayerCanReact
 } from "lib/combat/utils/combat-utils"
 
 import List from "components/List"
@@ -13,6 +13,7 @@ import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { SlidesProvider } from "providers/SlidesProvider"
 import ActionUnavailableScreen from "screens/CombatScreen/ActionUnavailableScreen"
 import InitiativeScreen from "screens/CombatScreen/InitiativeScreen"
@@ -37,22 +38,21 @@ function SlideList() {
 
 function WithActionRedirections({ children }: { children: ReactNode }) {
   const char = useCharacter()
-  const { players, npcs, combat } = useCombat()
+  const { combat } = useCombat()
+  const contendersCombatStatus = useCombatStatus()
+  const combatStatus = useCombatStatus(char.charId)
 
   if (!combat?.id) return <SlideError error={slideErrors.noCombatError} />
 
-  const prompts = getInitiativePrompts(char.charId, players ?? {}, npcs ?? {})
+  const prompts = getInitiativePrompts(char.charId, contendersCombatStatus)
   if (prompts.playerShouldRollInitiative) return <InitiativeScreen />
   if (prompts.shouldWaitOthers) return <WaitInitiativeScreen />
 
-  const contenders = getPlayingOrder({ ...players, ...npcs })
-  const defaultPlayingId =
-    contenders.find(c => c.char.status.combatStatus === "active")?.char.charId ??
-    contenders.find(c => c.char.status.combatStatus === "wait")?.char.charId
+  const defaultPlayingId = getDefaultPlayingId(contendersCombatStatus)
   const playingId = combat.currActorId || defaultPlayingId
   const isPlaying = playingId === char.charId
 
-  const canReact = getPlayerCanReact(char, combat)
+  const canReact = getPlayerCanReact({ char, combatStatus }, combat?.currAction)
   if (canReact) return <Redirect href={{ pathname: routes.combat.reaction }} />
 
   if (!isPlaying) return <ActionUnavailableScreen />

@@ -3,7 +3,7 @@ import { createContext, useContext, useMemo } from "react"
 import Character from "lib/character/Character"
 import Playable from "lib/character/Playable"
 import { useCurrCharId } from "lib/character/character-store"
-import { useCombatStatus } from "lib/character/combat-status/use-cases/sub-combat-status"
+import { useCharCombatStatus } from "lib/character/combat-status/use-cases/sub-combat-status"
 import Combat from "lib/combat/Combat"
 import NonHuman from "lib/npc/NonHuman"
 
@@ -34,7 +34,7 @@ export default function CombatProvider({ children }: { children: React.ReactNode
   const squad = useSquad()
 
   const charId = useCurrCharId()
-  const combatId = useCombatStatus(charId, state => state.combatId).data ?? ""
+  const combatId = useCharCombatStatus(charId)?.data?.combatId ?? ""
   const dbCombat = useRtdbSub(useCases.combat.sub({ id: combatId }))
 
   const playersIds = useMemo(() => Object.keys(dbCombat?.players ?? {}), [dbCombat])

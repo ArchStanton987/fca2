@@ -3,7 +3,6 @@ import { TouchableOpacity } from "react-native"
 import { router, useLocalSearchParams } from "expo-router"
 
 import { useSetCurrCharId } from "lib/character/character-store"
-import { useCombatStatus } from "lib/character/combat-status/use-cases/sub-combat-status"
 
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
@@ -12,6 +11,7 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useAdmin } from "contexts/AdminContext"
 import { useSquad } from "contexts/SquadContext"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
 
@@ -22,7 +22,7 @@ export default function EnemyScreen() {
   const squad = useSquad()
   const { npcs } = useAdmin()
   const currNpc = npcs[npcId]
-  const combatStatus = useCombatStatus(npcId)
+  const { combatId } = useCombatStatus(npcId)
 
   const setChar = useSetCurrCharId()
 
@@ -38,7 +38,7 @@ export default function EnemyScreen() {
     useCases.npc.delete({ squad, playable: npcs[npcId] })
   }
 
-  if (!npcs[npcId] || combatStatus.isLoading) {
+  if (!npcs[npcId]) {
     return (
       <DrawerPage>
         <Section style={{ flex: 1 }} title="informations">
@@ -48,7 +48,7 @@ export default function EnemyScreen() {
     )
   }
 
-  const isFighting = !!combatStatus.data?.combatId
+  const isFighting = !!combatId
   const { firstname, description, templateId } = currNpc.meta
 
   return (

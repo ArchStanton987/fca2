@@ -3,7 +3,6 @@ import { StyleSheet, View } from "react-native"
 import { router, useLocalSearchParams } from "expo-router"
 
 import { useSetCurrCharId } from "lib/character/character-store"
-import { DbStatus } from "lib/character/status/status.types"
 import Animated, { FadingTransition } from "react-native-reanimated"
 
 import CheckBox from "components/CheckBox/CheckBox"
@@ -12,16 +11,13 @@ import ProgressionBar from "components/ProgressionBar/ProgressionBar"
 import Row from "components/Row"
 import Txt from "components/Txt"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import colors from "styles/colors"
 
 import CombatOrderText from "./CombatOrderText"
 
 type OrderRowProps = {
   charId: string
-  name?: string
-  ap?: number
-  initiative?: number
-  status: DbStatus["combatStatus"]
   isPlaying?: boolean
   hasFinishedRound?: boolean
   isCombinedAction?: boolean
@@ -92,15 +88,15 @@ export function OrderRowHeader() {
 
 export default function OrderRow(props: OrderRowProps) {
   const params = useLocalSearchParams<{ charId: string; squadId: string }>()
-  const { charId, name, ap, isPlaying, status, initiative, hasFinishedRound, isCombinedAction } =
-    props
+  const { charId, isPlaying, hasFinishedRound, isCombinedAction } = props
+  const { combatStatus, currAp, initiative } = useCombatStatus(charId)
   const { players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
   const contender = contenders[charId]
-  const { health } = contender.char
+  const { health, meta } = contender
   const { hp, maxHp } = health
 
-  const textProps = { isPlaying, status, hasFinishedRound }
+  const textProps = { isPlaying, combatStatus, hasFinishedRound }
 
   const setCurrCharId = useSetCurrCharId()
 
@@ -124,7 +120,7 @@ export default function OrderRow(props: OrderRowProps) {
         <View style={[styles.withBorder, isPlaying && styles.playing]}>
           <Col style={styles.nameCol}>
             <CombatOrderText {...textProps}>
-              {name ?? ""}
+              {meta.firstname ?? ""}
               {isCombinedAction && isPlaying ? " C" : ""}
             </CombatOrderText>
           </Col>
@@ -145,7 +141,7 @@ export default function OrderRow(props: OrderRowProps) {
             ) : null}
           </Row>
           <View style={styles.dataRow}>
-            <CombatOrderText {...textProps}>{ap ?? 0}</CombatOrderText>
+            <CombatOrderText {...textProps}>{currAp ?? 0}</CombatOrderText>
           </View>
           <View style={styles.dataRow}>
             <CombatOrderText {...textProps}>{initiative ?? 1000}</CombatOrderText>

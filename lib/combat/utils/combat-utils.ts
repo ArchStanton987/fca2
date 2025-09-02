@@ -47,9 +47,10 @@ export const getActionId = (combat: Combat | null) => {
   return roundActions.length + 1
 }
 
-export const getPlayingOrder = (contenders: Record<string, CombatStatus>) => {
+export const getPlayingOrder = (contendersRecord: Record<string, CombatStatus>) => {
   // sort contenders by initiative and current ap, then combat status inactive, then dead
-  const sortedContenders = Object.values(contenders)
+  const contenders = Object.entries(contendersRecord).map(([id, value]) => ({ id, ...value }))
+  const sortedContenders = contenders
     .filter(c => c.combatStatus !== "inactive" && c.combatStatus !== "dead")
     .sort((a, b) => {
       if (a.currAp === b.currAp) return b.initiative - a.initiative
@@ -58,6 +59,14 @@ export const getPlayingOrder = (contenders: Record<string, CombatStatus>) => {
   const inactiveContenders = Object.values(contenders).filter(c => c.combatStatus === "inactive")
   const deadContenders = Object.values(contenders).filter(c => c.combatStatus === "dead")
   return [...sortedContenders, ...inactiveContenders, ...deadContenders]
+}
+
+export const getDefaultPlayingId = (contendersRecord: Record<string, CombatStatus>) => {
+  const contenders = getPlayingOrder(contendersRecord)
+  const id =
+    contenders.find(c => c.combatStatus === "active")?.id ??
+    contenders.find(c => c.combatStatus === "wait")?.id
+  return id
 }
 
 export const getActivePlayersWithAp = (contenders: Record<string, CombatStatus>) =>
@@ -98,12 +107,7 @@ export const getIsActionEndingRound = (
   return false
 }
 
-export const getInitiativePrompts = (
-  charId: string,
-  players: Record<string, CombatStatus>,
-  enemies: Record<string, CombatStatus>
-) => {
-  const contenders = { ...players, ...enemies }
+export const getInitiativePrompts = (charId: string, contenders: Record<string, CombatStatus>) => {
   if (!isKeyOf(charId, contenders)) {
     return { playerShouldRollInitiative: false, shouldWaitOthers: false }
   }
@@ -299,10 +303,7 @@ export const getRollFinalScore = (roll: Roll) => {
   return sumAbilities - dice + bonus - targetArmorClass - difficulty
 }
 
-export const getPlayerCanReact = (player: PlayerData, combat: Combat) => {
-  const roundId = getCurrentRoundId(combat)
-  const actionId = getActionId(combat)
-  const action = combat.rounds?.[roundId]?.[actionId]
+export const getPlayerCanReact = (player: PlayerData, action: Action) => {
   if (!action) return false
   const { char, combatStatus } = player
 

@@ -13,29 +13,25 @@ const combatStatusOptions = (charId: string) =>
     staleTime: Infinity
   })
 
-// export function useSubCombatStatus<R>(charId: string, select?: (state: CombatStatus) => R) {
-//   const o = combatStatusOptions(charId)
-//   const cb = useCallback((payload: DbCombatStatus) => new CombatStatus(payload), [])
-//   useSub<CombatStatus, DbCombatStatus>({ queryKey: o.queryKey, cb })
-//   return useQuery({ ...o, select })
-// }
-
-export function useSubCombatStatus(charId: string) {
+export function useCharCombatStatus(charId: string) {
   const q = combatStatusOptions(charId)
   const cb = useCallback((payload: DbCombatStatus) => new CombatStatus(payload), [])
   useSub<CombatStatus, DbCombatStatus>({ queryKey: q.queryKey, cb })
   return useQuery(q)
 }
 
+const cb = (res: DbCombatStatus) => new CombatStatus(res)
+
 export const useContendersCombatStatus = (ids: string[]) => {
   const options = ids.map(id => combatStatusOptions(id))
-  useMultiSub(options.map(o => ({ queryKey: o.queryKey })))
-  useQueries({
+  useMultiSub(options.map(o => ({ queryKey: o.queryKey, cb })))
+  return useQueries({
     queries: options,
     combine: useCallback(
       (results: Array<ReturnType<typeof useQuery<CombatStatus>>>) => ({
+        isError: results.some(r => r.isError),
         isPending: results.some(r => r.isPending),
-        data: Object.fromEntries(ids.map((id, i) => [id, results[i].data]))
+        data: Object.fromEntries(ids.map((id, i) => (results[i].data ? [id, results[i].data] : [])))
       }),
       [ids]
     )

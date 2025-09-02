@@ -22,6 +22,7 @@ export default class Combat {
   currActorId: string
   players: Record<string, string>
   npcs: Record<string, string>
+  contenders: Record<string, string>
   rounds: Record<number, Record<number, Action>>
 
   constructor(payload: DbCombatEntry & { id: string }) {
@@ -34,6 +35,7 @@ export default class Combat {
     this.currActorId = payload.currActorId
     this.players = payload.players
     this.npcs = payload.npcs
+    this.contenders = { ...payload.players, ...payload.npcs }
     this.rounds = Object.fromEntries(
       Object.entries(payload.rounds ?? {}).map(([rId, round]) => {
         const roundId = Number(rId)
