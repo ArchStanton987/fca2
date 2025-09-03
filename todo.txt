@@ -24,7 +24,6 @@ get attacks(): Attack[]
 
 
 COMBAT :
-- [HIGH] garder index de la slide lorsque revient dessus
 - [MED] système HP / limbs HP (with crit part?)
 - [MED] assignation upSkills pour perso générés (>100)
 - [LOW] besoin recharger personnage lorsque nouveau combat
@@ -51,7 +50,29 @@ TODO: sound
 
 
 
+export type CombatId = string;
 
+export interface DbCombat {
+  info: {
+    gameId: string;
+    date: string; // ISO string
+    location?: string;
+    title: string;
+    description: string;
+    contenders: Record<PlayableId, PlayableId>;
+  };
+  history: Record<number, Record<number, Action>>;
+  state: {
+    action: Action;
+    actorIdOverride: string;
+  };
+}
+
+export type CombatInfo = DbCombat["info"] & { combatId: CombatId };
+
+export type CombatHistory = DbCombat["history"];
+
+export type CombatState = DbCombat["state"];
 
 
 
