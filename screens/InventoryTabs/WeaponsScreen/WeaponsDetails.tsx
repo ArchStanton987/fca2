@@ -1,10 +1,15 @@
 import React from "react"
 
 import ammoMap from "lib/objects/data/ammo/ammo"
+import { getCanLoad, getCanUnload } from "lib/objects/data/weapons/weapons-utils"
 import { Weapon, damageTypeMap } from "lib/objects/data/weapons/weapons.types"
 
 import List from "components/List"
+import Spacer from "components/Spacer"
 import Txt from "components/Txt"
+import RevertColorsPressable from "components/wrappers/RevertColorsPressable/RevertColorsPressable"
+import { useCharacter } from "contexts/CharacterContext"
+import { useGetUseCases } from "providers/UseCasesProvider"
 
 const getWeaponDetails = ({ data }: Weapon) => [
   { label: "PA", value: `${data.basicApCost || "-"} / ${data.specialApCost || "-"}` },
@@ -20,16 +25,46 @@ const getWeaponDetails = ({ data }: Weapon) => [
 ]
 
 export default function WeaponsDetails({ charWeapon }: { charWeapon: Weapon | null }) {
+  const useCases = useGetUseCases()
+  const char = useCharacter()
   const weaponDetails = charWeapon ? getWeaponDetails(charWeapon) : []
+
+  const reload = () => {
+    if (!charWeapon) return
+    useCases.weapons.use(char, charWeapon, "reload", 0)
+  }
+  const unload = () => {
+    if (!charWeapon) return
+    useCases.weapons.use(char, charWeapon, "unload", 0)
+  }
+
+  const canLoad = charWeapon ? getCanLoad(charWeapon, char) : false
+  const canUnload = charWeapon ? getCanUnload(charWeapon, char) : false
+
   return (
-    <List
-      keyExtractor={item => item.label}
-      data={weaponDetails}
-      renderItem={({ item }) => (
-        <Txt>
-          {item.label}: {item.value}
-        </Txt>
-      )}
-    />
+    <>
+      <List
+        keyExtractor={item => item.label}
+        data={weaponDetails}
+        renderItem={({ item }) => (
+          <Txt>
+            {item.label}: {item.value}
+          </Txt>
+        )}
+      />
+      <Spacer y={20} />
+      {canLoad ? (
+        <RevertColorsPressable onPress={() => reload()}>
+          <Txt>RECHARGER</Txt>
+        </RevertColorsPressable>
+      ) : null}
+      <Spacer y={20} />
+      {canUnload ? (
+        <RevertColorsPressable onPress={() => unload()}>
+          <Txt>DECHARGER</Txt>
+        </RevertColorsPressable>
+      ) : null}
+      <Spacer y={20} />
+    </>
   )
 }
