@@ -1,5 +1,6 @@
 import ActionIndicator from "lib/combat/ui/ActionIndicator"
 import RoundIndicator from "lib/combat/ui/RoundIndicator"
+import WeaponIndicator from "lib/combat/ui/WeaponIndicator"
 import ApVisualizer from "lib/combat/ui/action-points/ApVisualizer"
 
 import DrawerPage from "components/DrawerPage"
@@ -7,7 +8,6 @@ import Row from "components/Row"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
 import HealthFigure from "components/draws/HealthFigure/HealthFigure"
-import WeaponInfo from "screens/CombatScreen/slides/WeaponInfo"
 import layout from "styles/layout"
 
 export default function CombatPage() {
@@ -20,9 +20,7 @@ export default function CombatPage() {
         <Spacer x={layout.globalPadding} />
         <ActionIndicator />
         <Spacer x={layout.globalPadding} />
-        <Section title="arme" style={{ width: 160 }}>
-          <WeaponInfo />
-        </Section>
+        <WeaponIndicator />
         <Spacer x={layout.globalPadding} />
         <Section
           title="santé"
