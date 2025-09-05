@@ -11,10 +11,9 @@ import DrawerSlide from "components/Slides/DrawerSlide"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import HealthFigure from "components/draws/HealthFigure/HealthFigure"
-import { useCharacter } from "contexts/CharacterContext"
-import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useInventories } from "providers/InventoriesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
 
@@ -34,18 +33,17 @@ const styles = StyleSheet.create({
 
 export default function ChallengeSlide() {
   const useCases = useGetUseCases()
-  const { charId } = useCharacter()
   const form = useActionForm()
-  const { itemDbKey } = form
+  const { itemDbKey, actorId } = form
   const { reset } = useActionApi()
-  const inv = useInventory()
+  const { consumablesRecord } = useInventories(actorId)
   const { players, npcs, combat } = useCombat()
   const contenders = { ...players, ...npcs }
 
   const submit = async (item: Consumable) => {
     if (!combat) throw new Error("no combat")
     try {
-      const action = { ...combat.currAction, actorId: charId }
+      const action = combat.currAction
       await useCases.combat.doCombatAction({ action, contenders, combat, item })
       Toast.show({ type: "custom", text1: "Action réalisée" })
       reset()
@@ -55,9 +53,9 @@ export default function ChallengeSlide() {
   }
 
   if (!itemDbKey) return <SlideError error={slideErrors.noItemError} />
-  const isConsumable = itemDbKey in inv.consumablesRecord
+  const isConsumable = itemDbKey in consumablesRecord
   if (!isConsumable) return <SlideError error={slideErrors.noConsumableError} />
-  const item = inv.consumablesRecord[itemDbKey]
+  const item = consumablesRecord[itemDbKey]
 
   return (
     <DrawerSlide>

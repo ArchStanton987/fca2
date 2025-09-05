@@ -3,6 +3,7 @@ import { Platform, View } from "react-native"
 
 import { Slot, SplashScreen } from "expo-router"
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { useFonts } from "expo-font"
 import { useKeepAwake } from "expo-keep-awake"
 import * as ScreenOrientation from "expo-screen-orientation"
@@ -19,6 +20,8 @@ import colors from "styles/colors"
 import AuthContainer from "../providers/AuthProvider"
 
 let didInit = false
+
+const queryClient = new QueryClient()
 
 SplashScreen.preventAutoHideAsync()
 
@@ -57,31 +60,35 @@ export default function RootLayout() {
   if (Platform.OS !== "web") {
     return (
       <WithKeepAwake>
-        <View style={{ flex: 1, backgroundColor: colors.primColor }}>
-          <AuthContainer>
-            <AdditionalElementsProvider>
-              <UseCasesProvider>
-                <StatusBar hidden />
-                <Slot />
-                <Toast config={toastConfig} />
-              </UseCasesProvider>
-            </AdditionalElementsProvider>
-          </AuthContainer>
-        </View>
+        <QueryClientProvider client={queryClient}>
+          <View style={{ flex: 1, backgroundColor: colors.primColor }}>
+            <AuthContainer>
+              <AdditionalElementsProvider>
+                <UseCasesProvider>
+                  <StatusBar hidden />
+                  <Slot />
+                  <Toast config={toastConfig} />
+                </UseCasesProvider>
+              </AdditionalElementsProvider>
+            </AuthContainer>
+          </View>
+        </QueryClientProvider>
       </WithKeepAwake>
     )
   }
   return (
-    <View style={{ flex: 1, backgroundColor: colors.primColor }}>
-      <AuthContainer>
-        <AdditionalElementsProvider>
-          <UseCasesProvider>
-            <StatusBar hidden />
-            <Slot />
-            <Toast config={toastConfig} />
-          </UseCasesProvider>
-        </AdditionalElementsProvider>
-      </AuthContainer>
-    </View>
+    <QueryClientProvider client={queryClient}>
+      <View style={{ flex: 1, backgroundColor: colors.primColor }}>
+        <AuthContainer>
+          <AdditionalElementsProvider>
+            <UseCasesProvider>
+              <StatusBar hidden />
+              <Slot />
+              <Toast config={toastConfig} />
+            </UseCasesProvider>
+          </AdditionalElementsProvider>
+        </AuthContainer>
+      </View>
+    </QueryClientProvider>
   )
 }

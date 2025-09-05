@@ -10,7 +10,9 @@ import Row from "components/Row"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
-import { useInventory } from "contexts/InventoryContext"
+import { useActionForm } from "providers/ActionProvider"
+import { useCombat } from "providers/CombatProvider"
+import { useInventories } from "providers/InventoriesProvider"
 import colors from "styles/colors"
 
 import AmmoIndicator from "../AmmoIndicator"
@@ -25,19 +27,27 @@ const styles = StyleSheet.create({
 })
 
 export default function WeaponInfo({ selectedWeapon }: { selectedWeapon?: string }) {
-  const char = useCharacter()
-  const inv = useInventory()
-  let weapon = char.unarmed
-  const isHuman = char instanceof Character
+  const form = useActionForm()
+
+  const { charId } = useCharacter()
+  const { players, npcs } = useCombat()
+  const contenders = { ...players, ...npcs }
+  const actorId = form.actorId === "" ? charId : form.actorId
+  const contender = contenders[actorId].char
+
+  const inv = useInventories(actorId)
+
+  let weapon = contender.unarmed
+  const isHuman = contender instanceof Character
   if (selectedWeapon) {
     weapon = isHuman
-      ? inv.weaponsRecord[selectedWeapon] ?? char.unarmed
-      : char.equipedObjectsRecord.weapons[selectedWeapon]
+      ? inv.weaponsRecord[selectedWeapon] ?? contender.unarmed
+      : contender.equipedObjectsRecord.weapons[selectedWeapon]
   }
 
   if (!weapon) return null
 
-  const hasMalus = getHasStrengthMalus(weapon, char.special.curr)
+  const hasMalus = getHasStrengthMalus(weapon, contender.special.curr)
 
   return (
     <>

@@ -33,7 +33,8 @@ export function useSub<T, Db>(params: UseSubParams<T, Db>) {
       queryClient.setQueryData(queryKey, newData)
     })
     return () => unsubscribe()
-  }, [path, queryKey, queryClient, cb])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 }
 
 export function useMultiSub<T, Db>(paramsArray: UseSubParams<T, Db>[]) {
@@ -50,5 +51,6 @@ export function useMultiSub<T, Db>(paramsArray: UseSubParams<T, Db>[]) {
     return () => {
       unsubscribers.forEach(unsub => unsub())
     }
-  }, [paramsArray, queryClient])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 }

@@ -8,10 +8,11 @@ import { create } from "zustand"
 import DrawerPage from "components/DrawerPage"
 import { getSlideWidth } from "components/Slides/slide.utils"
 
-type SliderId = "actionSlider" | "reactionSlider"
+type SliderId = "actionSlider" | "reactionSlider" | "gmActionSlider"
 
 type SlidesStoreType = {
   actionSlider: number
+  gmActionSlider: number
   reactionSlider: number
   actions: {
     setSlideIndex: (id: SliderId, index: number) => void
@@ -20,6 +21,7 @@ type SlidesStoreType = {
 
 const useSlidersStore = create<SlidesStoreType>(set => ({
   actionSlider: 0,
+  gmActionSlider: 0,
   reactionSlider: 0,
   actions: {
     setSlideIndex: (id: SliderId, index: number) => set(state => ({ ...state, [id]: index }))

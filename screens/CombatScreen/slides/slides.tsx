@@ -1,6 +1,5 @@
-import actions from "lib/combat/const/actions"
-
 import { SlideProps } from "components/Slides/Slide.types"
+import { ActionFormType } from "providers/ActionProvider"
 
 import ActionTypeSlide from "./ActionTypeSlide/ActionTypeSlide"
 import AimSlide from "./AimSlide/AimSlide"
@@ -9,12 +8,18 @@ import ChallengeSlide from "./ChallengeSlide"
 import DamageLocalizationSlide from "./DamageLocalizationSlide/DamageLocalizationSlide"
 import DamageSlide from "./DamageSlide/DamageSlide"
 import DiceRollSlide from "./DiceRollSlide/DiceRollSlide"
+import PickActorSlide from "./PickActorSlide"
 import PickTargetSlide from "./PickTargetSlide/PickTargetSlide"
 import PickUpItemSlide from "./PickUpItemSlide"
 import ValidateSlide from "./ValidateSlide/ValidateSlide"
 import ScoreResultSlide from "./score-result/ScoreResultSlide"
 
-const initSlide = {
+const pickActorSlide = {
+  id: "pickActor",
+  renderSlide: (props: SlideProps) => <PickActorSlide {...props} />
+}
+
+const pickActionSlide = {
   id: "actionType",
   renderSlide: (props: SlideProps) => <ActionTypeSlide {...props} />
 }
@@ -51,9 +56,9 @@ const validateSlide = {
   renderSlide: () => <ValidateSlide />
 }
 
-const movementSlides = [initSlide, apAssignmentSlide, diceRollSlide, diceResultSlide]
+const movementSlides = [pickActionSlide, apAssignmentSlide, diceRollSlide, diceResultSlide]
 
-const baseItemSlides = [initSlide, apAssignmentSlide]
+const baseItemSlides = [pickActionSlide, apAssignmentSlide]
 const basicAttackSlides = [
   ...baseItemSlides,
   pickTargetSlide,
@@ -92,27 +97,28 @@ const aimAttackSlides = [
   validateSlide
 ]
 
-const getSlides = <T extends keyof typeof actions>(
-  actionType: T | "",
-  actionSubType?: keyof (typeof actions)[T]["subtypes"] | string
-) => {
-  if (actionType === "other") return baseItemSlides
-  if (actionType === "movement") return movementSlides
+const getSlides = (form: ActionFormType, isGm = false) => {
+  const { actionType, actionSubtype, actorId } = form
+  let result
+  if (actorId === "" && isGm) return [pickActorSlide]
+  if (actionType === "other") result = baseItemSlides
+  if (actionType === "movement") result = movementSlides
   if (actionType === "item") {
-    if (actionSubType === "throw") return basicAttackSlides
-    if (actionSubType === "pickUp") return pickUpItemSlides
-    if (actionSubType === "use") return useItemSlides
-    return baseItemSlides
+    if (actionSubtype === "throw") result = basicAttackSlides
+    if (actionSubtype === "pickUp") result = pickUpItemSlides
+    if (actionSubtype === "use") result = useItemSlides
+    result = baseItemSlides
+  } else if (actionType === "weapon") {
+    if (actionSubtype === "reload") result = baseItemSlides
+    if (actionSubtype === "unload") result = baseItemSlides
+    if (actionSubtype === "throw") result = basicAttackSlides
+    if (actionSubtype === "hit") result = basicAttackSlides
+    if (actionSubtype === "aim") result = aimAttackSlides
+    result = basicAttackSlides
+  } else {
+    result = [pickActionSlide]
   }
-  if (actionType === "weapon") {
-    if (actionSubType === "reload") return baseItemSlides
-    if (actionSubType === "unload") return baseItemSlides
-    if (actionSubType === "throw") return basicAttackSlides
-    if (actionSubType === "hit") return basicAttackSlides
-    if (actionSubType === "aim") return aimAttackSlides
-    return basicAttackSlides
-  }
-  return [initSlide]
+  return isGm ? [pickActorSlide, ...result] : result
 }
 
 export default getSlides

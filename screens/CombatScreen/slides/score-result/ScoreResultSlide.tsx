@@ -12,9 +12,9 @@ import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
-import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useInventories } from "providers/InventoriesProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
@@ -27,13 +27,15 @@ import styles from "./ScoreResultSlide.styles"
 
 export default function ScoreResultSlide({ slideIndex }: SlideProps) {
   const useCases = useGetUseCases()
-  const char = useCharacter()
-  const inv = useInventory()
-  const { weaponsRecord = {}, consumablesRecord = {} } = inv
-  const { charId, secAttr, special } = char
   const { combat, npcs, players } = useCombat()
   const contenders = { ...players, ...npcs }
+  const character = useCharacter()
   const form = useActionForm()
+  const actorId = form.actorId === "" ? character.charId : form.actorId
+  const actor = contenders[actorId]?.char
+  const inv = useInventories(actorId)
+  const { weaponsRecord = {}, consumablesRecord = {} } = inv
+  const { secAttr, special } = actor
   const { itemDbKey = "" } = form
   const { actionType, actionSubtype, aimZone } = form
   const { reset } = useActionApi()
@@ -60,16 +62,16 @@ export default function ScoreResultSlide({ slideIndex }: SlideProps) {
 
   let obj
   if (form.actionType === "weapon") {
-    const isHuman = char instanceof Character
+    const isHuman = actor instanceof Character
     if (itemDbKey) {
       obj = isHuman
-        ? weaponsRecord[itemDbKey] ?? char.unarmed
-        : char.equipedObjectsRecord.weapons[itemDbKey]
+        ? weaponsRecord[itemDbKey] ?? actor.unarmed
+        : actor.equipedObjectsRecord.weapons[itemDbKey]
     }
   } else {
     obj = consumablesRecord[itemDbKey]
   }
-  const { skillLabel } = getActorSkillFromAction({ ...form, item: obj }, char)
+  const { skillLabel } = getActorSkillFromAction({ ...form, item: obj }, actor)
 
   const isDefaultCritSuccess = dice !== 0 && dice <= secAttr.curr.critChance
   const isCritFail = dice !== 0 && dice >= getCritFailureThreshold(special.curr)
@@ -88,8 +90,7 @@ export default function ScoreResultSlide({ slideIndex }: SlideProps) {
     }
     try {
       const item = action.itemDbKey ? inv.allItems[action.itemDbKey] : undefined
-      const payload = { ...action, actorId: charId }
-      await useCases.combat.doCombatAction({ combat, contenders, action: payload, item })
+      await useCases.combat.doCombatAction({ combat, contenders, action, item })
       Toast.show({ type: "custom", text1: "Action réalisée !" })
       reset()
     } catch (error) {

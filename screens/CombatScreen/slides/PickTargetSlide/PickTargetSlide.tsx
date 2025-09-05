@@ -35,16 +35,16 @@ const styles = StyleSheet.create({
 export default function PickTargetSlide({ slideIndex }: SlideProps) {
   const { scrollTo } = useScrollTo()
 
-  const scrollNext = () => {
-    scrollTo(slideIndex + 1)
-  }
   const useCases = useGetUseCases()
-  const { meta, charId } = useCharacter()
-  const { isEnemy } = meta
   const { combat, players, npcs } = useCombat()
+  const character = useCharacter()
   const contenders = { ...players, ...npcs }
+  const form = useActionForm()
+  const { targetId } = form
+  const actorId = form.actorId === "" ? character.charId : form.actorId
+  const actor = contenders[actorId]?.char
+  const { isEnemy } = actor.meta
 
-  const { targetId } = useActionForm()
   const { setForm } = useActionApi()
 
   const onPressPlayer = (id: string) => {
@@ -54,12 +54,12 @@ export default function PickTargetSlide({ slideIndex }: SlideProps) {
   const submit = () => {
     if (!combat) return
     useCases.combat.updateAction({ combat, payload: { targetId } })
-    scrollNext?.()
+    scrollTo(slideIndex + 1)
   }
 
   const aliveContenders = Object.values(contenders).filter(c => {
     const isAlive = c.char.status.combatStatus !== "dead"
-    const isNotCurrPlayer = c.char.charId !== charId
+    const isNotCurrPlayer = c.char.charId !== actorId
     return isAlive && isNotCurrPlayer
   })
   const hostiles = Object.values(aliveContenders).filter(c =>

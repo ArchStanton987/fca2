@@ -1,7 +1,6 @@
 import { createContext, useContext, useMemo } from "react"
 
 import Character from "lib/character/Character"
-import Playable from "lib/character/Playable"
 import Combat from "lib/combat/Combat"
 import { PlayerCombatData } from "lib/combat/combats.types"
 import NonHuman from "lib/npc/NonHuman"
@@ -14,7 +13,7 @@ import useRtdbSubs from "hooks/db/useRtdbSubs"
 
 import { useGetUseCases } from "./UseCasesProvider"
 
-type PlayerData = { char: Playable; combatData: PlayerCombatData }
+type PlayerData = { char: Character | NonHuman; combatData: PlayerCombatData }
 
 type CombatContextType = {
   combat: Combat | null

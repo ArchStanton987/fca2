@@ -1,5 +1,3 @@
-import { useCallback } from "react"
-
 import { queryOptions, useQueries, useQuery } from "@tanstack/react-query"
 import Character from "lib/character/Character"
 import NonHuman from "lib/npc/NonHuman"
@@ -8,7 +6,7 @@ import { CreatedElements } from "lib/objects/created-elements"
 import { DbInventory } from "lib/objects/data/objects.types"
 import { useMultiSub } from "lib/shared/db/useSub"
 
-const inventoriesOptions = (charId: string, charType: "characters" | "npcs") =>
+const options = (charId: string, charType: "characters" | "npcs") =>
   queryOptions({
     queryKey: ["v2", charType, charId, "inventory"],
     queryFn: () => new Promise<Inventory>(() => {}),
@@ -20,23 +18,22 @@ const useSubInventories = (
   contenders: Record<string, Character | NonHuman>,
   newElements: CreatedElements
 ) => {
-  const dataMap = Object.values(contenders).map(char => ({
-    options: inventoriesOptions(char.charId, char.meta.isNpc ? "npcs" : "characters"),
+  const contendersArr = Object.values(contenders)
+  const dataMap = contendersArr.map(char => ({
+    options: options(char.charId, char.meta.isNpc ? "npcs" : "characters"),
     cb: (payload: DbInventory) => new Inventory(payload, char, newElements)
   }))
-  useMultiSub(dataMap.map(({ options, cb }) => ({ queryKey: options.queryKey, cb })))
+  useMultiSub(dataMap.map(d => ({ queryKey: d.options.queryKey, cb: d.cb })))
+  const queries = contendersArr.map(c => options(c.charId, c.meta.isNpc ? "npcs" : "characters"))
   return useQueries({
-    queries: dataMap.map(({ options }) => options),
-    combine: useCallback(
-      (results: Array<ReturnType<typeof useQuery<Inventory>>>) => ({
-        isError: results.some(r => r.isError),
-        isPending: results.some(r => r.isPending),
-        data: Object.fromEntries(
-          dataMap.map((id, i) => (results[i].data ? [id, results[i].data] : []))
-        )
-      }),
-      [dataMap]
-    )
+    queries,
+    combine: (results: Array<ReturnType<typeof useQuery<Inventory>>>) => ({
+      isError: results.some(r => r.isError),
+      isPending: results.some(r => r.isPending),
+      data: Object.fromEntries(
+        results.map((r, i) => (r.data ? [contendersArr[i].charId, r.data] : []))
+      )
+    })
   })
 }
 

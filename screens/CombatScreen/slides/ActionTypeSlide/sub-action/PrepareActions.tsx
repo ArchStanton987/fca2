@@ -6,14 +6,19 @@ import ScrollSection from "components/Section/ScrollSection"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
+import { useCombat } from "providers/CombatProvider"
 
 // const title = [{ title: "action", containerStyle: { flex: 1 } }, { title: "pa" }]
 const title = "pa"
 
 export default function PrepareActions() {
-  const { status } = useCharacter()
-  const { actionSubtype } = useActionForm()
+  const { actionSubtype, ...rest } = useActionForm()
   const { setActionSubtype } = useActionApi()
+  const { charId } = useCharacter()
+  const { players, npcs } = useCombat()
+  const contenders = { ...players, ...npcs }
+  const actorId = rest.actorId === "" ? charId : rest.actorId
+  const { status } = contenders[actorId].char
   return (
     <ScrollSection style={{ flex: 1 }} title={title}>
       <List

@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useContext } from "react"
+import { ReactNode, createContext, useContext, useMemo } from "react"
 
 import useSubInventories from "lib/inventory/use-sub-inventories"
 import Inventory from "lib/objects/Inventory"
@@ -15,8 +15,10 @@ const InventoriesContext = createContext<InventoriesContextType>({})
 export default function InventoriesProvider({ children }: { children: ReactNode }) {
   const newElements = useCreatedElements()
   const { players, npcs } = useCombat()
-  const contenders = Object.fromEntries(
-    Object.entries({ ...players, ...npcs }).map(([id, c]) => [id, c.char])
+  const contenders = useMemo(
+    () =>
+      Object.fromEntries(Object.entries({ ...players, ...npcs }).map(([id, c]) => [id, c.char])),
+    [players, npcs]
   )
 
   const invSub = useSubInventories(contenders, newElements)
@@ -30,9 +32,12 @@ export default function InventoriesProvider({ children }: { children: ReactNode 
 export function useInventories(): InventoriesContextType
 export function useInventories(id: string): Inventory
 export function useInventories<R = Inventory>(id: string, select: (state: Inventory) => R): R
-export function useInventories(id?: string, select?: (state: Inventory) => unknown) {
+export function useInventories(
+  id?: string,
+  select: (state: Inventory) => unknown = state => state
+) {
   const inventories = useContext(InventoriesContext)
   if (!inventories) throw new Error("Inventories context not found")
   if (!id) return inventories
-  return select?.(inventories[id])
+  return select(inventories[id])
 }

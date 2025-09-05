@@ -12,23 +12,29 @@ import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
+import { useCombat } from "providers/CombatProvider"
 
 export default function WeaponActions() {
-  const { itemDbKey, actionSubtype } = useActionForm()
+  const { itemDbKey, actionSubtype, ...rest } = useActionForm()
+  const { players, npcs } = useCombat()
+  const contenders = { ...players, ...npcs }
+  const character = useCharacter()
+  const actorId = rest.actorId === "" ? character.charId : rest.actorId
+  const contender = contenders[actorId].char
+
   const { setActionSubtype } = useActionApi()
-  const char = useCharacter()
   const inv = useInventory()
-  let weapon = char.unarmed
-  const isHuman = char instanceof Character
+  let weapon = contender.unarmed
+  const isHuman = contender instanceof Character
   if (itemDbKey) {
     weapon = isHuman
-      ? inv.weaponsRecord[itemDbKey] ?? char.unarmed
-      : char.equipedObjectsRecord.weapons[itemDbKey]
+      ? inv.weaponsRecord[itemDbKey] ?? contender.unarmed
+      : contender.equipedObjectsRecord.weapons[itemDbKey]
   }
 
   if (!weapon) return null
 
-  const actions = getAvailableWeaponActions(weapon, char)
+  const actions = getAvailableWeaponActions(weapon, contender)
 
   return (
     <ScrollSection style={{ flex: 1 }} title="action - pa">
@@ -36,7 +42,7 @@ export default function WeaponActions() {
         data={actions}
         keyExtractor={item => item}
         renderItem={({ item }) => {
-          const apCost = getApCost(weapon, char, item)
+          const apCost = getApCost(weapon, contender, item)
           return (
             <ListItemSelectable
               isSelected={actionSubtype === item}

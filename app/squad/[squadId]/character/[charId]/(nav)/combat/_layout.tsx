@@ -15,11 +15,12 @@ const pNavElements = [
   { path: "action", label: "Action" }
 ]
 const gmNavElements = [
-  { path: "gm-difficulty", label: "MJ (diff)" },
-  { path: "gm-damage", label: "MJ (dég)" },
-  { path: "action-order", label: "MJ (ordre)" },
   { path: "recap", label: "Bagarre" },
-  { path: "action", label: "Action" }
+  // { path: "action", label: "Action" },
+  { path: "action-order", label: "MJ (ordre)" },
+  { path: "gm-action", label: "MJ (action)" },
+  { path: "gm-difficulty", label: "MJ (diff)" },
+  { path: "gm-damage", label: "MJ (dég)" }
 ]
 
 export default function CombatLayout() {

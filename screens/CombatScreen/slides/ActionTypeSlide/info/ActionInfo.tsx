@@ -5,6 +5,7 @@ import actions from "lib/combat/const/actions"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
+import { useCombat } from "providers/CombatProvider"
 import { isKeyOf } from "utils/ts-utils"
 
 import WeaponInfo from "../../WeaponInfo"
@@ -12,11 +13,15 @@ import ItemsActionInfo from "./ItemsActionInfo"
 import MovementInfo from "./MovementInfo"
 
 export default function ActionInfo() {
-  const { equipedObjects, unarmed } = useCharacter()
-  const weapons = equipedObjects.weapons.length > 0 ? equipedObjects.weapons : [unarmed]
-
-  const { itemDbKey, actionType, actionSubtype } = useActionForm()
+  const { itemDbKey, actionType, actionSubtype, ...rest } = useActionForm()
+  const { charId } = useCharacter()
   const { setForm } = useActionApi()
+  const { players, npcs } = useCombat()
+  const contenders = { ...players, ...npcs }
+  const actorId = rest.actorId === "" ? charId : rest.actorId
+  const contender = contenders[actorId].char
+  const { equipedObjects, unarmed } = contender
+  const weapons = equipedObjects.weapons.length > 0 ? equipedObjects.weapons : [unarmed]
 
   const toggleWeapon = () => {
     if (weapons.length < 2) return

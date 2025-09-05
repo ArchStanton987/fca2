@@ -20,9 +20,9 @@ import Txt from "components/Txt"
 import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import { useCharacter } from "contexts/CharacterContext"
-import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useInventories } from "providers/InventoriesProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
@@ -44,16 +44,18 @@ const styles = StyleSheet.create({
 
 export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
   const useCases = useGetUseCases()
-  const { status, secAttr, charId } = useCharacter()
-  const inventory = useInventory()
+  const character = useCharacter()
   const { combat, npcs, players } = useCombat()
   const contenders = { ...players, ...npcs }
   const form = useActionForm()
   const { actionType, actionSubtype, apCost } = form
+  const actorId = form.actorId === "" ? character.charId : form.actorId
+  const actor = contenders[actorId]
+  const inventory = useInventories(actorId)
   const { setForm, reset } = useActionApi()
 
-  const maxAp = secAttr.curr.actionPoints
-  const { currAp } = status
+  const maxAp = actor.char.secAttr.curr.actionPoints
+  const { currAp } = actor.char.status
 
   const { scrollTo } = useScrollTo()
 
@@ -81,7 +83,7 @@ export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
   const handleSubmit = async (item?: Consumable | Weapon | Clothing | MiscObject) => {
     if (!combat) return
 
-    const action = { ...combat?.currAction, apCost, actorId: charId }
+    const action = { ...combat?.currAction, apCost }
     try {
       await useCases.combat.doCombatAction({ contenders, combat, action, item })
       Toast.show({ type: "custom", text1: "Action réalisée" })

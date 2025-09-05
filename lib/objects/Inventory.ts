@@ -130,13 +130,10 @@ export default class Inventory {
   }
 
   get ammo(): Ammo[] {
-    return (
-      Object.entries(this.dbInventory.ammo || {})
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        .filter(([_, amount]) => amount > 0)
-        .map(([id, amount]) => ({ data: ammoMap[id as AmmoType], id: id as AmmoType, amount }))
-        .sort((a, b) => b.amount - a.amount)
-    )
+    return Object.entries(this.dbInventory.ammo || {})
+      .filter(([, amount]) => amount > 0)
+      .map(([id, amount]) => ({ data: ammoMap[id as AmmoType], id: id as AmmoType, amount }))
+      .sort((a, b) => b.amount - a.amount)
   }
 
   get caps(): number {

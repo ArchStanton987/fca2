@@ -7,7 +7,8 @@ import { Form } from "lib/shared/types/utils-types"
 
 import { getNewNumpadValue } from "components/NumPad/useNumPad"
 
-export type ActionStateContext = Form<{
+export type ActionFormType = Form<{
+  actorId: string
   actionType: ActionTypeId
   actionSubtype: string
   isCombinedAction: boolean
@@ -28,12 +29,14 @@ type ActionApiContext = {
       | { actionType: "weapon"; itemId: string; itemDbKey: string }
   ) => void
   setActionSubtype: (actionSubtype: string, apCost: number) => void
-  setForm: (payload: Partial<ActionStateContext>) => void
+  setActorId: (id: string) => void
+  setForm: (payload: Partial<ActionFormType>) => void
   setRoll: (e: string, type: "action" | "damage") => void
   reset: () => void
 }
 
 export const defaultActionForm = {
+  actorId: "",
   actionType: "",
   actionSubtype: "",
   isCombinedAction: false,
@@ -47,7 +50,7 @@ export const defaultActionForm = {
   itemDbKey: undefined
 } as const
 
-const actionContextForm = createContext<ActionStateContext>({} as ActionStateContext)
+const actionContextForm = createContext<ActionFormType>({} as ActionFormType)
 const actionContextApi = createContext<ActionApiContext>({} as ActionApiContext)
 
 type Action =
@@ -56,16 +59,17 @@ type Action =
       payload: { actionType: ActionTypeId } | { actionType: "weapon"; itemDbKey: string }
     }
   | { type: "SET_ACTION_SUBTYPE"; payload: { actionSubtype: string; apCost: number } }
-  | { type: "SET_FORM"; payload: Partial<ActionStateContext> }
+  | { type: "SET_ACTOR_ID"; payload: string }
+  | { type: "SET_FORM"; payload: Partial<ActionFormType> }
   | { type: "SET_ROLL"; payload: { value: string; type: "action" | "damage" } }
   | { type: "RESET"; payload: undefined }
 
-const reducer = (state: ActionStateContext, { type, payload }: Action): ActionStateContext => {
+const reducer = (state: ActionFormType, { type, payload }: Action): ActionFormType => {
   switch (type) {
     case "SET_ACTION_TYPE": {
-      const { isCombinedAction } = state
+      const { isCombinedAction, actorId } = state
       const { actionType } = payload
-      const newState = { ...defaultActionForm, isCombinedAction, actionType }
+      const newState = { ...defaultActionForm, actorId, isCombinedAction, actionType }
       if ("itemDbKey" in payload) return { ...newState, itemDbKey: payload.itemDbKey }
       if (actionType === "prepare" || actionType === "wait")
         return { ...newState, isCombinedAction: false }
@@ -73,10 +77,11 @@ const reducer = (state: ActionStateContext, { type, payload }: Action): ActionSt
     }
 
     case "SET_ACTION_SUBTYPE": {
-      const { actionType, itemDbKey, isCombinedAction } = state
+      const { actionType, itemDbKey, isCombinedAction, actorId } = state
       const { actionSubtype, apCost = defaultActionForm.apCost } = payload
       const newState = {
         ...defaultActionForm,
+        actorId,
         isCombinedAction,
         actionType,
         actionSubtype,
@@ -85,6 +90,9 @@ const reducer = (state: ActionStateContext, { type, payload }: Action): ActionSt
       if (actionType === "weapon") return { ...newState, itemDbKey }
       return newState
     }
+
+    case "SET_ACTOR_ID":
+      return { ...defaultActionForm, actorId: payload }
 
     case "SET_FORM":
       return { ...state, ...payload }
@@ -122,7 +130,11 @@ export function ActionProvider({ children }: { children: React.ReactNode }) {
         dispatch({ type: "SET_ACTION_SUBTYPE", payload: { actionSubtype, apCost } })
       },
 
-      setForm: (payload: Partial<ActionStateContext>) => {
+      setActorId: (id: string) => {
+        dispatch({ type: "SET_ACTOR_ID", payload: id })
+      },
+
+      setForm: (payload: Partial<ActionFormType>) => {
         dispatch({ type: "SET_FORM", payload })
       },
 

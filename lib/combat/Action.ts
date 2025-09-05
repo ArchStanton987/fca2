@@ -10,7 +10,7 @@ type AimZone = keyof LimbsHp
 export default class Action {
   actionType?: string
   actionSubtype?: string
-  actorId?: PlayableId
+  actorId: PlayableId
   isCombinedAction?: boolean
   apCost?: number
   isDone?: boolean
@@ -58,7 +58,7 @@ export default class Action {
     const { actionType, actionSubtype } = payload
     this.actionType = actionType
     this.actionSubtype = actionSubtype
-    this.actorId = payload.actorId
+    this.actorId = payload.actorId ?? ""
     this.isCombinedAction = payload.isCombinedAction
     this.apCost = payload.apCost
 

@@ -20,12 +20,20 @@ const styles = StyleSheet.create({
 export default function ApVisualizer() {
   const useCases = useGetUseCases()
   const character = useCharacter()
-  const { status, secAttr } = character
+  const { status, secAttr, charId } = character
   const { currAp } = status
   const maxAp = secAttr.curr.actionPoints
 
   const { combat } = useCombat()
-  const apCost = combat?.currAction?.apCost ?? 0
+  const actorId = combat?.currAction?.actorId
+  const targetId = combat?.currAction?.targetId
+  const isActor = actorId === charId
+  const isTarget = targetId === charId
+  let apCost = 0
+  if (isActor) apCost = combat?.currAction?.apCost ?? 0
+  if (isTarget && combat?.currAction?.reactionRoll) {
+    apCost = combat?.currAction?.reactionRoll?.opponentApCost ?? 0
+  }
 
   const handleSetAp = async (i: number) => {
     const newValue = i < currAp ? i : i + 1

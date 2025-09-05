@@ -13,9 +13,9 @@ import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
-import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useInventories } from "providers/InventoriesProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
@@ -46,12 +46,16 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
   const useCases = useGetUseCases()
   const { combat, players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
-  const char = useCharacter()
-  const inv = useInventory()
-  const { clothingsRecord, consumablesRecord, miscObjectsRecord } = inv
   const form = useActionForm()
+  const character = useCharacter()
   const { actionType, actionSubtype, itemDbKey, rawDamage = "" } = form
   const { setForm, setRoll } = useActionApi()
+
+  const actorId = form.actorId === "" ? character.charId : form.actorId
+  const actor = contenders[actorId]?.char
+
+  const inv = useInventories(actorId)
+  const { clothingsRecord, consumablesRecord, miscObjectsRecord } = inv
 
   const { scrollTo } = useScrollTo()
 
@@ -73,10 +77,10 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
   let damageType: DamageTypeId = "physical"
 
   if (actionType === "weapon" && actionSubtype !== "hit") {
-    const isHuman = char instanceof Character
+    const isHuman = actor instanceof Character
     item = isHuman
-      ? inv.weaponsRecord[itemDbKey] ?? char.unarmed
-      : char.equipedObjectsRecord.weapons[itemDbKey]
+      ? inv.weaponsRecord[itemDbKey] ?? actor.unarmed
+      : actor.equipedObjectsRecord.weapons[itemDbKey]
     damageType = item.data.damageType
     if (actionSubtype === "basic" || actionSubtype === "aim") {
       damageRoll = item.data.damageBasic
@@ -112,7 +116,6 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
     if (combat === null) return
     const payload = {
       ...action,
-      actorId: char.charId,
       rawDamage: false as const,
       damageType: false as const,
       healthEntriesChange: false

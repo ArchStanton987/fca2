@@ -13,7 +13,7 @@ export default function createNpc(dbType: keyof typeof repositoryMap = "rtdb") {
   const squadRepo = repositoryMap[dbType].squadRepository
 
   return async ({ npc, squad }: CreateNpcParams) => {
-    const creationRef = await npcRepo.add({}, npc)
+    const creationRef = await npcRepo.add({}, { ...npc, inventory: { caps: 0 } })
     const key = creationRef?.key
     if (!key) throw new Error("Failed to create NPC")
     const prevNpcs = squad.npcRecord

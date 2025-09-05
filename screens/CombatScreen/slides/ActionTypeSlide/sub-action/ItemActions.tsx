@@ -6,14 +6,19 @@ import ScrollSection from "components/Section/ScrollSection"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
+import { useCombat } from "providers/CombatProvider"
 import colors from "styles/colors"
 
 const title = "pa"
 
 export default function ItemActions() {
-  const { status } = useCharacter()
-  const { actionSubtype } = useActionForm()
+  const { charId } = useCharacter()
+  const { actionSubtype, ...rest } = useActionForm()
   const { setActionSubtype } = useActionApi()
+  const { players, npcs } = useCombat()
+  const contenders = { ...players, ...npcs }
+  const actorId = rest.actorId === "" ? charId : rest.actorId
+  const { status } = contenders[actorId].char
 
   return (
     <ScrollSection style={{ flex: 1 }} title={title}>

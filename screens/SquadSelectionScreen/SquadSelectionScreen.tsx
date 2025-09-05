@@ -47,7 +47,7 @@ export default function SquadSelectionScreen() {
             key={squad.id}
             onPress={() => toSquad(squad.id)}
             onLongPress={() => onLongPress(squad.id)}
-            delayLongPress={3000}
+            delayLongPress={2000}
             style={styles.squadContainer}
           >
             <Txt style={styles.squadLabel}>{squad.label}</Txt>

@@ -10,6 +10,7 @@ import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
+import { useCombat } from "providers/CombatProvider"
 import colors from "styles/colors"
 
 const getItemList = (
@@ -58,17 +59,21 @@ const styles = StyleSheet.create({
 })
 
 export default function ItemsActionInfo() {
+  const { players, npcs } = useCombat()
+  const contenders = { ...players, ...npcs }
   const inventory = useInventory()
-  const character = useCharacter()
+  const { charId } = useCharacter()
 
   const { setForm } = useActionApi()
-  const { itemDbKey, actionSubtype } = useActionForm()
+  const { itemDbKey, actionSubtype, ...rest } = useActionForm()
+  const actorId = rest.actorId === "" ? charId : rest.actorId
+  const contender = contenders[actorId].char
 
   const onPressItem = (dbKey: string) => {
     setForm({ itemDbKey: dbKey })
   }
 
-  const itemLists = getItemList(actionSubtype, character, inventory)
+  const itemLists = getItemList(actionSubtype, contender, inventory)
 
   return (
     <View>

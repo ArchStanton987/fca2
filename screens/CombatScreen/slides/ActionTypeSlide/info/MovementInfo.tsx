@@ -1,9 +1,17 @@
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
+import { useActionForm } from "providers/ActionProvider"
+import { useCombat } from "providers/CombatProvider"
 
 export default function MovementInfo() {
-  const { skills } = useCharacter()
+  const { players, npcs } = useCombat()
+  const contenders = { ...players, ...npcs }
+  const { charId } = useCharacter()
+  const form = useActionForm()
+  const actorId = form.actorId === "" ? charId : form.actorId
+  const { skills } = contenders[actorId].char
+
   return (
     <>
       <Txt>Physique : {skills.curr.physical}</Txt>

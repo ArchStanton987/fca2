@@ -38,7 +38,7 @@ type DamageLocalizationSlideProps = SlideProps & {}
 
 export default function DamageLocalizationSlide({ slideIndex }: DamageLocalizationSlideProps) {
   const useCases = useGetUseCases()
-  const { meta } = useCharacter()
+  const { charId } = useCharacter()
   const { combat } = useCombat()
   const form = useActionForm()
   const { damageLocalization } = form
@@ -49,10 +49,6 @@ export default function DamageLocalizationSlide({ slideIndex }: DamageLocalizati
 
   const isScoreValid = (scoreStr.length > 0 && scoreStr.length <= 3) || !!damageLocalization
   const { scrollTo } = useScrollTo()
-
-  const scrollNext = () => {
-    scrollTo(slideIndex + 1)
-  }
 
   const resetField = () => {
     setForm({ damageLocalization: undefined })
@@ -68,13 +64,13 @@ export default function DamageLocalizationSlide({ slideIndex }: DamageLocalizati
         () => {
           setIsLoading(false)
         },
-        meta.isNpc ? 0 : 1500
+        charId !== form.actorId ? 0 : 1000
       )
       return
     }
     const payload = { damageLocalization: getBodyPart(scoreStr) }
     await useCases.combat.updateAction({ combat, payload })
-    scrollNext()
+    scrollTo(slideIndex + 1)
   }
 
   return (
