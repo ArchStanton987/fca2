@@ -1,14 +1,12 @@
 import { ReactNode } from "react"
 
-import { Redirect } from "expo-router"
-
-import { getInitiativePrompts, getPlayerCanReact } from "lib/combat/utils/combat-utils"
+import { getInitiativePrompts } from "lib/combat/utils/combat-utils"
 
 import List from "components/List"
-import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { SlidesProvider } from "providers/SlidesProvider"
 import InitiativeScreen from "screens/CombatScreen/InitiativeScreen"
 import WaitInitiativeScreen from "screens/CombatScreen/WaitInitiativeScreen"
@@ -32,16 +30,14 @@ function SlideList() {
 
 function WithActionRedirections({ children }: { children: ReactNode }) {
   const char = useCharacter()
-  const { players, npcs, combat } = useCombat()
+  const { combat } = useCombat()
+  const combatStatuses = useCombatStatus()
 
   if (!combat?.id) return <SlideError error={slideErrors.noCombatError} />
 
-  const prompts = getInitiativePrompts(char.charId, players ?? {}, npcs ?? {})
+  const prompts = getInitiativePrompts(char.charId, combatStatuses)
   if (prompts.playerShouldRollInitiative) return <InitiativeScreen />
   if (prompts.shouldWaitOthers) return <WaitInitiativeScreen />
-
-  const canReact = getPlayerCanReact(char, combat)
-  if (canReact) return <Redirect href={{ pathname: routes.combat.reaction }} />
 
   return children
 }

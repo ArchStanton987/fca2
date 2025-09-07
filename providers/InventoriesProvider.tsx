@@ -16,8 +16,7 @@ export default function InventoriesProvider({ children }: { children: ReactNode 
   const newElements = useCreatedElements()
   const { players, npcs } = useCombat()
   const contenders = useMemo(
-    () =>
-      Object.fromEntries(Object.entries({ ...players, ...npcs }).map(([id, c]) => [id, c.char])),
+    () => Object.fromEntries(Object.entries({ ...players, ...npcs }).map(([id, c]) => [id, c])),
     [players, npcs]
   )
 

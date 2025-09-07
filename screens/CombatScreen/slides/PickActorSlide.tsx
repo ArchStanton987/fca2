@@ -38,13 +38,13 @@ export default function PickActorSlide({ slideIndex }: SlideProps) {
       <ScrollSection style={{ flex: 1 }} title="joueurs">
         <List
           data={Object.values(players ?? {})}
-          keyExtractor={i => i.char.charId}
+          keyExtractor={i => i.charId}
           renderItem={({ item }) => (
             <Selectable
-              onPress={() => toggleSelect(item.char.charId)}
-              isSelected={actorId === item.char.charId}
+              onPress={() => toggleSelect(item.charId)}
+              isSelected={actorId === item.charId}
             >
-              <Txt>{item.char.meta.firstname}</Txt>
+              <Txt>{item.meta.firstname}</Txt>
             </Selectable>
           )}
         />
@@ -55,13 +55,13 @@ export default function PickActorSlide({ slideIndex }: SlideProps) {
       <ScrollSection style={{ flex: 1 }} title="pnjs">
         <List
           data={Object.values(npcs ?? {})}
-          keyExtractor={i => i.char.charId}
+          keyExtractor={i => i.charId}
           renderItem={({ item }) => (
             <Selectable
-              onPress={() => toggleSelect(item.char.charId)}
-              isSelected={actorId === item.char.charId}
+              onPress={() => toggleSelect(item.charId)}
+              isSelected={actorId === item.charId}
             >
-              <Txt>{item.char.meta.firstname}</Txt>
+              <Txt>{item.meta.firstname}</Txt>
             </Selectable>
           )}
         />

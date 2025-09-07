@@ -33,7 +33,7 @@ export default function WeaponInfo({ selectedWeapon }: { selectedWeapon?: string
   const { players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
   const actorId = form.actorId === "" ? charId : form.actorId
-  const contender = contenders[actorId].char
+  const contender = contenders[actorId]
 
   const inv = useInventories(actorId)
 

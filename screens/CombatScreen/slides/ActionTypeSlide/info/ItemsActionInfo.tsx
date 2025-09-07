@@ -67,7 +67,7 @@ export default function ItemsActionInfo() {
   const { setForm } = useActionApi()
   const { itemDbKey, actionSubtype, ...rest } = useActionForm()
   const actorId = rest.actorId === "" ? charId : rest.actorId
-  const contender = contenders[actorId].char
+  const contender = contenders[actorId]
 
   const onPressItem = (dbKey: string) => {
     setForm({ itemDbKey: dbKey })

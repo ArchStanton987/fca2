@@ -9,6 +9,7 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import RevertColorsPressable from "components/wrappers/RevertColorsPressable/RevertColorsPressable"
 import { useCharacter } from "contexts/CharacterContext"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 
 const getWeaponDetails = ({ data }: Weapon) => [
@@ -28,18 +29,19 @@ export default function WeaponsDetails({ charWeapon }: { charWeapon: Weapon | nu
   const useCases = useGetUseCases()
   const char = useCharacter()
   const weaponDetails = charWeapon ? getWeaponDetails(charWeapon) : []
+  const { currAp } = useCombatStatus(char.charId)
 
   const reload = () => {
     if (!charWeapon) return
-    useCases.weapons.use(char, charWeapon, "reload", 0)
+    useCases.weapons.use(char, charWeapon, "reload")
   }
   const unload = () => {
     if (!charWeapon) return
-    useCases.weapons.use(char, charWeapon, "unload", 0)
+    useCases.weapons.use(char, charWeapon, "unload")
   }
 
-  const canLoad = charWeapon ? getCanLoad(charWeapon, char) : false
-  const canUnload = charWeapon ? getCanUnload(charWeapon, char) : false
+  const canLoad = charWeapon ? getCanLoad(charWeapon, currAp) : false
+  const canUnload = charWeapon ? getCanUnload(charWeapon, currAp) : false
 
   return (
     <>

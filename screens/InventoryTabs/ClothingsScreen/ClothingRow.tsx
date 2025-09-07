@@ -19,7 +19,7 @@ type ClothingRowProps = PressableProps & {
   onPress: () => void
 }
 
-export default function ClothingRow({ clothing, isSelected, onPress, ...rest }: ClothingRowProps) {
+export default function ClothingRow({ clothing, isSelected, onPress }: ClothingRowProps) {
   const useCases = useGetUseCases()
 
   const character = useCharacter()
@@ -49,7 +49,7 @@ export default function ClothingRow({ clothing, isSelected, onPress, ...rest }: 
   const plasmaResist = `${plasmaDamageResist}${combatModsMap.laserDamageResist.unit}`
 
   return (
-    <Selectable isSelected={isSelected} onPress={onPress} {...rest}>
+    <Selectable isSelected={isSelected} onPress={onPress}>
       <EquipInput isChecked={isEquiped} isParentSelected={isSelected} onPress={handleEquip} />
       <Spacer x={10} />
       <ListLabel label={label} />

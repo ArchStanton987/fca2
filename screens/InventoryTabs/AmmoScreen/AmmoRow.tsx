@@ -18,7 +18,7 @@ type AmmoRowProps = PressableProps & {
   onPress: () => void
 }
 
-export default function AmmoRow({ ammo, isSelected, onPress, ...rest }: AmmoRowProps) {
+export default function AmmoRow({ ammo, isSelected, onPress }: AmmoRowProps) {
   const { squadId } = useSquad()
   const { charId } = useCharacter()
 
@@ -30,7 +30,7 @@ export default function AmmoRow({ ammo, isSelected, onPress, ...rest }: AmmoRowP
   }
 
   return (
-    <Selectable isSelected={isSelected} onPress={onPress} {...rest}>
+    <Selectable isSelected={isSelected} onPress={onPress}>
       <ListLabel label={ammo.data.label} />
       <ListScoreLabel score={ammo.amount} />
       <DeleteInput isSelected={isSelected} onPress={onPressDel} style={{ width: 50 }} />

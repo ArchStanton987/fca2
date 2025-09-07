@@ -20,7 +20,7 @@ type WeaponRowProps = PressableProps & {
   onPress: () => void
 }
 
-export default function WeaponRow({ weapon, isSelected, onPress, ...rest }: WeaponRowProps) {
+export default function WeaponRow({ weapon, isSelected, onPress }: WeaponRowProps) {
   const useCases = useGetUseCases()
   const character = useCharacter()
   const { isEquiped, skill, ammo, data } = weapon
@@ -37,7 +37,7 @@ export default function WeaponRow({ weapon, isSelected, onPress, ...rest }: Weap
   }
 
   return (
-    <Selectable isSelected={isSelected} onPress={onPress} {...rest}>
+    <Selectable isSelected={isSelected} onPress={onPress}>
       <EquipInput isChecked={isEquiped} isParentSelected={isSelected} onPress={handleEquip} />
       <Spacer x={10} />
       <ListLabel label={label} />

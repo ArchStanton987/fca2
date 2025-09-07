@@ -4,8 +4,8 @@ import CheckBox from "components/CheckBox/CheckBox"
 import List from "components/List"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
-import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -17,18 +17,18 @@ const styles = StyleSheet.create({
   }
 })
 
-export default function ApVisualizer() {
+export default function ApVisualizer({ contenderId }: { contenderId: string }) {
   const useCases = useGetUseCases()
-  const character = useCharacter()
-  const { status, secAttr, charId } = character
-  const { currAp } = status
-  const maxAp = secAttr.curr.actionPoints
+  const { npcs, players, combat } = useCombat()
+  const contenders = { ...npcs, ...players }
+  const contender = contenders[contenderId]
+  const maxAp = contender.secAttr.curr.actionPoints
+  const { currAp } = useCombatStatus(contenderId)
 
-  const { combat } = useCombat()
   const actorId = combat?.currAction?.actorId
   const targetId = combat?.currAction?.targetId
-  const isActor = actorId === charId
-  const isTarget = targetId === charId
+  const isActor = actorId === contenderId
+  const isTarget = targetId === contenderId
   let apCost = 0
   if (isActor) apCost = combat?.currAction?.apCost ?? 0
   if (isTarget && combat?.currAction?.reactionRoll) {
@@ -37,7 +37,10 @@ export default function ApVisualizer() {
 
   const handleSetAp = async (i: number) => {
     const newValue = i < currAp ? i : i + 1
-    await useCases.status.updateElement(character, "currAp", newValue)
+    await useCases.character.updateCombatStatus({
+      charId: contenderId,
+      payload: { currAp: newValue }
+    })
   }
 
   const apArr = []

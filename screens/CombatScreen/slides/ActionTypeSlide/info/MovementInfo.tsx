@@ -10,7 +10,7 @@ export default function MovementInfo() {
   const { charId } = useCharacter()
   const form = useActionForm()
   const actorId = form.actorId === "" ? charId : form.actorId
-  const { skills } = contenders[actorId].char
+  const { skills } = contenders[actorId]
 
   return (
     <>

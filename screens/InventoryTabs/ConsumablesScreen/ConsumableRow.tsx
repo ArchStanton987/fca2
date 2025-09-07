@@ -43,8 +43,7 @@ export default function ConsumableRow({
   count,
   isSelected,
   onDelete,
-  onPress,
-  ...rest
+  onPress
 }: ConsumableRowProps) {
   const { newEffects } = useCreatedElements()
   const { label, effectId, challengeLabel, modifiers = [] } = charConsumable.data
@@ -52,7 +51,7 @@ export default function ConsumableRow({
   const visibleMods = [...symptoms, ...modifiers]
   const countAppend = count > 1 ? ` (${count})` : ""
   return (
-    <Selectable isSelected={isSelected} onPress={onPress} {...rest}>
+    <Selectable isSelected={isSelected} onPress={onPress}>
       <ListLabel label={`${label}${countAppend}`} style={{ alignSelf: "flex-start" }} />
       <View style={styles.effectContainer}>
         {visibleMods

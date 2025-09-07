@@ -21,14 +21,13 @@ export default function MiscObjRow({
   objId,
   count,
   onPress,
-  onPressDelete,
-  ...rest
+  onPressDelete
 }: MiscObjRowProps) {
   const { newMiscObjects } = useCreatedElements()
   const { label } = newMiscObjects[objId]
   const countAppend = count > 1 ? ` (${count})` : ""
   return (
-    <Selectable isSelected={isSelected} onPress={onPress} {...rest}>
+    <Selectable isSelected={isSelected} onPress={onPress}>
       <ListLabel label={`${label}${countAppend}`} />
       <DeleteInput isSelected={isSelected} onPress={onPressDelete} />
     </Selectable>

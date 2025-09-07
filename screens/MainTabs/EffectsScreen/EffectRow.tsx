@@ -19,18 +19,12 @@ type EffectRowProps = PressableProps & {
   onPressDelete: () => void
 }
 
-export default function EffectRow({
-  effect,
-  isSelected,
-  onPress,
-  onPressDelete,
-  ...rest
-}: EffectRowProps) {
+export default function EffectRow({ effect, isSelected, onPress, onPressDelete }: EffectRowProps) {
   const { data, timeRemaining } = effect
   const { symptoms, label } = data
 
   return (
-    <Selectable isSelected={isSelected} onPress={onPress} {...rest}>
+    <Selectable isSelected={isSelected} onPress={onPress}>
       <ListLabel label={label} style={{ alignSelf: "flex-start" }} />
       <View style={styles.symptomsContainer}>
         {symptoms.map(symptom => {

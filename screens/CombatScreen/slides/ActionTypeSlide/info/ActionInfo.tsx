@@ -19,7 +19,7 @@ export default function ActionInfo() {
   const { players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
   const actorId = rest.actorId === "" ? charId : rest.actorId
-  const contender = contenders[actorId].char
+  const contender = contenders[actorId]
   const { equipedObjects, unarmed } = contender
   const weapons = equipedObjects.weapons.length > 0 ? equipedObjects.weapons : [unarmed]
 
