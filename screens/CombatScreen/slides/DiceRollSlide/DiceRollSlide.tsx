@@ -18,6 +18,7 @@ import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
@@ -36,12 +37,12 @@ export default function DiceRollSlide({ slideIndex }: SlideProps) {
   }
 
   const useCases = useGetUseCases()
-
   const char = useCharacter()
+  const combatStatuses = useCombatStatus()
+  const combatStatus = useCombatStatus(char.charId)
   const inventory = useInventory()
   const { weaponsRecord = {}, consumablesRecord = {} } = inventory
-  const { combat, players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
+  const { combat } = useCombat()
 
   const { setRoll } = useActionApi()
   const form = useActionForm()
@@ -73,14 +74,14 @@ export default function DiceRollSlide({ slideIndex }: SlideProps) {
   const dice = form.actorDiceScore ? parseInt(form.actorDiceScore, 10) : 0
   const isValid = !Number.isNaN(dice) && dice > 0 && dice < 101
 
-  const bonus = getRollBonus(char.charId, contenders, form)
-  const targetArmorClass = getContenderAc(targetId, combat, contenders)
+  const bonus = getRollBonus(combatStatus, action)
+  const targetArmorClass = getContenderAc(combat?.currRoundId, char, combatStatus)
 
   const onPressConfirm = async () => {
     if (combat === null || !isValid) return
     let reactionRoll
     if (targetId) {
-      const targetAp = contenders[targetId].char.status.currAp
+      const targetAp = combatStatuses[targetId].currAp
       reactionRoll = targetAp >= REACTION_MIN_AP_COST ? undefined : (false as const)
     }
     const roll = { difficulty, sumAbilities, dice, bonus, targetArmorClass, skillId }

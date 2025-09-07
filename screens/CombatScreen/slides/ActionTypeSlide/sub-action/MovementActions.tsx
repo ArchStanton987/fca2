@@ -6,12 +6,14 @@ import ScrollSection from "components/Section/ScrollSection"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import colors from "styles/colors"
 
 const title = "action / pa / dist"
 
 export default function MovementActions() {
-  const { status } = useCharacter()
+  const { charId } = useCharacter()
+  const { currAp } = useCombatStatus(charId)
   const { actionSubtype } = useActionForm()
   const { setActionSubtype } = useActionApi()
 
@@ -21,8 +23,8 @@ export default function MovementActions() {
         data={Object.values(actions.movement.subtypes)}
         keyExtractor={item => item.id}
         renderItem={({ item }) => {
-          const disabled = typeof item.apCost === "number" && status.currAp < item.apCost
-          const apCost = actions.movement.subtypes[item.id].apCost ?? status.currAp
+          const disabled = typeof item.apCost === "number" && currAp < item.apCost
+          const apCost = actions.movement.subtypes[item.id].apCost ?? currAp
           return (
             <ListItemSelectable
               isSelected={actionSubtype === item.id}

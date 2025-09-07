@@ -9,13 +9,13 @@ import { getCurrentRoundId } from "../utils/combat-utils"
 export type PrepareActionParams = {
   action: DbAction & { actorId: string }
   combat: Combat
-  contendersCombatStatus: Record<string, CombatStatus>
+  combatStatuses: Record<string, CombatStatus>
 }
 
 export default function prepareAction(dbType: keyof typeof repositoryMap = "rtdb") {
   const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
 
-  return ({ combat, action, contendersCombatStatus }: PrepareActionParams) => {
+  return ({ combat, action, combatStatuses }: PrepareActionParams) => {
     const { apCost = 0, actionSubtype, actorId } = action
     const charId = actorId
 
@@ -29,11 +29,11 @@ export default function prepareAction(dbType: keyof typeof repositoryMap = "rtdb
     const bonus = apCost * multiplier
 
     if (isVisualize) {
-      const prevBonus = contendersCombatStatus[charId].actionBonus
+      const prevBonus = combatStatuses[charId].actionBonus
       const actionBonus = prevBonus + bonus
       promises.push(combatStatusRepo.patch({ charId }, { actionBonus }))
     } else {
-      const currBonus = contendersCombatStatus[charId].armorClassBonusRecord[roundId]
+      const currBonus = combatStatuses[charId].armorClassBonusRecord[roundId]
       promises.push(
         combatStatusRepo.patchChild(
           { charId, childKey: "armorClassBonusRecord" },

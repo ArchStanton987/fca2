@@ -15,6 +15,7 @@ import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
@@ -32,6 +33,7 @@ export default function ScoreResultSlide({ slideIndex }: SlideProps) {
   const { weaponsRecord = {}, consumablesRecord = {} } = inv
   const { charId, secAttr, special } = char
   const { combat, npcs, players } = useCombat()
+  const combatStatuses = useCombatStatus()
   const contenders = { ...players, ...npcs }
   const form = useActionForm()
   const { itemDbKey = "" } = form
@@ -89,7 +91,13 @@ export default function ScoreResultSlide({ slideIndex }: SlideProps) {
     try {
       const item = action.itemDbKey ? inv.allItems[action.itemDbKey] : undefined
       const payload = { ...action, actorId: charId }
-      await useCases.combat.doCombatAction({ combat, contenders, action: payload, item })
+      await useCases.combat.doCombatAction({
+        combat,
+        contenders,
+        combatStatuses,
+        action: payload,
+        item
+      })
       Toast.show({ type: "custom", text1: "Action réalisée !" })
       reset()
     } catch (error) {

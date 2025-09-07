@@ -16,7 +16,7 @@ import actions from "../const/actions"
 export type CombatActionParams = {
   action: DbAction & { actorId: string }
   combat: Combat
-  contenders: Record<string, { char: Playable }>
+  contenders: Record<string, Playable>
   item?: Clothing | Consumable | MiscObject | Weapon
 }
 
@@ -29,7 +29,7 @@ export default function itemAction(
 
   return async ({ action, contenders, item }: CombatActionParams) => {
     const { actionSubtype = "", actorId } = action
-    const { char } = contenders[actorId]
+    const char = contenders[actorId]
     const { charId } = char
 
     if (!(actionSubtype in actions.item.subtypes))

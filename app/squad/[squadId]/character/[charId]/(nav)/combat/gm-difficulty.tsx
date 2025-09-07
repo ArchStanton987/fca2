@@ -7,7 +7,7 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import Slider from "@react-native-community/slider"
 import { ActionTypeId, withRollActionsTypes } from "lib/combat/const/actions"
 import difficultyArray from "lib/combat/const/difficulty"
-import { getPlayingOrder } from "lib/combat/utils/combat-utils"
+import { getDefaultPlayingId } from "lib/combat/utils/combat-utils"
 
 import DrawerPage from "components/DrawerPage"
 import Row from "components/Row"
@@ -17,6 +17,7 @@ import Txt from "components/Txt"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import DeleteButton from "screens/CombatScreen/slides/DeleteButton"
 import NextButton from "screens/CombatScreen/slides/NextButton"
@@ -39,6 +40,8 @@ export default function GMActionsScreen() {
   const useCases = useGetUseCases()
   const { meta, charId } = useCharacter()
   const { combat, players, npcs } = useCombat()
+  const contenders = { ...players, ...npcs }
+  const combatStatuses = useCombatStatus()
 
   const [hasRoll, setHasRoll] = useState(false)
   const [difficulty, setDifficulty] = useState(0)
@@ -78,16 +81,12 @@ export default function GMActionsScreen() {
       </DrawerPage>
     )
 
-  const contenders = getPlayingOrder({ ...players, ...npcs })
-  const defaultPlayingId =
-    contenders.find(c => c.char.status.combatStatus === "active")?.char.charId ??
-    contenders.find(c => c.char.status.combatStatus === "wait")?.char.charId
-  const playingId = combat.currActorId || defaultPlayingId
-  const currPlayer = contenders.find(c => c.char.charId === playingId)
-
-  if (!currPlayer) return <Txt>Impossible de récupérer le joueur</Txt>
-
   const action = combat.currAction
+  const defaultPlayingId = getDefaultPlayingId(combatStatuses)
+  const playingId = combat.currActorId || defaultPlayingId
+  if (!playingId) return <Txt>Impossible de récupérer le joueur</Txt>
+  const currPlayer = contenders[playingId]
+
   const actionHasDifficulty = withRollActionsTypes.includes(action?.actionType as ActionTypeId)
   const isDifficultySet = action?.roll === false || action?.roll?.difficulty !== undefined
 
@@ -156,7 +155,7 @@ export default function GMActionsScreen() {
         <Spacer x={layout.globalPadding} />
 
         <Section title="action" style={{ width: 100 }}>
-          <Txt>{currPlayer.char.meta.firstname}</Txt>
+          <Txt>{currPlayer.meta.firstname}</Txt>
           <Txt>{action?.actionType}</Txt>
           <Txt>{action?.actionSubtype}</Txt>
         </Section>

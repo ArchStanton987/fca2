@@ -16,6 +16,7 @@ import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
@@ -47,6 +48,7 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
   const { combat, players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
   const char = useCharacter()
+  const combatStatuses = useCombatStatus()
   const inv = useInventory()
   const { clothingsRecord, consumablesRecord, miscObjectsRecord } = inv
   const form = useActionForm()
@@ -117,15 +119,16 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
       damageType: false as const,
       healthEntriesChange: false
     }
-    await useCases.combat.doCombatAction({ combat, action: payload, contenders })
+    await useCases.combat.doCombatAction({ combat, action: payload, contenders, combatStatuses })
     scrollNext()
   }
 
   // AWAIT REACTION (loading)
   let opponentCanReact = false
-  const opponent = action.targetId ? contenders[action?.targetId].char : null
-  if (opponent) {
-    opponentCanReact = getPlayerCanReact(opponent, combat)
+  const opponent = action.targetId ? contenders[action?.targetId] : null
+  if (opponent && action?.targetId) {
+    const combatStatus = combatStatuses[action?.targetId]
+    opponentCanReact = getPlayerCanReact(opponent, combatStatus, combat?.currAction)
   }
   if (opponentCanReact && action.reactionRoll === undefined) return <AwaitReactionSlide />
 

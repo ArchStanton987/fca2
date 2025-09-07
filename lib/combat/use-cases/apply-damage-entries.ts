@@ -11,7 +11,8 @@ import { getCurrentRoundId } from "../utils/combat-utils"
 
 export type ApplyDamageEntriesParams = {
   combat: Combat
-  contenders: Record<string, { char: Playable; combatStatus: CombatStatus }>
+  contenders: Record<string, Playable>
+  combatStatuses: Record<string, CombatStatus>
   damageEntries: DamageEntries
 }
 
@@ -23,13 +24,14 @@ export default function applyDamageEntries(
   const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
   const effectsUseCases = getEffectsUseCases(dbType, createdElements)
 
-  return ({ combat, contenders, damageEntries }: ApplyDamageEntriesParams) => {
+  return ({ combat, contenders, combatStatuses, damageEntries }: ApplyDamageEntriesParams) => {
     const promises: Promise<void>[] = []
     if (damageEntries === false) return null
     // loop through every entry
     Object.values(damageEntries ?? {}).forEach(entry => {
       const { charId, entryType } = entry
-      const { char, combatStatus } = contenders[charId]
+      const char = contenders[charId]
+      const combatStatus = combatStatuses[charId]
       if (!char) throw new Error("could not find character")
       switch (entryType) {
         // handle health points update

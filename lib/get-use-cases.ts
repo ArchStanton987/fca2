@@ -1,5 +1,8 @@
 import { DbChar } from "./character/Character"
 import getAbilitiesUseCases from "./character/abilities/abilities-use-cases"
+import updateCombatStatus, {
+  UpdateCombatStatusParams
+} from "./character/combat-status/use-cases/update-combat-status"
 import addAdditionalEffect from "./character/effects/add-additional-effect"
 import getEffectsUseCases from "./character/effects/effects-use-cases"
 import { DbEffectData } from "./character/effects/effects.types"
@@ -118,7 +121,8 @@ export default function getUseCases(
       subCharacters: (ids: string[]) => subCharacters(dbType)(ids),
       sub: (params: CharacterParams) => subCharacter(dbType)(params),
       subChild: <T extends keyof DbChar>(params: SubCharacterChildParams<T>) =>
-        subCharacterChild(dbType)(params)
+        subCharacterChild(dbType)(params),
+      updateCombatStatus: (params: UpdateCombatStatusParams) => updateCombatStatus(dbType)(params)
     }
     // effects: {
     //   addEffectsToChar: (params: AddEffectsParams) => addEffects(dbType, createdElements)(params)

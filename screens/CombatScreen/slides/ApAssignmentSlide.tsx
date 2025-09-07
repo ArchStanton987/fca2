@@ -23,6 +23,7 @@ import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
@@ -44,7 +45,10 @@ const styles = StyleSheet.create({
 
 export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
   const useCases = useGetUseCases()
-  const { status, secAttr, charId } = useCharacter()
+  const { secAttr, charId } = useCharacter()
+  const combatStatuses = useCombatStatus()
+  const combatStatus = combatStatuses[charId]
+  const { currAp } = combatStatus
   const inventory = useInventory()
   const { combat, npcs, players } = useCombat()
   const contenders = { ...players, ...npcs }
@@ -53,7 +57,6 @@ export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
   const { setForm, reset } = useActionApi()
 
   const maxAp = secAttr.curr.actionPoints
-  const { currAp } = status
 
   const { scrollTo } = useScrollTo()
 
@@ -83,7 +86,7 @@ export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
 
     const action = { ...combat?.currAction, apCost, actorId: charId }
     try {
-      await useCases.combat.doCombatAction({ contenders, combat, action, item })
+      await useCases.combat.doCombatAction({ contenders, combatStatuses, combat, action, item })
       Toast.show({ type: "custom", text1: "Action réalisée" })
       reset()
     } catch (error) {

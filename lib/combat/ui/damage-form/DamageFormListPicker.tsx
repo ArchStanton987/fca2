@@ -12,8 +12,8 @@ function CharList() {
   const { players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
   const charList = Object.values(contenders).map(c => ({
-    id: c.char.charId,
-    name: c.char.fullname
+    id: c.charId,
+    name: c.fullname
   }))
   const actions = useDamageFormStore(state => state.actions)
   return (

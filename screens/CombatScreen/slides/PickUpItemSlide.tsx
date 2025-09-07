@@ -8,11 +8,13 @@ import { useInventory } from "contexts/InventoryContext"
 import { useUpdateObjects } from "contexts/UpdateObjectsContext"
 import { useActionApi } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 
 export default function PickUpItemSlide({ slideIndex }: SlideProps) {
   const useCases = useGetUseCases()
+  const combatStatuses = useCombatStatus()
   const character = useCharacter()
   const inventory = useInventory()
 
@@ -39,7 +41,7 @@ export default function PickUpItemSlide({ slideIndex }: SlideProps) {
     try {
       await useCases.inventory.exchange(character, state, inventory)
       const payload = { ...combat.currAction, actorId: character.charId }
-      await useCases.combat.doCombatAction({ combat, contenders, action: payload })
+      await useCases.combat.doCombatAction({ combat, contenders, combatStatuses, action: payload })
       Toast.show({ type: "custom", text1: "Action réalisée" })
       reset()
     } catch (error) {

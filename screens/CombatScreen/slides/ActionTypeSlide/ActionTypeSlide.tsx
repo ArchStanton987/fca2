@@ -17,6 +17,7 @@ import Spacer from "components/Spacer"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -38,15 +39,17 @@ export default function ActionTypeSlide({ slideIndex }: SlideProps) {
   const useCases = getUseCases()
   const { players, npcs, combat } = useCombat()
   const char = useCharacter()
-  const { equipedObjects, unarmed, charId, status } = char
+  const { equipedObjects, unarmed, charId } = char
   const weapons = equipedObjects.weapons.length > 0 ? equipedObjects.weapons : [unarmed]
+  const combatStatuses = useCombatStatus()
+  const combatStatus = combatStatuses[charId]
 
   const form = useActionForm()
   const { actionType, actionSubtype, isCombinedAction, itemDbKey } = form
   const { setForm, setActionType, reset } = useActionApi()
 
   const contenders = { ...players, ...npcs }
-  const activePlayersWithAp = getActivePlayersWithAp(contenders)
+  const activePlayersWithAp = getActivePlayersWithAp(combatStatuses)
   const isLastPlayer = activePlayersWithAp.length === 1
 
   const { scrollTo } = useScrollTo()
@@ -68,8 +71,8 @@ export default function ActionTypeSlide({ slideIndex }: SlideProps) {
     const payload = { actionSubtype, actionType, itemDbKey, actorId: charId, isCombinedAction }
     if (actionType === "wait" || actionType === "prepare") {
       try {
-        const action = { ...payload, apCost: actionType === "prepare" ? status.currAp : 0 }
-        await useCases.combat.doCombatAction({ combat, contenders, action })
+        const action = { ...payload, apCost: actionType === "prepare" ? combatStatus.currAp : 0 }
+        await useCases.combat.doCombatAction({ combat, contenders, combatStatuses, action })
         Toast.show({ type: "custom", text1: toastMessages[actionType] })
         reset()
       } catch (error) {

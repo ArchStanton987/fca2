@@ -11,6 +11,7 @@ import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useActionApi } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 
@@ -34,6 +35,7 @@ const styles = StyleSheet.create({
 
 export default function ValidateSlide() {
   const useCases = useGetUseCases()
+  const combatStatuses = useCombatStatus()
   const { charId, unarmed } = useCharacter()
   const inv = useInventory()
   const { reset } = useActionApi()
@@ -52,7 +54,13 @@ export default function ValidateSlide() {
       const itemKey = typeof itemDbKey === "string" ? itemDbKey : undefined
       const item = getItemFromId(inv, itemKey) ?? unarmed
       const payload = { ...action, actorId: charId }
-      await useCases.combat.doCombatAction({ combat, contenders, action: payload, item })
+      await useCases.combat.doCombatAction({
+        combat,
+        combatStatuses,
+        contenders,
+        action: payload,
+        item
+      })
       Toast.show({ type: "custom", text1: "Action réalisée !" })
       reset()
     } catch (err) {

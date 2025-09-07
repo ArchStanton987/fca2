@@ -22,7 +22,7 @@ export default function EnemyScreen() {
   const squad = useSquad()
   const { npcs } = useAdmin()
   const currNpc = npcs[npcId]
-  const { combatId } = useCombatStatus(npcId)
+  const npcCombatStatus = useCombatStatus(npcId)
 
   const setChar = useSetCurrCharId()
 
@@ -35,7 +35,7 @@ export default function EnemyScreen() {
   }
 
   const deleteNpc = () => {
-    useCases.npc.delete({ squad, playable: npcs[npcId] })
+    useCases.npc.delete({ squad, npcId, npcCombatStatus })
   }
 
   if (!npcs[npcId]) {
@@ -48,7 +48,7 @@ export default function EnemyScreen() {
     )
   }
 
-  const isFighting = !!combatId
+  const isFighting = !!npcCombatStatus?.combatId
   const { firstname, description, templateId } = currNpc.meta
 
   return (

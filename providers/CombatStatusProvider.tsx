@@ -37,5 +37,5 @@ export function useCombatStatus(
   const combatStatus = useContext(CombatStatusContext)
   if (!combatStatus) throw new Error("CombatStatusContext not found")
   if (!id) return combatStatus
-  return select?.(combatStatus[id])
+  return select ? select(combatStatus[id]) : combatStatus[id]
 }

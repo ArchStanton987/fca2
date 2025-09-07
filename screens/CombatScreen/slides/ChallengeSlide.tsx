@@ -15,6 +15,7 @@ import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
 
@@ -35,6 +36,7 @@ const styles = StyleSheet.create({
 export default function ChallengeSlide() {
   const useCases = useGetUseCases()
   const { charId } = useCharacter()
+  const combatStatuses = useCombatStatus()
   const form = useActionForm()
   const { itemDbKey } = form
   const { reset } = useActionApi()
@@ -46,7 +48,7 @@ export default function ChallengeSlide() {
     if (!combat) throw new Error("no combat")
     try {
       const action = { ...combat.currAction, actorId: charId }
-      await useCases.combat.doCombatAction({ action, contenders, combat, item })
+      await useCases.combat.doCombatAction({ action, contenders, combatStatuses, combat, item })
       Toast.show({ type: "custom", text1: "Action réalisée" })
       reset()
     } catch (err) {

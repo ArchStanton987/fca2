@@ -19,7 +19,7 @@ export default function NewHpInput({ entryId }: NewHpInputProps) {
   const entry = useDamageEntry(entryId)
   const { charId, damage = 0 } = entry
   const contender = contenders[charId]
-  const currHp = contender?.char?.health?.hp ?? 0
+  const currHp = contender?.health?.hp ?? 0
   const newHp = currHp - damage
 
   const setPannelAndSelectEntry = () => {

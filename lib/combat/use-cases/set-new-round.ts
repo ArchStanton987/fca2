@@ -7,7 +7,8 @@ import Combat, { defaultAction } from "../Combat"
 import { getCurrentRoundId } from "../utils/combat-utils"
 
 export type SetNewRoundParams = {
-  contenders: Record<string, { char: Playable; combatStatus: CombatStatus }>
+  contenders: Record<string, Playable>
+  combatStatuses: Record<string, CombatStatus>
   combat: Combat
 }
 
@@ -16,11 +17,12 @@ export default function setNewRound(dbType: keyof typeof repositoryMap = "rtdb")
 
   const roundRepo = repositoryMap[dbType].roundRepository
 
-  return async ({ contenders, combat }: SetNewRoundParams) => {
+  return async ({ contenders, combatStatuses, combat }: SetNewRoundParams) => {
     const promises = []
     const nextRoundId = getCurrentRoundId(combat) + 1
-    Object.entries(contenders).forEach(([charId, { char, combatStatus }]) => {
-      const { secAttr, health } = char
+    Object.entries(contenders).forEach(([charId, contender]) => {
+      const { secAttr, health } = contender
+      const combatStatus = combatStatuses[charId]
       // reset AP for all contenders who are not dead
       if (combatStatus.combatStatus !== "dead") {
         const maxAp = secAttr.curr.actionPoints

@@ -12,8 +12,11 @@ import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 
 export default function WeaponActions() {
+  const { charId, secAttr } = useCharacter()
+  const { currAp } = useCombatStatus(charId)
   const { itemDbKey, actionSubtype } = useActionForm()
   const { setActionSubtype } = useActionApi()
   const char = useCharacter()
@@ -28,7 +31,7 @@ export default function WeaponActions() {
 
   if (!weapon) return null
 
-  const actions = getAvailableWeaponActions(weapon, char)
+  const actions = getAvailableWeaponActions(weapon, currAp, secAttr.curr.actionPoints)
 
   return (
     <ScrollSection style={{ flex: 1 }} title="action - pa">

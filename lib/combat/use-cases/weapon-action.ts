@@ -18,7 +18,7 @@ export default function weaponAction(dbType: keyof typeof repositoryMap = "rtdb"
   const { load, unload, use } = getWeaponsUseCases(dbType)
   const { drop } = getInventoryUseCases(dbType)
   return async ({ action, contenders, item }: WeaponActionParams) => {
-    const { actionSubtype = "", actorId, apCost } = action
+    const { actionSubtype = "", actorId } = action
     const { char } = contenders[actorId]
     const { charId } = char
 
@@ -29,7 +29,7 @@ export default function weaponAction(dbType: keyof typeof repositoryMap = "rtdb"
       case "aim":
       case "burst":
         if (!item) throw new Error("Missing item")
-        return use(char, item, actionSubtype, apCost)
+        return use(char, item, actionSubtype)
       case "reload":
         if (!item) throw new Error("Missing item")
         return load(char, item)

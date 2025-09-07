@@ -11,6 +11,7 @@ import Txt from "components/Txt"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -21,6 +22,7 @@ function WaitScreen() {
   const useCases = useGetUseCases()
   const { combat } = useCombat()
   const character = useCharacter()
+  const combatStatus = useCombatStatus(character.charId)
 
   const roll = combat?.currAction?.roll
   const hasThrownDice = roll && typeof roll.dice === "number"
@@ -31,7 +33,7 @@ function WaitScreen() {
   }
 
   if (!combat) return <SlideError error={slideErrors.noCombatError} />
-  const canReact = getPlayerCanReact(character, combat)
+  const canReact = getPlayerCanReact(character, combatStatus, combat?.currAction)
   if (canReact) return <Redirect href={{ pathname: routes.combat.reaction }} />
 
   return (
@@ -94,13 +96,14 @@ function NoAp() {
 // return <Txt>Vous devez attendre que ce soit votre tour pour pouvoir agir.</Txt>
 
 export default function ActionUnavailableScreen() {
-  const { status } = useCharacter()
+  const { charId } = useCharacter()
+  const { combatStatus, currAp } = useCombatStatus(charId)
   const { combat } = useCombat()
 
-  const isWaiting = status.combatStatus === "wait"
-  const isDead = status.combatStatus === "dead"
-  const isInactive = status.combatStatus === "inactive"
-  const hasNoAp = status.currAp <= 0
+  const isWaiting = combatStatus === "wait"
+  const isDead = combatStatus === "dead"
+  const isInactive = combatStatus === "inactive"
+  const hasNoAp = currAp <= 0
 
   if (!combat || combat.id === "") {
     return (

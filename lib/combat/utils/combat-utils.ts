@@ -25,7 +25,6 @@ import { DEFAULT_INITIATIVE, DODGE_AP_COST, PARRY_AP_COST } from "../const/comba
 interface CombatEntry {
   rounds?: Record<string, Record<string, Action>>
 }
-type PlayerData = { char: Playable; combatStatus: CombatStatus }
 
 export const getNewRoundId = (combat: Combat) => Object.keys(combat.rounds ?? {}).length + 1
 export const getCurrentRoundId = (combat: CombatEntry | null) => {
@@ -277,23 +276,17 @@ export const getParrySkill = (weaponSkill: SkillId): SkillId => {
   return "melee"
 }
 
-export const getContenderAc = (
-  charId: string,
-  combat: Combat,
-  contenders: Record<string, PlayerData>
-) => {
-  const roundId = combat.currRoundId
-  const currAc = contenders[charId]?.char?.secAttr.curr.armorClass ?? 0
-  const bonusAc = contenders?.[charId]?.combatStatus?.armorClassBonusRecord?.[roundId] ?? 0
+export const getContenderAc = (roundId: number, char: Playable, combatStatus: CombatStatus) => {
+  const currAc = char?.secAttr.curr.armorClass ?? 0
+  const bonusAc = combatStatus?.armorClassBonusRecord?.[roundId] ?? 0
   return currAc + bonusAc
 }
 
 export const getRollBonus = (
-  actorId: string,
-  contenders: Record<string, CombatStatus>,
-  action?: { aimZone?: keyof typeof limbsMap }
+  combatStatus: CombatStatus,
+  action?: { aimZone?: Action["aimZone"] }
 ) => {
-  const actionBonus = contenders?.[actorId]?.actionBonus ?? 0
+  const actionBonus = combatStatus.actionBonus ?? 0
   const aimMalus = action?.aimZone ? limbsMap[action.aimZone].aimMalus : 0
   return actionBonus - aimMalus
 }
@@ -303,16 +296,15 @@ export const getRollFinalScore = (roll: Roll) => {
   return sumAbilities - dice + bonus - targetArmorClass - difficulty
 }
 
-export const getPlayerCanReact = (player: PlayerData, action: Action) => {
+export const getPlayerCanReact = (char: Playable, combatStatus: CombatStatus, action: Action) => {
   if (!action) return false
-  const { char, combatStatus } = player
 
   if (!withDodgeSpecies.includes(char.meta.speciesId)) return false
 
   const playerIsTarget = action.targetId === char.charId
   if (!playerIsTarget) return false
 
-  const { currAp } = player.combatStatus
+  const { currAp } = combatStatus
   const reactionActionsApCost = [DODGE_AP_COST, PARRY_AP_COST]
   const hasEnoughAp = reactionActionsApCost.some(cost => currAp >= cost)
   if (!hasEnoughAp) return false
@@ -327,15 +319,15 @@ export const getPlayerCanReact = (player: PlayerData, action: Action) => {
 
 export const getReactionAbilities = (
   char: Playable,
-  contenders: Record<string, CombatStatus>,
+  combatStatus: CombatStatus,
   combat: Combat
 ) => {
-  const { charId, skills, equipedObjects, knowledgesRecord, secAttr } = char
+  const { skills, equipedObjects, knowledgesRecord, secAttr } = char
   const roundId = getCurrentRoundId(combat)
 
-  const armorClassBonus = contenders?.[charId]?.armorClassBonusRecord?.[roundId] ?? 0
+  const armorClassBonus = combatStatus.armorClassBonusRecord?.[roundId] ?? 0
 
-  const actionBonus = contenders?.[charId]?.actionBonus ?? 0
+  const actionBonus = combatStatus.actionBonus ?? 0
 
   const dodgeKBonus = knowledgeLevels.find(el => el.id === knowledgesRecord.kDodge)?.bonus ?? 0
 

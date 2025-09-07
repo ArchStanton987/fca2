@@ -18,6 +18,7 @@ import { ComposedTitleProps } from "components/Section/Section.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import { getHapticSequence } from "utils/haptics"
@@ -35,41 +36,41 @@ const getTitle = (str: string): ComposedTitleProps => [
 export default function WeaponCard({ weapon, setPrevAp }: WeaponCardProps) {
   const useCases = useGetUseCases()
   const char = useCharacter()
+  const combatStatus = useCombatStatus(char.charId)
 
   const [selectedAction, setSelectedAction] = useState<WeaponActionId | null>(null)
 
   const selectAction = (actionId: WeaponActionId) => {
     if (selectedAction === actionId) {
       setSelectedAction(null)
-      setPrevAp(char.status.currAp)
+      setPrevAp(combatStatus.currAp)
     } else {
       setSelectedAction(actionId)
       const apCost = getApCost(weapon, char, actionId)
-      setPrevAp(char.status.currAp - apCost)
+      setPrevAp(combatStatus.currAp - apCost)
     }
   }
 
   const hasMalus = getHasStrengthMalus(weapon, char.special.curr)
 
-  const doAction = async (apCostOverride: number | undefined = undefined) => {
+  const doAction = async () => {
     if (!selectedAction) return
     setSelectedAction(null)
     switch (selectedAction) {
       case "reload":
-        await useCases.weapons.load(char, weapon, apCostOverride)
+        await useCases.weapons.load(char, weapon)
         break
       case "unload":
-        await useCases.weapons.unload(char, weapon, apCostOverride)
+        await useCases.weapons.unload(char, weapon)
         break
       default:
-        await useCases.weapons.use(char, weapon, selectedAction, apCostOverride)
+        await useCases.weapons.use(char, weapon, selectedAction)
         break
     }
-    setPrevAp(char.status.currAp)
+    setPrevAp(combatStatus.currAp)
     await getHapticSequence(selectedAction, weapon)
   }
 
-  // const actions = getAvailableWeaponActions(weapon, char)
   const actions = weaponActionsMap
 
   return (
@@ -129,7 +130,11 @@ export default function WeaponCard({ weapon, setPrevAp }: WeaponCardProps) {
             separator={<Spacer y={10} />}
             renderItem={({ item }) => {
               const isSelected = selectedAction === item.actionId
-              const isAvailable = item.fn(weapon, char)
+              const isAvailable = item.fn(
+                weapon,
+                combatStatus.currAp,
+                char.secAttr.curr.actionPoints
+              )
               return (
                 <TouchableOpacity
                   onPress={() => {

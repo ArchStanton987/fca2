@@ -16,6 +16,7 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -50,11 +51,11 @@ const styles = StyleSheet.create({
 export default function InitiativeScreen() {
   const useCases = useGetUseCases()
 
-  const { combat, npcs, players } = useCombat()
-  const contenders = { ...npcs, ...players }
+  const { combat } = useCombat()
+  const combatStatuses = useCombatStatus()
   const character = useCharacter()
   const { isNpc } = character.meta
-  const { skills } = character
+  const { skills, charId } = character
   const { perceptionSkill } = skills.curr
 
   const { scoreStr, onPressKeypad, setScore } = useNumPad()
@@ -65,9 +66,7 @@ export default function InitiativeScreen() {
 
   const onPressConfirm = async () => {
     if (Number.isNaN(finalScore) || combat === null) return
-    const isScoreUnique = Object.values(contenders).every(
-      c => c.combatData.initiative !== finalScore
-    )
+    const isScoreUnique = Object.values(combatStatuses).every(c => c.initiative !== finalScore)
     if (!isScoreUnique) {
       Toast.show({
         type: "custom",
@@ -75,11 +74,7 @@ export default function InitiativeScreen() {
       })
       return
     }
-    await useCases.combat.updateContender({
-      combat,
-      char: character,
-      payload: { initiative: finalScore }
-    })
+    await useCases.character.updateCombatStatus({ charId, payload: { initiative: finalScore } })
   }
 
   const onPressDice = async () => {

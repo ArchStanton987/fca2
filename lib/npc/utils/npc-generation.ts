@@ -3,7 +3,6 @@ import {
   KnowledgeId,
   KnowledgeLevelValue
 } from "lib/character/abilities/knowledges/knowledge-types"
-import secAttrMap from "lib/character/abilities/sec-attr/sec-attr"
 import { defaultSkillsValues } from "lib/character/abilities/skills/skills"
 import { SkillId } from "lib/character/abilities/skills/skills.types"
 import { getUpSkillCost } from "lib/character/abilities/skills/utils/skills-utils"
@@ -132,12 +131,12 @@ export const getEquipedObjects = (): DbEquipedObjects =>
   ({ weapons: {}, clothings: {} } as DbEquipedObjects)
 
 export const getStatus = (level: number, special: Special, background?: BackgroundId): DbStatus => {
-  const currAp = secAttrMap.actionPoints.calc(special)
+  // const currAp = secAttrMap.actionPoints.calc(special)
   const exp = getExpForLevel(level)
   const rads = 0
   return {
     background: background ?? "other",
-    currAp,
+    // currAp,
     exp,
     level,
     rads,

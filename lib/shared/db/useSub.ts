@@ -33,7 +33,8 @@ export function useSub<T, Db>(params: UseSubParams<T, Db>) {
       queryClient.setQueryData(queryKey, newData)
     })
     return () => unsubscribe()
-  }, [path, queryKey, queryClient, cb])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 }
 
 export function useMultiSub<T, Db>(paramsArray: UseSubParams<T, Db>[]) {
@@ -50,26 +51,6 @@ export function useMultiSub<T, Db>(paramsArray: UseSubParams<T, Db>[]) {
     return () => {
       unsubscribers.forEach(unsub => unsub())
     }
-  }, [paramsArray, queryClient])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 }
-
-// const combatQueries = {
-//   combat: (id: string) =>
-//     queryOptions({
-//       queryKey: ["combat", id],
-//       queryFn: () => new Promise<Combat>(() => {}),
-//       staleTime: Infinity
-//     })
-// }
-
-// function useGetCombat(id: string) {
-//   const combatQuery = combatQueries.combat(id)
-//   const cb = useCallback((payload: DbCombatEntry) => new Combat({ ...payload, id }), [id])
-//   useSub<Combat, DbCombatEntry>({ queryKey: combatQuery.queryKey, cb })
-//   return useQuery(combatQuery)
-// }
-
-// function useGetAction(id: string) {
-//   const combatQuery = combatQueries.combat(id)
-//   return useQuery({ ...combatQuery, select: c => c.currAction })
-// }

@@ -11,6 +11,7 @@ import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 
@@ -22,6 +23,7 @@ export default function NoRollSlide() {
   const inv = useInventory()
   const form = useActionForm()
   const { reset } = useActionApi()
+  const combatStatuses = useCombatStatus()
   const { combat, players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
 
@@ -30,7 +32,7 @@ export default function NoRollSlide() {
     try {
       const item = getItemFromId(inv, form.itemDbKey)
       const action = { ...combat?.currAction, actorId: charId }
-      await useCases.combat.doCombatAction({ combat, contenders, action, item })
+      await useCases.combat.doCombatAction({ combat, contenders, combatStatuses, action, item })
       Toast.show({ type: "custom", text1: "Action enregistrée !" })
       reset()
     } catch (err) {

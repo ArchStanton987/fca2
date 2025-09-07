@@ -52,7 +52,7 @@ function WithActionRedirections({ children }: { children: ReactNode }) {
   const playingId = combat.currActorId || defaultPlayingId
   const isPlaying = playingId === char.charId
 
-  const canReact = getPlayerCanReact({ char, combatStatus }, combat?.currAction)
+  const canReact = getPlayerCanReact(char, combatStatus, combat?.currAction)
   if (canReact) return <Redirect href={{ pathname: routes.combat.reaction }} />
 
   if (!isPlaying) return <ActionUnavailableScreen />

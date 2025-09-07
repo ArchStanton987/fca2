@@ -25,9 +25,7 @@ export default function Drawer({ sectionId, navElements }: DrawerProps) {
   const segments = useSegments()
   const squad = useSquad()
   const { squadId } = squad
-  const { charId, progress, status, meta } = useCharacter()
-
-  const isInFight = typeof status.currentCombatId === "string"
+  const { charId, progress, meta } = useCharacter()
 
   const { availableFreeKnowledgePoints, availableKnowledgePoints, availableSkillPoints } = progress
   const canAddSkill = availableSkillPoints > 0
@@ -69,9 +67,7 @@ export default function Drawer({ sectionId, navElements }: DrawerProps) {
           const { path } = item
           const isSelected = segments.includes(path)
           const hasBadge =
-            (path === "skills" && canAddSkill) ||
-            (path === "knowledges" && canAddKnowledge) ||
-            (path === "recap" && sectionId === "combat" && isInFight)
+            (path === "skills" && canAddSkill) || (path === "knowledges" && canAddKnowledge)
           return (
             <TouchableHighlight
               style={[styles.navButton, isSelected && styles.navButtonActive]}

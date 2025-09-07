@@ -20,7 +20,7 @@ export default function CharInput({ entryId }: CharInputProps) {
   const entry = useDamageEntry(entryId)
   const { charId } = entry
   const contender = contenders[charId]
-  const charName = contender?.char?.meta?.firstname ?? ""
+  const charName = contender?.meta?.firstname ?? ""
 
   const setPannelAndSelectEntry = () => {
     actions.setPannel("chars")
