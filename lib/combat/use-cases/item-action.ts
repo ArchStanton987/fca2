@@ -10,13 +10,13 @@ import getInventoryUseCases from "lib/objects/inventory-use-cases"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import Combat from "../Combat"
-import { DbAction, PlayerCombatData } from "../combats.types"
+import { DbAction } from "../combats.types"
 import actions from "../const/actions"
 
 export type CombatActionParams = {
   action: DbAction & { actorId: string }
   combat: Combat
-  contenders: Record<string, { char: Playable; combatData: PlayerCombatData }>
+  contenders: Record<string, Playable>
   item?: Clothing | Consumable | MiscObject | Weapon
 }
 
@@ -29,9 +29,8 @@ export default function itemAction(
 
   return async ({ action, contenders, item }: CombatActionParams) => {
     const { actionSubtype = "", actorId } = action
-    const { char } = contenders[actorId]
-    const { charId, meta } = char
-    const charType = meta.isNpc ? "npcs" : "characters"
+    const char = contenders[actorId]
+    const { charId } = char
 
     if (!(actionSubtype in actions.item.subtypes))
       throw new Error(`Wrong subtype: ${actionSubtype}`)
@@ -55,10 +54,10 @@ export default function itemAction(
         break
       case "drop":
         if (!item) throw new Error("Item not found")
-        return drop(charType, charId, item)
+        return drop(charId, item)
       case "throw": {
         if (!item) throw new Error("Item not found")
-        return drop(charType, charId, item)
+        return drop(charId, item)
       }
       default:
         throw new Error(`Unknown action subtype: ${actionSubtype}`)

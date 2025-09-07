@@ -37,11 +37,7 @@ function CharProvider({ children, charId }: { children: ReactNode; charId: strin
   const useCases = useGetUseCases()
 
   const squad = useSquad()
-  const isNpc = !(charId in squad.membersRecord)
-  const subParams = {
-    id: charId,
-    charType: isNpc ? ("npcs" as const) : ("characters" as const)
-  }
+  const subParams = { id: charId }
 
   const [currDatetime, setCurrDatetime] = useState(squad.date.toJSON())
 

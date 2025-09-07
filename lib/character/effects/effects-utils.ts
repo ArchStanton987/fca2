@@ -65,13 +65,11 @@ export const handleLimbsEffects = (
     const currValue = character.health.limbsHp[id]
     const newValue = newStatus[id]
 
-    const charType = character.meta.isNpc ? "npcs" : "characters"
-
     if (newValue !== currValue) {
       const currCripledEffect: Effect | undefined = character?.effectsRecord[cripledEffect]
       // remove cripled effect if the new value is greater than 0
       if (currCripledEffect && newValue > 0) {
-        promises.push(effectsUseCases.remove(charType, character.charId, currCripledEffect))
+        promises.push(effectsUseCases.remove(character.charId, currCripledEffect))
       }
       // add cripled effect if the new value is less than or equal to 0
       if (!currCripledEffect && newValue <= 0) {
@@ -90,8 +88,6 @@ export const handleHealthStatusEffects = (
 ): Promise<void>[] => {
   const promises: Promise<void>[] = []
 
-  const charType = character.meta.isNpc ? "npcs" : "characters"
-
   const { hp, maxHp } = character.health
   const currHealthState = getHealthState(hp, maxHp)
   const currHealthStateEffect = currHealthState ? character.effectsRecord[currHealthState] : null
@@ -106,7 +102,7 @@ export const handleHealthStatusEffects = (
   }
   // remove current health state effect if the new health state is different from the current one
   if (currHealthStateEffect && newHealthState !== currHealthStateEffect.id) {
-    promises.push(effectsUseCases.remove(charType, character.charId, currHealthStateEffect))
+    promises.push(effectsUseCases.remove(character.charId, currHealthStateEffect))
   }
 
   return promises
@@ -118,8 +114,6 @@ export const handleRadsEffects = (
   effectsUseCases: ReturnType<typeof getEffectsUseCases>
 ): Promise<void>[] => {
   const promises: Promise<void>[] = []
-
-  const charType = character.meta.isNpc ? "npcs" : "characters"
 
   const { rads } = character.health
   const newRads = newStatus.rads
@@ -133,7 +127,7 @@ export const handleRadsEffects = (
   }
   // remove current rads state effect if the new rads state is different from the current one
   if (radsStateEffect && newRadsState?.id !== radsStateEffect.id) {
-    promises.push(effectsUseCases.remove(charType, character.charId, radsStateEffect))
+    promises.push(effectsUseCases.remove(character.charId, radsStateEffect))
   }
 
   return promises

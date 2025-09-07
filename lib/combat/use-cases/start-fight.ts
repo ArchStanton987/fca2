@@ -7,17 +7,16 @@ export type StartFightParams = {
 }
 
 export default function startFight(dbType: keyof typeof repositoryMap = "rtdb") {
-  const statusRepo = repositoryMap[dbType].statusRepository
+  const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
 
   return async ({ combatId, contenders }: StartFightParams) => {
     const promises: Promise<void>[] = []
-    const combatStatus = { combatStatus: "active" as const, currentCombatId: combatId }
 
     Object.entries(contenders).forEach(([charId, playable]) => {
-      const currMaxAp = playable.secAttr.curr.actionPoints
-      const patchedStatus = { ...combatStatus, currAp: currMaxAp }
-      const charType = playable.meta.isNpc ? "npcs" : "characters"
-      promises.push(statusRepo.patch({ charId, charType }, patchedStatus))
+      const currAp = playable.secAttr.curr.actionPoints
+      promises.push(
+        combatStatusRepo.patch({ charId }, { currAp, combatStatus: "active", combatId })
+      )
     })
 
     return Promise.all(promises)

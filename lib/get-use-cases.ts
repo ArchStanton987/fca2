@@ -1,5 +1,8 @@
 import { DbChar } from "./character/Character"
 import getAbilitiesUseCases from "./character/abilities/abilities-use-cases"
+import updateCombatStatus, {
+  UpdateCombatStatusParams
+} from "./character/combat-status/use-cases/update-combat-status"
 import addAdditionalEffect from "./character/effects/add-additional-effect"
 import getEffectsUseCases from "./character/effects/effects-use-cases"
 import { DbEffectData } from "./character/effects/effects.types"
@@ -28,7 +31,6 @@ import startFight, { StartFightParams } from "./combat/use-cases/start-fight"
 import subAllFights from "./combat/use-cases/sub-all-fights"
 import subFight, { SubFightParams } from "./combat/use-cases/sub-fight"
 import updateAction, { UpdateActionParams } from "./combat/use-cases/update-action"
-import updateContender, { UpdateContenderParams } from "./combat/use-cases/update-contender"
 import updateFight, { UpdateFightParams } from "./combat/use-cases/update-fight"
 import waitAction, { WaitActionParams } from "./combat/use-cases/wait-action"
 import createNpc, { CreateNpcParams } from "./npc/use-cases/create-npc"
@@ -93,7 +95,6 @@ export default function getUseCases(
       create: (data: CreateFightParams) => createFight(dbType)(data),
       update: (data: UpdateFightParams) => updateFight(dbType)(data),
       delete: (data: DeleteFightParams) => deleteFight(dbType)(data),
-      updateContender: (data: UpdateContenderParams) => updateContender(dbType)(data),
       // ACTIONS
       doCombatAction: (data: CombatActionParams) => doCombatAction(dbType, createdElements)(data),
       waitAction: (data: WaitActionParams) => waitAction(dbType)(data),
@@ -120,7 +121,8 @@ export default function getUseCases(
       subCharacters: (ids: string[]) => subCharacters(dbType)(ids),
       sub: (params: CharacterParams) => subCharacter(dbType)(params),
       subChild: <T extends keyof DbChar>(params: SubCharacterChildParams<T>) =>
-        subCharacterChild(dbType)(params)
+        subCharacterChild(dbType)(params),
+      updateCombatStatus: (params: UpdateCombatStatusParams) => updateCombatStatus(dbType)(params)
     }
     // effects: {
     //   addEffectsToChar: (params: AddEffectsParams) => addEffects(dbType, createdElements)(params)

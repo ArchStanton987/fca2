@@ -2,7 +2,12 @@ import { StyleSheet } from "react-native"
 
 import { Redirect } from "expo-router"
 
-import { getActionId, getCurrentRoundId, getPlayingOrder } from "lib/combat/utils/combat-utils"
+import {
+  getActionId,
+  getCurrentRoundId,
+  getDefaultPlayingId,
+  getPlayingOrder
+} from "lib/combat/utils/combat-utils"
 
 import Col from "components/Col"
 import DrawerPage from "components/DrawerPage"
@@ -14,6 +19,7 @@ import Txt from "components/Txt"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import OrderRow, { OrderRowHeader } from "screens/GMActionOrder/OrderRow"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -59,7 +65,8 @@ const styles = StyleSheet.create({
 })
 
 export default function GMCombatScreen() {
-  const { combat, players, npcs } = useCombat()
+  const { combat } = useCombat()
+  const contendersCombatStatus = useCombatStatus()
   const { meta, charId } = useCharacter()
 
   if (!meta.isNpc)
@@ -69,19 +76,16 @@ export default function GMCombatScreen() {
       />
     )
 
-  if (!combat || !players || !npcs) return <Txt>Impossible de récupérer le combat</Txt>
+  if (!combat) return <Txt>Impossible de récupérer le combat</Txt>
 
-  const contenders = getPlayingOrder({ ...players, ...npcs })
-
-  const defaultPlayingId =
-    contenders.find(c => c.char.status.combatStatus === "active")?.char.charId ??
-    contenders.find(c => c.char.status.combatStatus === "wait")?.char.charId
-
+  const defaultPlayingId = getDefaultPlayingId(contendersCombatStatus)
   const playingId = combat.currActorId || defaultPlayingId
   const isCombinedAction = playingId === combat.currActorId
 
   const currRound = getCurrentRoundId(combat)
   const currAction = getActionId(combat)
+
+  const contenders = getPlayingOrder(contendersCombatStatus)
 
   return (
     <DrawerPage>
@@ -101,18 +105,13 @@ export default function GMCombatScreen() {
       <ScrollSection title="ordre / PA / initiative" style={{ flex: 1 }}>
         <List
           data={contenders}
-          keyExtractor={item => item.char.charId}
+          keyExtractor={item => item.id}
           separator={<Spacer y={10} />}
           ListHeaderComponent={OrderRowHeader}
           renderItem={({ item }) => (
             <OrderRow
-              charId={item.char.charId}
-              name={item.char.meta.firstname}
-              ap={item.char.status.currAp}
-              initiative={item.combatData.initiative}
-              status={item.char.status.combatStatus}
-              isPlaying={item.char.charId === playingId}
-              hasFinishedRound={item.char.status.currAp === 0}
+              charId={item.id}
+              isPlaying={item.id === playingId}
               isCombinedAction={isCombinedAction}
             />
           )}

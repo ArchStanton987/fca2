@@ -11,6 +11,7 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useReactionApi, useReactionForm } from "providers/ReactionProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
@@ -22,10 +23,10 @@ import styles from "./DiceRollSlide.styles"
 
 export default function ReactionRollSlide({ slideIndex }: SlideProps) {
   const useCases = useGetUseCases()
-  const { combat, players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
+  const { combat } = useCombat()
   const char = useCharacter()
   const { charId } = char
+  const combatStatus = useCombatStatus(charId)
   const form = useReactionForm()
   const { diceRoll, reaction } = form
   const { setReactionRoll } = useReactionApi()
@@ -42,7 +43,7 @@ export default function ReactionRollSlide({ slideIndex }: SlideProps) {
   if (reaction === "none") return <SlideError error={slideErrors.noDiceRollError} />
   if (!combat) return <SlideError error={slideErrors.noCombatError} />
 
-  const reactionAbilities = getReactionAbilities(char, contenders, combat)
+  const reactionAbilities = getReactionAbilities(char, combatStatus, combat)
   const { skillId, total } = reactionAbilities[reaction]
   const skillLabel = skillsMap[skillId].label
 

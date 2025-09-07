@@ -1,4 +1,5 @@
 import Playable from "lib/character/Playable"
+import { CombatStatus } from "lib/character/combat-status/combat-status.types"
 import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
 import { Clothing } from "lib/objects/data/clothings/clothings.types"
 import { Consumable } from "lib/objects/data/consumables/consumables.types"
@@ -8,7 +9,7 @@ import { Weapon } from "lib/objects/data/weapons/weapons.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import Combat from "../Combat"
-import { DbAction, PlayerCombatData } from "../combats.types"
+import { DbAction } from "../combats.types"
 import { getActivePlayersWithAp, getIsActionEndingRound } from "../utils/combat-utils"
 import applyDamageEntries from "./apply-damage-entries"
 import itemAction from "./item-action"
@@ -21,7 +22,8 @@ import weaponAction from "./weapon-action"
 export type CombatActionParams = {
   action: DbAction & { actorId: string }
   combat: Combat
-  contenders: Record<string, { char: Playable; combatData: PlayerCombatData }>
+  contenders: Record<string, Playable>
+  combatStatuses: Record<string, CombatStatus>
   item?: Clothing | Consumable | MiscObject | Weapon
 }
 
@@ -29,17 +31,19 @@ export default function doCombatAction(
   dbType: keyof typeof repositoryMap = "rtdb",
   newElements: CreatedElements = defaultCreatedElements
 ) {
-  const statusRepo = repositoryMap[dbType].statusRepository
+  const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
 
-  return async ({ action, combat, contenders, item }: CombatActionParams) => {
+  return async ({ action, combat, contenders, combatStatuses, item }: CombatActionParams) => {
     const { apCost = 0, actorId, actionType, actionSubtype } = action
-    const { charId, status, meta } = contenders[actorId].char
+    const char = contenders[actorId]
+    const combatStatus = combatStatuses[actorId]
+    const { charId, meta } = char
 
     const storedAction = combat?.currAction
 
-    if (apCost > status.currAp) throw new Error("Not enough AP to perform this action")
+    if (apCost > combatStatus.currAp) throw new Error("Not enough AP to perform this action")
 
-    const isEndingRound = getIsActionEndingRound(contenders, { apCost, ...action })
+    const isEndingRound = getIsActionEndingRound(combatStatuses, { apCost, ...action })
 
     const promises = []
 
@@ -61,14 +65,14 @@ export default function doCombatAction(
 
       case "wait": {
         if (isEndingRound) throw new Error("End of the round: invalid action")
-        const activePlayersWithAp = getActivePlayersWithAp(contenders)
+        const activePlayersWithAp = getActivePlayersWithAp(combatStatuses)
         if (activePlayersWithAp.length <= 1) throw new Error("No other players with AP")
-        promises.push(waitAction(dbType)({ action, contenders }))
+        promises.push(waitAction(dbType)({ action }))
         break
       }
 
       case "prepare":
-        promises.push(prepareAction(dbType)({ action, contenders, combat }))
+        promises.push(prepareAction(dbType)({ action, combatStatuses, combat }))
         break
 
       case "item":
@@ -85,27 +89,27 @@ export default function doCombatAction(
     // apply damage entries
     if (storedAction?.healthChangeEntries) {
       const damageEntries = storedAction.healthChangeEntries
-      promises.push(applyDamageEntries(dbType)({ combat, contenders, damageEntries }))
+      promises.push(
+        applyDamageEntries(dbType)({ combat, contenders, combatStatuses, damageEntries })
+      )
     }
 
     // save action in combat
-    promises.push(saveAction(dbType)({ action, combat, contenders }))
+    promises.push(saveAction(dbType)({ action, combat, contenders: combatStatuses }))
 
     // handle char status reset & new round creation
     if (isEndingRound) {
-      promises.push(setNewRound(dbType)({ contenders, combat }))
+      promises.push(setNewRound(dbType)({ contenders, combatStatuses, combat }))
     } else {
       // set actor action points
-      const charType = meta.isNpc ? "npcs" : "characters"
-      const newAp = status.currAp - apCost
-      promises.push(statusRepo.setChild({ charId, charType, childKey: "currAp" }, newAp))
+      const newAp = combatStatus.currAp - apCost
+      promises.push(combatStatusRepo.patch({ charId }, { currAp: newAp }))
 
       // set opponent action points if has reaction roll
       if (storedAction?.reactionRoll) {
         const { opponentId, opponentApCost } = storedAction.reactionRoll
-        const opCharType = contenders[opponentId].char.meta.isNpc ? "npcs" : "characters"
-        const oppNewAp = contenders[opponentId].char.secAttr.curr.actionPoints - opponentApCost
-        await statusRepo.patch({ charId: opponentId, charType: opCharType }, { currAp: oppNewAp })
+        const oppNewAp = contenders[opponentId].secAttr.curr.actionPoints - opponentApCost
+        await combatStatusRepo.patch({ charId: opponentId }, { currAp: oppNewAp })
       }
     }
 

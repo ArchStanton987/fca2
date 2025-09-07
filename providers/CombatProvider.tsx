@@ -1,11 +1,11 @@
 import { createContext, useContext, useMemo } from "react"
 
 import Character from "lib/character/Character"
+import { useCurrCharId } from "lib/character/character-store"
+import { useCharCombatStatus } from "lib/character/combat-status/use-cases/sub-combat-status"
 import Combat from "lib/combat/Combat"
-import { PlayerCombatData } from "lib/combat/combats.types"
 import NonHuman from "lib/npc/NonHuman"
 
-import { useCharacter } from "contexts/CharacterContext"
 import { useSquad } from "contexts/SquadContext"
 import useCreatedElements from "hooks/context/useCreatedElements"
 import useRtdbSub from "hooks/db/useRtdbSub"
@@ -13,12 +13,10 @@ import useRtdbSubs from "hooks/db/useRtdbSubs"
 
 import { useGetUseCases } from "./UseCasesProvider"
 
-type PlayerData = { char: Character | NonHuman; combatData: PlayerCombatData }
-
 type CombatContextType = {
   combat: Combat | null
-  players: Record<string, PlayerData> | null
-  npcs: Record<string, PlayerData> | null
+  players: Record<string, Character | NonHuman> | null
+  npcs: Record<string, Character | NonHuman> | null
 }
 
 const defaultCombatContext: CombatContextType = {
@@ -33,9 +31,9 @@ export default function CombatProvider({ children }: { children: React.ReactNode
   const useCases = useGetUseCases()
   const createdElements = useCreatedElements()
   const squad = useSquad()
-  const { status } = useCharacter()
 
-  const combatId = status.currentCombatId ?? ""
+  const charId = useCurrCharId()
+  const combatId = useCharCombatStatus(charId)?.data?.combatId ?? ""
   const dbCombat = useRtdbSub(useCases.combat.sub({ id: combatId }))
 
   const playersIds = useMemo(() => Object.keys(dbCombat?.players ?? {}), [dbCombat])
@@ -47,11 +45,10 @@ export default function CombatProvider({ children }: { children: React.ReactNode
 
   const players = useMemo(() => {
     if (!playersData || !dbCombat) return null
-    const characters: Record<string, PlayerData> = {}
+    const characters: Record<string, Character> = {}
     Object.entries(playersData).forEach(([key, value]) => {
       const char = new Character(key, value, squad, createdElements)
-      const combatData = dbCombat.players[key]
-      characters[key] = { char, combatData }
+      characters[key] = char
     })
     return characters
   }, [playersData, dbCombat, squad, createdElements])
@@ -65,16 +62,15 @@ export default function CombatProvider({ children }: { children: React.ReactNode
 
   const npcs = useMemo(() => {
     if (!npcsDatas || !dbCombat) return null
-    const result: Record<string, PlayerData> = {}
+    const result: Record<string, Character | NonHuman> = {}
     Object.entries(npcsDatas).forEach(([key, value]) => {
-      const combatData = dbCombat.npcs[key]
       if ("abilities" in value) {
         const char = new Character(key, value, squad, createdElements)
-        result[key] = { char, combatData }
+        result[key] = char
         return
       }
       const char = new NonHuman(key, value, squad)
-      result[key] = { char, combatData }
+      result[key] = char
     })
     return result
   }, [npcsDatas, dbCombat, squad, createdElements])

@@ -1,10 +1,10 @@
 import CharacterRtdbRepository from "lib/character/CharacterRtdbRepository"
+import CombatStatusRtdbRepository from "lib/character/combat-status/CombatStatusRtdbRepository"
 import AdditionalEffectsRtdbRepository from "lib/character/effects/AdditionalEffectsRtdbRepository"
 import EffectsRtdbRepository from "lib/character/effects/EffectsRtdbRepository"
 import StatusRtdbRepository from "lib/character/status/StatusRtdbRepository"
 import ActionRtdbRepository from "lib/combat/ActionRtdbRepository"
 import CombatRtdbRepository from "lib/combat/CombatRtdbRepository"
-import ContenderRtdbRepository from "lib/combat/ContenderRtdbRepository"
 import RollRtdbRepository from "lib/combat/RollRtdbRepository"
 import RoundRtdbRepository from "lib/combat/RoundRtdbRepository"
 import NpcRtdbRepository from "lib/npc/NpcRtdbRepository"
@@ -21,13 +21,13 @@ const repositoryMap = {
     additionalMiscRepository: new AdditionalMiscRtdbRepository(),
     //
     combatRepository: new CombatRtdbRepository(),
-    contenderRepository: new ContenderRtdbRepository(),
     roundRepository: new RoundRtdbRepository(),
     actionRepository: new ActionRtdbRepository(),
     rollRepository: new RollRtdbRepository(),
     npcRepository: new NpcRtdbRepository(),
     characterRepository: new CharacterRtdbRepository(),
     statusRepository: new StatusRtdbRepository(),
+    combatStatusRepository: new CombatStatusRtdbRepository(),
     effectsRepository: new EffectsRtdbRepository(),
     //
     squadRepository: new SquadRtdbRepository()

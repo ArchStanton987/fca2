@@ -2,6 +2,8 @@ import { TouchableOpacity } from "react-native"
 
 import { useLocalSearchParams } from "expo-router"
 
+import Playable from "lib/character/Playable"
+import { CombatStatus } from "lib/character/combat-status/combat-status.types"
 import Combat from "lib/combat/Combat"
 import Toast from "react-native-toast-message"
 
@@ -12,19 +14,24 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useAdmin } from "contexts/AdminContext"
 import useRtdbSub from "hooks/db/useRtdbSub"
+import CombatStatusProvider, { useCombatStatus } from "providers/CombatStatusProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
 import { getDDMMYYYY, getHHMM } from "utils/date"
 
-export default function AdminCombatScreen() {
+function AdminCombat() {
   const useCases = useGetUseCases()
   const { combatId } = useLocalSearchParams<{ combatId: string }>()
 
   const { characters, npcs } = useAdmin()
 
   const dbCombat = useRtdbSub(useCases.combat.sub({ id: combatId ?? "Non existing" }))
+  const combat = dbCombat ? new Combat({ ...dbCombat, id: combatId }) : null
+  const contendersRecord = combat ? { ...combat.players, ...combat.npcs } : {}
+  const contendersIds = Object.keys(contendersRecord)
+  const contendersCombatStatus = useCombatStatus()
 
-  if (!dbCombat) {
+  if (!combat) {
     return (
       <DrawerPage>
         <Section style={{ flex: 1 }} title="informations">
@@ -34,17 +41,20 @@ export default function AdminCombatScreen() {
     )
   }
 
-  const combat = new Combat({ ...dbCombat, id: combatId })
   const allPlayable = { ...characters, ...npcs }
-  const contendersIds = Object.keys({ ...combat.players, ...combat.npcs })
-  const contenders = Object.fromEntries(
-    contendersIds.map(id => {
-      const playable = allPlayable[id]
-      if (!playable) throw new Error(`Playable with id ${id} not found`)
-      return [id, playable]
-    })
-  )
-  const isFightActive = Object.values(contenders).some(c => c.status.currentCombatId === combatId)
+  const contendersStatus: Record<string, { combatStatus: CombatStatus; maxAp: number }> = {}
+  const contenders: Record<string, { char: Playable; combatStatus: CombatStatus }> = {}
+  const contendersPlayable: Record<string, Playable> = {}
+  contendersIds.forEach((id, i) => {
+    const playable = allPlayable[id]
+    const combatStatus = contendersCombatStatus[i]
+    if (!playable || !combatStatus) throw new Error(`Playable with id ${id} not found`)
+    contendersStatus[id] = { combatStatus, maxAp: playable.secAttr.curr.actionPoints }
+    contenders[id] = { char: playable, combatStatus }
+    contendersPlayable[id] = playable
+  })
+
+  const isFightActive = Object.values(contendersCombatStatus).some(e => e.combatId === combatId)
 
   const deleteCombat = async () => {
     try {
@@ -57,7 +67,7 @@ export default function AdminCombatScreen() {
 
   const adminEndFight = async () => {
     try {
-      await useCases.combat.adminEndFight({ combat, contenders })
+      await useCases.combat.adminEndFight({ combatId, contenders: contendersStatus })
       Toast.show({ type: "custom", text1: "Le combat a été clôturé" })
     } catch (error) {
       Toast.show({ type: "error", text1: "Erreur lors de la clôture du combat" })
@@ -66,7 +76,7 @@ export default function AdminCombatScreen() {
 
   const startFight = async () => {
     try {
-      await useCases.combat.startFight({ combatId, contenders })
+      await useCases.combat.startFight({ combatId, contenders: contendersPlayable })
       Toast.show({ type: "custom", text1: "Le combat a été démarré" })
     } catch (error) {
       Toast.show({ type: "error", text1: "Erreur lors du démarrage du combat" })
@@ -108,5 +118,13 @@ export default function AdminCombatScreen() {
         </TouchableOpacity>
       </ScrollSection>
     </DrawerPage>
+  )
+}
+
+export default function AdminCombatScreen() {
+  return (
+    <CombatStatusProvider>
+      <AdminCombat />
+    </CombatStatusProvider>
   )
 }

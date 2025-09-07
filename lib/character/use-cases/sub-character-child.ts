@@ -13,7 +13,6 @@ export default function subCharacterChild(dbType: keyof typeof repositoryMap = "
   return <T extends keyof DbChar>(params: SubCharacterChildParams<T>) =>
     repository.subChild<T>({
       id: params.id,
-      charType: params.charType,
       childKey: params.childKey
     })
 }

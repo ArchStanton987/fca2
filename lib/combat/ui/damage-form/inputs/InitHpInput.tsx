@@ -18,7 +18,7 @@ export default function InitHpInput({ entryId }: InitHpInputProps) {
   const entry = useDamageEntry(entryId)
   const { charId } = entry
   const contender = contenders[charId]
-  const initHp = contender?.char?.health?.hp ?? 0
+  const initHp = contender?.health?.hp ?? 0
 
   return <TxtInput editable={false} style={styles.input} value={initHp.toString()} />
 }

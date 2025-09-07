@@ -11,6 +11,7 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useAdmin } from "contexts/AdminContext"
 import { useSquad } from "contexts/SquadContext"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
 
@@ -20,6 +21,8 @@ export default function EnemyScreen() {
 
   const squad = useSquad()
   const { npcs } = useAdmin()
+  const currNpc = npcs[npcId]
+  const npcCombatStatus = useCombatStatus(npcId)
 
   const setChar = useSetCurrCharId()
 
@@ -32,7 +35,7 @@ export default function EnemyScreen() {
   }
 
   const deleteNpc = () => {
-    useCases.npc.delete({ squad, playable: npcs[npcId] })
+    useCases.npc.delete({ squad, npcId, npcCombatStatus })
   }
 
   if (!npcs[npcId]) {
@@ -45,8 +48,7 @@ export default function EnemyScreen() {
     )
   }
 
-  const currNpc = npcs[npcId]
-  const isFighting = !!currNpc.status.currentCombatId
+  const isFighting = !!npcCombatStatus?.combatId
   const { firstname, description, templateId } = currNpc.meta
 
   return (

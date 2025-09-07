@@ -13,6 +13,7 @@ import Txt from "components/Txt"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useReactionApi, useReactionForm } from "providers/ReactionProvider"
 import layout from "styles/layout"
 
@@ -24,8 +25,8 @@ import styles from "./ScoreResultSlide.styles"
 export default function ReactionScoreResultSlide() {
   const char = useCharacter()
   const { secAttr, special } = char
-  const { combat, players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
+  const combatStatuses = useCombatStatus()
+  const { combat } = useCombat()
   const { diceRoll, reaction } = useReactionForm()
   const diceScore = parseInt(diceRoll, 10)
   const { reset } = useReactionApi()
@@ -43,14 +44,14 @@ export default function ReactionScoreResultSlide() {
   const actorFinalScore = sumAbilities - dice + bonus - targetArmorClass - difficulty
 
   const { opponentSumAbilities, opponentDice, opponentId } = reactionRoll
-  const opponentBonus = getRollBonus(opponentId, contenders)
+  const opponentBonus = getRollBonus(combatStatuses[opponentId], combat?.currAction)
   const opponentScore = opponentSumAbilities - opponentDice + opponentBonus
   const isCritFail = opponentDice >= getCritFailureThreshold(special.curr)
   const isCrit = opponentDice < secAttr.curr.critChance
   const finalScore = opponentScore - actorFinalScore
   const isSuccess = finalScore >= 0
 
-  const { skillId } = getReactionAbilities(char, contenders, combat)[reaction]
+  const { skillId } = getReactionAbilities(char, combatStatuses[opponentId], combat)[reaction]
 
   const submit = () => {
     reset()

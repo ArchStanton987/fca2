@@ -18,6 +18,7 @@ import HealthFigure from "components/draws/HealthFigure/HealthFigure"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useReactionApi, useReactionForm } from "providers/ReactionProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
@@ -50,10 +51,10 @@ const styles = StyleSheet.create({
 
 export default function PickReactionSlide({ slideIndex }: SlideProps) {
   const useCases = useGetUseCases()
-  const { combat, players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
+  const { combat } = useCombat()
   const char = useCharacter()
-  const { status, secAttr } = char
+  const { secAttr, charId } = char
+  const combatStatus = useCombatStatus(charId)
 
   const form = useReactionForm()
   const { reaction } = form
@@ -67,11 +68,11 @@ export default function PickReactionSlide({ slideIndex }: SlideProps) {
 
   if (!combat) return <SlideError error={slideErrors.noCombatError} />
 
-  const reactionAbilities = getReactionAbilities(char, contenders, combat)
+  const reactionAbilities = getReactionAbilities(char, combatStatus, combat)
   const { parry, dodge } = reactionAbilities
 
   const { apCost } = reactionsRecord[reaction]
-  const leftAp = status.currAp - apCost
+  const leftAp = combatStatus.currAp - apCost
 
   const onSetReaction = (newReaction: keyof typeof reactionsRecord) => {
     setReactionForm({ reaction: newReaction })

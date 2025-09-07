@@ -19,8 +19,7 @@ export default function useGetSquadCharacters(
 
     membersIds.forEach(memberId => {
       // Subscribe to Firebase Realtime Database for each memberId
-      const charType = memberId in squad.membersRecord ? "characters" : "npcs"
-      const databaseRef = ref(database, dbKeys.char(charType, memberId).index)
+      const databaseRef = ref(database, dbKeys.char(memberId).index)
       const handleSnapshot = (snapshot: DataSnapshot) => {
         if (snapshot.exists()) {
           // Create Character instance for each snapshot

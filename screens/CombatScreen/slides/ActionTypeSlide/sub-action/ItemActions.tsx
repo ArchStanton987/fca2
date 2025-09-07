@@ -6,7 +6,7 @@ import ScrollSection from "components/Section/ScrollSection"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
-import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import colors from "styles/colors"
 
 const title = "pa"
@@ -15,10 +15,8 @@ export default function ItemActions() {
   const { charId } = useCharacter()
   const { actionSubtype, ...rest } = useActionForm()
   const { setActionSubtype } = useActionApi()
-  const { players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
   const actorId = rest.actorId === "" ? charId : rest.actorId
-  const { status } = contenders[actorId].char
+  const { currAp } = useCombatStatus(actorId)
 
   return (
     <ScrollSection style={{ flex: 1 }} title={title}>
@@ -26,13 +24,13 @@ export default function ItemActions() {
         data={Object.values(actions.item.subtypes)}
         keyExtractor={item => item.id}
         renderItem={({ item }) => {
-          const disabled = status.currAp < item.apCost
+          const disabled = currAp < item.apCost
           return (
             <ListItemSelectable
               isSelected={actionSubtype === item.id}
               style={{ flexDirection: "row", justifyContent: "space-between" }}
               onPress={() => setActionSubtype(item.id, item.apCost)}
-              disabled={status.currAp < item.apCost}
+              disabled={currAp < item.apCost}
             >
               <Txt style={disabled && { color: colors.terColor }}>{item.label}</Txt>
               <Txt style={disabled && { color: colors.terColor }}>{item.apCost}</Txt>

@@ -1,29 +1,18 @@
 import { getRepository } from "lib/RepositoryBuilder"
 import Playable from "lib/character/Playable"
-import { getApCost } from "lib/objects/data/weapons/weapons-utils"
 import { Weapon, WeaponActionId } from "lib/objects/data/weapons/weapons.types"
-
-import { LOAD_AP_COST, UNLOAD_AP_COST } from "./weapons-const"
 
 const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
   const invRepository = getRepository[db].inventory
   const equObjRepository = getRepository[db].equipedObjects
-  const statusRepository = getRepository[db].status
 
   return {
-    load: async (
-      char: Playable,
-      weapon: Weapon,
-      apCostOverride: number | undefined = undefined
-    ) => {
-      const { charId, meta } = char
-      const charType = meta.isNpc ? "npcs" : "characters"
+    load: async (char: Playable, weapon: Weapon) => {
+      const { charId } = char
       const { data, ammo, inMagazine = 0 } = weapon
       const { ammoType, magazine } = data
-      const apCost = apCostOverride || LOAD_AP_COST
 
       // VALIDATIONS
-      if (apCost > char.status.currAp) throw new Error("Not enough action points")
       if (ammoType === null) throw new Error("Weapon doesn't use ammo")
       if (magazine === null) throw new Error("Weapon doesn't use ammo")
       if (ammo === 0 || ammo === undefined) throw new Error("No ammo")
@@ -34,36 +23,25 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
       const toLoad = ammo >= missingInMag ? missingInMag : ammo
       const newInMag = inMagazine + toLoad
       const newAmmo = ammo - toLoad
-      const newAp = char.status.currAp - apCost
 
       // UPDATE DB
       const promises = []
       // update inventory
       promises.push(
-        invRepository.updateCollectible(charType, charId, "weapons", weapon, "inMagazine", newInMag)
+        invRepository.updateCollectible(charId, "weapons", weapon, "inMagazine", newInMag)
       )
       const invAmmoPayload = { category: "ammo" as const, id: ammoType, newValue: newAmmo }
-      promises.push(invRepository.groupUpdateRecords(charType, charId, [invAmmoPayload]))
+      promises.push(invRepository.groupUpdateRecords(charId, [invAmmoPayload]))
       // update equipped object
       const equObjPayload = { id: weapon.id, inMagazine: newInMag }
-      promises.push(
-        equObjRepository.update(charType, charId, "weapons", weapon.dbKey, equObjPayload)
-      )
-      // update action points
-      promises.push(statusRepository.updateElement(char, "currAp", newAp))
+      promises.push(equObjRepository.update(charId, "weapons", weapon.dbKey, equObjPayload))
       return Promise.all(promises)
     },
 
-    unload: async (
-      char: Playable,
-      weapon: Weapon,
-      apCostOverride: number | undefined = undefined
-    ) => {
-      const { charId, meta } = char
-      const charType = meta.isNpc ? "npcs" : "characters"
+    unload: async (char: Playable, weapon: Weapon) => {
+      const { charId } = char
       const { inMagazine = 0, data } = weapon
       const { ammoType } = data
-      const apCost = apCostOverride || UNLOAD_AP_COST
       // VALIDATIONS
       if (ammoType === null) throw new Error("Weapon doesn't use ammo")
       if (inMagazine === 0) throw new Error("No ammo in magazine")
@@ -71,41 +49,25 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
       // GET NEW AMMO AND INMAGAZINE VALUES
       const newInMag = 0
       const newAmmo = weapon.ammo + inMagazine
-      const newAp = char.status.currAp - apCost
 
       // UPDATE DB
       const promises = []
       // update inventory
       promises.push(
-        invRepository.updateCollectible(charType, charId, "weapons", weapon, "inMagazine", newInMag)
+        invRepository.updateCollectible(charId, "weapons", weapon, "inMagazine", newInMag)
       )
       const invAmmoPayload = { category: "ammo" as const, id: ammoType, newValue: newAmmo }
-      promises.push(invRepository.groupUpdateRecords(charType, charId, [invAmmoPayload]))
+      promises.push(invRepository.groupUpdateRecords(charId, [invAmmoPayload]))
       // update equipped object
       const equObjPayload = { id: weapon.id, inMagazine: newInMag }
-      promises.push(
-        equObjRepository.update(charType, charId, "weapons", weapon.dbKey, equObjPayload)
-      )
-      // update action points
-      promises.push(statusRepository.updateElement(char, "currAp", newAp))
+      promises.push(equObjRepository.update(charId, "weapons", weapon.dbKey, equObjPayload))
       return Promise.all(promises)
     },
 
-    use: async (
-      char: Playable,
-      weapon: Weapon,
-      actionId: WeaponActionId,
-      apCostOverride: number | undefined = undefined
-    ) => {
-      const { charId, status, meta } = char
-      const charType = meta.isNpc ? "npcs" : "characters"
+    use: async (char: Playable, weapon: Weapon, actionId: WeaponActionId) => {
+      const { charId } = char
       const { data, inMagazine = 0 } = weapon
       const { ammoType, ammoPerBurst, ammoPerShot } = data
-      const apCost = apCostOverride || getApCost(weapon, char, actionId)
-
-      // VALIDATIONS
-      if (apCost === null) throw new Error("Invalid weapon use type")
-      if (apCost > status.currAp) throw new Error("Not enough action points")
 
       const promises = []
 
@@ -120,24 +82,12 @@ const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
         // UPDATE DB
         // remove ammo from equipped object db
         const equObjPayload = { id: weapon.id, inMagazine: newInMag }
-        promises.push(
-          equObjRepository.update(charType, charId, "weapons", weapon.dbKey, equObjPayload)
-        )
+        promises.push(equObjRepository.update(charId, "weapons", weapon.dbKey, equObjPayload))
         // remove ammo from inventory db
         promises.push(
-          invRepository.updateCollectible(
-            charType,
-            charId,
-            "weapons",
-            weapon,
-            "inMagazine",
-            newInMag
-          )
+          invRepository.updateCollectible(charId, "weapons", weapon, "inMagazine", newInMag)
         )
       }
-      // REMOVE AP
-      const charRepository = getRepository[db].status
-      promises.push(charRepository.updateElement(char, "currAp", status.currAp - apCost))
       return Promise.all(promises)
     }
   }

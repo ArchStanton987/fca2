@@ -15,6 +15,7 @@ import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useInventories } from "providers/InventoriesProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
@@ -46,13 +47,14 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
   const useCases = useGetUseCases()
   const { combat, players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
+  const { charId } = useCharacter()
+  const combatStatuses = useCombatStatus()
   const form = useActionForm()
-  const character = useCharacter()
   const { actionType, actionSubtype, itemDbKey, rawDamage = "" } = form
   const { setForm, setRoll } = useActionApi()
 
-  const actorId = form.actorId === "" ? character.charId : form.actorId
-  const actor = contenders[actorId]?.char
+  const actorId = form.actorId === "" ? charId : form.actorId
+  const actor = contenders[actorId]
 
   const inv = useInventories(actorId)
   const { clothingsRecord, consumablesRecord, miscObjectsRecord } = inv
@@ -120,15 +122,16 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
       damageType: false as const,
       healthEntriesChange: false
     }
-    await useCases.combat.doCombatAction({ combat, action: payload, contenders })
+    await useCases.combat.doCombatAction({ combat, action: payload, contenders, combatStatuses })
     scrollNext()
   }
 
   // AWAIT REACTION (loading)
   let opponentCanReact = false
-  const opponent = action.targetId ? contenders[action?.targetId].char : null
-  if (opponent) {
-    opponentCanReact = getPlayerCanReact(opponent, combat)
+  const opponent = action.targetId ? contenders[action?.targetId] : null
+  if (opponent && action?.targetId) {
+    const combatStatus = combatStatuses[action?.targetId]
+    opponentCanReact = getPlayerCanReact(opponent, combatStatus, combat?.currAction)
   }
   if (opponentCanReact && action.reactionRoll === undefined) return <AwaitReactionSlide />
 

@@ -8,6 +8,7 @@ import Section from "components/Section"
 import Spacer from "components/Spacer"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 
@@ -18,11 +19,11 @@ function CombatScreen() {
   const useCases = useGetUseCases()
   const character = useCharacter()
   const inventory = useInventory()
-  const { status, secAttr, equipedObjects } = character
+  const { secAttr, equipedObjects, charId } = character
   const equWeapons = equipedObjects.weapons
-  const { currAp } = status
   const maxAp = secAttr.curr.actionPoints
   const weapons = equWeapons.map(eW => inventory?.weaponsRecord?.[eW.dbKey] ?? eW)
+  const currAp = useCombatStatus(charId, cS => cS.currAp)
 
   const [prevAp, setPrevAp] = useState(currAp)
 
@@ -40,7 +41,7 @@ function CombatScreen() {
   const handleSetAp = async (i: number) => {
     const newValue = i < currAp ? i : i + 1
     handleSetPrevAp(newValue)
-    await useCases.status.updateElement(character, "currAp", newValue)
+    await useCases.character.updateCombatStatus({ charId, payload: { currAp: newValue } })
   }
 
   const apArr = []

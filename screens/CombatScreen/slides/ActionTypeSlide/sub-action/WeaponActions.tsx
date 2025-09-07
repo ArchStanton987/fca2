@@ -13,15 +13,16 @@ import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 
 export default function WeaponActions() {
+  const { charId } = useCharacter()
   const { itemDbKey, actionSubtype, ...rest } = useActionForm()
+  const actorId = rest.actorId === "" ? charId : rest.actorId
+  const { currAp } = useCombatStatus(actorId)
   const { players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
-  const character = useCharacter()
-  const actorId = rest.actorId === "" ? character.charId : rest.actorId
-  const contender = contenders[actorId].char
-
+  const contender = contenders[actorId]
   const { setActionSubtype } = useActionApi()
   const inv = useInventory()
   let weapon = contender.unarmed
@@ -34,7 +35,7 @@ export default function WeaponActions() {
 
   if (!weapon) return null
 
-  const actions = getAvailableWeaponActions(weapon, contender)
+  const actions = getAvailableWeaponActions(weapon, currAp, contender.secAttr.curr.actionPoints)
 
   return (
     <ScrollSection style={{ flex: 1 }} title="action - pa">

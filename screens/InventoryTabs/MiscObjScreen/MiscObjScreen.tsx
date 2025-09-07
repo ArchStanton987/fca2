@@ -14,7 +14,6 @@ import { ComposedTitleProps } from "components/Section/Section.types"
 import Spacer from "components/Spacer"
 import PlusIcon from "components/icons/PlusIcon"
 import routes from "constants/routes"
-import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import MiscObjDetails from "screens/InventoryTabs/MiscObjScreen/MiscObjDetails"
@@ -31,8 +30,6 @@ function MiscObjScreen() {
   const { squadId, charId } = useLocalSearchParams() as SearchParams<DrawerParams>
   const [selectedItem, setSelectedItem] = useState<MiscObject | null>(null)
   const [isAscSort, setIsAscSort] = useState(true)
-  const { meta } = useCharacter()
-  const charType = meta.isNpc ? "npcs" : "characters"
 
   const { groupedMiscObjects } = useInventory()
 
@@ -66,7 +63,7 @@ function MiscObjScreen() {
               count={item.count}
               isSelected={item.id === selectedItem?.id}
               onPress={() => setSelectedItem(prev => (prev?.id === item.id ? null : item))}
-              onPressDelete={() => useCases.inventory.drop(charType, charId, item)}
+              onPressDelete={() => useCases.inventory.drop(charId, item)}
             />
           )}
         />

@@ -6,19 +6,17 @@ import ScrollSection from "components/Section/ScrollSection"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
-import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import colors from "styles/colors"
 
 const title = "action / pa / dist"
 
 export default function MovementActions() {
   const { actionSubtype, ...rest } = useActionForm()
-  const { setActionSubtype } = useActionApi()
   const { charId } = useCharacter()
-  const { players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
+  const { setActionSubtype } = useActionApi()
   const actorId = rest.actorId === "" ? charId : rest.actorId
-  const { status } = contenders[actorId].char
+  const { currAp } = useCombatStatus(actorId)
 
   return (
     <ScrollSection style={{ flex: 1 }} title={title}>
@@ -26,8 +24,8 @@ export default function MovementActions() {
         data={Object.values(actions.movement.subtypes)}
         keyExtractor={item => item.id}
         renderItem={({ item }) => {
-          const disabled = typeof item.apCost === "number" && status.currAp < item.apCost
-          const apCost = actions.movement.subtypes[item.id].apCost ?? status.currAp
+          const disabled = typeof item.apCost === "number" && currAp < item.apCost
+          const apCost = actions.movement.subtypes[item.id].apCost ?? currAp
           return (
             <ListItemSelectable
               isSelected={actionSubtype === item.id}

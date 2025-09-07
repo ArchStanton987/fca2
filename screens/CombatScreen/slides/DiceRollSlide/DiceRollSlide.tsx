@@ -17,6 +17,7 @@ import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useInventories } from "providers/InventoriesProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
@@ -37,14 +38,16 @@ export default function DiceRollSlide({ slideIndex }: SlideProps) {
 
   const useCases = useGetUseCases()
 
-  const character = useCharacter()
+  const { charId } = useCharacter()
   const { combat, players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
+  const combatStatuses = useCombatStatus()
 
   const form = useActionForm()
-  const actorId = form.actorId === "" ? character.charId : form.actorId
-  const actor = contenders[actorId].char
+  const actorId = form.actorId === "" ? charId : form.actorId
+  const actor = contenders[actorId]
   const inventory = useInventories(actorId)
+  const combatStatus = combatStatuses[actorId]
   const { weaponsRecord = {}, consumablesRecord = {} } = inventory
 
   const { setRoll } = useActionApi()
@@ -76,14 +79,18 @@ export default function DiceRollSlide({ slideIndex }: SlideProps) {
   const dice = form.actorDiceScore ? parseInt(form.actorDiceScore, 10) : 0
   const isValid = !Number.isNaN(dice) && dice > 0 && dice < 101
 
-  const bonus = getRollBonus(actor.charId, contenders, form)
-  const targetArmorClass = getContenderAc(targetId, combat, contenders)
+  const bonus = getRollBonus(combatStatus, action)
+  const targetArmorClass = getContenderAc(
+    combat?.currRoundId,
+    contenders[targetId],
+    combatStatuses[targetId]
+  )
 
   const onPressConfirm = async () => {
     if (combat === null || !isValid) return
     let reactionRoll
     if (targetId) {
-      const targetAp = contenders[targetId].char.status.currAp
+      const targetAp = combatStatuses[targetId].currAp
       reactionRoll = targetAp >= REACTION_MIN_AP_COST ? undefined : (false as const)
     }
     const roll = { difficulty, sumAbilities, dice, bonus, targetArmorClass, skillId }

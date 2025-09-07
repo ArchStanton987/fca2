@@ -5,6 +5,7 @@ import { getKnowledgesBonus } from "lib/character/abilities/knowledges/knowledge
 import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-levels"
 import skillsMap from "lib/character/abilities/skills/skills"
 import { Skill, SkillId } from "lib/character/abilities/skills/skills.types"
+import { CombatStatus } from "lib/character/combat-status/combat-status.types"
 import { limbsMap } from "lib/character/health/health"
 import { BodyPart, LimbsHp } from "lib/character/health/health-types"
 import { withDodgeSpecies } from "lib/character/meta/meta"
@@ -17,14 +18,13 @@ import { isKeyOf } from "utils/ts-utils"
 
 import Action from "../Action"
 import Combat from "../Combat"
-import { PlayerCombatData, Roll } from "../combats.types"
+import { Roll } from "../combats.types"
 import actions from "../const/actions"
 import { DEFAULT_INITIATIVE, DODGE_AP_COST, PARRY_AP_COST } from "../const/combat-const"
 
 interface CombatEntry {
   rounds?: Record<string, Record<string, Action>>
 }
-type PlayerData = { char: Playable; combatData: PlayerCombatData }
 
 export const getNewRoundId = (combat: Combat) => Object.keys(combat.rounds ?? {}).length + 1
 export const getCurrentRoundId = (combat: CombatEntry | null) => {
@@ -46,44 +46,36 @@ export const getActionId = (combat: Combat | null) => {
   return roundActions.length + 1
 }
 
-export const getPlayingOrder = (contenders: Record<string, PlayerData>) => {
+export const getPlayingOrder = (contendersRecord: Record<string, CombatStatus>) => {
   // sort contenders by initiative and current ap, then combat status inactive, then dead
-  const sortedContenders = Object.values(contenders)
-    .filter(c => c.char.status.combatStatus !== "inactive" && c.char.status.combatStatus !== "dead")
+  const contenders = Object.entries(contendersRecord).map(([id, value]) => ({ id, ...value }))
+  const sortedContenders = contenders
+    .filter(c => c.combatStatus !== "inactive" && c.combatStatus !== "dead")
     .sort((a, b) => {
-      if (a.char.status.currAp === b.char.status.currAp)
-        return b.combatData.initiative - a.combatData.initiative
-      return b.char.status.currAp - a.char.status.currAp
+      if (a.currAp === b.currAp) return b.initiative - a.initiative
+      return b.currAp - a.currAp
     })
-  const inactiveContenders = Object.values(contenders).filter(
-    c => c.char.status.combatStatus === "inactive"
-  )
-  const deadContenders = Object.values(contenders).filter(
-    c => c.char.status.combatStatus === "dead"
-  )
+  const inactiveContenders = Object.values(contenders).filter(c => c.combatStatus === "inactive")
+  const deadContenders = Object.values(contenders).filter(c => c.combatStatus === "dead")
   return [...sortedContenders, ...inactiveContenders, ...deadContenders]
 }
 
-export const getIsFightOver = (contenders: Record<string, PlayerData>) => {
-  const enemies = Object.values(contenders).filter(p => p.char.meta.isEnemy)
-  const withPlayers = Object.values(contenders).filter(p => !p.char.meta.isEnemy)
-  const playersInFight = Object.values(withPlayers).some(
-    p => p.char.status.combatStatus === "active" || p.char.status.combatStatus === "wait"
-  )
-  const enemiesInFight = Object.values(enemies).some(
-    e => e.char.status.combatStatus === "active" || e.char.status.combatStatus === "wait"
-  )
-  return !playersInFight || !enemiesInFight
+export const getDefaultPlayingId = (contendersRecord: Record<string, CombatStatus>) => {
+  const contenders = getPlayingOrder(contendersRecord)
+  const id =
+    contenders.find(c => c.combatStatus === "active")?.id ??
+    contenders.find(c => c.combatStatus === "wait")?.id
+  return id
 }
 
-export const getActivePlayersWithAp = (contenders: Record<string, PlayerData>) =>
+export const getActivePlayersWithAp = (contenders: Record<string, CombatStatus>) =>
   Object.entries(contenders)
-    .filter(([, c]) => c.char.status.combatStatus === "active")
-    .filter(([, c]) => c.char.status.currAp > 0)
+    .filter(([, c]) => c.combatStatus === "active")
+    .filter(([, c]) => c.currAp > 0)
     .map(([id, status]) => ({ id, status }))
 
 export const getIsActionEndingRound = (
-  contenders: Record<string, PlayerData>,
+  contenders: Record<string, CombatStatus>,
   action: {
     apCost: number
     actorId: string
@@ -93,11 +85,11 @@ export const getIsActionEndingRound = (
   const actor = contenders[action.actorId]
   if (!actor) return false
   const validContenders = Object.values(contenders)
-    .filter(c => c.char.status.combatStatus !== "inactive")
-    .filter(c => c.char.status.combatStatus !== "dead")
-    .filter(c => c.char.status.currAp > 0)
+    .filter(c => c.combatStatus !== "inactive")
+    .filter(c => c.combatStatus !== "dead")
+    .filter(c => c.currAp > 0)
 
-  const actorHasRemainingAp = actor.char.status.currAp - action.apCost > 0
+  const actorHasRemainingAp = actor.currAp - action.apCost > 0
 
   if (validContenders.length === 1 && !actorHasRemainingAp) return true
 
@@ -106,26 +98,21 @@ export const getIsActionEndingRound = (
     const opponentApCost = action?.reactionRoll?.opponentApCost
 
     if (opponentId && typeof opponentApCost === "number") {
-      const opponent = contenders[opponentId].char
-      const opponentHasRemaningAp = opponent.status.currAp - opponentApCost > 0
+      const opponent = contenders[opponentId]
+      const opponentHasRemaningAp = opponent.currAp - opponentApCost > 0
       if (!opponentHasRemaningAp && !actorHasRemainingAp) return true
     }
   }
   return false
 }
 
-export const getInitiativePrompts = (
-  charId: string,
-  players: Record<string, PlayerData>,
-  enemies: Record<string, PlayerData>
-) => {
-  const contenders = { ...players, ...enemies }
+export const getInitiativePrompts = (charId: string, contenders: Record<string, CombatStatus>) => {
   if (!isKeyOf(charId, contenders)) {
     return { playerShouldRollInitiative: false, shouldWaitOthers: false }
   }
-  const playerShouldRollInitiative = contenders[charId].combatData.initiative === DEFAULT_INITIATIVE
+  const playerShouldRollInitiative = contenders[charId].initiative === DEFAULT_INITIATIVE
   const shouldWaitOthers =
-    Object.values(contenders).some(p => p.combatData.initiative === DEFAULT_INITIATIVE) &&
+    Object.values(contenders).some(p => p.initiative === DEFAULT_INITIATIVE) &&
     !playerShouldRollInitiative
 
   return { playerShouldRollInitiative, shouldWaitOthers }
@@ -289,23 +276,17 @@ export const getParrySkill = (weaponSkill: SkillId): SkillId => {
   return "melee"
 }
 
-export const getContenderAc = (
-  charId: string,
-  combat: Combat,
-  contenders: Record<string, PlayerData>
-) => {
-  const roundId = combat.currRoundId
-  const currAc = contenders[charId]?.char?.secAttr.curr.armorClass ?? 0
-  const bonusAc = contenders?.[charId]?.combatData?.acBonusRecord?.[roundId] ?? 0
+export const getContenderAc = (roundId: number, char: Playable, combatStatus: CombatStatus) => {
+  const currAc = char?.secAttr.curr.armorClass ?? 0
+  const bonusAc = combatStatus?.armorClassBonusRecord?.[roundId] ?? 0
   return currAc + bonusAc
 }
 
 export const getRollBonus = (
-  actorId: string,
-  contenders: Record<string, PlayerData>,
-  action?: { aimZone?: keyof typeof limbsMap }
+  combatStatus: CombatStatus,
+  action?: { aimZone?: Action["aimZone"] }
 ) => {
-  const actionBonus = contenders?.[actorId]?.combatData?.actionBonus ?? 0
+  const actionBonus = combatStatus.actionBonus ?? 0
   const aimMalus = action?.aimZone ? limbsMap[action.aimZone].aimMalus : 0
   return actionBonus - aimMalus
 }
@@ -315,10 +296,7 @@ export const getRollFinalScore = (roll: Roll) => {
   return sumAbilities - dice + bonus - targetArmorClass - difficulty
 }
 
-export const getPlayerCanReact = (char: Playable, combat: Combat) => {
-  const roundId = getCurrentRoundId(combat)
-  const actionId = getActionId(combat)
-  const action = combat.rounds?.[roundId]?.[actionId]
+export const getPlayerCanReact = (char: Playable, combatStatus: CombatStatus, action: Action) => {
   if (!action) return false
 
   if (!withDodgeSpecies.includes(char.meta.speciesId)) return false
@@ -326,12 +304,12 @@ export const getPlayerCanReact = (char: Playable, combat: Combat) => {
   const playerIsTarget = action.targetId === char.charId
   if (!playerIsTarget) return false
 
-  const { currAp } = char.status
+  const { currAp } = combatStatus
   const reactionActionsApCost = [DODGE_AP_COST, PARRY_AP_COST]
   const hasEnoughAp = reactionActionsApCost.some(cost => currAp >= cost)
   if (!hasEnoughAp) return false
 
-  const isActive = char.status.combatStatus === "active" || char.status.combatStatus === "wait"
+  const isActive = combatStatus.combatStatus === "active" || combatStatus.combatStatus === "wait"
   if (!isActive) return false
 
   const { damageLocalization, reactionRoll } = action
@@ -341,15 +319,15 @@ export const getPlayerCanReact = (char: Playable, combat: Combat) => {
 
 export const getReactionAbilities = (
   char: Playable,
-  contenders: Record<string, PlayerData>,
+  combatStatus: CombatStatus,
   combat: Combat
 ) => {
-  const { charId, skills, equipedObjects, knowledgesRecord, secAttr } = char
+  const { skills, equipedObjects, knowledgesRecord, secAttr } = char
   const roundId = getCurrentRoundId(combat)
 
-  const armorClassBonus = contenders?.[charId]?.combatData?.acBonusRecord?.[roundId] ?? 0
+  const armorClassBonus = combatStatus.armorClassBonusRecord?.[roundId] ?? 0
 
-  const actionBonus = contenders?.[charId]?.combatData?.actionBonus ?? 0
+  const actionBonus = combatStatus.actionBonus ?? 0
 
   const dodgeKBonus = knowledgeLevels.find(el => el.id === knowledgesRecord.kDodge)?.bonus ?? 0
 

@@ -6,19 +6,17 @@ import ScrollSection from "components/Section/ScrollSection"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
-import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 
 // const title = [{ title: "action", containerStyle: { flex: 1 } }, { title: "pa" }]
 const title = "pa"
 
 export default function PrepareActions() {
   const { actionSubtype, ...rest } = useActionForm()
-  const { setActionSubtype } = useActionApi()
   const { charId } = useCharacter()
-  const { players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
+  const { setActionSubtype } = useActionApi()
   const actorId = rest.actorId === "" ? charId : rest.actorId
-  const { status } = contenders[actorId].char
+  const { currAp } = useCombatStatus(actorId)
   return (
     <ScrollSection style={{ flex: 1 }} title={title}>
       <List
@@ -28,10 +26,10 @@ export default function PrepareActions() {
           <ListItemSelectable
             isSelected={actionSubtype === item.id}
             style={{ flexDirection: "row", justifyContent: "space-between" }}
-            onPress={() => setActionSubtype(item.id, status.currAp)}
+            onPress={() => setActionSubtype(item.id, currAp)}
           >
             <Txt>{item.label}</Txt>
-            <Txt>{status.currAp}</Txt>
+            <Txt>{currAp}</Txt>
           </ListItemSelectable>
         )}
       />

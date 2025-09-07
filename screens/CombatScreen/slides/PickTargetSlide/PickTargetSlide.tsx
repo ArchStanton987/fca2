@@ -11,6 +11,7 @@ import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
@@ -42,10 +43,12 @@ export default function PickTargetSlide({ slideIndex }: SlideProps) {
   const form = useActionForm()
   const { targetId } = form
   const actorId = form.actorId === "" ? character.charId : form.actorId
-  const actor = contenders[actorId]?.char
+  const actor = contenders[actorId]
   const { isEnemy } = actor.meta
 
   const { setForm } = useActionApi()
+
+  const combatStatuses = useCombatStatus()
 
   const onPressPlayer = (id: string) => {
     setForm({ targetId: id })
@@ -57,34 +60,37 @@ export default function PickTargetSlide({ slideIndex }: SlideProps) {
     scrollTo(slideIndex + 1)
   }
 
-  const aliveContenders = Object.values(contenders).filter(c => {
-    const isAlive = c.char.status.combatStatus !== "dead"
-    const isNotCurrPlayer = c.char.charId !== actorId
-    return isAlive && isNotCurrPlayer
-  })
-  const hostiles = Object.values(aliveContenders).filter(c =>
-    isEnemy ? !c.char.meta.isEnemy : c.char.meta.isEnemy
-  )
-  const nonHostiles = Object.values(aliveContenders).filter(c =>
-    isEnemy ? c.char.meta.isEnemy : !c.char.meta.isEnemy
-  )
-  const targetList = [...hostiles, { char: { fullname: "autre", charId: "other" } }, ...nonHostiles]
+  const aliveContenders = Object.entries(combatStatuses)
+    .filter(([id, cs]) => {
+      const isAlive = cs.combatStatus !== "dead"
+      const isNotCurrPlayer = id !== actorId
+      return isAlive && isNotCurrPlayer
+    })
+    .map(([id]) => ({
+      id,
+      isEnemy: contenders[id].meta.isEnemy,
+      fullname: contenders[id].fullname
+    }))
+
+  const hostiles = aliveContenders.filter(c => (isEnemy ? !c.isEnemy : c.isEnemy))
+  const nonHostiles = aliveContenders.filter(c => (isEnemy ? c.isEnemy : !c.isEnemy))
+  const targetList = [...hostiles, { fullname: "autre", id: "other" }, ...nonHostiles]
 
   return (
     <DrawerSlide>
       <ScrollSection title="choisissez la cible" style={{ flex: 1 }}>
         <List
           data={targetList}
-          keyExtractor={e => e.char.charId}
+          keyExtractor={e => e.id}
           separator={<Spacer y={15} />}
           renderItem={({ item }) => {
-            const isSelected = targetId === item.char.charId
+            const isSelected = targetId === item.id
             return (
               <TouchableOpacity
-                onPress={() => onPressPlayer(item.char.charId)}
+                onPress={() => onPressPlayer(item.id)}
                 style={[styles.button, isSelected && styles.selected]}
               >
-                <Txt>{item.char.fullname}</Txt>
+                <Txt>{item.fullname}</Txt>
               </TouchableOpacity>
             )
           }}
