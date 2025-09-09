@@ -13,7 +13,7 @@ import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
-import { useCombatStatus } from "providers/CombatStatusProvider"
+import { useCombatStatus } from "providers/CombatStatusesProvider"
 
 export default function WeaponActions() {
   const { charId } = useCharacter()

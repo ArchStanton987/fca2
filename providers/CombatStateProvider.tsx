@@ -5,7 +5,7 @@ import { useSubCombatState } from "lib/combat/use-cases/sub-combat"
 
 import Txt from "components/Txt"
 
-import { useCombatStatus } from "./CombatStatusProvider"
+import { useCombat } from "./CombatProvider"
 
 type CombatStateType = {
   action: Action
@@ -18,15 +18,9 @@ const defaultCombatStateContext: CombatStateType = {
 
 const CombatStateContext = createContext<CombatStateType>(defaultCombatStateContext)
 
-export default function CombatStateProvider({
-  children,
-  charId
-}: {
-  children: ReactNode
-  charId: string
-}) {
-  const { combatId } = useCombatStatus(charId)
-  const combatStateReq = useSubCombatState(combatId ?? "")
+export default function CombatStateProvider({ children }: { children: ReactNode }) {
+  const combatId = useCombat()?.id ?? ""
+  const combatStateReq = useSubCombatState(combatId)
 
   const context = useMemo(
     () => ({

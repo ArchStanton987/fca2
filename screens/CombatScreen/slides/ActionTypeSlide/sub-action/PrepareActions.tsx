@@ -6,7 +6,7 @@ import ScrollSection from "components/Section/ScrollSection"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
-import { useCombatStatus } from "providers/CombatStatusProvider"
+import { useCombatStatus } from "providers/CombatStatusesProvider"
 
 // const title = [{ title: "action", containerStyle: { flex: 1 } }, { title: "pa" }]
 const title = "pa"

@@ -6,7 +6,8 @@ import Drawer from "components/Drawer/Drawer"
 import Spacer from "components/Spacer"
 import { useCharacter } from "contexts/CharacterContext"
 import CombatStateProvider from "providers/CombatStateProvider"
-import CombatStatusProvider from "providers/CombatStatusProvider"
+import CombatStatusesProvider from "providers/CombatStatusesProvider"
+import ContendersProvider from "providers/ContendersProvider"
 import InventoriesProvider from "providers/InventoriesProvider"
 import styles from "styles/DrawerLayout.styles"
 import colors from "styles/colors"
@@ -26,30 +27,32 @@ const gmNavElements = [
 ]
 
 export default function CombatLayout() {
-  const { meta, charId } = useCharacter()
+  const { meta } = useCharacter()
   const { isNpc } = meta
   const navElements = isNpc ? gmNavElements : pNavElements
 
   return (
     <InventoriesProvider>
-      <CombatStatusProvider>
-        <CombatStateProvider charId={charId}>
-          <View style={styles.drawerLayout}>
-            <Drawer sectionId="combat" navElements={navElements} />
-            <Spacer x={layout.globalPadding} />
-            <Stack
-              screenOptions={{
-                headerShown: false,
-                contentStyle: { backgroundColor: colors.primColor, padding: 0 }
-              }}
-            >
-              {navElements.map(({ path }) => (
-                <Stack.Screen key={path} name={path} />
-              ))}
-            </Stack>
-          </View>
+      <CombatStatusesProvider>
+        <CombatStateProvider>
+          <ContendersProvider>
+            <View style={styles.drawerLayout}>
+              <Drawer sectionId="combat" navElements={navElements} />
+              <Spacer x={layout.globalPadding} />
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  contentStyle: { backgroundColor: colors.primColor, padding: 0 }
+                }}
+              >
+                {navElements.map(({ path }) => (
+                  <Stack.Screen key={path} name={path} />
+                ))}
+              </Stack>
+            </View>
+          </ContendersProvider>
         </CombatStateProvider>
-      </CombatStatusProvider>
+      </CombatStatusesProvider>
     </InventoriesProvider>
   )
 }

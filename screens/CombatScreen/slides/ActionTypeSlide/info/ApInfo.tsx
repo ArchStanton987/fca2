@@ -1,7 +1,7 @@
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
-import { useCombatStatus } from "providers/CombatStatusProvider"
+import { useCombatStatus } from "providers/CombatStatusesProvider"
 
 export default function ApInfo({ contenderId }: { contenderId?: string }) {
   const { charId } = useCharacter()

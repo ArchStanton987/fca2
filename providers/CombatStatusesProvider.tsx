@@ -11,9 +11,8 @@ import { useCombat } from "./CombatProvider"
 type CombatStatusContextType = Record<string, CombatStatus>
 const CombatStatusContext = createContext<CombatStatusContextType>({})
 
-export default function CombatStatusProvider({ children }: { children: ReactNode }) {
-  const { combat } = useCombat()
-  const contendersIds = combat?.contendersIds ?? []
+export default function CombatStatusesProvider({ children }: { children: ReactNode }) {
+  const contendersIds = useCombat()?.contendersIds ?? []
   const combatStatusSub = useContendersCombatStatus(contendersIds)
 
   if (combatStatusSub.isPending) return <LoadingScreen />

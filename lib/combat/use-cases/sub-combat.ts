@@ -19,7 +19,7 @@ const combatHistoryOptions = (combatId: string) =>
     enabled: combatId !== "",
     queryFn: () => new Promise<DbCombatHistory>(() => {})
   })
-const combatInfoOptions = (combatId: string) =>
+export const combatInfoOptions = (combatId: string) =>
   queryOptions({
     queryKey: ["v3", "combats", combatId, "info"],
     enabled: combatId !== "",

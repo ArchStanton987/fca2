@@ -13,7 +13,7 @@ import Txt from "components/Txt"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
-import { useCombatStatus } from "providers/CombatStatusProvider"
+import { useCombatStatus } from "providers/CombatStatusesProvider"
 import { useReactionApi, useReactionForm } from "providers/ReactionProvider"
 import layout from "styles/layout"
 

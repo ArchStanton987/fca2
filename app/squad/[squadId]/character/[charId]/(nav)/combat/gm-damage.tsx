@@ -7,15 +7,14 @@ import DrawerPage from "components/DrawerPage"
 import Txt from "components/Txt"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
-import { useCombat } from "providers/CombatProvider"
 import { useCombatState } from "providers/CombatStateProvider"
+import { useContenders } from "providers/ContendersProvider"
 import { DamageFormProvider } from "providers/DamageFormProvider"
 
 export default function GMDamage() {
   const { meta, charId } = useCharacter()
   const { action } = useCombatState()
-  const { players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
+  const contenders = useContenders()
 
   if (!meta.isNpc)
     return (

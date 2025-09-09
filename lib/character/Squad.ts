@@ -1,27 +1,14 @@
 import { DbSquad, SquadMember } from "lib/squad/squad-types"
-import { computed, makeObservable, observable } from "mobx"
 
 export default class Squad {
   dbSquad: DbSquad
   squadId: string
+  combats: Record<string, string>
 
   constructor(dbSquad: DbSquad, squadId: string) {
     this.dbSquad = dbSquad
     this.squadId = squadId
-
-    makeObservable(this, {
-      dbSquad: observable,
-      //
-      members: computed,
-      membersRecord: computed,
-      //
-      npc: computed,
-      npcRecord: computed,
-      //
-      date: computed,
-      //
-      data: computed
-    })
+    this.combats = dbSquad.combats ?? {}
   }
 
   get members() {

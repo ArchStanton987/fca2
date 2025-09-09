@@ -11,7 +11,7 @@ import ProgressionBar from "components/ProgressionBar/ProgressionBar"
 import Row from "components/Row"
 import Txt from "components/Txt"
 import { useCombat } from "providers/CombatProvider"
-import { useCombatStatus } from "providers/CombatStatusProvider"
+import { useCombatStatus } from "providers/CombatStatusesProvider"
 import colors from "styles/colors"
 
 import CombatOrderText from "./CombatOrderText"
