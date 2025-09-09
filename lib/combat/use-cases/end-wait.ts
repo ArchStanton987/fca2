@@ -1,24 +1,24 @@
 import Playable from "lib/character/Playable"
 import repositoryMap from "lib/shared/db/get-repository"
 
-import Combat from "../Combat"
+import CombatState from "../CombatState"
 
 export type EndWaitParams = {
-  combat: Combat
+  combatId: string
+  combatState: CombatState
   actor: Playable
 }
 
 export default function endWait(dbType: keyof typeof repositoryMap = "rtdb") {
   const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
-  const combatRepo = repositoryMap[dbType].combatRepository
-  const actionRepo = repositoryMap[dbType].actionRepository
+  const combatStateRepo = repositoryMap[dbType].combatStateRepository
 
-  return ({ combat, actor }: EndWaitParams) => {
+  return ({ combatId, combatState, actor }: EndWaitParams) => {
     const promises = []
 
     // clear currentActorId (in case another actor is doing combined action)
-    if (combat.currActorId) {
-      promises.push(combatRepo.setChild({ id: combat.id, childKey: "currActorId" }, ""))
+    if (combatState?.actorIdOverride) {
+      promises.push(combatStateRepo.delete({ id: combatId, childKey: "actorIdOverride" }))
     }
 
     // set actor new status
@@ -27,10 +27,7 @@ export default function endWait(dbType: keyof typeof repositoryMap = "rtdb") {
     )
 
     // reset current action
-    const combatId = combat.id
-    const roundId = combat.currRoundId
-    const actionId = combat.currActionId
-    promises.push(actionRepo.delete({ combatId, roundId, id: actionId }))
+    promises.push(combatStateRepo.delete({ id: combatId, childKey: "action" }))
 
     return Promise.all(promises)
   }

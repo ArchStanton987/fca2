@@ -2,12 +2,7 @@ import { StyleSheet } from "react-native"
 
 import { Redirect } from "expo-router"
 
-import {
-  getActionId,
-  getCurrentRoundId,
-  getDefaultPlayingId,
-  getPlayingOrder
-} from "lib/combat/utils/combat-utils"
+import { getDefaultPlayingId, getPlayingOrder } from "lib/combat/utils/combat-utils"
 
 import Col from "components/Col"
 import DrawerPage from "components/DrawerPage"
@@ -19,6 +14,7 @@ import Txt from "components/Txt"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatState } from "providers/CombatStateProvider"
 import { useCombatStatus } from "providers/CombatStatusProvider"
 import OrderRow, { OrderRowHeader } from "screens/GMActionOrder/OrderRow"
 import colors from "styles/colors"
@@ -66,6 +62,7 @@ const styles = StyleSheet.create({
 
 export default function GMCombatScreen() {
   const { combat } = useCombat()
+  const { actorIdOverride } = useCombatState()
   const contendersCombatStatus = useCombatStatus()
   const { meta, charId } = useCharacter()
 
@@ -76,14 +73,9 @@ export default function GMCombatScreen() {
       />
     )
 
-  if (!combat) return <Txt>Impossible de récupérer le combat</Txt>
-
   const defaultPlayingId = getDefaultPlayingId(contendersCombatStatus)
-  const playingId = combat.currActorId || defaultPlayingId
-  const isCombinedAction = playingId === combat.currActorId
-
-  const currRound = getCurrentRoundId(combat)
-  const currAction = getActionId(combat)
+  const playingId = actorIdOverride || defaultPlayingId
+  const isCombinedAction = playingId === actorIdOverride
 
   const contenders = getPlayingOrder(contendersCombatStatus)
 
@@ -91,12 +83,12 @@ export default function GMCombatScreen() {
     <DrawerPage>
       <Col style={{ width: 60 }}>
         <Section contentContainerStyle={styles.centeredSection} title="RND" style={{ flex: 1 }}>
-          <Txt style={styles.combatStep}>{currRound}</Txt>
+          <Txt style={styles.combatStep}>{combat?.currRoundId ?? 1}</Txt>
         </Section>
 
         <Spacer y={layout.globalPadding} />
         <Section contentContainerStyle={styles.centeredSection} title="ACTN" style={{ flex: 1 }}>
-          <Txt style={styles.combatStep}>{currAction}</Txt>
+          <Txt style={styles.combatStep}>{combat?.currActionId ?? 1}</Txt>
         </Section>
       </Col>
 

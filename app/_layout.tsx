@@ -21,7 +21,7 @@ import AuthContainer from "../providers/AuthProvider"
 
 let didInit = false
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({ defaultOptions: { queries: { staleTime: Infinity } } })
 
 SplashScreen.preventAutoHideAsync()
 

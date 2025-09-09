@@ -98,7 +98,7 @@ export default function CombatCreation() {
       })
     )
 
-    const payload = { ...form, date: date.toJSON(), isStartingNow, squadId, contenders }
+    const payload = { ...form, date: date.toJSON(), isStartingNow, gameId: squadId, contenders }
     try {
       await useCases.combat.create(payload)
       Toast.show({ type: "custom", text1: "Le combat a été créé" })

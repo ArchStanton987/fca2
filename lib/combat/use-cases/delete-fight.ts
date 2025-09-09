@@ -2,11 +2,10 @@ import Playable from "lib/character/Playable"
 import { CombatStatus, DbCombatStatus } from "lib/character/combat-status/combat-status.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
-import Combat from "../Combat"
-
 export type DeleteFightParams = {
-  combat: Combat
-  contenders: Record<string, { char: Playable; combatStatus: CombatStatus }>
+  combatId: string
+  contenders: Record<string, Playable>
+  combatStatuses: Record<string, CombatStatus>
 }
 
 export default function deleteFight(dbType: keyof typeof repositoryMap = "rtdb") {
@@ -14,23 +13,23 @@ export default function deleteFight(dbType: keyof typeof repositoryMap = "rtdb")
   const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
   const characterRepo = repositoryMap[dbType].characterRepository
 
-  return ({ combat, contenders }: DeleteFightParams) => {
+  return ({ combatId, contenders, combatStatuses }: DeleteFightParams) => {
     const promises: Promise<void>[] = []
 
     // delete combat entry
-    promises.push(combatRepo.delete({ id: combat.id }))
+    promises.push(combatRepo.delete({ id: combatId }))
 
-    Object.entries(contenders).forEach(([charId, { char, combatStatus }]) => {
+    Object.entries(contenders).forEach(([charId, char]) => {
       const { secAttr, combats } = char
       // remove fight ID in characters combat archive
-      if (combats[combat.id]) {
+      if (combats[combatId]) {
         const newCombats = { ...combats }
-        delete newCombats[combat.id]
+        delete newCombats[combatId]
         promises.push(characterRepo.patch({ id: charId }, { combats: newCombats }))
       }
 
       // reset character ap, currFightId, combatStatus IF current combat is the one being deleted
-      if (combatStatus.combatId === combat.id) {
+      if (combatStatuses[charId].combatId === combatId) {
         const defaultCombatStatus: DbCombatStatus = { currAp: secAttr.curr.actionPoints }
         promises.push(combatStatusRepo.set({ charId }, defaultCombatStatus))
       }

@@ -1,5 +1,5 @@
 import Action from "./Action"
-import { DbCombatEntry } from "./combats.types"
+import { DbCombatHistory, DbCombatInfo } from "./combats.types"
 
 export const defaultAction = {
   actionType: "",
@@ -14,30 +14,25 @@ export const defaultAction = {
 
 export default class Combat {
   id: string
-  squadId: string
+  gameId: string
   date: Date
   location?: string
   title: string
   description: string
-  currActorId: string
-  players: Record<string, string>
-  npcs: Record<string, string>
-  contenders: Record<string, string>
-  rounds: Record<number, Record<number, Action>>
+  contendersIds: string[]
+  history: Record<number, Record<number, Action>>
 
-  constructor(payload: DbCombatEntry & { id: string }) {
+  constructor(payload: DbCombatInfo & { history: DbCombatHistory; id: string; gameId: string }) {
     this.id = payload.id
-    this.squadId = payload.squadId
+    this.gameId = payload.gameId
     this.date = new Date(payload.date)
     this.location = payload.location
     this.title = payload.title
     this.description = payload.description || ""
-    this.currActorId = payload.currActorId
-    this.players = payload.players
-    this.npcs = payload.npcs
-    this.contenders = { ...payload.players, ...payload.npcs }
-    this.rounds = Object.fromEntries(
-      Object.entries(payload.rounds ?? {}).map(([rId, round]) => {
+    this.contendersIds = Object.keys(payload.contenders ?? {})
+
+    this.history = Object.fromEntries(
+      Object.entries(payload.history ?? {}).map(([rId, round]) => {
         const roundId = Number(rId)
         const actions = Object.fromEntries(
           Object.entries(round ?? {}).map(([aId, dbAction]) => {
@@ -52,24 +47,13 @@ export default class Combat {
   }
 
   get currRoundId() {
-    const keys = Object.keys(this.rounds ?? {}).map(Number)
+    const keys = Object.keys(this.history ?? {}).map(Number)
     return keys.length > 0 ? Math.max(...keys) : 1
   }
 
   get currActionId() {
     const roundId = this.currRoundId
-    const roundActions = Object.entries(this.rounds[roundId] ?? {})
-    if (roundActions.length === 0) return 1
-    const action = roundActions.find(([, a]) => !a?.isDone)
-    if (action) {
-      const [actionId] = action
-      return Number(actionId)
-    }
-    return roundActions.length + 1
-  }
-
-  get currAction() {
-    const currAction = this?.rounds?.[this.currRoundId]?.[this.currActionId]
-    return currAction ?? new Action({})
+    const roundActionsKeys = Object.keys(this.history[roundId] ?? {}).map(Number)
+    return roundActionsKeys.length > 0 ? Math.max(...roundActionsKeys) : 1
   }
 }

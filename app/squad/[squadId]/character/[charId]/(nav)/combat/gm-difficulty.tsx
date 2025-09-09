@@ -17,6 +17,7 @@ import Txt from "components/Txt"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatState } from "providers/CombatStateProvider"
 import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import DeleteButton from "screens/CombatScreen/slides/DeleteButton"
@@ -42,13 +43,14 @@ export default function GMActionsScreen() {
   const { combat, players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
   const combatStatuses = useCombatStatus()
+  const { action, actorIdOverride } = useCombatState()
 
   const [hasRoll, setHasRoll] = useState(false)
   const [difficulty, setDifficulty] = useState(0)
 
   const submit = () => {
     if (!combat) return
-    const prevRoll = combat.currAction.roll
+    const prevRoll = action.roll
     const roll = hasRoll ? { ...prevRoll, difficulty } : false
     if (roll === false) {
       useCases.combat.updateAction({ combat, payload: { roll } })
@@ -81,9 +83,8 @@ export default function GMActionsScreen() {
       </DrawerPage>
     )
 
-  const action = combat.currAction
   const defaultPlayingId = getDefaultPlayingId(combatStatuses)
-  const playingId = combat.currActorId || defaultPlayingId
+  const playingId = actorIdOverride || defaultPlayingId
   if (!playingId) return <Txt>Impossible de récupérer le joueur</Txt>
   const currPlayer = contenders[playingId]
 

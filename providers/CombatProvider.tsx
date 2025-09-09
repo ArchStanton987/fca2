@@ -4,25 +4,23 @@ import Character from "lib/character/Character"
 import { useCurrCharId } from "lib/character/character-store"
 import { useCharCombatStatus } from "lib/character/combat-status/use-cases/sub-combat-status"
 import Combat from "lib/combat/Combat"
+import { useSubCombatHistory, useSubCombatInfo } from "lib/combat/use-cases/sub-combat"
 import NonHuman from "lib/npc/NonHuman"
 
 import { useSquad } from "contexts/SquadContext"
 import useCreatedElements from "hooks/context/useCreatedElements"
-import useRtdbSub from "hooks/db/useRtdbSub"
 import useRtdbSubs from "hooks/db/useRtdbSubs"
 
 import { useGetUseCases } from "./UseCasesProvider"
 
 type CombatContextType = {
   combat: Combat | null
-  players: Record<string, Character | NonHuman> | null
-  npcs: Record<string, Character | NonHuman> | null
+  contenders: Record<string, Character | NonHuman> | null
 }
 
 const defaultCombatContext: CombatContextType = {
   combat: null,
-  players: null,
-  npcs: null
+  contenders: null
 }
 
 const CombatContext = createContext<CombatContextType>(defaultCombatContext)
@@ -34,36 +32,23 @@ export default function CombatProvider({ children }: { children: React.ReactNode
 
   const charId = useCurrCharId()
   const combatId = useCharCombatStatus(charId)?.data?.combatId ?? ""
-  const dbCombat = useRtdbSub(useCases.combat.sub({ id: combatId }))
+  const combatHistoryReq = useSubCombatHistory(combatId)
+  const combatInfoReq = useSubCombatInfo(combatId)
 
-  const playersIds = useMemo(() => Object.keys(dbCombat?.players ?? {}), [dbCombat])
-  const playersSubs = useMemo(
-    () => useCases.character.subCharacters(playersIds).map((s, i) => ({ ...s, id: playersIds[i] })),
-    [playersIds, useCases]
+  const contendersIds = useMemo(() => Object.keys(combatInfoReq.data ?? {}), [combatInfoReq])
+  const contendersSub = useMemo(
+    () =>
+      useCases.character
+        .subCharacters(contendersIds)
+        .map((s, i) => ({ ...s, id: contendersIds[i] })),
+    [contendersIds, useCases]
   )
-  const playersData = useRtdbSubs(playersSubs)
+  const contendersData = useRtdbSubs(contendersSub)
 
-  const players = useMemo(() => {
-    if (!playersData || !dbCombat) return null
-    const characters: Record<string, Character> = {}
-    Object.entries(playersData).forEach(([key, value]) => {
-      const char = new Character(key, value, squad, createdElements)
-      characters[key] = char
-    })
-    return characters
-  }, [playersData, dbCombat, squad, createdElements])
-
-  const npcIds = useMemo(() => Object.keys(dbCombat?.npcs ?? {}), [dbCombat])
-  const npcSubs = useMemo(
-    () => useCases.npc.subNpcs(npcIds).map((s, i) => ({ ...s, id: npcIds[i] })),
-    [npcIds, useCases]
-  )
-  const npcsDatas = useRtdbSubs(npcSubs)
-
-  const npcs = useMemo(() => {
-    if (!npcsDatas || !dbCombat) return null
+  const contenders = useMemo(() => {
+    if (!contendersData) return null
     const result: Record<string, Character | NonHuman> = {}
-    Object.entries(npcsDatas).forEach(([key, value]) => {
+    Object.entries(contendersData).forEach(([key, value]) => {
       if ("abilities" in value) {
         const char = new Character(key, value, squad, createdElements)
         result[key] = char
@@ -73,14 +58,19 @@ export default function CombatProvider({ children }: { children: React.ReactNode
       result[key] = char
     })
     return result
-  }, [npcsDatas, dbCombat, squad, createdElements])
+  }, [contendersData, squad, createdElements])
 
   const combat = useMemo(() => {
-    if (!dbCombat) return null
-    return new Combat({ ...dbCombat, id: combatId })
-  }, [dbCombat, combatId])
+    if (!combatInfoReq.data) return null
+    return new Combat({
+      history: combatHistoryReq.data ?? {},
+      ...combatInfoReq.data,
+      id: combatId,
+      gameId: squad.squadId
+    })
+  }, [combatHistoryReq, combatInfoReq, squad.squadId, combatId])
 
-  const value = useMemo(() => ({ combat: combat ?? null, players, npcs }), [combat, players, npcs])
+  const value = useMemo(() => ({ combat, contenders }), [combat, contenders])
 
   return <CombatContext.Provider value={value}>{children}</CombatContext.Provider>
 }

@@ -2,7 +2,7 @@ import { DbChar } from "lib/character/Character"
 import { DbCombatStatus } from "lib/character/combat-status/combat-status.types"
 import { DbEffect } from "lib/character/effects/effects.types"
 import { DbStatus } from "lib/character/status/status.types"
-import { DbAction, DbCombatEntry, Roll } from "lib/combat/combats.types"
+import { DbAction, DbCombatHistory, DbCombatInfo, Roll } from "lib/combat/combats.types"
 import { DbNpc } from "lib/npc/npc.types"
 import { DbSquad } from "lib/squad/squad-types"
 
@@ -16,7 +16,10 @@ export type AdditionalConsumablesParams = Child<string>
 export type AdditionalEffectsParams = Child<string>
 export type AdditionalMiscParams = Child<string>
 //
-export type CombatParams = { id?: string; childKey?: keyof DbCombatEntry }
+export type CombatParams = { id: string }
+export type CombatInfoParams = { id: string; childKey?: keyof DbCombatInfo }
+export type CombatHistoryParams = { id: string; childKey?: keyof DbCombatHistory }
+export type CombatStateParams = { id: string; childKey?: "action" | "actorIdOverride" }
 export type RoundParams = {
   combatId: string
   id?: number
@@ -52,21 +55,26 @@ const rtdb = {
   getAdditionalMiscObjects: ({ childKey }: AdditionalMiscParams) =>
     `v3/additional/miscObjects/${childKey ?? ""}`,
   //
-  getCombat: ({ id, childKey }: CombatParams) =>
-    childKey ? `v3/combat/${id}/${childKey}` : `v3/combat/${id ?? ""}`,
+  getCombat: ({ id }: CombatParams) => `v3/combat/${id}`,
+  getCombatInfo: ({ id, childKey }: CombatInfoParams) =>
+    childKey ? `v3/combats/${id}/info/${childKey}` : `v3/combats/${id ?? ""}/info`,
+  getCombatHistory: ({ id, childKey }: CombatHistoryParams) =>
+    childKey ? `v3/combats/${id}/history/${childKey}` : `v3/combats/${id ?? ""}/history`,
+  getCombatState: ({ id, childKey }: CombatStateParams) =>
+    childKey ? `v3/combats/${id}/state/${childKey}` : `v3/combats/${id ?? ""}/state`,
 
   getRound: ({ combatId, id, childKey }: RoundParams) =>
-    id ? `v3/combat/${combatId}/rounds/${id}/${childKey ?? ""}` : `v3/combat/${combatId}/rounds/`,
+    id ? `v3/combats/${combatId}/rounds/${id}/${childKey ?? ""}` : `v3/combats/${combatId}/rounds/`,
 
   getAction: ({ combatId, roundId, id, childKey }: ActionParams) =>
     id
-      ? `v3/combat/${combatId}/rounds/${roundId}/${id}/${childKey ?? ""}`
-      : `v3/combat/${combatId}/rounds/${roundId}/`,
+      ? `v3/combats/${combatId}/rounds/${roundId}/${id}/${childKey ?? ""}`
+      : `v3/combats/${combatId}/rounds/${roundId}/`,
 
   getRoll: ({ combatId, roundId, id, childKey }: RollParams) =>
     id
-      ? `v3/combat/${combatId}/rounds/${roundId}/${id}/roll/${childKey ?? ""}`
-      : `v3/combat/${combatId}/rounds/${roundId}/`,
+      ? `v3/combats/${combatId}/rounds/${roundId}/${id}/roll/${childKey ?? ""}`
+      : `v3/combats/${combatId}/rounds/${roundId}/`,
 
   getEnemy: ({ id, childKey }: NpcParams) =>
     childKey ? `v3/npcs/${id}/${childKey}` : `v3/npcs/${id ?? ""}`,

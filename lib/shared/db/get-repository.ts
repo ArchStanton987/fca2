@@ -4,7 +4,10 @@ import AdditionalEffectsRtdbRepository from "lib/character/effects/AdditionalEff
 import EffectsRtdbRepository from "lib/character/effects/EffectsRtdbRepository"
 import StatusRtdbRepository from "lib/character/status/StatusRtdbRepository"
 import ActionRtdbRepository from "lib/combat/ActionRtdbRepository"
+import CombatHistoryRtdbRepository from "lib/combat/CombatHistoryRtdbRepository"
+import CombatInfoRtdbRepository from "lib/combat/CombatInfoRtdbRepository"
 import CombatRtdbRepository from "lib/combat/CombatRtdbRepository"
+import CombatStateRtdbRepository from "lib/combat/CombatStateRtdbRepository"
 import RollRtdbRepository from "lib/combat/RollRtdbRepository"
 import RoundRtdbRepository from "lib/combat/RoundRtdbRepository"
 import NpcRtdbRepository from "lib/npc/NpcRtdbRepository"
@@ -21,6 +24,9 @@ const repositoryMap = {
     additionalMiscRepository: new AdditionalMiscRtdbRepository(),
     //
     combatRepository: new CombatRtdbRepository(),
+    combatInfoRepository: new CombatInfoRtdbRepository(),
+    combatHistoryRepository: new CombatHistoryRtdbRepository(),
+    combatStateRepository: new CombatStateRtdbRepository(),
     roundRepository: new RoundRtdbRepository(),
     actionRepository: new ActionRtdbRepository(),
     rollRepository: new RollRtdbRepository(),

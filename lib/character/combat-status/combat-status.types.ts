@@ -18,7 +18,7 @@ export type DbCombatStatus = {
 
 export class CombatStatus {
   currAp: number
-  combatId: string | null
+  combatId: string
   initiative: number
   combatStatus: CombatStatusId | null
   actionBonus: number
@@ -27,7 +27,7 @@ export class CombatStatus {
 
   constructor(payload: DbCombatStatus) {
     this.currAp = payload.currAp
-    this.combatId = payload?.combatId ?? null
+    this.combatId = payload?.combatId ?? ""
     this.initiative = payload.initiative ?? DEFAULT_INITIATIVE
     this.combatStatus = payload.combatStatus ?? null
     this.actionBonus = payload.actionBonus ?? 0

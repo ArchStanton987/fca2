@@ -3,7 +3,8 @@ import { LimbsHp } from "lib/character/health/health-types"
 import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 
 type CharId = string
-type NpcId = string
+// type NpcId = string
+type PlayableId = string
 type ItemId = string
 type AimZone = keyof LimbsHp
 
@@ -51,14 +52,35 @@ export type DbAction = {
   damageType?: DamageTypeId | false
 }
 
-export type DbCombatEntry = {
-  squadId: string
-  date: string
-  location?: string
-  title: string
-  description?: string
-  currActorId: string
-  players: Record<CharId, CharId>
-  npcs: Record<NpcId, NpcId>
-  rounds?: Record<number, Record<number, DbAction>>
+// export type DbCombatEntry = {
+//   squadId: string
+//   date: string
+//   location?: string
+//   title: string
+//   description?: string
+//   currActorId: string
+//   players: Record<CharId, CharId>
+//   npcs: Record<NpcId, NpcId>
+//   rounds?: Record<number, Record<number, DbAction>>
+// }
+
+export interface DbCombat {
+  info: {
+    date: string // ISO string
+    location?: string
+    title: string
+    description?: string
+    contenders: Record<PlayableId, PlayableId>
+  }
+  history: Record<number, Record<number, DbAction>>
+  state: {
+    action: DbAction
+    actorIdOverride: string
+  }
 }
+
+export type DbCombatInfo = DbCombat["info"]
+
+export type DbCombatHistory = DbCombat["history"]
+
+export type DbCombatState = DbCombat["state"]

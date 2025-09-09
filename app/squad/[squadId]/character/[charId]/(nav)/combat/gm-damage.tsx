@@ -8,11 +8,13 @@ import Txt from "components/Txt"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatState } from "providers/CombatStateProvider"
 import { DamageFormProvider } from "providers/DamageFormProvider"
 
 export default function GMDamage() {
   const { meta, charId } = useCharacter()
-  const { combat, players, npcs } = useCombat()
+  const { action } = useCombatState()
+  const { players, npcs } = useCombat()
   const contenders = { ...players, ...npcs }
 
   if (!meta.isNpc)
@@ -21,22 +23,6 @@ export default function GMDamage() {
         href={{ pathname: routes.combat.index, params: { charId, squadId: meta.squadId } }}
       />
     )
-  if (combat === null)
-    return (
-      <DrawerPage>
-        <Txt>Impossible de récupérer le combat en cours</Txt>
-      </DrawerPage>
-    )
-
-  const action = combat.currAction
-
-  if (!action) {
-    return (
-      <DrawerPage>
-        <Txt>Aucune action en cours</Txt>
-      </DrawerPage>
-    )
-  }
 
   const {
     damageType,

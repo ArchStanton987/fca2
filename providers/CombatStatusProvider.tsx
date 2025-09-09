@@ -13,8 +13,7 @@ const CombatStatusContext = createContext<CombatStatusContextType>({})
 
 export default function CombatStatusProvider({ children }: { children: ReactNode }) {
   const { combat } = useCombat()
-  const contenders = combat?.contenders ?? {}
-  const contendersIds = Object.keys(contenders)
+  const contendersIds = combat?.contendersIds ?? []
   const combatStatusSub = useContendersCombatStatus(contendersIds)
 
   if (combatStatusSub.isPending) return <LoadingScreen />

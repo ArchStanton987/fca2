@@ -17,13 +17,13 @@ export function subscribeToPath<Db>(path: string, onData: (data: Db) => void): (
   return () => unsubscribe() // for React cleanup
 }
 
-type UseSubParams<T, Db> = {
+type UseSubParams<Db, T = Db> = {
   queryKey: string[]
   path?: string
   cb?: (snapshot: Db) => T
 }
 
-export function useSub<T, Db>(params: UseSubParams<T, Db>) {
+export function useSub<Db, T = Db>(params: UseSubParams<Db, T>) {
   const { queryKey, path, cb } = params
   const queryClient = useQueryClient()
 
@@ -37,7 +37,7 @@ export function useSub<T, Db>(params: UseSubParams<T, Db>) {
   }, [])
 }
 
-export function useMultiSub<T, Db>(paramsArray: UseSubParams<T, Db>[]) {
+export function useMultiSub<Db, T = Db>(paramsArray: UseSubParams<Db, T>[]) {
   const queryClient = useQueryClient()
 
   useEffect(() => {
