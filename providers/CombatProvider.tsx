@@ -1,11 +1,11 @@
 import { createContext, useContext, useMemo } from "react"
 
-import { useCurrCharId } from "lib/character/character-store"
-import { useCharCombatStatus } from "lib/character/combat-status/use-cases/sub-combat-status"
 import Combat from "lib/combat/Combat"
 import { useSubCombatHistory, useSubCombatInfo } from "lib/combat/use-cases/sub-combat"
 
 import { useSquad } from "contexts/SquadContext"
+
+import { useCombatStatus } from "./CombatStatusProvider"
 
 type CombatContextType = Combat | null
 
@@ -16,8 +16,7 @@ const CombatContext = createContext<CombatContextType>(defaultCombatContext)
 export default function CombatProvider({ children }: { children: React.ReactNode }) {
   const squad = useSquad()
 
-  const charId = useCurrCharId()
-  const combatId = useCharCombatStatus(charId)?.data?.combatId ?? ""
+  const combatId = useCombatStatus()?.combatId ?? ""
   const combatHistoryReq = useSubCombatHistory(combatId)
   const combatInfoReq = useSubCombatInfo(combatId)
 
@@ -36,7 +35,7 @@ export default function CombatProvider({ children }: { children: React.ReactNode
 
 export const useCombat = () => {
   const context = useContext(CombatContext)
-  if (!context) {
+  if (context === undefined) {
     throw new Error("useCombat must be used within a CombatProvider")
   }
   return context

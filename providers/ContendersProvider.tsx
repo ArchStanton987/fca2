@@ -50,7 +50,7 @@ export function useContenders(): ContendersContextType
 export function useContenders(id: string): Character | NonHuman
 export function useContenders(id?: string) {
   const contenders = useContext(ContendersContext)
-  if (!contenders) throw new Error("Could not find ContendersContext")
+  if (contenders === undefined) throw new Error("Could not find ContendersContext")
   if (!id) return contenders
   if (!contenders[id]) throw new Error("Could not find contender")
   return contenders[id]

@@ -12,7 +12,7 @@ import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useAdmin } from "contexts/AdminContext"
-import CombatStatusProvider from "providers/CombatStatusesProvider"
+import { CombatStatusesProvider } from "providers/CombatStatusesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import LoadingScreen from "screens/LoadingScreen"
 import layout from "styles/layout"
@@ -122,8 +122,8 @@ function AdminCombat() {
 
 export default function AdminCombatScreen() {
   return (
-    <CombatStatusProvider>
+    <CombatStatusesProvider>
       <AdminCombat />
-    </CombatStatusProvider>
+    </CombatStatusesProvider>
   )
 }

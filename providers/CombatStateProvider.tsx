@@ -9,11 +9,12 @@ import { useCombat } from "./CombatProvider"
 
 type CombatStateType = {
   action: Action
-  actorIdOverride?: string | null
+  actorIdOverride: string
 }
 
 const defaultCombatStateContext: CombatStateType = {
-  action: new Action({})
+  action: new Action({}),
+  actorIdOverride: ""
 }
 
 const CombatStateContext = createContext<CombatStateType>(defaultCombatStateContext)
@@ -25,7 +26,7 @@ export default function CombatStateProvider({ children }: { children: ReactNode 
   const context = useMemo(
     () => ({
       action: combatStateReq.data?.action ?? new Action({}),
-      actorIdOverride: combatStateReq.data?.actorIdOverride
+      actorIdOverride: combatStateReq.data?.actorIdOverride ?? ""
     }),
     [combatStateReq.data]
   )
@@ -38,6 +39,6 @@ export default function CombatStateProvider({ children }: { children: ReactNode 
 
 export function useCombatState() {
   const combatState = useContext(CombatStateContext)
-  if (!combatState) throw new Error("CombatStateContext could not be found")
+  if (combatState === undefined) throw new Error("CombatStateContext could not be found")
   return combatState
 }
