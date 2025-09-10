@@ -1,25 +1,21 @@
 import { CombatStatus } from "lib/character/combat-status/combat-status.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
-import Combat from "../Combat"
 import { DbAction } from "../combats.types"
 import { AC_BONUS_PER_AP_SPENT, SCORE_BONUS_PER_AP_SPENT } from "../const/combat-const"
-import { getCurrentRoundId } from "../utils/combat-utils"
 
 export type PrepareActionParams = {
   action: DbAction & { actorId: string }
-  combat: Combat
+  roundId: number
   combatStatuses: Record<string, CombatStatus>
 }
 
 export default function prepareAction(dbType: keyof typeof repositoryMap = "rtdb") {
   const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
 
-  return ({ combat, action, combatStatuses }: PrepareActionParams) => {
+  return ({ roundId, action, combatStatuses }: PrepareActionParams) => {
     const { apCost = 0, actionSubtype, actorId } = action
     const charId = actorId
-
-    const roundId = getCurrentRoundId(combat)
 
     const promises = []
 

@@ -5,12 +5,10 @@ import { getHealthState } from "lib/character/health/health-utils"
 import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
 import repositoryMap from "lib/shared/db/get-repository"
 
-import Combat from "../Combat"
 import { DamageEntries } from "../combats.types"
-import { getCurrentRoundId } from "../utils/combat-utils"
 
 export type ApplyDamageEntriesParams = {
-  combat: Combat
+  roundId: number
   contenders: Record<string, Playable>
   combatStatuses: Record<string, CombatStatus>
   damageEntries: DamageEntries
@@ -24,7 +22,7 @@ export default function applyDamageEntries(
   const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
   const effectsUseCases = getEffectsUseCases(dbType, createdElements)
 
-  return ({ combat, contenders, combatStatuses, damageEntries }: ApplyDamageEntriesParams) => {
+  return ({ roundId, contenders, combatStatuses, damageEntries }: ApplyDamageEntriesParams) => {
     const promises: Promise<void>[] = []
     if (damageEntries === false) return null
     // loop through every entry
@@ -55,7 +53,6 @@ export default function applyDamageEntries(
         // handle inactive combat status update
         case "inactive": {
           const { duration = 0 } = entry
-          const roundId = getCurrentRoundId(combat)
           const roundEnd = roundId + duration
           const prevInactiveRecord = combatStatus?.inactiveRecord
           const inactiveKeys = Object.keys(prevInactiveRecord ?? {}).map(k => Number(k))

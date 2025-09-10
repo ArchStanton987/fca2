@@ -26,6 +26,8 @@ export function CombatStatusesProvider({ children }: { children: ReactNode }) {
   )
 }
 
+export function useCombatStatuses(): CombatStatusesContextType
+export function useCombatStatuses(id: string): CombatStatus
 export function useCombatStatuses(id?: string) {
   const combatStatuses = useContext(CombatStatusesContext)
   if (combatStatuses === undefined) throw new Error("CombatStatusesContext not found")

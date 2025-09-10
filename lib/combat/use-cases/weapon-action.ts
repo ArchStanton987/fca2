@@ -4,12 +4,10 @@ import { Weapon } from "lib/objects/data/weapons/weapons.types"
 import getInventoryUseCases from "lib/objects/inventory-use-cases"
 import repositoryMap from "lib/shared/db/get-repository"
 
-import Combat from "../Combat"
 import { DbAction } from "../combats.types"
 
 export type WeaponActionParams = {
   action: DbAction & { actorId: string }
-  combat: Combat
   contenders: Record<string, { char: Playable }>
   item?: Weapon
 }

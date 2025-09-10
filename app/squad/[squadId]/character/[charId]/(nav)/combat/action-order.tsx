@@ -15,7 +15,7 @@ import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
 import { useCombatState } from "providers/CombatStateProvider"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatStatuses } from "providers/CombatStatusesProvider"
 import OrderRow, { OrderRowHeader } from "screens/GMActionOrder/OrderRow"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -61,9 +61,9 @@ const styles = StyleSheet.create({
 })
 
 export default function GMCombatScreen() {
-  const { combat } = useCombat()
+  const combat = useCombat()
   const { actorIdOverride } = useCombatState()
-  const contendersCombatStatus = useCombatStatus()
+  const contendersCombatStatus = useCombatStatuses()
   const { meta, charId } = useCharacter()
 
   if (!meta.isNpc)

@@ -6,7 +6,7 @@ import List from "components/List"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatStatuses } from "providers/CombatStatusesProvider"
 import { SlidesProvider } from "providers/SlidesProvider"
 import InitiativeScreen from "screens/CombatScreen/InitiativeScreen"
 import WaitInitiativeScreen from "screens/CombatScreen/WaitInitiativeScreen"
@@ -30,8 +30,8 @@ function SlideList() {
 
 function WithActionRedirections({ children }: { children: ReactNode }) {
   const char = useCharacter()
-  const { combat } = useCombat()
-  const combatStatuses = useCombatStatus()
+  const combat = useCombat()
+  const combatStatuses = useCombatStatuses()
 
   if (!combat?.id) return <SlideError error={slideErrors.noCombatError} />
 

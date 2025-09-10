@@ -8,8 +8,8 @@ import weaponsMap from "lib/objects/data/weapons/weapons"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
+import Action from "../Action"
 import Combat from "../Combat"
-import { DbAction } from "../combats.types"
 import { getActivePlayersWithAp, getIsActionEndingRound } from "../utils/combat-utils"
 import applyDamageEntries from "./apply-damage-entries"
 import itemAction from "./item-action"
@@ -20,7 +20,7 @@ import waitAction from "./wait-action"
 import weaponAction from "./weapon-action"
 
 export type CombatActionParams = {
-  action: DbAction & { actorId: string }
+  action: Action
   combat: Combat
   contenders: Record<string, Playable>
   combatStatuses: Record<string, CombatStatus>
@@ -39,7 +39,7 @@ export default function doCombatAction(
     const combatStatus = combatStatuses[actorId]
     const { charId, meta } = char
 
-    const storedAction = combat?.currAction
+    const roundId = combat?.currRoundId
 
     if (apCost > combatStatus.currAp) throw new Error("Not enough AP to perform this action")
 
@@ -72,7 +72,7 @@ export default function doCombatAction(
       }
 
       case "prepare":
-        promises.push(prepareAction(dbType)({ action, combatStatuses, combat }))
+        promises.push(prepareAction(dbType)({ action, combatStatuses, roundId }))
         break
 
       case "item":
@@ -87,10 +87,11 @@ export default function doCombatAction(
     }
 
     // apply damage entries
-    if (storedAction?.healthChangeEntries) {
-      const damageEntries = storedAction.healthChangeEntries
+    if (action?.healthChangeEntries) {
+      const damageEntries = action.healthChangeEntries
+
       promises.push(
-        applyDamageEntries(dbType)({ combat, contenders, combatStatuses, damageEntries })
+        applyDamageEntries(dbType)({ roundId, contenders, combatStatuses, damageEntries })
       )
     }
 
@@ -106,8 +107,8 @@ export default function doCombatAction(
       promises.push(combatStatusRepo.patch({ charId }, { currAp: newAp }))
 
       // set opponent action points if has reaction roll
-      if (storedAction?.reactionRoll) {
-        const { opponentId, opponentApCost } = storedAction.reactionRoll
+      if (action?.reactionRoll) {
+        const { opponentId, opponentApCost } = action.reactionRoll
         const oppNewAp = contenders[opponentId].secAttr.curr.actionPoints - opponentApCost
         await combatStatusRepo.patch({ charId: opponentId }, { currAp: oppNewAp })
       }

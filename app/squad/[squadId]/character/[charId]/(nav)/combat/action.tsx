@@ -13,7 +13,8 @@ import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionForm } from "providers/ActionProvider"
 import { useCombatState } from "providers/CombatStateProvider"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
+import { useCombatStatuses } from "providers/CombatStatusesProvider"
 import { SlidesProvider } from "providers/SlidesProvider"
 import ActionUnavailableScreen from "screens/CombatScreen/ActionUnavailableScreen"
 import InitiativeScreen from "screens/CombatScreen/InitiativeScreen"
@@ -38,8 +39,8 @@ function SlideList() {
 function WithActionRedirections({ children }: { children: ReactNode }) {
   const char = useCharacter()
   const { action, actorIdOverride } = useCombatState()
-  const contendersCombatStatus = useCombatStatus()
-  const combatStatus = useCombatStatus(char.charId)
+  const contendersCombatStatus = useCombatStatuses()
+  const combatStatus = useCombatStatus()
 
   const prompts = getInitiativePrompts(char.charId, contendersCombatStatus)
   if (prompts.playerShouldRollInitiative) return <InitiativeScreen />

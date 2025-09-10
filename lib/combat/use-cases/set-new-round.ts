@@ -4,7 +4,6 @@ import { getHealthState } from "lib/character/health/health-utils"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import Combat, { defaultAction } from "../Combat"
-import { getCurrentRoundId } from "../utils/combat-utils"
 
 export type SetNewRoundParams = {
   contenders: Record<string, Playable>
@@ -15,11 +14,11 @@ export type SetNewRoundParams = {
 export default function setNewRound(dbType: keyof typeof repositoryMap = "rtdb") {
   const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
 
-  const roundRepo = repositoryMap[dbType].roundRepository
+  const combatHistoryRepo = repositoryMap[dbType].combatHistoryRepository
 
   return async ({ contenders, combatStatuses, combat }: SetNewRoundParams) => {
     const promises = []
-    const nextRoundId = getCurrentRoundId(combat) + 1
+    const nextRoundId = combat.currRoundId + 1
     Object.entries(contenders).forEach(([charId, contender]) => {
       const { secAttr, health } = contender
       const combatStatus = combatStatuses[charId]
@@ -41,7 +40,9 @@ export default function setNewRound(dbType: keyof typeof repositoryMap = "rtdb")
       }
     })
     // create new round
-    promises.push(roundRepo.set({ combatId: combat.id, id: nextRoundId }, { 1: defaultAction }))
+    promises.push(
+      combatHistoryRepo.set({ id: combat.id, childKey: nextRoundId }, { 1: defaultAction })
+    )
 
     return Promise.all(promises)
   }

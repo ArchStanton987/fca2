@@ -18,7 +18,8 @@ import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
 import { useCombatState } from "providers/CombatStateProvider"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatStatuses } from "providers/CombatStatusesProvider"
+import { useContenders } from "providers/ContendersProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import DeleteButton from "screens/CombatScreen/slides/DeleteButton"
 import NextButton from "screens/CombatScreen/slides/NextButton"
@@ -39,17 +40,16 @@ const styles = StyleSheet.create({
 
 export default function GMActionsScreen() {
   const useCases = useGetUseCases()
+  const combat = useCombat()
   const { meta, charId } = useCharacter()
-  const { combat, players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
-  const combatStatuses = useCombatStatus()
+  const contenders = useContenders()
+  const combatStatuses = useCombatStatuses()
   const { action, actorIdOverride } = useCombatState()
 
   const [hasRoll, setHasRoll] = useState(false)
   const [difficulty, setDifficulty] = useState(0)
 
   const submit = () => {
-    if (!combat) return
     const prevRoll = action.roll
     const roll = hasRoll ? { ...prevRoll, difficulty } : false
     if (roll === false) {
