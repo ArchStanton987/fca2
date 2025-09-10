@@ -4,7 +4,8 @@ import CheckBox from "components/CheckBox/CheckBox"
 import List from "components/List"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
-import { useCombat } from "providers/CombatProvider"
+import { useCharacter } from "contexts/CharacterContext"
+import { useCombatState } from "providers/CombatStateProvider"
 import { useCombatStatus } from "providers/CombatStatusesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
@@ -17,28 +18,28 @@ const styles = StyleSheet.create({
   }
 })
 
-export default function ApVisualizer({ contenderId }: { contenderId: string }) {
+export default function ApVisualizer({ contenderId }: { contenderId?: string }) {
   const useCases = useGetUseCases()
-  const { npcs, players, combat } = useCombat()
-  const contenders = { ...npcs, ...players }
-  const contender = contenders[contenderId]
-  const maxAp = contender.secAttr.curr.actionPoints
-  const { currAp } = useCombatStatus(contenderId)
+  const { secAttr, charId } = useCharacter()
+  const maxAp = secAttr.curr.actionPoints
+  const { currAp } = useCombatStatus(charId)
+  const { action } = useCombatState()
+  const playerId = contenderId ?? charId
 
-  const actorId = combat?.currAction?.actorId
-  const targetId = combat?.currAction?.targetId
-  const isActor = actorId === contenderId
-  const isTarget = targetId === contenderId
+  const { actorId } = action
+  const targetId = action?.targetId ?? ""
+  const isActor = actorId === playerId
+  const isTarget = targetId === playerId
   let apCost = 0
-  if (isActor) apCost = combat?.currAction?.apCost ?? 0
-  if (isTarget && combat?.currAction?.reactionRoll) {
-    apCost = combat?.currAction?.reactionRoll?.opponentApCost ?? 0
+  if (isActor) apCost = action?.apCost ?? 0
+  if (isTarget && action?.reactionRoll) {
+    apCost = action.reactionRoll?.opponentApCost ?? 0
   }
 
   const handleSetAp = async (i: number) => {
     const newValue = i < currAp ? i : i + 1
     await useCases.character.updateCombatStatus({
-      charId: contenderId,
+      charId: playerId,
       payload: { currAp: newValue }
     })
   }

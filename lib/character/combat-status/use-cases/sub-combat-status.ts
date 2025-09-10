@@ -26,13 +26,7 @@ export const useContendersCombatStatus = (ids: string[]) => {
   return useQueries({
     queries: options,
     combine: useCallback(
-      (
-        results: Array<ReturnType<typeof useQuery<CombatStatus>>>
-      ): {
-        isError: boolean
-        isPending: boolean
-        data: Record<string, CombatStatus>
-      } => ({
+      (results: Array<ReturnType<typeof useQuery<CombatStatus>>>) => ({
         isError: results.some(r => r.isError),
         isPending: results.some(r => r.isPending),
         data: Object.fromEntries(ids.map((id, i) => (results[i].data ? [id, results[i].data] : [])))

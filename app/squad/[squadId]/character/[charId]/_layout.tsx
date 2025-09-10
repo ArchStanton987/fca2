@@ -16,7 +16,7 @@ import { useSquad } from "contexts/SquadContext"
 import useCreatedElements from "hooks/context/useCreatedElements"
 import useRtdbSub from "hooks/db/useRtdbSub"
 import { ActionProvider } from "providers/ActionProvider"
-import CombatProvider from "providers/CombatProvider"
+import { CombatStatusProvider } from "providers/CombatStatusesProvider"
 import { ReactionProvider } from "providers/ReactionProvider"
 import UpdatesProvider from "providers/UpdatesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
@@ -98,8 +98,8 @@ export default function CharStack() {
   if (!currCharId) return <LoadingScreen />
   return (
     <CharProvider charId={currCharId}>
-      <UpdatesProvider>
-        <CombatProvider>
+      <CombatStatusProvider charId={currCharId}>
+        <UpdatesProvider>
           <ActionProvider>
             <ReactionProvider>
               <Stack
@@ -121,8 +121,8 @@ export default function CharStack() {
               </Stack>
             </ReactionProvider>
           </ActionProvider>
-        </CombatProvider>
-      </UpdatesProvider>
+        </UpdatesProvider>
+      </CombatStatusProvider>
     </CharProvider>
   )
 }
