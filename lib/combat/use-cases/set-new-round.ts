@@ -13,7 +13,6 @@ export type SetNewRoundParams = {
 
 export default function setNewRound(dbType: keyof typeof repositoryMap = "rtdb") {
   const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
-
   const combatHistoryRepo = repositoryMap[dbType].combatHistoryRepository
 
   return async ({ contenders, combatStatuses, combat }: SetNewRoundParams) => {

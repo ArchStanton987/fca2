@@ -14,11 +14,13 @@ export default function saveAction(dbType: keyof typeof repositoryMap = "rtdb") 
   const actionRepo = repositoryMap[dbType].actionRepository
   const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
   const combatStateRepo = repositoryMap[dbType].combatStateRepository
+  const combatHistoryRepo = repositoryMap[dbType].combatHistoryRepository
 
   return async ({ action, combat, contenders }: SaveActionParams) => {
     const promises = []
 
     const { actorId, isCombinedAction, apCost = 0 } = action
+    const roundId = combat.currRoundId
     const actionId = combat.currActionId
 
     // if is part of a combined action & has still ap, set current actor id in combat, else reset it
@@ -37,14 +39,13 @@ export default function saveAction(dbType: keyof typeof repositoryMap = "rtdb") 
       promises.push(combatStatusRepo.deleteChild({ charId: actorId, childKey: "actionBonus" }))
     }
 
-    // TODO: check if could be merge prior player request
-    // merge damage entries
-    const healthChangeEntries = action.healthChangeEntries ?? {}
-    const payload = { ...action, healthChangeEntries, isDone: true }
+    // save action in combat history
+    const actionToSave = JSON.parse(JSON.stringify(action)) // remove undefined values (throws error)
+    const payload = { ...actionToSave, isDone: true }
+    combatHistoryRepo.setChild({ id: combat.id, childKey: roundId }, { [actionId]: payload })
 
-    // save action in combat
-    const actionToSave = JSON.parse(JSON.stringify(payload)) // remove undefined values (throws error)
-    promises.push(actionRepo.patch({ combatId: combat.id, id: actionId }, actionToSave))
+    // clear combat state
+    promises.push(actionRepo.set({ combatId: combat.id }, { actorId: "" }))
 
     return Promise.all(promises)
   }

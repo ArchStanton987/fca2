@@ -8,7 +8,7 @@ import { DbAction } from "../combats.types"
 
 export type WeaponActionParams = {
   action: DbAction & { actorId: string }
-  contenders: Record<string, { char: Playable }>
+  contenders: Record<string, Playable>
   item?: Weapon
 }
 
@@ -17,7 +17,7 @@ export default function weaponAction(dbType: keyof typeof repositoryMap = "rtdb"
   const { drop } = getInventoryUseCases(dbType)
   return async ({ action, contenders, item }: WeaponActionParams) => {
     const { actionSubtype = "", actorId } = action
-    const { char } = contenders[actorId]
+    const char = contenders[actorId]
     const { charId } = char
 
     switch (actionSubtype) {
