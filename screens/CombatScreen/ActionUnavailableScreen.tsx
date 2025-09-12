@@ -11,7 +11,8 @@ import Txt from "components/Txt"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatState } from "providers/CombatStateProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -20,20 +21,23 @@ import SlideError, { slideErrors } from "./slides/SlideError"
 
 function WaitScreen() {
   const useCases = useGetUseCases()
-  const { combat } = useCombat()
+  const combat = useCombat()
   const character = useCharacter()
-  const combatStatus = useCombatStatus(character.charId)
+  const combatState = useCombatState()
 
-  const roll = combat?.currAction?.roll
+  const combatStatus = useCombatStatus()
+
+  const { action } = combatState
+  const roll = action?.roll
   const hasThrownDice = roll && typeof roll.dice === "number"
 
   const onPressEnd = () => {
     if (!combat || hasThrownDice) return
-    useCases.combat.endWait({ combat, actor: character })
+    useCases.combat.endWait({ combatId: combat.id, combatState, actor: character })
   }
 
   if (!combat) return <SlideError error={slideErrors.noCombatError} />
-  const canReact = getPlayerCanReact(character, combatStatus, combat?.currAction)
+  const canReact = getPlayerCanReact(character, combatStatus, action)
   if (canReact) return <Redirect href={{ pathname: routes.combat.reaction }} />
 
   return (
@@ -93,12 +97,9 @@ function NoAp() {
   )
 }
 
-// return <Txt>Vous devez attendre que ce soit votre tour pour pouvoir agir.</Txt>
-
 export default function ActionUnavailableScreen() {
-  const { charId } = useCharacter()
-  const { combatStatus, currAp } = useCombatStatus(charId)
-  const { combat } = useCombat()
+  const { combatStatus, currAp } = useCombatStatus()
+  const combat = useCombat()
 
   const isWaiting = combatStatus === "wait"
   const isDead = combatStatus === "dead"

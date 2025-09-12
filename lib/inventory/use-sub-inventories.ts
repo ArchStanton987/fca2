@@ -27,7 +27,9 @@ const useSubInventories = (
   const queries = contendersArr.map(c => options(c.charId, c.meta.isNpc ? "npcs" : "characters"))
   return useQueries({
     queries,
-    combine: (results: Array<ReturnType<typeof useQuery<Inventory>>>) => ({
+    combine: (
+      results: Array<ReturnType<typeof useQuery<Inventory>>>
+    ): { isError: boolean; isPending: boolean; data: Record<string, Inventory> } => ({
       isError: results.some(r => r.isError),
       isPending: results.some(r => r.isPending),
       data: Object.fromEntries(

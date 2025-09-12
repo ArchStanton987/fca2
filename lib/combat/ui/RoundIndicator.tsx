@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
 })
 
 export default function RoundIndicator() {
-  const { combat } = useCombat()
+  const combat = useCombat()
   return (
     <Section contentContainerStyle={styles.centeredSection} title="ROUND" style={{ flex: 1 }}>
       <Txt style={styles.combatStep}>{combat?.currRoundId ?? 1}</Txt>

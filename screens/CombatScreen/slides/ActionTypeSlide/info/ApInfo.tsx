@@ -1,15 +1,13 @@
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
-import { useCombat } from "providers/CombatProvider"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatStatuses } from "providers/CombatStatusesProvider"
+import { useContenders } from "providers/ContendersProvider"
 
 export default function ApInfo({ contenderId }: { contenderId?: string }) {
   const { charId } = useCharacter()
-  const { players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
   const actorId = contenderId ?? charId
-  const contender = contenders[actorId]
-  const { currAp } = useCombatStatus(actorId)
+  const contender = useContenders(actorId)
+  const { currAp } = useCombatStatuses(actorId)
   const { secAttr } = contender
 
   return (

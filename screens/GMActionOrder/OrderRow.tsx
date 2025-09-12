@@ -10,8 +10,8 @@ import Col from "components/Col"
 import ProgressionBar from "components/ProgressionBar/ProgressionBar"
 import Row from "components/Row"
 import Txt from "components/Txt"
-import { useCombat } from "providers/CombatProvider"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatStatuses } from "providers/CombatStatusesProvider"
+import { useContenders } from "providers/ContendersProvider"
 import colors from "styles/colors"
 
 import CombatOrderText from "./CombatOrderText"
@@ -89,10 +89,8 @@ export function OrderRowHeader() {
 export default function OrderRow(props: OrderRowProps) {
   const params = useLocalSearchParams<{ charId: string; squadId: string }>()
   const { charId, isPlaying, hasFinishedRound, isCombinedAction } = props
-  const { combatStatus, currAp, initiative } = useCombatStatus(charId)
-  const { players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
-  const contender = contenders[charId]
+  const { combatStatus, currAp, initiative } = useCombatStatuses(charId)
+  const contender = useContenders(charId)
   const { health, meta } = contender
   const { hp, maxHp } = health
 
@@ -101,7 +99,6 @@ export default function OrderRow(props: OrderRowProps) {
   const setCurrCharId = useSetCurrCharId()
 
   const onChangePlayer = (npcId: string) => {
-    if (npcs === null || !(npcId in npcs)) return
     router.setParams({ charId: npcId })
     setCurrCharId(npcId)
   }
@@ -114,7 +111,7 @@ export default function OrderRow(props: OrderRowProps) {
             onPress={() => onChangePlayer(charId)}
             isChecked={charId === params?.charId}
             size={30}
-            disabled={!!players && charId in players}
+            disabled={!contender.meta.isNpc}
           />
         </Col>
         <View style={[styles.withBorder, isPlaying && styles.playing]}>

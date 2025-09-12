@@ -22,6 +22,8 @@ export default function InventoriesProvider({ children }: { children: ReactNode 
   return <InventoriesContext.Provider value={invSub.data}>{children}</InventoriesContext.Provider>
 }
 
+export function useInventories(): InventoriesContextType
+export function useInventories(id: string): Inventory
 export function useInventories(id?: string) {
   const inventories = useContext(InventoriesContext)
   if (inventories === undefined) throw new Error("Inventories context not found")

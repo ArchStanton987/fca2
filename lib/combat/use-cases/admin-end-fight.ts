@@ -1,23 +1,27 @@
 import { ThenableReference } from "firebase/database"
+import Playable from "lib/character/Playable"
 import { CombatStatus, DbCombatStatus } from "lib/character/combat-status/combat-status.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
 export type AdminEndFightParams = {
   shouldDeleteNpcs?: boolean
   combatId: string
-  contenders: Record<string, { combatStatus: CombatStatus; maxAp: number }>
+  combatStatuses: Record<string, CombatStatus>
+  contenders: Record<string, Playable>
 }
 
 export default function adminEndFight(dbType: keyof typeof repositoryMap = "rtdb") {
   const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
   const characterRepo = repositoryMap[dbType].characterRepository
 
-  return ({ combatId, contenders }: AdminEndFightParams) => {
+  return ({ combatId, combatStatuses, contenders }: AdminEndFightParams) => {
     const promises: (Promise<void> | ThenableReference)[] = []
-    Object.entries(contenders).forEach(([charId, contender]) => {
+    Object.entries(combatStatuses).forEach(([charId, combatStatus]) => {
       // reset character ap, currFightId, combatStatus
-      if (combatId === contender.combatStatus.combatId) {
-        const defaultCombatStatus: DbCombatStatus = { currAp: contender.maxAp }
+      if (combatId === combatStatus.combatId) {
+        const defaultCombatStatus: DbCombatStatus = {
+          currAp: contenders[charId].secAttr.curr.actionPoints
+        }
         promises.push(combatStatusRepo.set({ charId }, defaultCombatStatus))
       }
       // add fight ID in characters combat archive

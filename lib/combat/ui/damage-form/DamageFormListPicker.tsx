@@ -5,12 +5,11 @@ import List from "components/List"
 import Selectable from "components/Selectable"
 import Txt from "components/Txt"
 import useCreatedElements from "hooks/context/useCreatedElements"
-import { useCombat } from "providers/CombatProvider"
+import { useContenders } from "providers/ContendersProvider"
 import { useDamageFormStore } from "providers/DamageFormProvider"
 
 function CharList() {
-  const { players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
+  const contenders = useContenders()
   const charList = Object.values(contenders).map(c => ({
     id: c.charId,
     name: c.fullname

@@ -7,11 +7,12 @@ import Section from "components/Section"
 import DrawerSlide from "components/Slides/DrawerSlide"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatState } from "providers/CombatStateProvider"
+import { useCombatStatuses } from "providers/CombatStatusesProvider"
+import { useContenders } from "providers/ContendersProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 
@@ -19,19 +20,18 @@ import SlideError, { slideErrors } from "../SlideError"
 
 export default function NoRollSlide() {
   const useCases = useGetUseCases()
-  const { charId } = useCharacter()
   const inv = useInventory()
   const form = useActionForm()
   const { reset } = useActionApi()
-  const combatStatuses = useCombatStatus()
-  const { combat, players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
+  const combatStatuses = useCombatStatuses()
+  const combat = useCombat()
+  const contenders = useContenders()
+  const { action } = useCombatState()
 
   const submit = async () => {
-    if (!combat?.currAction) throw new Error("No combat found")
+    if (!combat) throw new Error("No combat found")
     try {
       const item = getItemFromId(inv, form.itemDbKey)
-      const action = { ...combat?.currAction, actorId: charId }
       await useCases.combat.doCombatAction({ combat, contenders, combatStatuses, action, item })
       Toast.show({ type: "custom", text1: "Action enregistrée !" })
       reset()

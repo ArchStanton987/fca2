@@ -6,7 +6,7 @@ import Section from "components/Section"
 import DrawerSlide from "components/Slides/DrawerSlide"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { useCombat } from "providers/CombatProvider"
+import { useCombatState } from "providers/CombatStateProvider"
 import layout from "styles/layout"
 
 import NextButton from "../NextButton"
@@ -21,9 +21,8 @@ export default function VisualizeReactionSlide({
   dismiss: () => void
   skipDamage: () => void
 }) {
-  const { combat } = useCombat()
+  const { action } = useCombatState()
 
-  const action = combat?.currAction
   if (!action?.roll || !action?.reactionRoll)
     return <SlideError error={slideErrors.noDiceRollError} />
 

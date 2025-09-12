@@ -16,7 +16,7 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatStatuses } from "providers/CombatStatusesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -51,8 +51,8 @@ const styles = StyleSheet.create({
 export default function InitiativeScreen() {
   const useCases = useGetUseCases()
 
-  const { combat } = useCombat()
-  const combatStatuses = useCombatStatus()
+  const combat = useCombat()
+  const combatStatuses = useCombatStatuses()
   const character = useCharacter()
   const { isNpc } = character.meta
   const { skills, charId } = character

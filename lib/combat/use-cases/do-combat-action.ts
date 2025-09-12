@@ -8,8 +8,8 @@ import weaponsMap from "lib/objects/data/weapons/weapons"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
-import Action from "../Action"
 import Combat from "../Combat"
+import { DbAction } from "../combats.types"
 import { getActivePlayersWithAp, getIsActionEndingRound } from "../utils/combat-utils"
 import applyDamageEntries from "./apply-damage-entries"
 import itemAction from "./item-action"
@@ -20,7 +20,7 @@ import waitAction from "./wait-action"
 import weaponAction from "./weapon-action"
 
 export type CombatActionParams = {
-  action: Action
+  action: DbAction & { actorId: string }
   combat: Combat
   contenders: Record<string, Playable>
   combatStatuses: Record<string, CombatStatus>

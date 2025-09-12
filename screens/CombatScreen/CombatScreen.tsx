@@ -8,7 +8,7 @@ import Section from "components/Section"
 import Spacer from "components/Spacer"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 
@@ -23,7 +23,7 @@ function CombatScreen() {
   const equWeapons = equipedObjects.weapons
   const maxAp = secAttr.curr.actionPoints
   const weapons = equWeapons.map(eW => inventory?.weaponsRecord?.[eW.dbKey] ?? eW)
-  const currAp = useCombatStatus(charId, cS => cS.currAp)
+  const { currAp } = useCombatStatus()
 
   const [prevAp, setPrevAp] = useState(currAp)
 

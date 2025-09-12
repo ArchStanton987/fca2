@@ -10,7 +10,9 @@ import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatState } from "providers/CombatStateProvider"
+import { useCombatStatuses } from "providers/CombatStatusesProvider"
+import { useContenders } from "providers/ContendersProvider"
 import { useInventories } from "providers/InventoriesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
@@ -35,18 +37,18 @@ const styles = StyleSheet.create({
 
 export default function ValidateSlide() {
   const useCases = useGetUseCases()
-  const combatStatuses = useCombatStatus()
+  const combatStatuses = useCombatStatuses()
   const { charId } = useCharacter()
   const { reset } = useActionApi()
   const form = useActionForm()
-  const { combat, players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
+  const combat = useCombat()
+  const { action } = useCombatState()
   const actorId = form.actorId === "" ? charId : form.actorId
   const inv = useInventories(actorId)
+  const contenders = useContenders()
   const actor = contenders[actorId]
   const { unarmed } = actor
 
-  const action = combat?.currAction
   if (!action) return <SlideError error={slideErrors.noCombatError} />
   const { rawDamage, itemDbKey } = action
   const isDamageRolled = typeof rawDamage === "number"

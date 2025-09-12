@@ -39,7 +39,7 @@ type DamageLocalizationSlideProps = SlideProps & {}
 export default function DamageLocalizationSlide({ slideIndex }: DamageLocalizationSlideProps) {
   const useCases = useGetUseCases()
   const { charId } = useCharacter()
-  const { combat } = useCombat()
+  const combat = useCombat()
   const form = useActionForm()
   const { damageLocalization } = form
   const { setForm } = useActionApi()
@@ -69,7 +69,7 @@ export default function DamageLocalizationSlide({ slideIndex }: DamageLocalizati
       return
     }
     const payload = { damageLocalization: getBodyPart(scoreStr) }
-    await useCases.combat.updateAction({ combat, payload })
+    await useCases.combat.updateAction({ combatId: combat.id, payload })
     scrollTo(slideIndex + 1)
   }
 

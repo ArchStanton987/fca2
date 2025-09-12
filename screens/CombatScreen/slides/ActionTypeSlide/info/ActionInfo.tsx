@@ -5,7 +5,7 @@ import actions from "lib/combat/const/actions"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
-import { useCombat } from "providers/CombatProvider"
+import { useContenders } from "providers/ContendersProvider"
 import { isKeyOf } from "utils/ts-utils"
 
 import WeaponInfo from "../../WeaponInfo"
@@ -16,10 +16,8 @@ export default function ActionInfo() {
   const { itemDbKey, actionType, actionSubtype, ...rest } = useActionForm()
   const { charId } = useCharacter()
   const { setForm } = useActionApi()
-  const { players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
   const actorId = rest.actorId === "" ? charId : rest.actorId
-  const contender = contenders[actorId]
+  const contender = useContenders(actorId)
   const { equipedObjects, unarmed } = contender
   const weapons = equipedObjects.weapons.length > 0 ? equipedObjects.weapons : [unarmed]
 

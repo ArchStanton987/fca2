@@ -6,7 +6,7 @@ import ScrollSection from "components/Section/ScrollSection"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatStatuses } from "providers/CombatStatusesProvider"
 import colors from "styles/colors"
 
 const title = "pa"
@@ -16,7 +16,7 @@ export default function ItemActions() {
   const { actionSubtype, ...rest } = useActionForm()
   const { setActionSubtype } = useActionApi()
   const actorId = rest.actorId === "" ? charId : rest.actorId
-  const { currAp } = useCombatStatus(actorId)
+  const { currAp } = useCombatStatuses(actorId)
 
   return (
     <ScrollSection style={{ flex: 1 }} title={title}>

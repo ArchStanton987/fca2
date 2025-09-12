@@ -13,7 +13,8 @@ import Txt from "components/Txt"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatState } from "providers/CombatStateProvider"
+import { useCombatStatuses } from "providers/CombatStatusesProvider"
 import { useReactionApi, useReactionForm } from "providers/ReactionProvider"
 import layout from "styles/layout"
 
@@ -25,17 +26,17 @@ import styles from "./ScoreResultSlide.styles"
 export default function ReactionScoreResultSlide() {
   const char = useCharacter()
   const { secAttr, special } = char
-  const combatStatuses = useCombatStatus()
-  const { combat } = useCombat()
+  const combatStatuses = useCombatStatuses()
   const { diceRoll, reaction } = useReactionForm()
+  const combat = useCombat()
+  const { action } = useCombatState()
   const diceScore = parseInt(diceRoll, 10)
   const { reset } = useReactionApi()
 
-  const action = combat?.currAction
   const roll = action?.roll
   const reactionRoll = action?.reactionRoll
 
-  if (!combat || !action?.actorId) return <SlideError error={slideErrors.noCombatError} />
+  if (!action?.actorId || !combat) return <SlideError error={slideErrors.noCombatError} />
   if (reaction === "none") return <SlideError error={slideErrors.noDiceRollError} />
   if (diceScore === 0 || !roll || !reactionRoll)
     return <SlideError error={slideErrors.noDiceRollError} />
@@ -44,7 +45,7 @@ export default function ReactionScoreResultSlide() {
   const actorFinalScore = sumAbilities - dice + bonus - targetArmorClass - difficulty
 
   const { opponentSumAbilities, opponentDice, opponentId } = reactionRoll
-  const opponentBonus = getRollBonus(combatStatuses[opponentId], combat?.currAction)
+  const opponentBonus = getRollBonus(combatStatuses[opponentId], action)
   const opponentScore = opponentSumAbilities - opponentDice + opponentBonus
   const isCritFail = opponentDice >= getCritFailureThreshold(special.curr)
   const isCrit = opponentDice < secAttr.curr.critChance

@@ -18,7 +18,7 @@ import HealthFigure from "components/draws/HealthFigure/HealthFigure"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useReactionApi, useReactionForm } from "providers/ReactionProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
@@ -51,10 +51,10 @@ const styles = StyleSheet.create({
 
 export default function PickReactionSlide({ slideIndex }: SlideProps) {
   const useCases = useGetUseCases()
-  const { combat } = useCombat()
+  const combat = useCombat()
   const char = useCharacter()
-  const { secAttr, charId } = char
-  const combatStatus = useCombatStatus(charId)
+  const { secAttr } = char
+  const combatStatus = useCombatStatus()
 
   const form = useReactionForm()
   const { reaction } = form
@@ -82,7 +82,7 @@ export default function PickReactionSlide({ slideIndex }: SlideProps) {
     if (!combat) throw new Error("could not find combat")
     if (leftAp < 0) throw new Error("No enough AP")
     if (reaction === "none") {
-      await useCases.combat.updateAction({ combat, payload: { reactionRoll: false } })
+      await useCases.combat.updateAction({ combatId: combat.id, payload: { reactionRoll: false } })
       router.replace(routes.combat.action)
       reset()
       return

@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native"
 
 import TxtInput from "components/TxtInput"
-import { useCombat } from "providers/CombatProvider"
+import { useContenders } from "providers/ContendersProvider"
 import { useDamageEntry } from "providers/DamageFormProvider"
 
 type InitHpInputProps = {
@@ -13,11 +13,9 @@ const styles = StyleSheet.create({
   }
 })
 export default function InitHpInput({ entryId }: InitHpInputProps) {
-  const { npcs, players } = useCombat()
-  const contenders = { ...npcs, ...players }
   const entry = useDamageEntry(entryId)
   const { charId } = entry
-  const contender = contenders[charId]
+  const contender = useContenders(charId)
   const initHp = contender?.health?.hp ?? 0
 
   return <TxtInput editable={false} style={styles.input} value={initHp.toString()} />

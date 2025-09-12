@@ -18,7 +18,7 @@ import { ComposedTitleProps } from "components/Section/Section.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import { getHapticSequence } from "utils/haptics"
@@ -36,7 +36,7 @@ const getTitle = (str: string): ComposedTitleProps => [
 export default function WeaponCard({ weapon, setPrevAp }: WeaponCardProps) {
   const useCases = useGetUseCases()
   const char = useCharacter()
-  const combatStatus = useCombatStatus(char.charId)
+  const combatStatus = useCombatStatus()
 
   const [selectedAction, setSelectedAction] = useState<WeaponActionId | null>(null)
 

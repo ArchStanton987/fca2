@@ -1,11 +1,11 @@
 import { CombatStatus } from "lib/character/combat-status/combat-status.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
-import Action from "../Action"
 import Combat from "../Combat"
+import { DbAction } from "../combats.types"
 
 export type SaveActionParams = {
-  action: Action
+  action: DbAction & { actorId: string }
   contenders: Record<string, CombatStatus>
   combat: Combat
 }

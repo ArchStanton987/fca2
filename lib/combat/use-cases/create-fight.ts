@@ -14,14 +14,15 @@ export type CreateFightParams = {
 }
 
 export default function createFight(dbType: keyof typeof repositoryMap = "rtdb") {
-  const combatInfoRepo = repositoryMap[dbType].combatInfoRepository
+  const combatRepo = repositoryMap[dbType].combatRepository
 
   return async ({ isStartingNow, contenders, ...rest }: CreateFightParams) => {
     const payload = {
       ...rest,
       contenders: Object.fromEntries(Object.keys(contenders).map(c => [c, c]))
     }
-    const creationRef = await combatInfoRepo.add({}, payload)
+    // @ts-ignore
+    const creationRef = await combatRepo.add({}, payload)
     const combatId = creationRef?.key
     if (!combatId) throw new Error("Failed to create combat")
     if (isStartingNow) {

@@ -22,30 +22,6 @@ import { Roll } from "../combats.types"
 import actions from "../const/actions"
 import { DEFAULT_INITIATIVE, DODGE_AP_COST, PARRY_AP_COST } from "../const/combat-const"
 
-interface CombatEntry {
-  rounds?: Record<string, Record<string, Action>>
-}
-
-export const getNewRoundId = (combat: Combat) => Object.keys(combat.rounds ?? {}).length + 1
-export const getCurrentRoundId = (combat: CombatEntry | null) => {
-  if (!combat) return 1
-  const keys = Object.keys(combat.rounds ?? {}).map(Number)
-  return keys.length > 0 ? Math.max(...keys) : 1
-}
-export const getActionId = (combat: Combat | null) => {
-  if (!combat) return 1
-  const roundId = getCurrentRoundId(combat)
-  const rounds = combat.rounds ?? {}
-  const roundActions = Object.entries(rounds[roundId] ?? {})
-  if (roundActions.length === 0) return 1
-  const action = roundActions.find(([, a]) => !a?.isDone)
-  if (action) {
-    const [actionId] = action
-    return Number(actionId)
-  }
-  return roundActions.length + 1
-}
-
 export const getPlayingOrder = (contendersRecord: Record<string, CombatStatus>) => {
   // sort contenders by initiative and current ap, then combat status inactive, then dead
   const contenders = Object.entries(contendersRecord).map(([id, value]) => ({ id, ...value }))
@@ -323,7 +299,7 @@ export const getReactionAbilities = (
   combat: Combat
 ) => {
   const { skills, equipedObjects, knowledgesRecord, secAttr } = char
-  const roundId = getCurrentRoundId(combat)
+  const roundId = combat.currRoundId
 
   const armorClassBonus = combatStatus.armorClassBonusRecord?.[roundId] ?? 0
 

@@ -17,7 +17,9 @@ import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatState } from "providers/CombatStateProvider"
+import { useCombatStatuses } from "providers/CombatStatusesProvider"
+import { useContenders } from "providers/ContendersProvider"
 import { useInventories } from "providers/InventoriesProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
@@ -39,9 +41,10 @@ export default function DiceRollSlide({ slideIndex }: SlideProps) {
   const useCases = useGetUseCases()
 
   const { charId } = useCharacter()
-  const { combat, players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
-  const combatStatuses = useCombatStatus()
+  const combat = useCombat()
+  const { action } = useCombatState()
+  const contenders = useContenders()
+  const combatStatuses = useCombatStatuses()
 
   const form = useActionForm()
   const actorId = form.actorId === "" ? charId : form.actorId
@@ -67,7 +70,6 @@ export default function DiceRollSlide({ slideIndex }: SlideProps) {
 
   const { skillLabel, skillId, sumAbilities } = getActorSkillFromAction({ ...form, item }, actor)
 
-  const action = combat?.currAction
   if (!action) return <SlideError error={slideErrors.noCombatError} />
   if (action.roll === false) return <NoRollSlide />
   if (action.roll === undefined) return <AwaitGmSlide messageCase="difficulty" />
@@ -81,7 +83,7 @@ export default function DiceRollSlide({ slideIndex }: SlideProps) {
 
   const bonus = getRollBonus(combatStatus, action)
   const targetArmorClass = getContenderAc(
-    combat?.currRoundId,
+    combat?.currRoundId ?? 1,
     contenders[targetId],
     combatStatuses[targetId]
   )
@@ -94,7 +96,7 @@ export default function DiceRollSlide({ slideIndex }: SlideProps) {
       reactionRoll = targetAp >= REACTION_MIN_AP_COST ? undefined : (false as const)
     }
     const roll = { difficulty, sumAbilities, dice, bonus, targetArmorClass, skillId }
-    await useCases.combat.updateAction({ combat, payload: { roll, reactionRoll } })
+    await useCases.combat.updateAction({ combatId: combat.id, payload: { roll, reactionRoll } })
     scrollNext()
   }
 

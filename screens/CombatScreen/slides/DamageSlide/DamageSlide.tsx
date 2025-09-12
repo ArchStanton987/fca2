@@ -15,7 +15,9 @@ import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatState } from "providers/CombatStateProvider"
+import { useCombatStatuses } from "providers/CombatStatusesProvider"
+import { useContenders } from "providers/ContendersProvider"
 import { useInventories } from "providers/InventoriesProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
@@ -45,10 +47,11 @@ type DamageSlideProps = SlideProps & {}
 
 export default function DamageSlide({ slideIndex }: DamageSlideProps) {
   const useCases = useGetUseCases()
-  const { combat, players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
+  const combat = useCombat()
+  const { action } = useCombatState()
+  const contenders = useContenders()
   const { charId } = useCharacter()
-  const combatStatuses = useCombatStatus()
+  const combatStatuses = useCombatStatuses()
   const form = useActionForm()
   const { actionType, actionSubtype, itemDbKey, rawDamage = "" } = form
   const { setForm, setRoll } = useActionApi()
@@ -70,7 +73,6 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
   const parsedScore = parseInt(rawDamage, 10)
   const isValid = !Number.isNaN(parsedScore) && parsedScore >= 0 && parsedScore < 1000
 
-  const action = combat?.currAction
   if (!action) return <SlideError error={slideErrors.noCombatError} />
   if (!itemDbKey) return <SlideError error={slideErrors.noItemError} />
 
@@ -111,7 +113,7 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
     if (combat === null) return
     if (!isValid) throw new Error("invalid score")
     const payload = { rawDamage: parsedScore, damageType }
-    await useCases.combat.updateAction({ combat, payload })
+    await useCases.combat.updateAction({ combatId: combat.id, payload })
     scrollNext()
   }
   const submitNoDamages = async () => {
@@ -131,7 +133,7 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
   const opponent = action.targetId ? contenders[action?.targetId] : null
   if (opponent && action?.targetId) {
     const combatStatus = combatStatuses[action?.targetId]
-    opponentCanReact = getPlayerCanReact(opponent, combatStatus, combat?.currAction)
+    opponentCanReact = getPlayerCanReact(opponent, combatStatus, action)
   }
   if (opponentCanReact && action.reactionRoll === undefined) return <AwaitReactionSlide />
 

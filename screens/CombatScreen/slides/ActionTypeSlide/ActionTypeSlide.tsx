@@ -17,7 +17,8 @@ import Spacer from "components/Spacer"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatStatuses } from "providers/CombatStatusesProvider"
+import { useContenders } from "providers/ContendersProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -37,22 +38,23 @@ const toastMessages = {
 
 export default function ActionTypeSlide({ slideIndex }: SlideProps) {
   const useCases = getUseCases()
-  const { players, npcs, combat } = useCombat()
   const { charId } = useCharacter()
-  const combatStatuses = useCombatStatus()
-  const combatStatus = combatStatuses[charId]
+  const contenders = useContenders()
+  const combatStatuses = useCombatStatuses()
+  const combat = useCombat()
 
   const form = useActionForm()
   const { actionType, actionSubtype, isCombinedAction, itemDbKey } = form
   const { setForm, setActionType, setActorId, reset } = useActionApi()
 
-  const contenders = { ...players, ...npcs }
-  const activePlayersWithAp = getActivePlayersWithAp(combatStatuses)
-  const isLastPlayer = activePlayersWithAp.length === 1
   const actorId = form.actorId === "" ? charId : form.actorId
   const actor = contenders[actorId]
+  const combatStatus = combatStatuses[actorId]
   const { equipedObjects, unarmed } = actor
   const weapons = equipedObjects.weapons.length > 0 ? equipedObjects.weapons : [unarmed]
+
+  const activePlayersWithAp = getActivePlayersWithAp(combatStatuses)
+  const isLastPlayer = activePlayersWithAp.length === 1
 
   const { scrollTo } = useScrollTo()
 
@@ -68,7 +70,7 @@ export default function ActionTypeSlide({ slideIndex }: SlideProps) {
   }
 
   const submit = async () => {
-    if (!combat || !players || !npcs) throw new Error("No combat found")
+    if (!combat) throw new Error("No combat found")
     const payload = { actionSubtype, actionType, itemDbKey, actorId, isCombinedAction }
     if (actionType === "wait" || actionType === "prepare") {
       try {
@@ -81,7 +83,7 @@ export default function ActionTypeSlide({ slideIndex }: SlideProps) {
       }
       return
     }
-    await useCases.combat.updateAction({ combat, payload })
+    await useCases.combat.updateAction({ combatId: combat.id, payload })
     scrollTo(slideIndex + 1)
   }
 

@@ -50,12 +50,13 @@ export default function GMActionsScreen() {
   const [difficulty, setDifficulty] = useState(0)
 
   const submit = () => {
+    if (!combat) return
     const prevRoll = action.roll
     const roll = hasRoll ? { ...prevRoll, difficulty } : false
     if (roll === false) {
-      useCases.combat.updateAction({ combat, payload: { roll } })
+      useCases.combat.updateAction({ combatId: combat.id, payload: { roll } })
     } else {
-      useCases.combat.setDifficulty({ combat, roll })
+      useCases.combat.setDifficulty({ combatId: combat.id, roll })
     }
     setDifficulty(0)
   }
@@ -67,7 +68,7 @@ export default function GMActionsScreen() {
   const resetDifficulty = () => {
     if (!combat) return
     setDifficulty(0)
-    useCases.combat.resetDifficulty({ combat })
+    useCases.combat.resetDifficulty({ combatId: combat.id })
   }
 
   if (!meta.isNpc)

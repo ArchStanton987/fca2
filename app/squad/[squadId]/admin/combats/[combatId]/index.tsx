@@ -56,13 +56,10 @@ function AdminCombat() {
 
   const adminEndFight = async () => {
     const contenders = Object.fromEntries(
-      Object.entries(combatStatuses).map(([id, cs]) => [
-        id,
-        { combatStatus: cs, maxAp: allPlayable[id].secAttr.curr.actionPoints }
-      ])
+      Object.keys(combatStatuses).map(id => [id, allPlayable[id]])
     )
     try {
-      await useCases.combat.adminEndFight({ combatId, contenders })
+      await useCases.combat.adminEndFight({ combatId, combatStatuses, contenders })
       Toast.show({ type: "custom", text1: "Le combat a été clôturé" })
     } catch (error) {
       Toast.show({ type: "error", text1: "Erreur lors de la clôture du combat" })

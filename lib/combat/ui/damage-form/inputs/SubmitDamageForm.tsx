@@ -8,7 +8,7 @@ import PlayButton from "screens/CombatScreen/slides/PlayButton"
 
 export default function SubmitDamageForm() {
   const useCases = useGetUseCases()
-  const { combat } = useCombat()
+  const combat = useCombat()
   const actions = useDamageFormActions()
   const entries = useDamageFormStore(state => state.entries)
   const submit = async () => {
@@ -16,7 +16,7 @@ export default function SubmitDamageForm() {
     try {
       const payload = reIndexHealthEntries(entries)
       const healthChangeEntries = Object.keys(payload).length === 0 ? false : payload
-      await useCases.combat.updateAction({ combat, payload: { healthChangeEntries } })
+      await useCases.combat.updateAction({ combatId: combat.id, payload: { healthChangeEntries } })
       Toast.show({ type: "custom", text1: "Dégâts enregistrés !" })
       actions.clear()
     } catch (err) {

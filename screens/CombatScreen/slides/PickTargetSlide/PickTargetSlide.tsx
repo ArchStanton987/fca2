@@ -11,7 +11,8 @@ import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatStatuses } from "providers/CombatStatusesProvider"
+import { useContenders } from "providers/ContendersProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
@@ -37,9 +38,9 @@ export default function PickTargetSlide({ slideIndex }: SlideProps) {
   const { scrollTo } = useScrollTo()
 
   const useCases = useGetUseCases()
-  const { combat, players, npcs } = useCombat()
+  const combat = useCombat()
   const character = useCharacter()
-  const contenders = { ...players, ...npcs }
+  const contenders = useContenders()
   const form = useActionForm()
   const { targetId } = form
   const actorId = form.actorId === "" ? character.charId : form.actorId
@@ -48,7 +49,7 @@ export default function PickTargetSlide({ slideIndex }: SlideProps) {
 
   const { setForm } = useActionApi()
 
-  const combatStatuses = useCombatStatus()
+  const combatStatuses = useCombatStatuses()
 
   const onPressPlayer = (id: string) => {
     setForm({ targetId: id })
@@ -56,7 +57,7 @@ export default function PickTargetSlide({ slideIndex }: SlideProps) {
 
   const submit = () => {
     if (!combat) return
-    useCases.combat.updateAction({ combat, payload: { targetId } })
+    useCases.combat.updateAction({ combatId: combat.id, payload: { targetId } })
     scrollTo(slideIndex + 1)
   }
 

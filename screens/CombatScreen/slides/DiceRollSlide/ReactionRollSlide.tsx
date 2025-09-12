@@ -11,7 +11,7 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useReactionApi, useReactionForm } from "providers/ReactionProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
@@ -23,10 +23,10 @@ import styles from "./DiceRollSlide.styles"
 
 export default function ReactionRollSlide({ slideIndex }: SlideProps) {
   const useCases = useGetUseCases()
-  const { combat } = useCombat()
+  const combat = useCombat()
   const char = useCharacter()
   const { charId } = char
-  const combatStatus = useCombatStatus(charId)
+  const combatStatus = useCombatStatus()
   const form = useReactionForm()
   const { diceRoll, reaction } = form
   const { setReactionRoll } = useReactionApi()
@@ -56,7 +56,7 @@ export default function ReactionRollSlide({ slideIndex }: SlideProps) {
       opponentSumAbilities: total,
       opponentArmorClass: reactionAbilities.armorClass.total
     }
-    await useCases.combat.updateAction({ combat, payload: { reactionRoll } })
+    await useCases.combat.updateAction({ combatId: combat.id, payload: { reactionRoll } })
     scrollNext()
   }
 

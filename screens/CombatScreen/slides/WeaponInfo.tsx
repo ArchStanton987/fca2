@@ -11,7 +11,7 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionForm } from "providers/ActionProvider"
-import { useCombat } from "providers/CombatProvider"
+import { useContenders } from "providers/ContendersProvider"
 import { useInventories } from "providers/InventoriesProvider"
 import colors from "styles/colors"
 
@@ -30,10 +30,8 @@ export default function WeaponInfo({ selectedWeapon }: { selectedWeapon?: string
   const form = useActionForm()
 
   const { charId } = useCharacter()
-  const { players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
   const actorId = form.actorId === "" ? charId : form.actorId
-  const contender = contenders[actorId]
+  const contender = useContenders(actorId)
 
   const inv = useInventories(actorId)
 

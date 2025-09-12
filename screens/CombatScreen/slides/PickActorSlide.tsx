@@ -8,7 +8,8 @@ import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
-import { useCombat } from "providers/CombatProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
+import { useContenders } from "providers/ContendersProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
@@ -18,7 +19,15 @@ import NextButton from "./NextButton"
 export default function PickActorSlide({ slideIndex }: SlideProps) {
   const useCases = useGetUseCases()
   const { scrollTo } = useScrollTo()
-  const { combat, npcs, players } = useCombat()
+  const contenders = useContenders()
+  const { combatId } = useCombatStatus()
+
+  const enemies: { charId: string; fullname: string }[] = []
+  const players: { charId: string; fullname: string }[] = []
+  Object.entries(contenders).forEach(([id, c]) => {
+    const arr = c.meta.isEnemy ? enemies : players
+    arr.push({ charId: id, fullname: c.fullname })
+  })
 
   const { setActorId } = useActionApi()
   const { actorId } = useActionForm()
@@ -28,8 +37,7 @@ export default function PickActorSlide({ slideIndex }: SlideProps) {
   }
 
   const submit = () => {
-    if (!combat) return
-    useCases.combat.updateAction({ combat, payload: { actorId } })
+    useCases.combat.updateAction({ combatId, payload: { actorId } })
     scrollTo(slideIndex + 1)
   }
 
@@ -37,14 +45,14 @@ export default function PickActorSlide({ slideIndex }: SlideProps) {
     <DrawerSlide>
       <ScrollSection style={{ flex: 1 }} title="joueurs">
         <List
-          data={Object.values(players ?? {})}
+          data={players}
           keyExtractor={i => i.charId}
           renderItem={({ item }) => (
             <Selectable
               onPress={() => toggleSelect(item.charId)}
               isSelected={actorId === item.charId}
             >
-              <Txt>{item.meta.firstname}</Txt>
+              <Txt>{item.fullname}</Txt>
             </Selectable>
           )}
         />
@@ -54,14 +62,14 @@ export default function PickActorSlide({ slideIndex }: SlideProps) {
 
       <ScrollSection style={{ flex: 1 }} title="pnjs">
         <List
-          data={Object.values(npcs ?? {})}
+          data={enemies}
           keyExtractor={i => i.charId}
           renderItem={({ item }) => (
             <Selectable
               onPress={() => toggleSelect(item.charId)}
               isSelected={actorId === item.charId}
             >
-              <Txt>{item.meta.firstname}</Txt>
+              <Txt>{item.fullname}</Txt>
             </Selectable>
           )}
         />

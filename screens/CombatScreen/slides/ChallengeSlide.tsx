@@ -13,7 +13,9 @@ import Txt from "components/Txt"
 import HealthFigure from "components/draws/HealthFigure/HealthFigure"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatState } from "providers/CombatStateProvider"
+import { useCombatStatuses } from "providers/CombatStatusesProvider"
+import { useContenders } from "providers/ContendersProvider"
 import { useInventories } from "providers/InventoriesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
@@ -34,18 +36,18 @@ const styles = StyleSheet.create({
 
 export default function ChallengeSlide() {
   const useCases = useGetUseCases()
-  const combatStatuses = useCombatStatus()
+  const combatStatuses = useCombatStatuses()
   const form = useActionForm()
   const { itemDbKey, actorId } = form
   const { reset } = useActionApi()
   const { consumablesRecord } = useInventories(actorId)
-  const { players, npcs, combat } = useCombat()
-  const contenders = { ...players, ...npcs }
+  const combat = useCombat()
+  const contenders = useContenders()
+  const { action } = useCombatState()
 
   const submit = async (item: Consumable) => {
     if (!combat) throw new Error("no combat")
     try {
-      const action = combat.currAction
       await useCases.combat.doCombatAction({ action, contenders, combatStatuses, combat, item })
       Toast.show({ type: "custom", text1: "Action réalisée" })
       reset()

@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
 })
 
 export default function ActionIndicator() {
-  const { combat } = useCombat()
+  const combat = useCombat()
   return (
     <Section contentContainerStyle={styles.centeredSection} title="ACTION" style={{ flex: 1 }}>
       <Txt style={styles.combatStep}>{combat?.currActionId ?? 1}</Txt>

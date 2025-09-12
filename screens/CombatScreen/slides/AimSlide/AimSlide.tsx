@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
 
 export default function AimSlide({ slideIndex }: SlideProps) {
   const useCases = useGetUseCases()
-  const { combat } = useCombat()
+  const combat = useCombat()
   const { aimZone = "" } = useActionForm()
   const { setForm } = useActionApi()
 
@@ -52,7 +52,7 @@ export default function AimSlide({ slideIndex }: SlideProps) {
 
   const onPressNext = async () => {
     if (!combat || !aimZone) return
-    await useCases.combat.updateAction({ combat, payload: { aimZone } })
+    await useCases.combat.updateAction({ combatId: combat.id, payload: { aimZone } })
     scrollNext()
   }
 

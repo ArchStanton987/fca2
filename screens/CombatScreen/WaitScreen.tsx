@@ -6,18 +6,20 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
+import { useCombatState } from "providers/CombatStateProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
 
 export default function WaitScreen() {
   const useCases = useGetUseCases()
-  const { combat } = useCombat()
+  const combat = useCombat()
   const character = useCharacter()
+  const combatState = useCombatState()
 
   const onPressEnd = () => {
     if (!combat) return
-    useCases.combat.endWait({ combat, actor: character })
+    useCases.combat.endWait({ combatState, combatId: combat.id, actor: character })
   }
 
   return (

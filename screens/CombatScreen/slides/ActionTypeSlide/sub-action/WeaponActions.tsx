@@ -12,17 +12,15 @@ import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
-import { useCombat } from "providers/CombatProvider"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatStatus } from "providers/CombatStatusProvider"
+import { useContenders } from "providers/ContendersProvider"
 
 export default function WeaponActions() {
   const { charId } = useCharacter()
   const { itemDbKey, actionSubtype, ...rest } = useActionForm()
   const actorId = rest.actorId === "" ? charId : rest.actorId
-  const { currAp } = useCombatStatus(actorId)
-  const { players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
-  const contender = contenders[actorId]
+  const { currAp } = useCombatStatus()
+  const contender = useContenders(actorId)
   const { setActionSubtype } = useActionApi()
   const inv = useInventory()
   let weapon = contender.unarmed

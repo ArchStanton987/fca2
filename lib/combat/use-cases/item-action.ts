@@ -9,12 +9,12 @@ import getEquipedObjectsUseCases from "lib/objects/equiped-objects-use-cases"
 import getInventoryUseCases from "lib/objects/inventory-use-cases"
 import repositoryMap from "lib/shared/db/get-repository"
 
-import Action from "../Action"
 import Combat from "../Combat"
+import { DbAction } from "../combats.types"
 import actions from "../const/actions"
 
 export type CombatActionParams = {
-  action: Action
+  action: DbAction & { actorId: string }
   combat: Combat
   contenders: Record<string, Playable>
   item?: Clothing | Consumable | MiscObject | Weapon

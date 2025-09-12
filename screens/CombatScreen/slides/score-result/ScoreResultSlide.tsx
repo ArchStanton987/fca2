@@ -14,7 +14,9 @@ import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatState } from "providers/CombatStateProvider"
+import { useCombatStatuses } from "providers/CombatStatusesProvider"
+import { useContenders } from "providers/ContendersProvider"
 import { useInventories } from "providers/InventoriesProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
@@ -28,9 +30,11 @@ import styles from "./ScoreResultSlide.styles"
 
 export default function ScoreResultSlide({ slideIndex }: SlideProps) {
   const useCases = useGetUseCases()
-  const { combat, npcs, players } = useCombat()
-  const combatStatuses = useCombatStatus()
-  const contenders = { ...players, ...npcs }
+  const combat = useCombat()
+  const contenders = useContenders()
+  const combatStatuses = useCombatStatuses()
+  const { action } = useCombatState()
+
   const character = useCharacter()
   const form = useActionForm()
   const actorId = form.actorId === "" ? character.charId : form.actorId
@@ -44,7 +48,6 @@ export default function ScoreResultSlide({ slideIndex }: SlideProps) {
 
   const { scrollTo } = useScrollTo()
 
-  const action = combat?.currAction
   if (!action) return <SlideError error={slideErrors.noCombatError} />
   if (action.roll === undefined) return <AwaitGmSlide messageCase="difficulty" />
   if (action.roll === false) return <SlideError error={slideErrors.noDiceRollError} />
@@ -84,6 +87,7 @@ export default function ScoreResultSlide({ slideIndex }: SlideProps) {
   const isCrit = isCritHit || isDefaultCritSuccess
 
   const submit = async () => {
+    if (!combat) return
     const withDamageSubtypes = ["throw", "basic", "aim", "burst", "hit"]
     const hasNextSlide = withDamageSubtypes.includes(actionSubtype) && isSuccess
     if (hasNextSlide) {
@@ -92,12 +96,11 @@ export default function ScoreResultSlide({ slideIndex }: SlideProps) {
     }
     try {
       const item = action.itemDbKey ? inv.allItems[action.itemDbKey] : undefined
-      const payload = { ...action, actorId }
       await useCases.combat.doCombatAction({
         combat,
         contenders,
         combatStatuses,
-        action: payload,
+        action,
         item
       })
       Toast.show({ type: "custom", text1: "Action réalisée !" })

@@ -22,7 +22,9 @@ import PlusIcon from "components/icons/PlusIcon"
 import { useCharacter } from "contexts/CharacterContext"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombat } from "providers/CombatProvider"
-import { useCombatStatus } from "providers/CombatStatusesProvider"
+import { useCombatState } from "providers/CombatStateProvider"
+import { useCombatStatuses } from "providers/CombatStatusesProvider"
+import { useContenders } from "providers/ContendersProvider"
 import { useInventories } from "providers/InventoriesProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
@@ -45,10 +47,11 @@ const styles = StyleSheet.create({
 
 export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
   const useCases = useGetUseCases()
-  const combatStatuses = useCombatStatus()
+  const combatStatuses = useCombatStatuses()
   const { charId } = useCharacter()
-  const { combat, npcs, players } = useCombat()
-  const contenders = { ...players, ...npcs }
+  const combat = useCombat()
+  const { action } = useCombatState()
+  const contenders = useContenders()
   const form = useActionForm()
   const { actionType, actionSubtype, apCost } = form
   const actorId = form.actorId === "" ? charId : form.actorId
@@ -85,9 +88,15 @@ export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
   const handleSubmit = async (item?: Consumable | Weapon | Clothing | MiscObject) => {
     if (!combat) return
 
-    const action = { ...combat?.currAction, apCost }
+    const payload = { ...action, apCost }
     try {
-      await useCases.combat.doCombatAction({ contenders, combatStatuses, combat, action, item })
+      await useCases.combat.doCombatAction({
+        contenders,
+        combatStatuses,
+        combat,
+        action: payload,
+        item
+      })
       Toast.show({ type: "custom", text1: "Action réalisée" })
       reset()
     } catch (error) {
@@ -97,7 +106,7 @@ export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
 
   const onPressNext = async () => {
     if (!combat) return
-    await useCases.combat.updateAction({ combat, payload: { apCost } })
+    await useCases.combat.updateAction({ combatId: combat.id, payload: { apCost } })
 
     switch (actionType) {
       case "other": {

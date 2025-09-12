@@ -7,7 +7,8 @@ import { GMDamageFormState, createDmgStore } from "lib/combat/gm-damage-store"
 import { getRealDamage } from "lib/combat/utils/combat-utils"
 import { StoreApi, useStore } from "zustand"
 
-import { useCombat } from "./CombatProvider"
+import { useCombatState } from "./CombatStateProvider"
+import { useContenders } from "./ContendersProvider"
 
 const GmDamageContext = createContext<StoreApi<GMDamageFormState>>(
   {} as StoreApi<GMDamageFormState>
@@ -59,9 +60,8 @@ const getInitDamageEntry = (action: Action | undefined, contenders: Record<strin
 // }
 
 export function DamageFormProvider({ children }: { children: ReactNode }) {
-  const { combat, players, npcs } = useCombat()
-  const contenders = { ...players, ...npcs }
-  const action = combat?.currAction
+  const contenders = useContenders()
+  const { action } = useCombatState()
 
   const [store] = useState(() => {
     const initEntry = getInitDamageEntry(action, contenders)
