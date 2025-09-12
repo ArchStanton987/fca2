@@ -35,6 +35,7 @@ import { SkillsValues } from "./abilities/skills/skills.types"
 import { specialArray } from "./abilities/special/special"
 import { Special } from "./abilities/special/special.types"
 import traitsMap from "./abilities/traits/traits"
+import { DbCombatStatus } from "./combat-status/combat-status.types"
 import effectsMap from "./effects/effects"
 import { DbEffects, Effect, EffectData, EffectId } from "./effects/effects.types"
 import { Symptom } from "./effects/symptoms.type"
@@ -49,6 +50,7 @@ export type DbChar = {
   effects?: DbEffects
   equipedObj?: DbEquipedObjects
   status: DbStatus
+  combatStatus: DbCombatStatus
   meta: DbCharMeta
   combats?: Record<string, string>
 } & { inventory: DbInventory }

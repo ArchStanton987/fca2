@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { View } from "react-native"
 
+import { DbCombatStatus } from "lib/character/combat-status/combat-status.types"
 import { limbsDefault } from "lib/character/health/health"
 import { DbCharMeta, species } from "lib/character/meta/meta"
 import { BackgroundId, DbStatus } from "lib/character/status/status.types"
@@ -90,7 +91,8 @@ export default function NpcCreation() {
         ...limbsDefault,
         rads: 0
       }
-      payload = { meta, status }
+      const combatStatus: DbCombatStatus = { currAp: 0 }
+      payload = { meta, status, combatStatus }
     }
     try {
       await useCases.npc.create({ npc: payload, squad })

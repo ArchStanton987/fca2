@@ -30,8 +30,7 @@ function AdminCombat() {
   const allPlayable = { ...characters, ...npcs }
 
   const isPending = [combatInfoReq, combatStatusesReq].some(r => r.isPending)
-  if (isPending) return <LoadingScreen />
-  if (!combatStatusesReq.data || !combatInfoReq.data) {
+  if (!combatId) {
     return (
       <DrawerPage>
         <Section style={{ flex: 1 }} title="informations">
@@ -40,6 +39,7 @@ function AdminCombat() {
       </DrawerPage>
     )
   }
+  if (isPending || !combatInfoReq.data || !combatStatusesReq.data) return <LoadingScreen />
 
   const combatStatuses = combatStatusesReq.data
   const isFightActive = Object.values(combatStatuses).some(s => s.combatId === combatId)
