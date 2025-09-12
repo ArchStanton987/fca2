@@ -30,9 +30,6 @@ import updateAction, { UpdateActionParams } from "./combat/use-cases/update-acti
 import waitAction, { WaitActionParams } from "./combat/use-cases/wait-action"
 import createNpc, { CreateNpcParams } from "./npc/use-cases/create-npc"
 import deleteNpc, { DeleteNpcParams } from "./npc/use-cases/delete-npc"
-import subAllNpcs from "./npc/use-cases/sub-all-npcs"
-import subNpc from "./npc/use-cases/sub-npc"
-import subNpcs from "./npc/use-cases/sub-npcs"
 import { defaultCreatedElements } from "./objects/created-elements"
 import addAdditionalClothing from "./objects/data/clothings/add-additional-clothings"
 import { DbClothingData } from "./objects/data/clothings/clothings.types"
@@ -51,7 +48,7 @@ import {
   AdditionalConsumablesParams,
   AdditionalEffectsParams,
   AdditionalMiscParams,
-  CharacterParams
+  PlayableParams
 } from "./shared/db/api-rtdb"
 import { DbType } from "./shared/db/db.types"
 import getSquadUseCases from "./squad/squad-use-cases"
@@ -102,15 +99,12 @@ export default function getUseCases(
         applyDamageEntries(dbType, createdElements)(data)
     },
     npc: {
-      subAll: () => subAllNpcs(dbType)(),
-      subNpcs: (ids: string[]) => subNpcs(dbType)(ids),
-      sub: (id: string) => subNpc(dbType)(id),
       create: (data: CreateNpcParams) => createNpc(dbType)(data),
       delete: (params: DeleteNpcParams) => deleteNpc(dbType)(params)
     },
     character: {
       subCharacters: (ids: string[]) => subCharacters(dbType)(ids),
-      sub: (params: CharacterParams) => subCharacter(dbType)(params),
+      sub: (params: PlayableParams) => subCharacter(dbType)(params),
       subChild: <T extends keyof DbChar>(params: SubCharacterChildParams<T>) =>
         subCharacterChild(dbType)(params),
       updateCombatStatus: (params: UpdateCombatStatusParams) => updateCombatStatus(dbType)(params)

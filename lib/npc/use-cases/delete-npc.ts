@@ -9,7 +9,7 @@ export type DeleteNpcParams = {
 }
 
 export default function deleteNpc(dbType: keyof typeof repositoryMap = "rtdb") {
-  const npcRepo = repositoryMap[dbType].npcRepository
+  const playableRepo = repositoryMap[dbType].playableRepository
   const squadRepo = repositoryMap[dbType].squadRepository
 
   return async ({ npcId, npcCombatStatus, squad }: DeleteNpcParams) => {
@@ -19,7 +19,7 @@ export default function deleteNpc(dbType: keyof typeof repositoryMap = "rtdb") {
     const newSquad = { ...squad.dbSquad }
     delete newSquad.npc[npcId]
     const promises = [
-      npcRepo.delete({ id: npcId }),
+      playableRepo.delete({ id: npcId }),
       squadRepo.patch({ id: squad.squadId }, newSquad)
     ]
     return Promise.all(promises)

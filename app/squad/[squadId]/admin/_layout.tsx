@@ -39,7 +39,7 @@ export default function AdminLayout() {
   const characters = useGetSquadCharacters(squadMembersIds || [], currSquad, createdElements)
 
   const npcSubs = useMemo(
-    () => useCases.npc.subNpcs(squad.npc).map((s, i) => ({ ...s, id: squad.npc[i] })),
+    () => useCases.character.subCharacters(squad.npc).map((s, i) => ({ ...s, id: squad.npc[i] })),
     [squad, useCases]
   )
   const npcDatas = useRtdbSubs(npcSubs)

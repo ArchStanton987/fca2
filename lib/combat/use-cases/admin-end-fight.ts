@@ -12,7 +12,7 @@ export type AdminEndFightParams = {
 
 export default function adminEndFight(dbType: keyof typeof repositoryMap = "rtdb") {
   const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
-  const characterRepo = repositoryMap[dbType].characterRepository
+  const playableRepo = repositoryMap[dbType].playableRepository
 
   return ({ combatId, combatStatuses, contenders }: AdminEndFightParams) => {
     const promises: (Promise<void> | ThenableReference)[] = []
@@ -26,7 +26,7 @@ export default function adminEndFight(dbType: keyof typeof repositoryMap = "rtdb
       }
       // add fight ID in characters combat archive
       promises.push(
-        characterRepo.patchChild({ id: charId, childKey: "combats" }, { [combatId]: combatId })
+        playableRepo.patchChild({ id: charId, childKey: "combats" }, { [combatId]: combatId })
       )
     })
 

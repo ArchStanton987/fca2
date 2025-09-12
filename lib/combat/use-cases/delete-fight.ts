@@ -11,7 +11,7 @@ export type DeleteFightParams = {
 export default function deleteFight(dbType: keyof typeof repositoryMap = "rtdb") {
   const combatRepo = repositoryMap[dbType].combatRepository
   const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
-  const characterRepo = repositoryMap[dbType].characterRepository
+  const playableRepo = repositoryMap[dbType].playableRepository
 
   return ({ combatId, contenders, combatStatuses }: DeleteFightParams) => {
     const promises: Promise<void>[] = []
@@ -25,7 +25,7 @@ export default function deleteFight(dbType: keyof typeof repositoryMap = "rtdb")
       if (combats[combatId]) {
         const newCombats = { ...combats }
         delete newCombats[combatId]
-        promises.push(characterRepo.patch({ id: charId }, { combats: newCombats }))
+        promises.push(playableRepo.patch({ id: charId }, { combats: newCombats }))
       }
 
       // reset character ap, currFightId, combatStatus IF current combat is the one being deleted

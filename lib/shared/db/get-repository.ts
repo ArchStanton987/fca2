@@ -1,4 +1,4 @@
-import CharacterRtdbRepository from "lib/character/CharacterRtdbRepository"
+import PlayableRtdbRepository from "lib/character/PlayableRtdbRepository"
 import CombatStatusRtdbRepository from "lib/character/combat-status/CombatStatusRtdbRepository"
 import AdditionalEffectsRtdbRepository from "lib/character/effects/AdditionalEffectsRtdbRepository"
 import EffectsRtdbRepository from "lib/character/effects/EffectsRtdbRepository"
@@ -8,7 +8,6 @@ import CombatHistoryRtdbRepository from "lib/combat/CombatHistoryRtdbRepository"
 import CombatInfoRtdbRepository from "lib/combat/CombatInfoRtdbRepository"
 import CombatRtdbRepository from "lib/combat/CombatRtdbRepository"
 import CombatStateRtdbRepository from "lib/combat/CombatStateRtdbRepository"
-import NpcRtdbRepository from "lib/npc/NpcRtdbRepository"
 import AdditionalClothingsRtdbRepository from "lib/objects/data/clothings/AdditionalClothingsRtdbRepository"
 import AdditionalConsumablesRtdbRepository from "lib/objects/data/consumables/AdditionalConsumablesRtdbRepository"
 import AdditionalMiscRtdbRepository from "lib/objects/data/misc-objects/AdditionalMiscRtdbRepository"
@@ -26,8 +25,7 @@ const repositoryMap = {
     combatHistoryRepository: new CombatHistoryRtdbRepository(),
     combatStateRepository: new CombatStateRtdbRepository(),
     actionRepository: new ActionRtdbRepository(),
-    npcRepository: new NpcRtdbRepository(),
-    characterRepository: new CharacterRtdbRepository(),
+    playableRepository: new PlayableRtdbRepository(),
     statusRepository: new StatusRtdbRepository(),
     combatStatusRepository: new CombatStatusRtdbRepository(),
     effectsRepository: new EffectsRtdbRepository(),
