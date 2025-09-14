@@ -15,7 +15,7 @@ export type AdditionalConsumablesParams = Child<string>
 export type AdditionalEffectsParams = Child<string>
 export type AdditionalMiscParams = Child<string>
 //
-export type CombatParams = { id: string }
+export type CombatParams = { id?: string }
 export type CombatInfoParams = { id: string; childKey?: keyof DbCombatInfo }
 export type CombatHistoryParams = { id: string; childKey?: number }
 export type CombatStateParams = { id: string; childKey?: "action" | "actorIdOverride" }
@@ -51,7 +51,7 @@ const rtdb = {
   getAdditionalMiscObjects: ({ childKey }: AdditionalMiscParams) =>
     `v3/additional/miscObjects/${childKey ?? ""}`,
   //
-  getCombat: ({ id }: CombatParams) => `v3/combat/${id}`,
+  getCombat: ({ id }: CombatParams) => `v3/combat/${id ?? ""}`,
   getCombatInfo: ({ id, childKey }: CombatInfoParams) => `v3/combats/${id}/info/${childKey ?? ""}`,
   getCombatHistory: ({ id, childKey }: CombatHistoryParams) =>
     `v3/combats/${id}/history/${childKey ?? ""}`,

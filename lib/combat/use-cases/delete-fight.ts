@@ -3,6 +3,7 @@ import { CombatStatus, DbCombatStatus } from "lib/character/combat-status/combat
 import repositoryMap from "lib/shared/db/get-repository"
 
 export type DeleteFightParams = {
+  gameId: string
   combatId: string
   contenders: Record<string, Playable>
   combatStatuses: Record<string, CombatStatus>
@@ -12,12 +13,15 @@ export default function deleteFight(dbType: keyof typeof repositoryMap = "rtdb")
   const combatRepo = repositoryMap[dbType].combatRepository
   const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
   const playableRepo = repositoryMap[dbType].playableRepository
+  const squadRepo = repositoryMap[dbType].squadRepository
 
-  return ({ combatId, contenders, combatStatuses }: DeleteFightParams) => {
+  return ({ gameId, combatId, contenders, combatStatuses }: DeleteFightParams) => {
     const promises: Promise<void>[] = []
 
     // delete combat entry
     promises.push(combatRepo.delete({ id: combatId }))
+    // @ts-ignore
+    promises.push(squadRepo.patchChild({ id: gameId, childKey: "combats" }, { [combatId]: null }))
 
     Object.entries(contenders).forEach(([charId, char]) => {
       const { secAttr, combats } = char

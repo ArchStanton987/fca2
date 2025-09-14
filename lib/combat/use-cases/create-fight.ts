@@ -14,17 +14,26 @@ export type CreateFightParams = {
 }
 
 export default function createFight(dbType: keyof typeof repositoryMap = "rtdb") {
+  const squadRepo = repositoryMap[dbType].squadRepository
   const combatRepo = repositoryMap[dbType].combatRepository
 
   return async ({ isStartingNow, contenders, ...rest }: CreateFightParams) => {
-    const payload = {
+    const info = {
       ...rest,
       contenders: Object.fromEntries(Object.keys(contenders).map(c => [c, c]))
     }
-    // @ts-ignore
+    const payload = {
+      info,
+      history: {},
+      state: { actorIdOverride: "", action: { actorId: "" } }
+    }
+
     const creationRef = await combatRepo.add({}, payload)
     const combatId = creationRef?.key
-    if (!combatId) throw new Error("Failed to create combat")
+    if (!combatId || typeof combatId !== "string") throw new Error("Failed to create combat")
+
+    squadRepo.patchChild({ id: rest.gameId, childKey: "combats" }, { [combatId]: combatId })
+
     if (isStartingNow) {
       await startFight(dbType)({ combatId, contenders })
     }

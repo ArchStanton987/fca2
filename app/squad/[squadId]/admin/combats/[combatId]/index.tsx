@@ -1,6 +1,6 @@
 import { TouchableOpacity } from "react-native"
 
-import { useLocalSearchParams } from "expo-router"
+import { router, useLocalSearchParams } from "expo-router"
 
 import { useContendersCombatStatus } from "lib/character/combat-status/use-cases/sub-combat-status"
 import { useSubCombatInfo } from "lib/combat/use-cases/sub-combat"
@@ -20,10 +20,10 @@ import { getDDMMYYYY, getHHMM } from "utils/date"
 
 function AdminCombat() {
   const useCases = useGetUseCases()
-  const { combatId } = useLocalSearchParams<{ combatId: string }>()
+  const { combatId, squadId } = useLocalSearchParams<{ combatId: string; squadId: string }>()
 
   const combatInfoReq = useSubCombatInfo(combatId)
-  const contendersIds = Object.keys(combatInfoReq.data ?? [])
+  const contendersIds = Object.keys(combatInfoReq.data?.contenders ?? [])
   const combatStatusesReq = useContendersCombatStatus(contendersIds)
 
   const { characters, npcs } = useAdmin()
@@ -43,21 +43,19 @@ function AdminCombat() {
 
   const combatStatuses = combatStatusesReq.data
   const isFightActive = Object.values(combatStatuses).some(s => s.combatId === combatId)
+  const contenders = Object.fromEntries(contendersIds.map(id => [id, allPlayable[id]]))
 
   const deleteCombat = async () => {
-    const contenders = Object.fromEntries(contendersIds.map(id => [id, allPlayable[id]]))
     try {
-      await useCases.combat.delete({ combatId, contenders, combatStatuses })
+      await useCases.combat.delete({ gameId: squadId, combatId, contenders, combatStatuses })
       Toast.show({ type: "custom", text1: "Le combat a été supprimé" })
+      router.setParams({ combatId: "" })
     } catch (error) {
       Toast.show({ type: "error", text1: "Erreur lors de la suppression du combat" })
     }
   }
 
   const adminEndFight = async () => {
-    const contenders = Object.fromEntries(
-      Object.keys(combatStatuses).map(id => [id, allPlayable[id]])
-    )
     try {
       await useCases.combat.adminEndFight({ combatId, combatStatuses, contenders })
       Toast.show({ type: "custom", text1: "Le combat a été clôturé" })
@@ -67,9 +65,6 @@ function AdminCombat() {
   }
 
   const startFight = async () => {
-    const contenders = Object.fromEntries(
-      Object.keys(contendersIds).map(id => [id, allPlayable[id]])
-    )
     try {
       await useCases.combat.startFight({ combatId, contenders })
       Toast.show({ type: "custom", text1: "Le combat a été démarré" })
