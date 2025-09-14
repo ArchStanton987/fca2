@@ -26,7 +26,7 @@ export const getHasStrengthMalus = (weapon: Weapon, currSpecial: Special) => {
   return currSpecial.strength < weapon.data.minStrength
 }
 
-const getCanBasicUseFirearm = (weapon: Weapon) => {
+export const getCanBasicUseFirearm = (weapon: Weapon) => {
   if (weapon.data.ammoPerShot === null) return false
   if (weapon.inMagazine === undefined) return false
   return weapon.inMagazine >= weapon.data.ammoPerShot

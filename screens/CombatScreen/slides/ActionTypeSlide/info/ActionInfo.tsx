@@ -1,33 +1,18 @@
-import { Pressable } from "react-native"
-
 import actions from "lib/combat/const/actions"
+import WeaponIndicator from "lib/combat/ui/WeaponIndicator"
 
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
-import { useActionApi, useActionForm } from "providers/ActionProvider"
-import { useContenders } from "providers/ContendersProvider"
+import { useActionForm } from "providers/ActionProvider"
 import { isKeyOf } from "utils/ts-utils"
 
-import WeaponInfo from "../../WeaponInfo"
 import ItemsActionInfo from "./ItemsActionInfo"
 import MovementInfo from "./MovementInfo"
 
 export default function ActionInfo() {
   const { itemDbKey, actionType, actionSubtype, ...rest } = useActionForm()
   const { charId } = useCharacter()
-  const { setForm } = useActionApi()
   const actorId = rest.actorId === "" ? charId : rest.actorId
-  const contender = useContenders(actorId)
-  const { equipedObjects, unarmed } = contender
-  const weapons = equipedObjects.weapons.length > 0 ? equipedObjects.weapons : [unarmed]
-
-  const toggleWeapon = () => {
-    if (weapons.length < 2) return
-    const currentIndex = weapons.findIndex(w => w.dbKey === itemDbKey)
-    const nextIndex = (currentIndex + 1) % weapons.length
-    const { dbKey } = weapons[nextIndex]
-    setForm({ itemDbKey: dbKey, apCost: 0, actionSubtype: undefined })
-  }
 
   let description = ""
   if (actionType === "wait") {
@@ -39,11 +24,7 @@ export default function ActionInfo() {
 
   if (description) return <Txt>{description}</Txt>
   if (actionType === "weapon" && itemDbKey) {
-    return (
-      <Pressable key={itemDbKey} onPress={toggleWeapon} disabled={weapons.length < 2}>
-        <WeaponInfo selectedWeapon={itemDbKey} />
-      </Pressable>
-    )
+    return <WeaponIndicator contenderId={actorId} />
   }
   if (actionType === "movement") return <MovementInfo />
   if (actionType === "item") return <ItemsActionInfo />

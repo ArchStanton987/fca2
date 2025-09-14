@@ -155,6 +155,7 @@ export const generateDbHuman = (
   // const equipedObj = getEquipedObjects(level, tagSkills, humanTemplates[template])
   const equipedObj = getEquipedObjects()
   const status = getStatus(level, baseSPECIAL)
+  const combatStatus = { currAp: 0 }
   return {
     abilities: {
       baseSPECIAL,
@@ -162,6 +163,7 @@ export const generateDbHuman = (
       traits,
       knowledges: {} as Record<KnowledgeId, KnowledgeLevelValue>
     },
+    combatStatus,
     inventory: {} as DbInventory,
     equipedObj,
     status

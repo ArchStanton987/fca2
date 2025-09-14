@@ -33,11 +33,11 @@ export default function WeaponsDetails({ charWeapon }: { charWeapon: Weapon | nu
 
   const reload = () => {
     if (!charWeapon) return
-    useCases.weapons.use(char, charWeapon, "reload")
+    useCases.weapons.load(char, charWeapon)
   }
   const unload = () => {
     if (!charWeapon) return
-    useCases.weapons.use(char, charWeapon, "unload")
+    useCases.weapons.unload(char, charWeapon)
   }
 
   const canLoad = charWeapon ? getCanLoad(charWeapon, currAp) : false

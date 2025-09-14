@@ -5,6 +5,7 @@ import Inventory from "lib/objects/Inventory"
 
 import Txt from "components/Txt"
 import useCreatedElements from "hooks/context/useCreatedElements"
+import LoadingScreen from "screens/LoadingScreen"
 
 import { useContenders } from "./ContendersProvider"
 
@@ -15,11 +16,13 @@ export default function InventoriesProvider({ children }: { children: ReactNode 
   const newElements = useCreatedElements()
   const contenders = useContenders()
 
-  const invSub = useSubInventories(contenders, newElements)
+  const invReq = useSubInventories(contenders, newElements)
 
-  if (invSub.isError) return <Txt>Erreur lors de la récupération des inventaires</Txt>
+  if (invReq.isError) return <Txt>Erreur lors de la récupération des inventaires</Txt>
 
-  return <InventoriesContext.Provider value={invSub.data}>{children}</InventoriesContext.Provider>
+  if (Object.keys(contenders).length > 0 && invReq.isPending) return <LoadingScreen />
+
+  return <InventoriesContext.Provider value={invReq.data}>{children}</InventoriesContext.Provider>
 }
 
 export function useInventories(): InventoriesContextType

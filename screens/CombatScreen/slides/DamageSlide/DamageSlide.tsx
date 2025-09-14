@@ -26,7 +26,7 @@ import layout from "styles/layout"
 
 import PlayButton from "../PlayButton"
 import SlideError, { slideErrors } from "../SlideError"
-import WeaponInfo from "../WeaponInfo"
+import { WeaponInfo } from "../WeaponInfo"
 import VisualizeReactionSlide from "../score-result/VisualizeReactionSlide"
 import AwaitReactionSlide from "../wait-slides/AwaitReactionSlide"
 

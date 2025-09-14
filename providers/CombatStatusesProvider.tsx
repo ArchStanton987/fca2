@@ -15,7 +15,7 @@ export function CombatStatusesProvider({ children }: { children: ReactNode }) {
   const contendersIds = useCombat()?.contendersIds ?? []
   const combatStatusesSub = useContendersCombatStatus(contendersIds)
 
-  if (combatStatusesSub.isPending) return <LoadingScreen />
+  if (contendersIds.length > 0 && combatStatusesSub.isPending) return <LoadingScreen />
   if (combatStatusesSub.isError)
     return <Txt>Erreur lors de la récupération du statut de combat</Txt>
 

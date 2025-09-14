@@ -6,6 +6,7 @@ import NonHuman from "lib/npc/NonHuman"
 import { useSquad } from "contexts/SquadContext"
 import useCreatedElements from "hooks/context/useCreatedElements"
 import useRtdbSubs from "hooks/db/useRtdbSubs"
+import LoadingScreen from "screens/LoadingScreen"
 
 import { useCombat } from "./CombatProvider"
 import { useGetUseCases } from "./UseCasesProvider"
@@ -42,6 +43,11 @@ export default function ContendersProvider({ children }: { children: ReactNode }
     })
     return result
   }, [contendersData, squad, createdElements])
+
+  const contendersReqLength = contendersIds.length
+  const contendersLength = Object.keys(contenders).length
+
+  if (contendersLength > 0 && contendersReqLength !== contendersLength) return <LoadingScreen />
 
   return <ContendersContext.Provider value={contenders}>{children}</ContendersContext.Provider>
 }

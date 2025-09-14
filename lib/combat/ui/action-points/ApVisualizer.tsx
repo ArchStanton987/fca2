@@ -20,7 +20,36 @@ const styles = StyleSheet.create({
   }
 })
 
-export default function ApVisualizer({ contenderId }: { contenderId?: string }) {
+type ApVisualizerProps = {
+  apArr: { id: string; isChecked: boolean; isPreview: boolean }[]
+  currAp: number
+  maxAp: number
+  handleSetAp: (val: number) => void
+}
+
+function ApVisualizerUi({ apArr, currAp, maxAp, handleSetAp }: ApVisualizerProps) {
+  return (
+    <Section title={`Points d'action : ${currAp} / ${maxAp}`}>
+      <List
+        data={apArr}
+        horizontal
+        style={styles.checkboxContainer}
+        keyExtractor={item => item.id}
+        renderItem={({ item }) => (
+          <CheckBox
+            color={item.isPreview ? colors.yellow : colors.secColor}
+            size={30}
+            isChecked={item.isChecked}
+            onPress={() => handleSetAp(parseInt(item.id, 10))}
+          />
+        )}
+      />
+      <Spacer y={layout.globalPadding} />
+    </Section>
+  )
+}
+
+function CombatApVisualizer({ contenderId }: { contenderId?: string }) {
   const useCases = useGetUseCases()
   const { action } = useCombatState()
   const character = useCharacter()
@@ -59,23 +88,36 @@ export default function ApVisualizer({ contenderId }: { contenderId?: string }) 
     apArr.push({ id: i.toString(), isChecked, isPreview })
   }
 
-  return (
-    <Section title={`Points d'action : ${currAp} / ${maxAp}`}>
-      <List
-        data={apArr}
-        horizontal
-        style={styles.checkboxContainer}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <CheckBox
-            color={item.isPreview ? colors.yellow : colors.secColor}
-            size={30}
-            isChecked={item.isChecked}
-            onPress={() => handleSetAp(parseInt(item.id, 10))}
-          />
-        )}
-      />
-      <Spacer y={layout.globalPadding} />
-    </Section>
-  )
+  return <ApVisualizerUi apArr={apArr} maxAp={maxAp} currAp={currAp} handleSetAp={handleSetAp} />
+}
+
+function NoCombatApVisualizer() {
+  const useCases = useGetUseCases()
+  const character = useCharacter()
+  const combatStatus = useCombatStatus()
+  const { currAp } = combatStatus
+
+  const maxAp = character.secAttr.curr.actionPoints
+
+  const handleSetAp = async (i: number) => {
+    const newValue = i < currAp ? i : i + 1
+    await useCases.character.updateCombatStatus({
+      charId: character.charId,
+      payload: { currAp: newValue }
+    })
+  }
+
+  const apArr = []
+  for (let i = 0; i < maxAp; i += 1) {
+    const isChecked = i < currAp
+    const isPreview = false
+    apArr.push({ id: i.toString(), isChecked, isPreview })
+  }
+
+  return <ApVisualizerUi maxAp={maxAp} currAp={currAp} handleSetAp={handleSetAp} apArr={apArr} />
+}
+
+export default function ApVisualizer({ contenderId }: { contenderId?: string }) {
+  if (contenderId) return <CombatApVisualizer contenderId={contenderId} />
+  return <NoCombatApVisualizer />
 }

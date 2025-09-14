@@ -73,7 +73,7 @@ export default class Character implements Playable {
 
   constructor(
     id: string,
-    obj: Omit<DbChar, "inventory">,
+    obj: Omit<DbChar, "inventory" | "combatStatus">,
     squad: { date: Date; squadId: string; membersRecord: Record<string, any> },
     newElements: CreatedElements = defaultCreatedElements
   ) {
