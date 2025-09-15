@@ -10,10 +10,9 @@ import { useMultiSub } from "lib/shared/db/useSub"
 
 const options = (charId: string) =>
   queryOptions({
-    queryKey: ["v2", "playables", charId, "inventory"],
+    queryKey: ["v3", "playables", charId, "inventory"],
     queryFn: () => new Promise<Inventory>(() => {}),
-    enabled: charId !== "",
-    staleTime: Infinity
+    enabled: charId !== ""
   })
 
 const useSubInventories = (
