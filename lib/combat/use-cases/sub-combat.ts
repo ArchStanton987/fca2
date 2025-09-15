@@ -9,19 +9,19 @@ import { DbCombatHistory, DbCombatInfo, DbCombatState } from "../combats.types"
 
 const combatStateOptions = (combatId: string) =>
   queryOptions({
-    queryKey: ["v3", "combat", combatId, "state"],
+    queryKey: ["v3", "combats", combatId, "state"],
     enabled: combatId !== "",
     queryFn: () => new Promise<CombatState>(() => {})
   })
 const combatHistoryOptions = (combatId: string) =>
   queryOptions({
-    queryKey: ["v3", "combat", combatId, "history"],
+    queryKey: ["v3", "combats", combatId, "history"],
     enabled: combatId !== "",
     queryFn: () => new Promise<DbCombatHistory>(() => {})
   })
 export const combatInfoOptions = (combatId: string) =>
   queryOptions({
-    queryKey: ["v3", "combat", combatId, "info"],
+    queryKey: ["v3", "combats", combatId, "info"],
     enabled: combatId !== "",
     queryFn: () => new Promise<DbCombatInfo>(() => {})
   })

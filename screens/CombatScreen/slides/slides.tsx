@@ -101,20 +101,34 @@ const getSlides = (form: ActionFormType, isGm = false) => {
   const { actionType, actionSubtype, actorId } = form
   let result
   if (actorId === "" && isGm) return [pickActorSlide]
-  if (actionType === "other") result = baseItemSlides
-  if (actionType === "movement") result = movementSlides
-  if (actionType === "item") {
-    if (actionSubtype === "throw") result = basicAttackSlides
-    if (actionSubtype === "pickUp") result = pickUpItemSlides
-    if (actionSubtype === "use") result = useItemSlides
+  if (actionType === "other") {
     result = baseItemSlides
+  } else if (actionType === "movement") {
+    result = movementSlides
+  } else if (actionType === "item") {
+    if (actionSubtype === "throw") {
+      result = basicAttackSlides
+    } else if (actionSubtype === "pickUp") {
+      result = pickUpItemSlides
+    } else if (actionSubtype === "use") {
+      result = useItemSlides
+    } else {
+      result = baseItemSlides
+    }
   } else if (actionType === "weapon") {
-    if (actionSubtype === "reload") result = baseItemSlides
-    if (actionSubtype === "unload") result = baseItemSlides
-    if (actionSubtype === "throw") result = basicAttackSlides
-    if (actionSubtype === "hit") result = basicAttackSlides
-    if (actionSubtype === "aim") result = aimAttackSlides
-    result = basicAttackSlides
+    if (actionSubtype === "reload") {
+      result = baseItemSlides
+    } else if (actionSubtype === "unload") {
+      result = baseItemSlides
+    } else if (actionSubtype === "throw") {
+      result = basicAttackSlides
+    } else if (actionSubtype === "hit") {
+      result = basicAttackSlides
+    } else if (actionSubtype === "aim") {
+      result = aimAttackSlides
+    } else {
+      result = basicAttackSlides
+    }
   } else {
     result = [pickActionSlide]
   }

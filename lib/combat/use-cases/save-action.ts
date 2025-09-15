@@ -31,7 +31,7 @@ export default function saveAction(dbType: keyof typeof repositoryMap = "rtdb") 
         combatStateRepo.patchChild({ id: combat.id, childKey: "actorIdOverride" }, actorId)
       )
     } else {
-      promises.push(combatStateRepo.deleteChild({ id: combat.id, childKey: "actorIdOverride" }))
+      promises.push(combatStateRepo.patchChild({ id: combat.id, childKey: "actorIdOverride" }, ""))
     }
 
     // if has rolled dices, reset action bonus
@@ -42,7 +42,7 @@ export default function saveAction(dbType: keyof typeof repositoryMap = "rtdb") 
     // save action in combat history
     const actionToSave = JSON.parse(JSON.stringify(action)) // remove undefined values (throws error)
     const payload = { ...actionToSave, isDone: true }
-    combatHistoryRepo.setChild({ id: combat.id, childKey: roundId }, { [actionId]: payload })
+    combatHistoryRepo.patchChild({ id: combat.id, childKey: roundId }, { [actionId]: payload })
 
     // clear combat state
     promises.push(actionRepo.set({ combatId: combat.id }, { actorId: "" }))

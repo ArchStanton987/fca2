@@ -51,14 +51,14 @@ const rtdb = {
   getAdditionalMiscObjects: ({ childKey }: AdditionalMiscParams) =>
     `v3/additional/miscObjects/${childKey ?? ""}`,
   //
-  getCombat: ({ id }: CombatParams) => `v3/combat/${id ?? ""}`,
+  getCombat: ({ id }: CombatParams) => `v3/combats/${id ?? ""}`,
   getCombatInfo: ({ id, childKey }: CombatInfoParams) => `v3/combats/${id}/info/${childKey ?? ""}`,
   getCombatHistory: ({ id, childKey }: CombatHistoryParams) =>
     `v3/combats/${id}/history/${childKey ?? ""}`,
   getCombatState: ({ id, childKey }: CombatStateParams) =>
     `v3/combats/${id}/state/${childKey ?? ""}`,
   getAction: ({ combatId, childKey }: ActionParams) =>
-    `v3/combats/${combatId}/state/${childKey ?? ""}`,
+    `v3/combats/${combatId}/state/action/${childKey ?? ""}`,
 
   // getRound: ({ combatId, id, childKey }: RoundParams) =>
   //   id ? `v3/combats/${combatId}/rounds/${id}/${childKey ?? ""}` : `v3/combats/${combatId}/rounds/`,

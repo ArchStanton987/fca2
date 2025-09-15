@@ -54,6 +54,6 @@ export default class Combat {
   get currActionId() {
     const roundId = this.currRoundId
     const roundActionsKeys = Object.keys(this.history[roundId] ?? {}).map(Number)
-    return roundActionsKeys.length > 0 ? Math.max(...roundActionsKeys) : 1
+    return roundActionsKeys.length + 1
   }
 }
