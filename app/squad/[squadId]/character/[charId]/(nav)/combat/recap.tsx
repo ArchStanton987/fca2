@@ -27,7 +27,7 @@ export default function CombatRecapPage() {
           </>
         ) : null}
         <Spacer x={layout.globalPadding} />
-        <WeaponIndicator />
+        <WeaponIndicator withActions={!hasCombat} />
         <Spacer x={layout.globalPadding} />
         <Section
           title="santé"

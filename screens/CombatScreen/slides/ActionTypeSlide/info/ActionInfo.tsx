@@ -24,7 +24,7 @@ export default function ActionInfo() {
 
   if (description) return <Txt>{description}</Txt>
   if (actionType === "weapon" && itemDbKey) {
-    return <WeaponIndicator contenderId={actorId} />
+    return <WeaponIndicator withActions={false} contenderId={actorId} />
   }
   if (actionType === "movement") return <MovementInfo />
   if (actionType === "item") return <ItemsActionInfo />

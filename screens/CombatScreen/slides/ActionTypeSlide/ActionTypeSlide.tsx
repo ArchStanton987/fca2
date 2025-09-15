@@ -2,6 +2,7 @@ import { TouchableOpacity, View } from "react-native"
 
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import actions from "lib/combat/const/actions"
+import WeaponIndicator from "lib/combat/ui/WeaponIndicator"
 import { getActivePlayersWithAp } from "lib/combat/utils/combat-utils"
 import getUseCases from "lib/get-use-cases"
 import Toast from "react-native-toast-message"
@@ -38,7 +39,8 @@ const toastMessages = {
 
 export default function ActionTypeSlide({ slideIndex }: SlideProps) {
   const useCases = getUseCases()
-  const { charId } = useCharacter()
+  const { charId, meta } = useCharacter()
+  const { isNpc } = meta
   const contenders = useContenders()
   const combatStatuses = useCombatStatuses()
   const combat = useCombat()
@@ -145,9 +147,17 @@ export default function ActionTypeSlide({ slideIndex }: SlideProps) {
       <Spacer x={layout.globalPadding} />
 
       <View style={{ width: 175 }}>
-        <ScrollSection style={{ flex: 1 }} title="info">
-          <ActionInfo />
-        </ScrollSection>
+        {actionType === "weapon" ? (
+          <WeaponIndicator
+            style={{ flex: 1 }}
+            withActions={false}
+            contenderId={isNpc ? actorId : charId}
+          />
+        ) : (
+          <ScrollSection style={{ flex: 1 }} title="info">
+            <ActionInfo />
+          </ScrollSection>
+        )}
 
         <Spacer y={layout.globalPadding} />
 

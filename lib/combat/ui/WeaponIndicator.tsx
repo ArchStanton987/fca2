@@ -31,12 +31,6 @@ import PlayButton from "screens/CombatScreen/slides/PlayButton"
 import colors from "styles/colors"
 import layout from "styles/layout"
 
-type WeaponIndicatorProps = {
-  style?: StyleProp<ViewStyle>
-  contentContainerStyle?: StyleProp<ViewStyle>
-}
-type CombatWeaponIndicatorProps = WeaponIndicatorProps & { contenderId: string }
-type NoCombatWeaponIndicatorProps = WeaponIndicatorProps
 type WeaponInfoUiProps = { weapon: Weapon; isHuman: boolean; hasMalus: boolean }
 
 const styles = StyleSheet.create({
@@ -184,7 +178,15 @@ function WeaponInfoUi({ weapon, isHuman, hasMalus }: WeaponInfoUiProps) {
   )
 }
 
-function NoCombatWeaponIndicator({ style, contentContainerStyle }: NoCombatWeaponIndicatorProps) {
+function NoCombatWeaponIndicator({
+  style,
+  contentContainerStyle,
+  withActions
+}: {
+  withActions: boolean
+  style?: StyleProp<ViewStyle>
+  contentContainerStyle?: StyleProp<ViewStyle>
+}) {
   const character = useCharacter()
   const { equipedObjects, unarmed } = character
   const weapons = equipedObjects.weapons.length > 0 ? equipedObjects.weapons : [unarmed]
@@ -217,12 +219,16 @@ function NoCombatWeaponIndicator({ style, contentContainerStyle }: NoCombatWeapo
 
   return (
     <>
-      <WeaponActions weapon={weapon} />
+      {withActions ? (
+        <>
+          <WeaponActions weapon={weapon} />
+          <Spacer x={layout.globalPadding} />
+        </>
+      ) : null}
 
-      <Spacer x={layout.globalPadding} />
       <Section
         title={weapons.length > 1 ? `arme ${wepaonDisplayIndex} / ${weapons.length}` : "arme"}
-        style={[{ width: 160 }, style]}
+        style={[{ width: 175 }, style]}
         contentContainerStyle={[{ justifyContent: "center", flex: 1 }, contentContainerStyle]}
       >
         <Pressable key={selectedWeapon} onPress={toggleWeapon} disabled={weapons.length < 2}>
@@ -237,7 +243,11 @@ function CombatWeaponIndicator({
   contenderId,
   style,
   contentContainerStyle
-}: CombatWeaponIndicatorProps) {
+}: {
+  contenderId: string
+  style?: StyleProp<ViewStyle>
+  contentContainerStyle?: StyleProp<ViewStyle>
+}) {
   const { setForm } = useActionApi()
 
   const character = useContenders(contenderId)
@@ -274,7 +284,7 @@ function CombatWeaponIndicator({
   return (
     <Section
       title={weapons.length > 1 ? `arme ${wepaonDisplayIndex} / ${weapons.length}` : "arme"}
-      style={[{ width: 160 }, style]}
+      style={[{ width: 175 }, style]}
       contentContainerStyle={[{ justifyContent: "center", flex: 1 }, contentContainerStyle]}
     >
       <Pressable key={selectedWeapon} onPress={toggleWeapon} disabled={weapons.length < 2}>
@@ -287,11 +297,13 @@ function CombatWeaponIndicator({
 export default function WeaponIndicator({
   contenderId,
   style,
-  contentContainerStyle
+  contentContainerStyle,
+  withActions
 }: {
   contenderId?: string
   style?: StyleProp<ViewStyle>
   contentContainerStyle?: StyleProp<ViewStyle>
+  withActions: boolean
 }) {
   if (contenderId)
     return (
@@ -301,5 +313,11 @@ export default function WeaponIndicator({
         contentContainerStyle={contentContainerStyle}
       />
     )
-  return <NoCombatWeaponIndicator style={style} contentContainerStyle={contentContainerStyle} />
+  return (
+    <NoCombatWeaponIndicator
+      style={style}
+      contentContainerStyle={contentContainerStyle}
+      withActions={withActions}
+    />
+  )
 }
