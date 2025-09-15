@@ -1,3 +1,5 @@
+import { MAX_ACTION_BONUS, MAX_ARMOR_CLASS_BONUS } from "./combat-const"
+
 const actions = {
   weapon: {
     id: "weapon",
@@ -56,14 +58,12 @@ const actions = {
       dangerAwareness: {
         id: "dangerAwareness",
         label: "Préparer à défendre",
-        description:
-          "Dépensez ce qu'il vous reste de points d'action pour mieux faire face au danger. Pour le prochain round, vous gagnez autant de classe d'armure (CA) que vous dépensez de points d'action (PA)."
+        description: `Dépensez ce qu'il vous reste de points d'action pour mieux faire face au danger. Pour le prochain round, vous gagnez autant de classe d'armure (CA) que vous dépensez de points d'action (PA). Cumulable jusqu'à un maximum de ${MAX_ARMOR_CLASS_BONUS} CA Bonus.`
       },
       visualize: {
         id: "visualize",
         label: "Préparer prochaine action",
-        description:
-          "Dépensez ce qu'il vous reste de points d'action (PA) pour mieux réussir votre prochaine action. Pour chaque PA dépensé, vous gagnez un bonus de +2 au score de votre prochaine action."
+        description: `Dépensez ce qu'il vous reste de points d'action (PA) pour mieux réussir votre prochaine action. Pour chaque PA dépensé, vous gagnez un bonus de +2 au score de votre prochaine action. Cumulable jusqu'à un maximum de bonus de ${MAX_ACTION_BONUS}.`
       }
     }
   }
