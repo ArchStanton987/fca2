@@ -1,3 +1,4 @@
+import { useMemo } from "react"
 import { TouchableOpacity } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
@@ -23,7 +24,10 @@ function AdminCombat() {
   const { combatId, squadId } = useLocalSearchParams<{ combatId: string; squadId: string }>()
 
   const combatInfoReq = useSubCombatInfo(combatId)
-  const contendersIds = Object.keys(combatInfoReq.data?.contenders ?? [])
+  const contendersIds = useMemo(
+    () => Object.keys(combatInfoReq.data?.contenders ?? []),
+    [combatInfoReq.data?.contenders]
+  )
   const combatStatusesReq = useContendersCombatStatus(contendersIds)
 
   const { characters, npcs } = useAdmin()
@@ -40,6 +44,7 @@ function AdminCombat() {
     )
   }
   if (isPending || !combatInfoReq.data || !combatStatusesReq.data) return <LoadingScreen />
+  if (!combatInfoReq.data) return <LoadingScreen />
 
   const combatStatuses = combatStatusesReq.data
   const isFightActive = Object.values(combatStatuses).some(s => s.combatId === combatId)

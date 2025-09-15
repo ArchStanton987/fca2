@@ -1,5 +1,5 @@
 // lib/firebaseSub.ts
-import { useEffect } from "react"
+import { useEffect, useMemo } from "react"
 
 import { useQueryClient } from "@tanstack/react-query"
 import database from "config/firebase-env"
@@ -18,32 +18,35 @@ export function subscribeToPath<Db>(path: string, onData: (data: Db) => void): (
 }
 
 type UseSubParams<Db, T = Db> = {
-  queryKey: string[]
-  path?: string
+  path: string
   cb?: (snapshot: Db) => T
 }
 
-export function useSub<Db, T = Db>(params: UseSubParams<Db, T>) {
-  const { queryKey, path, cb } = params
+export function useSub<Db, T = Db>(path: string, cb?: (snapshot: Db) => T) {
   const queryClient = useQueryClient()
 
   useEffect(() => {
-    const unsubscribe = subscribeToPath<Db>(path ?? queryKey.join("/"), data => {
+    const unsubscribe = subscribeToPath<Db>(path, data => {
       const newData = cb?.(data) ?? data
+      const queryKey = path.split("/")
       queryClient.setQueryData(queryKey, newData)
     })
     return () => unsubscribe()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [queryClient, path, cb])
 }
 
 export function useMultiSub<Db, T = Db>(paramsArray: UseSubParams<Db, T>[]) {
   const queryClient = useQueryClient()
 
+  const memoParams = useMemo(() => paramsArray, [paramsArray])
+  const pathsStr = useMemo(() => JSON.stringify(memoParams.map(p => p.path)), [memoParams])
+
   useEffect(() => {
-    const unsubscribers = paramsArray.map(({ queryKey, path, cb }) =>
-      subscribeToPath<Db>(path ?? queryKey.join("/"), data => {
-        const newData = cb?.(data) ?? data
+    const paths: string[] = JSON.parse(pathsStr)
+    const unsubscribers = paths.map((path, i) =>
+      subscribeToPath<Db>(path, data => {
+        const newData = memoParams[i]?.cb?.(data) ?? data
+        const queryKey = path.split("/")
         queryClient.setQueryData(queryKey, newData)
       })
     )
@@ -52,5 +55,5 @@ export function useMultiSub<Db, T = Db>(paramsArray: UseSubParams<Db, T>[]) {
       unsubscribers.forEach(unsub => unsub())
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [queryClient, pathsStr])
 }

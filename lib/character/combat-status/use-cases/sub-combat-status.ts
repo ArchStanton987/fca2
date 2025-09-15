@@ -16,13 +16,15 @@ const cb = (res: DbCombatStatus) => new CombatStatus(res)
 
 export function useCharCombatStatus(charId: string) {
   const q = combatStatusOptions(charId)
-  useSub<DbCombatStatus, CombatStatus>({ queryKey: q.queryKey, cb })
+  const path = q.queryKey.join("/")
+  useSub<DbCombatStatus, CombatStatus>(path, cb)
   return useQuery(q)
 }
 
 export const useContendersCombatStatus = (ids: string[]) => {
   const options = ids.map(id => combatStatusOptions(id))
-  useMultiSub<DbCombatStatus, CombatStatus>(options.map(o => ({ queryKey: o.queryKey, cb })))
+  const subs = options.map(o => ({ path: o.queryKey.join("/"), cb }))
+  useMultiSub<DbCombatStatus, CombatStatus>(subs)
   return useQueries({
     queries: options,
     combine: useCallback(

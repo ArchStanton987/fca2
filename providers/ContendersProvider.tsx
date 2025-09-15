@@ -22,10 +22,15 @@ export default function ContendersProvider({ children }: { children: ReactNode }
   const squad = useSquad()
   const createdElements = useCreatedElements()
 
-  const contendersIds = useCombat()?.contendersIds ?? []
-  const contendersSub = useCases.character
-    .subCharacters(contendersIds)
-    .map((s, i) => ({ ...s, id: contendersIds[i] }))
+  const combat = useCombat()
+  const contendersIds = useMemo(() => combat?.contendersIds ?? [], [combat])
+  const contendersSub = useMemo(
+    () =>
+      useCases.character
+        .subCharacters(contendersIds)
+        .map((s, i) => ({ ...s, id: contendersIds[i] })),
+    [useCases, contendersIds]
+  )
 
   const contendersData = useRtdbSubs(contendersSub)
 
@@ -58,6 +63,6 @@ export function useContenders(id?: string) {
   const contenders = useContext(ContendersContext)
   if (contenders === undefined) throw new Error("Could not find ContendersContext")
   if (!id) return contenders
-  if (!contenders[id]) throw new Error("Could not find contender")
+  if (!contenders[id]) throw new Error(`Could not find contender : ${id}`)
   return contenders[id]
 }
