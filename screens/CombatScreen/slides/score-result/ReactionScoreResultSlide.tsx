@@ -16,6 +16,7 @@ import { useCombat } from "providers/CombatProvider"
 import { useCombatState } from "providers/CombatStateProvider"
 import { useCombatStatuses } from "providers/CombatStatusesProvider"
 import { useReactionApi, useReactionForm } from "providers/ReactionProvider"
+import { useSetSliderIndex } from "providers/SlidesProvider"
 import layout from "styles/layout"
 
 import NextButton from "../NextButton"
@@ -32,6 +33,7 @@ export default function ReactionScoreResultSlide() {
   const { action } = useCombatState()
   const diceScore = parseInt(diceRoll, 10)
   const { reset } = useReactionApi()
+  const setSlideIndex = useSetSliderIndex()
 
   const roll = action?.roll
   const reactionRoll = action?.reactionRoll
@@ -55,6 +57,7 @@ export default function ReactionScoreResultSlide() {
   const { skillId } = getReactionAbilities(char, combatStatuses[opponentId], combat)[reaction]
 
   const submit = () => {
+    setSlideIndex("reactionSlider", 0)
     reset()
     router.replace(routes.combat.action)
   }

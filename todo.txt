@@ -1,4 +1,6 @@
 RESET SLIDER INDEX
+set actorIdOverride
+classement ordre GM action
 AP UPDATE ON REACTION
 
 

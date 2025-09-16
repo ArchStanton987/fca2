@@ -47,8 +47,9 @@ function WithActionRedirections({ children }: { children: ReactNode }) {
   if (prompts.shouldWaitOthers) return <WaitInitiativeScreen />
 
   const defaultPlayingId = getDefaultPlayingId(contendersCombatStatus)
-  const playingId = actorIdOverride || defaultPlayingId
-  const isPlaying = playingId === char.charId
+  const isDefaultPlayer = typeof defaultPlayingId === "string" && defaultPlayingId === char.charId
+  const isOverrideId = actorIdOverride === char.charId
+  const isPlaying = isOverrideId || isDefaultPlayer
 
   const canReact = getPlayerCanReact(char, combatStatus, action)
   if (canReact) return <Redirect href={{ pathname: routes.combat.reaction }} />

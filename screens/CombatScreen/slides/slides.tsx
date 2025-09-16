@@ -97,7 +97,8 @@ const aimAttackSlides = [
   validateSlide
 ]
 
-const getSlides = (form: ActionFormType, isGm = false) => {
+type GetSlides = Pick<ActionFormType, "actionType" | "actionSubtype" | "actorId">
+const getSlides = (form: GetSlides, isGm = false) => {
   const { actionType, actionSubtype, actorId } = form
   let result
   if (actorId === "" && isGm) return [pickActorSlide]

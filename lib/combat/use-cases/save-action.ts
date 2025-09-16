@@ -28,10 +28,10 @@ export default function saveAction(dbType: keyof typeof repositoryMap = "rtdb") 
     const hasRemainingAp = currAp - apCost > 0
     if (isCombinedAction && hasRemainingAp) {
       promises.push(
-        combatStateRepo.patchChild({ id: combat.id, childKey: "actorIdOverride" }, actorId)
+        combatStateRepo.setChild({ id: combat.id, childKey: "actorIdOverride" }, actorId)
       )
     } else {
-      promises.push(combatStateRepo.patchChild({ id: combat.id, childKey: "actorIdOverride" }, ""))
+      promises.push(combatStateRepo.setChild({ id: combat.id, childKey: "actorIdOverride" }, ""))
     }
 
     // if has rolled dices, reset action bonus
