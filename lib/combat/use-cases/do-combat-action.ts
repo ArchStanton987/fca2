@@ -105,13 +105,6 @@ export default function doCombatAction(
       // set actor action points
       const newAp = combatStatus.currAp - apCost
       promises.push(combatStatusRepo.patch({ charId }, { currAp: newAp }))
-
-      // set opponent action points if has reaction roll
-      if (action?.reactionRoll) {
-        const { opponentId, opponentApCost } = action.reactionRoll
-        const oppNewAp = contenders[opponentId].secAttr.curr.actionPoints - opponentApCost
-        await combatStatusRepo.patch({ charId: opponentId }, { currAp: oppNewAp })
-      }
     }
 
     return Promise.all(promises)

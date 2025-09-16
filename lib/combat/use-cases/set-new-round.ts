@@ -40,7 +40,7 @@ export default function setNewRound(dbType: keyof typeof repositoryMap = "rtdb")
     })
     // create new round
     promises.push(
-      combatHistoryRepo.set({ id: combat.id, childKey: nextRoundId }, { 1: defaultAction })
+      combatHistoryRepo.setChild({ id: combat.id, childKey: nextRoundId }, { 1: defaultAction })
     )
 
     return Promise.all(promises)

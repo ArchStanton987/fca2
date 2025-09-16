@@ -68,7 +68,7 @@ export default function DamageLocalizationSlide({ slideIndex }: DamageLocalizati
       )
       return
     }
-    const payload = { damageLocalization: getBodyPart(scoreStr) }
+    const payload = { damageLocalization }
     await useCases.combat.updateAction({ combatId: combat.id, payload })
     scrollTo(slideIndex + 1)
   }

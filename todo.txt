@@ -1,4 +1,3 @@
-pb action effacée ?
 pb PA pas comptabilisés
 can't switch to other npc from order screen
 

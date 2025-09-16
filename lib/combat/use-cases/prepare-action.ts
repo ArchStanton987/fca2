@@ -35,7 +35,7 @@ export default function prepareAction(dbType: keyof typeof repositoryMap = "rtdb
       const actionBonus = Math.min(currBonus + newBonus, maxValue)
       promises.push(combatStatusRepo.patch({ charId }, { actionBonus }))
     } else {
-      const currBonus = combatStatuses[charId].armorClassBonusRecord[roundId]
+      const currBonus = combatStatuses[charId].armorClassBonusRecord[roundId] ?? 0
       const acBonus = Math.min(currBonus + newBonus, maxValue)
       promises.push(
         combatStatusRepo.patchChild(
