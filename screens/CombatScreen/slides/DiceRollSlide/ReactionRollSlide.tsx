@@ -57,7 +57,7 @@ export default function ReactionRollSlide({ slideIndex }: SlideProps) {
       opponentArmorClass: reactionAbilities.armorClass.total
     }
     await useCases.combat.updateAction({ combatId: combat.id, payload: { reactionRoll } })
-    const newAp = combatStatus.currAp + reactionsRecord[reaction].apCost
+    const newAp = combatStatus.currAp - reactionsRecord[reaction].apCost
     await useCases.character.updateCombatStatus({ charId, payload: { currAp: newAp } })
     scrollNext()
   }

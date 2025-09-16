@@ -1,3 +1,7 @@
+RESET SLIDER INDEX
+AP UPDATE ON REACTION
+
+
 pb PA pas comptabilisés
 can't switch to other npc from order screen
 
