@@ -1,6 +1,6 @@
+pb action effacée ?
+pb PA pas comptabilisés
 can't switch to other npc from order screen
-can't see newly created combat
-wrong weapon visualization in combat/action
 
 test chaque action / sous action
 test unarmed
