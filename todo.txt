@@ -1,11 +1,10 @@
-RESET SLIDER INDEX
+CHECK RESET SLIDER INDEX
 set actorIdOverride
 classement ordre GM action
-AP UPDATE ON REACTION
-
-
+AP UPDATE ON REACTION ?
 pb PA pas comptabilisés
 can't switch to other npc from order screen
+refactor Inventory
 
 test chaque action / sous action
 test unarmed
@@ -15,7 +14,6 @@ update healthChangeEntries with modifiers and effects (beasts...)
 
 beasts special & skills
 
-set max action bonus (20 AP spent => 40)
 
 TODO: type Playable :
 type Attack: {

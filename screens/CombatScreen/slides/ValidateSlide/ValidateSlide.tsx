@@ -59,12 +59,11 @@ export default function ValidateSlide() {
     try {
       const itemKey = typeof itemDbKey === "string" ? itemDbKey : undefined
       const item = getItemFromId(inv, itemKey) ?? unarmed
-      const payload = { ...action, actorId: charId }
       await useCases.combat.doCombatAction({
         combat,
         combatStatuses,
         contenders,
-        action: payload,
+        action,
         item
       })
       Toast.show({ type: "custom", text1: "Action réalisée !" })
