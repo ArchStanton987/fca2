@@ -25,13 +25,13 @@ export default function PickActorSlide({ slideIndex }: SlideProps) {
   const contenders = useContenders()
   const { combatId } = useCombatStatus()
 
-  const orderedIds = Object.keys(getPlayingOrder(combatStatuses))
+  const ordered = Object.values(getPlayingOrder(combatStatuses))
 
   const enemies: { charId: string; fullname: string }[] = []
   const players: { charId: string; fullname: string }[] = []
-  orderedIds.forEach(charId => {
-    const arr = contenders[charId].meta.isEnemy ? enemies : players
-    arr.push({ charId, fullname: contenders[charId].fullname })
+  ordered.forEach(({ id }) => {
+    const arr = contenders[id].meta.isEnemy ? enemies : players
+    arr.push({ charId: id, fullname: contenders[id].fullname })
   })
 
   const { setActorId } = useActionApi()

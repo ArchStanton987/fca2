@@ -22,9 +22,9 @@ import { Roll } from "../combats.types"
 import actions from "../const/actions"
 import { DEFAULT_INITIATIVE, DODGE_AP_COST, PARRY_AP_COST } from "../const/combat-const"
 
-export const getPlayingOrder = (contendersRecord: Record<string, CombatStatus>) => {
+export const getPlayingOrder = (combatStatuses: Record<string, CombatStatus>) => {
   // sort contenders by initiative and current ap, then combat status inactive, then dead
-  const contenders = Object.entries(contendersRecord).map(([id, value]) => ({ id, ...value }))
+  const contenders = Object.entries(combatStatuses).map(([id, value]) => ({ id, ...value }))
   const sortedContenders = contenders
     .filter(c => c.combatStatus !== "inactive" && c.combatStatus !== "dead")
     .sort((a, b) => {
@@ -36,8 +36,8 @@ export const getPlayingOrder = (contendersRecord: Record<string, CombatStatus>) 
   return [...sortedContenders, ...inactiveContenders, ...deadContenders]
 }
 
-export const getDefaultPlayingId = (contendersRecord: Record<string, CombatStatus>) => {
-  const contenders = getPlayingOrder(contendersRecord)
+export const getDefaultPlayingId = (combatStatuses: Record<string, CombatStatus>) => {
+  const contenders = getPlayingOrder(combatStatuses)
   const id =
     contenders.find(c => c.combatStatus === "active")?.id ??
     contenders.find(c => c.combatStatus === "wait")?.id

@@ -1,10 +1,9 @@
 CHECK RESET SLIDER INDEX
-set actorIdOverride
-classement ordre GM action
 AP UPDATE ON REACTION ?
 pb PA pas comptabilisés
 can't switch to other npc from order screen
 refactor Inventory
+memo numpad & others
 
 test chaque action / sous action
 test unarmed

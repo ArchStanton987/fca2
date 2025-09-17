@@ -85,7 +85,7 @@ export default function ScoreResultSlide({ slideIndex }: SlideProps) {
   } else {
     obj = consumablesRecord[itemDbKey]
   }
-  const o = { actionType, actionSubtype, obj }
+  const o = { actionType, actionSubtype, item: obj }
   const { skillLabel } = getActorSkillFromAction({ ...o }, actor)
 
   const isDefaultCritSuccess = dice !== 0 && dice <= secAttr.curr.critChance
