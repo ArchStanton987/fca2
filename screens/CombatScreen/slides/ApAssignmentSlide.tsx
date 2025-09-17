@@ -20,7 +20,14 @@ import Txt from "components/Txt"
 import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import { useCharacter } from "contexts/CharacterContext"
-import { useActionApi, useActionForm } from "providers/ActionProvider"
+import {
+  useActionActorId,
+  useActionApCost,
+  useActionApi,
+  useActionItemDbKey,
+  useActionSubtype,
+  useActionType
+} from "providers/ActionFormProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useCombatState } from "providers/CombatStateProvider"
 import { useCombatStatuses } from "providers/CombatStatusesProvider"
@@ -52,9 +59,12 @@ export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
   const combat = useCombat()
   const { action } = useCombatState()
   const contenders = useContenders()
-  const form = useActionForm()
-  const { actionType, actionSubtype, apCost } = form
-  const actorId = form.actorId === "" ? charId : form.actorId
+  const formActorId = useActionActorId()
+  const apCost = useActionApCost()
+  const actionType = useActionType()
+  const actionSubtype = useActionSubtype()
+  const itemDbKey = useActionItemDbKey()
+  const actorId = formActorId === "" ? charId : formActorId
   const actor = contenders[actorId]
   const inventory = useInventories(actorId)
   const { setForm, reset } = useActionApi()
@@ -118,7 +128,7 @@ export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
           scrollNext()
           break
         }
-        const item = getItemFromId(inventory, form.itemDbKey)
+        const item = getItemFromId(inventory, itemDbKey)
         handleSubmit(item)
         break
       }
@@ -127,7 +137,7 @@ export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
         return
       case "item": {
         // checks if requires further action (throw, pickup & use when object has challenge label)
-        const item = getItemWithSkillFromId(form.itemDbKey, inventory)
+        const item = getItemWithSkillFromId(itemDbKey, inventory)
         const isConsumable = isConsumableItem(item)
         const hasChallenge = isConsumable && item.data.challengeLabel !== null
         const hasFurtherAction =

@@ -13,7 +13,14 @@ import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
-import { useActionApi, useActionForm } from "providers/ActionProvider"
+import {
+  useActionActorId,
+  useActionApi,
+  useActionItemDbKey,
+  useActionRawDamage,
+  useActionSubtype,
+  useActionType
+} from "providers/ActionFormProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useCombatState } from "providers/CombatStateProvider"
 import { useCombatStatuses } from "providers/CombatStatusesProvider"
@@ -52,11 +59,15 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
   const contenders = useContenders()
   const { charId } = useCharacter()
   const combatStatuses = useCombatStatuses()
-  const form = useActionForm()
-  const { actionType, actionSubtype, itemDbKey, rawDamage = "" } = form
+  const formActorId = useActionActorId()
+  const rawDamage = useActionRawDamage()
+  const itemDbKey = useActionItemDbKey()
+  const actionType = useActionType()
+  const actionSubtype = useActionSubtype()
+
   const { setForm, setRoll } = useActionApi()
 
-  const actorId = form.actorId === "" ? charId : form.actorId
+  const actorId = formActorId === "" ? charId : formActorId
   const actor = contenders[actorId]
 
   const inv = useInventories(actorId)
@@ -70,7 +81,7 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
 
   const [isReactionResultVisible, setIsReactionResultVisible] = useState(() => true)
 
-  const parsedScore = parseInt(rawDamage, 10)
+  const parsedScore = parseInt(rawDamage ?? "", 10)
   const isValid = !Number.isNaN(parsedScore) && parsedScore >= 0 && parsedScore < 1000
 
   if (!action) return <SlideError error={slideErrors.noCombatError} />
@@ -162,7 +173,7 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
         <Spacer y={layout.globalPadding} />
         <Section title={actionType === "weapon" ? "arme" : "objet"} style={{ flex: 1 }}>
           {actionType === "weapon" ? (
-            <WeaponInfo selectedWeapon={form.itemDbKey} />
+            <WeaponInfo selectedWeapon={itemDbKey} />
           ) : (
             <>
               <Txt>{item?.data?.label}</Txt>

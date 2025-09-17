@@ -1,9 +1,9 @@
 import Section from "components/Section"
 import TxtInput from "components/TxtInput"
-import { useActionApi, useActionForm } from "providers/ActionProvider"
+import { useActionApi, useActionSubtype } from "providers/ActionFormProvider"
 
 export default function OtherAction() {
-  const { actionSubtype } = useActionForm()
+  const actionSubtype = useActionSubtype()
   const { setForm } = useActionApi()
 
   return (

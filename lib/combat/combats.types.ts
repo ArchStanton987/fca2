@@ -2,6 +2,8 @@ import { EffectId } from "lib/character/effects/effects.types"
 import { LimbsHp } from "lib/character/health/health-types"
 import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 
+import { ActionTypeId } from "./const/actions"
+
 type CharId = string
 // type NpcId = string
 type PlayableId = string
@@ -33,7 +35,7 @@ export interface DamageEntry {
 export type DamageEntries = Record<number, DamageEntry> | false
 
 export type DbAction = {
-  actionType?: string
+  actionType?: ActionTypeId | ""
   actionSubtype?: string
   actorId?: CharId
   isCombinedAction?: boolean

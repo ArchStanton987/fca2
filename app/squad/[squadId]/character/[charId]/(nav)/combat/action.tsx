@@ -11,7 +11,7 @@ import {
 import List from "components/List"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
-import { useActionForm } from "providers/ActionProvider"
+import { useActionActorId, useActionSubtype, useActionType } from "providers/ActionFormProvider"
 import { useCombatState } from "providers/CombatStateProvider"
 import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useCombatStatuses } from "providers/CombatStatusesProvider"
@@ -22,9 +22,12 @@ import WaitInitiativeScreen from "screens/CombatScreen/WaitInitiativeScreen"
 import getSlides from "screens/CombatScreen/slides/slides"
 
 function SlideList() {
-  const form = useActionForm()
+  const actionType = useActionType()
+  const actionSubtype = useActionSubtype()
+  const actorId = useActionActorId()
+  const payload = { actionType, actionSubtype, actorId }
 
-  const slides = getSlides(form, false)
+  const slides = getSlides(payload, false)
 
   return (
     <List

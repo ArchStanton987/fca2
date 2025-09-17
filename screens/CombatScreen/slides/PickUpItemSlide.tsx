@@ -5,7 +5,7 @@ import { SlideProps } from "components/Slides/Slide.types"
 import UpdateObjects from "components/UpdateObjects/UpdateObjects"
 import { useCharacter } from "contexts/CharacterContext"
 import { useUpdateObjects } from "contexts/UpdateObjectsContext"
-import { useActionApi, useActionForm } from "providers/ActionProvider"
+import { useActionActorId, useActionApi } from "providers/ActionFormProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useCombatState } from "providers/CombatStateProvider"
 import { useCombatStatuses } from "providers/CombatStatusesProvider"
@@ -22,11 +22,11 @@ export default function PickUpItemSlide({ slideIndex }: SlideProps) {
 
   const { state } = useUpdateObjects()
   const { reset } = useActionApi()
-  const form = useActionForm()
+  const formActorId = useActionActorId()
 
   const combat = useCombat()
   const { action } = useCombatState()
-  const actorId = form.actorId === "" ? charId : form.actorId
+  const actorId = formActorId === "" ? charId : formActorId
   const actor = contenders[actorId]
   const inventory = useInventories(actorId)
 

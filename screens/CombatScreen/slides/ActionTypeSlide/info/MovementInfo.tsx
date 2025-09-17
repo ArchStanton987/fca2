@@ -1,13 +1,13 @@
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
-import { useActionForm } from "providers/ActionProvider"
+import { useActionActorId } from "providers/ActionFormProvider"
 import { useContenders } from "providers/ContendersProvider"
 
 export default function MovementInfo() {
   const { charId } = useCharacter()
-  const form = useActionForm()
-  const actorId = form.actorId === "" ? charId : form.actorId
+  const formActorId = useActionActorId()
+  const actorId = formActorId === "" ? charId : formActorId
   const { skills } = useContenders(actorId)
 
   return (

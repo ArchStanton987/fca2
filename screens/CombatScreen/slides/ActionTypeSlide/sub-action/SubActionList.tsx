@@ -1,4 +1,4 @@
-import { useActionForm } from "providers/ActionProvider"
+import { useActionType } from "providers/ActionFormProvider"
 
 import ItemActions from "./ItemActions"
 import MovementActions from "./MovementActions"
@@ -8,7 +8,7 @@ import SectionSpacer from "./SectionSpacer"
 import WeaponActions from "./WeaponActions"
 
 export default function SubActionList() {
-  const { actionType } = useActionForm()
+  const actionType = useActionType()
 
   if (actionType === "weapon") return <WeaponActions />
   if (actionType === "movement") return <MovementActions />

@@ -8,7 +8,7 @@ import DrawerSlide from "components/Slides/DrawerSlide"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
-import { useActionApi, useActionForm } from "providers/ActionProvider"
+import { useActionActorId, useActionApi } from "providers/ActionFormProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useCombatState } from "providers/CombatStateProvider"
 import { useCombatStatuses } from "providers/CombatStatusesProvider"
@@ -40,10 +40,10 @@ export default function ValidateSlide() {
   const combatStatuses = useCombatStatuses()
   const { charId } = useCharacter()
   const { reset } = useActionApi()
-  const form = useActionForm()
+  const formActorId = useActionActorId()
   const combat = useCombat()
   const { action } = useCombatState()
-  const actorId = form.actorId === "" ? charId : form.actorId
+  const actorId = formActorId === "" ? charId : formActorId
   const inv = useInventories(actorId)
   const contenders = useContenders()
   const actor = contenders[actorId]

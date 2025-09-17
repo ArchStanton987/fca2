@@ -12,7 +12,7 @@ import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
-import { useActionApi, useActionForm } from "providers/ActionProvider"
+import { useActionActorId, useActionApi, useActionDamageLoc } from "providers/ActionFormProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
@@ -40,8 +40,8 @@ export default function DamageLocalizationSlide({ slideIndex }: DamageLocalizati
   const useCases = useGetUseCases()
   const { charId } = useCharacter()
   const combat = useCombat()
-  const form = useActionForm()
-  const { damageLocalization } = form
+  const actorId = useActionActorId()
+  const damageLocalization = useActionDamageLoc()
   const { setForm } = useActionApi()
   const { scoreStr, onPressKeypad } = useNumPad()
 
@@ -64,7 +64,7 @@ export default function DamageLocalizationSlide({ slideIndex }: DamageLocalizati
         () => {
           setIsLoading(false)
         },
-        charId !== form.actorId ? 0 : 1000
+        charId !== actorId ? 0 : 1000
       )
       return
     }

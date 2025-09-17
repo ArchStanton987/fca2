@@ -2,13 +2,14 @@ import { LimbsHp } from "lib/character/health/health-types"
 import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 
 import { DamageEntries, DbAction, ReactionRoll, Roll } from "./combats.types"
+import { ActionTypeId } from "./const/actions"
 
 type PlayableId = string
 type ItemId = string
 type AimZone = keyof LimbsHp
 
 export default class Action {
-  actionType?: string
+  actionType?: ActionTypeId | ""
   actionSubtype?: string
   actorId: PlayableId
   isCombinedAction?: boolean
@@ -56,7 +57,7 @@ export default class Action {
 
   constructor(payload: DbAction) {
     const { actionType, actionSubtype } = payload
-    this.actionType = actionType
+    this.actionType = actionType ?? ""
     this.actionSubtype = actionSubtype
     this.actorId = payload.actorId ?? ""
     this.isCombinedAction = payload.isCombinedAction

@@ -5,7 +5,7 @@ import ListItemSelectable from "components/ListItemSelectable"
 import ScrollSection from "components/Section/ScrollSection"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
-import { useActionApi, useActionForm } from "providers/ActionProvider"
+import { useActionActorId, useActionApi, useActionSubtype } from "providers/ActionFormProvider"
 import { useCombatStatuses } from "providers/CombatStatusesProvider"
 import colors from "styles/colors"
 
@@ -13,9 +13,10 @@ const title = "pa"
 
 export default function ItemActions() {
   const { charId } = useCharacter()
-  const { actionSubtype, ...rest } = useActionForm()
+  const formActorId = useActionActorId()
+  const actionSubtype = useActionSubtype()
   const { setActionSubtype } = useActionApi()
-  const actorId = rest.actorId === "" ? charId : rest.actorId
+  const actorId = formActorId === "" ? charId : formActorId
   const { currAp } = useCombatStatuses(actorId)
 
   return (

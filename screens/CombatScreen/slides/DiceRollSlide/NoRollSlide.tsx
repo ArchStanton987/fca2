@@ -8,7 +8,7 @@ import DrawerSlide from "components/Slides/DrawerSlide"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useInventory } from "contexts/InventoryContext"
-import { useActionApi, useActionForm } from "providers/ActionProvider"
+import { useActionApi, useActionItemDbKey } from "providers/ActionFormProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useCombatState } from "providers/CombatStateProvider"
 import { useCombatStatuses } from "providers/CombatStatusesProvider"
@@ -21,7 +21,7 @@ import SlideError, { slideErrors } from "../SlideError"
 export default function NoRollSlide() {
   const useCases = useGetUseCases()
   const inv = useInventory()
-  const form = useActionForm()
+  const itemDbKey = useActionItemDbKey()
   const { reset } = useActionApi()
   const combatStatuses = useCombatStatuses()
   const combat = useCombat()
@@ -31,7 +31,7 @@ export default function NoRollSlide() {
   const submit = async () => {
     if (!combat) throw new Error("No combat found")
     try {
-      const item = getItemFromId(inv, form.itemDbKey)
+      const item = getItemFromId(inv, itemDbKey)
       await useCases.combat.doCombatAction({ combat, contenders, combatStatuses, action, item })
       Toast.show({ type: "custom", text1: "Action enregistrée !" })
       reset()

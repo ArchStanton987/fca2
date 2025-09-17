@@ -10,7 +10,7 @@ export const defaultAction = {
   itemId: "",
   itemDbKey: "",
   targetId: ""
-}
+} as const
 
 export default class Combat {
   id: string

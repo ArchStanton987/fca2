@@ -3,16 +3,25 @@ import WeaponIndicator from "lib/combat/ui/WeaponIndicator"
 
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
-import { useActionForm } from "providers/ActionProvider"
+import {
+  useActionActorId,
+  useActionItemDbKey,
+  useActionSubtype,
+  useActionType
+} from "providers/ActionFormProvider"
 import { isKeyOf } from "utils/ts-utils"
 
 import ItemsActionInfo from "./ItemsActionInfo"
 import MovementInfo from "./MovementInfo"
 
 export default function ActionInfo() {
-  const { itemDbKey, actionType, actionSubtype, ...rest } = useActionForm()
+  const formActorId = useActionActorId()
+  const itemDbKey = useActionItemDbKey()
+  const actionType = useActionType()
+  const actionSubtype = useActionSubtype()
+
   const { charId } = useCharacter()
-  const actorId = rest.actorId === "" ? charId : rest.actorId
+  const actorId = formActorId === "" ? charId : formActorId
 
   let description = ""
   if (actionType === "wait") {

@@ -11,7 +11,7 @@ import DrawerSlide from "components/Slides/DrawerSlide"
 import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { useActionApi, useActionForm } from "providers/ActionProvider"
+import { useActionAimZone, useActionApi } from "providers/ActionFormProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
 export default function AimSlide({ slideIndex }: SlideProps) {
   const useCases = useGetUseCases()
   const combat = useCombat()
-  const { aimZone = "" } = useActionForm()
+  const aimZone = useActionAimZone()
   const { setForm } = useActionApi()
 
   const { scrollTo } = useScrollTo()

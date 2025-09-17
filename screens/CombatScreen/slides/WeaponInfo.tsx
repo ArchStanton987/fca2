@@ -11,7 +11,7 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
-import { useActionForm } from "providers/ActionProvider"
+import { useActionActorId } from "providers/ActionFormProvider"
 import { useContenders } from "providers/ContendersProvider"
 import { useInventories } from "providers/InventoriesProvider"
 import colors from "styles/colors"
@@ -28,10 +28,10 @@ const styles = StyleSheet.create({
 })
 
 export function WeaponInfo({ selectedWeapon }: { selectedWeapon?: string }) {
-  const form = useActionForm()
+  const formActorId = useActionActorId()
 
   const { charId } = useCharacter()
-  const actorId = form.actorId === "" ? charId : form.actorId
+  const actorId = formActorId === "" ? charId : formActorId
   const contender = useContenders(actorId)
 
   const inv = useInventories(actorId)

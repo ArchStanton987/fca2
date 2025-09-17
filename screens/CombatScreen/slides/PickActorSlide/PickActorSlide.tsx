@@ -7,7 +7,7 @@ import ScrollSection from "components/Section/ScrollSection"
 import DrawerSlide from "components/Slides/DrawerSlide"
 import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
-import { useActionApi, useActionForm } from "providers/ActionProvider"
+import { useActionActorId, useActionApi } from "providers/ActionFormProvider"
 import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useCombatStatuses } from "providers/CombatStatusesProvider"
 import { useContenders } from "providers/ContendersProvider"
@@ -35,7 +35,7 @@ export default function PickActorSlide({ slideIndex }: SlideProps) {
   })
 
   const { setActorId } = useActionApi()
-  const { actorId } = useActionForm()
+  const actorId = useActionActorId()
 
   const toggleSelect = (id: string) => {
     setActorId(actorId === id ? "" : id)

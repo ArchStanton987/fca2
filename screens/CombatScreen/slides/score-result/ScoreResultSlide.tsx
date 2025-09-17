@@ -12,7 +12,14 @@ import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
-import { useActionApi, useActionForm } from "providers/ActionProvider"
+import {
+  useActionActorId,
+  useActionAimZone,
+  useActionApi,
+  useActionItemDbKey,
+  useActionSubtype,
+  useActionType
+} from "providers/ActionFormProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useCombatState } from "providers/CombatStateProvider"
 import { useCombatStatuses } from "providers/CombatStatusesProvider"
@@ -36,14 +43,16 @@ export default function ScoreResultSlide({ slideIndex }: SlideProps) {
   const { action } = useCombatState()
 
   const character = useCharacter()
-  const form = useActionForm()
-  const actorId = form.actorId === "" ? character.charId : form.actorId
+  const formActorId = useActionActorId()
+  const itemDbKey = useActionItemDbKey() ?? ""
+  const actionType = useActionType()
+  const actionSubtype = useActionSubtype()
+  const aimZone = useActionAimZone()
+  const actorId = formActorId === "" ? character.charId : formActorId
   const actor = contenders[actorId]
   const inv = useInventories(actorId)
   const { weaponsRecord = {}, consumablesRecord = {} } = inv
   const { secAttr, special } = actor
-  const { itemDbKey = "" } = form
-  const { actionType, actionSubtype, aimZone } = form
   const { reset } = useActionApi()
 
   const { scrollTo } = useScrollTo()
@@ -66,7 +75,7 @@ export default function ScoreResultSlide({ slideIndex }: SlideProps) {
   }
 
   let obj
-  if (form.actionType === "weapon") {
+  if (actionType === "weapon") {
     const isHuman = actor instanceof Character
     if (itemDbKey) {
       obj = isHuman
@@ -76,7 +85,8 @@ export default function ScoreResultSlide({ slideIndex }: SlideProps) {
   } else {
     obj = consumablesRecord[itemDbKey]
   }
-  const { skillLabel } = getActorSkillFromAction({ ...form, item: obj }, actor)
+  const o = { actionType, actionSubtype, obj }
+  const { skillLabel } = getActorSkillFromAction({ ...o }, actor)
 
   const isDefaultCritSuccess = dice !== 0 && dice <= secAttr.curr.critChance
   const isCritFail = dice !== 0 && dice >= getCritFailureThreshold(special.curr)

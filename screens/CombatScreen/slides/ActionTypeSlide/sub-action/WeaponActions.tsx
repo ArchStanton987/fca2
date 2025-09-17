@@ -11,14 +11,21 @@ import ScrollSection from "components/Section/ScrollSection"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
-import { useActionApi, useActionForm } from "providers/ActionProvider"
+import {
+  useActionActorId,
+  useActionApi,
+  useActionItemDbKey,
+  useActionSubtype
+} from "providers/ActionFormProvider"
 import { useCombatStatuses } from "providers/CombatStatusesProvider"
 import { useContenders } from "providers/ContendersProvider"
 
 export default function WeaponActions() {
   const { charId } = useCharacter()
-  const { itemDbKey, actionSubtype, ...rest } = useActionForm()
-  const actorId = rest.actorId === "" ? charId : rest.actorId
+  const formActorId = useActionActorId()
+  const itemDbKey = useActionItemDbKey()
+  const actionSubtype = useActionSubtype()
+  const actorId = formActorId === "" ? charId : formActorId
   const { currAp } = useCombatStatuses(actorId)
   const contender = useContenders(actorId)
   const { setActionSubtype } = useActionApi()

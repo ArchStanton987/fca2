@@ -11,7 +11,7 @@ import DrawerSlide from "components/Slides/DrawerSlide"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import HealthFigure from "components/draws/HealthFigure/HealthFigure"
-import { useActionApi, useActionForm } from "providers/ActionProvider"
+import { useActionActorId, useActionApi, useActionItemDbKey } from "providers/ActionFormProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useCombatState } from "providers/CombatStateProvider"
 import { useCombatStatuses } from "providers/CombatStatusesProvider"
@@ -37,8 +37,8 @@ const styles = StyleSheet.create({
 export default function ChallengeSlide() {
   const useCases = useGetUseCases()
   const combatStatuses = useCombatStatuses()
-  const form = useActionForm()
-  const { itemDbKey, actorId } = form
+  const itemDbKey = useActionItemDbKey()
+  const actorId = useActionActorId()
   const { reset } = useActionApi()
   const { consumablesRecord } = useInventories(actorId)
   const combat = useCombat()

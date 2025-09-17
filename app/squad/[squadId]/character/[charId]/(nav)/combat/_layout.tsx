@@ -5,6 +5,7 @@ import { Stack } from "expo-router"
 import Drawer from "components/Drawer/Drawer"
 import Spacer from "components/Spacer"
 import { useCharacter } from "contexts/CharacterContext"
+import { ActionFormProvider } from "providers/ActionFormProvider"
 import CombatProviders from "providers/CombatProviders"
 import { useCombatStatus } from "providers/CombatStatusProvider"
 import styles from "styles/DrawerLayout.styles"
@@ -66,20 +67,22 @@ export default function CombatLayout() {
 
   return (
     <CombatProviders>
-      <View style={styles.drawerLayout}>
-        <Drawer sectionId="combat" navElements={navElements} />
-        <Spacer x={layout.globalPadding} />
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: colors.primColor, padding: 0 }
-          }}
-        >
-          {navElements.map(({ path }) => (
-            <Stack.Screen key={path} name={path} />
-          ))}
-        </Stack>
-      </View>
+      <ActionFormProvider>
+        <View style={styles.drawerLayout}>
+          <Drawer sectionId="combat" navElements={navElements} />
+          <Spacer x={layout.globalPadding} />
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: { backgroundColor: colors.primColor, padding: 0 }
+            }}
+          >
+            {navElements.map(({ path }) => (
+              <Stack.Screen key={path} name={path} />
+            ))}
+          </Stack>
+        </View>
+      </ActionFormProvider>
     </CombatProviders>
   )
 }

@@ -9,7 +9,12 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
-import { useActionApi, useActionForm } from "providers/ActionProvider"
+import {
+  useActionActorId,
+  useActionApi,
+  useActionItemDbKey,
+  useActionSubtype
+} from "providers/ActionFormProvider"
 import { useContenders } from "providers/ContendersProvider"
 import colors from "styles/colors"
 
@@ -63,8 +68,11 @@ export default function ItemsActionInfo() {
   const { charId } = useCharacter()
 
   const { setForm } = useActionApi()
-  const { itemDbKey, actionSubtype, ...rest } = useActionForm()
-  const actorId = rest.actorId === "" ? charId : rest.actorId
+  const formActorId = useActionActorId()
+  const actionSubtype = useActionSubtype()
+  const itemDbKey = useActionItemDbKey()
+
+  const actorId = formActorId === "" ? charId : formActorId
   const contender = useContenders(actorId)
 
   const onPressItem = (dbKey: string) => {

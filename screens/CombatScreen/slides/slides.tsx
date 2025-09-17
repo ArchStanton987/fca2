@@ -1,5 +1,6 @@
+import { ActionFormType } from "lib/combat/action-store"
+
 import { SlideProps } from "components/Slides/Slide.types"
-import { ActionFormType } from "providers/ActionProvider"
 
 import ActionTypeSlide from "./ActionTypeSlide/ActionTypeSlide"
 import AimSlide from "./AimSlide/AimSlide"

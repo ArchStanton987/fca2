@@ -9,7 +9,7 @@ import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
-import { useActionApi, useActionForm } from "providers/ActionProvider"
+import { useActionActorId, useActionApi, useActionTargetId } from "providers/ActionFormProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useCombatStatuses } from "providers/CombatStatusesProvider"
 import { useContenders } from "providers/ContendersProvider"
@@ -41,9 +41,9 @@ export default function PickTargetSlide({ slideIndex }: SlideProps) {
   const combat = useCombat()
   const character = useCharacter()
   const contenders = useContenders()
-  const form = useActionForm()
-  const { targetId } = form
-  const actorId = form.actorId === "" ? character.charId : form.actorId
+  const targetId = useActionTargetId()
+  const formActorId = useActionActorId()
+  const actorId = formActorId === "" ? character.charId : formActorId
   const actor = contenders[actorId]
   const { isEnemy } = actor.meta
 

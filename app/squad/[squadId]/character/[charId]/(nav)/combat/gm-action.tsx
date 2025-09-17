@@ -4,7 +4,7 @@ import { getInitiativePrompts } from "lib/combat/utils/combat-utils"
 
 import List from "components/List"
 import { useCharacter } from "contexts/CharacterContext"
-import { useActionForm } from "providers/ActionProvider"
+import { useActionActorId, useActionSubtype, useActionType } from "providers/ActionFormProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useCombatStatuses } from "providers/CombatStatusesProvider"
 import { SlidesProvider } from "providers/SlidesProvider"
@@ -14,9 +14,12 @@ import SlideError, { slideErrors } from "screens/CombatScreen/slides/SlideError"
 import getSlides from "screens/CombatScreen/slides/slides"
 
 function SlideList() {
-  const form = useActionForm()
+  const actionType = useActionType()
+  const actionSubtype = useActionSubtype()
+  const actorId = useActionActorId()
+  const payload = { actionType, actionSubtype, actorId }
 
-  const slides = getSlides(form, true)
+  const slides = getSlides(payload, true)
 
   return (
     <List

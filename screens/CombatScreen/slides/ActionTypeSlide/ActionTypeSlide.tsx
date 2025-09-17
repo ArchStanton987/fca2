@@ -16,7 +16,14 @@ import DrawerSlide from "components/Slides/DrawerSlide"
 import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import { useCharacter } from "contexts/CharacterContext"
-import { useActionApi, useActionForm } from "providers/ActionProvider"
+import {
+  useActionActorId,
+  useActionApi,
+  useActionItemDbKey,
+  useActionSubtype,
+  useActionType,
+  useIsCombinedAction
+} from "providers/ActionFormProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useCombatStatuses } from "providers/CombatStatusesProvider"
 import { useContenders } from "providers/ContendersProvider"
@@ -45,11 +52,15 @@ export default function ActionTypeSlide({ slideIndex }: SlideProps) {
   const combatStatuses = useCombatStatuses()
   const combat = useCombat()
 
-  const form = useActionForm()
-  const { actionType, actionSubtype, isCombinedAction, itemDbKey } = form
+  const formActorId = useActionActorId()
+  const actionType = useActionType()
+  const actionSubtype = useActionSubtype()
+  const isCombinedAction = useIsCombinedAction()
+  const itemDbKey = useActionItemDbKey()
+
   const { setForm, setActionType, setActorId, reset } = useActionApi()
 
-  const actorId = form.actorId === "" ? charId : form.actorId
+  const actorId = formActorId === "" ? charId : formActorId
   const actor = contenders[actorId]
   const combatStatus = combatStatuses[actorId]
   const { equipedObjects, unarmed } = actor
@@ -61,7 +72,7 @@ export default function ActionTypeSlide({ slideIndex }: SlideProps) {
   const { scrollTo } = useScrollTo()
 
   const onPressActionType = (id: keyof typeof actions) => {
-    if (form.actorId === "") {
+    if (formActorId === "") {
       setActorId(actorId)
     }
     if (id === "weapon") {

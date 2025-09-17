@@ -15,7 +15,15 @@ import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
-import { useActionApi, useActionForm } from "providers/ActionProvider"
+import {
+  useActionActorId,
+  useActionApi,
+  useActionItemDbKey,
+  useActionSubtype,
+  useActionTargetId,
+  useActionType,
+  useActorDiceScore
+} from "providers/ActionFormProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useCombatState } from "providers/CombatStateProvider"
 import { useCombatStatuses } from "providers/CombatStatusesProvider"
@@ -46,20 +54,25 @@ export default function DiceRollSlide({ slideIndex }: SlideProps) {
   const contenders = useContenders()
   const combatStatuses = useCombatStatuses()
 
-  const form = useActionForm()
-  const actorId = form.actorId === "" ? charId : form.actorId
+  const formActorId = useActionActorId()
+  const actorId = formActorId === "" ? charId : formActorId
+  const actionType = useActionType()
+  const actionSubtype = useActionSubtype()
+  const targetId = useActionTargetId() ?? ""
+  const itemDbKey = useActionItemDbKey() ?? ""
+  const actorDiceScore = useActorDiceScore()
+
   const actor = contenders[actorId]
   const inventory = useInventories(actorId)
   const combatStatus = combatStatuses[actorId]
   const { weaponsRecord = {}, consumablesRecord = {} } = inventory
 
   const { setRoll } = useActionApi()
-  const { itemDbKey = "", targetId = "" } = form
 
   let item
-  if (form.actionType === "weapon") {
+  if (actionType === "weapon") {
     const isHuman = actor instanceof Character
-    if (itemDbKey) {
+    if (typeof itemDbKey === "string") {
       item = isHuman
         ? weaponsRecord[itemDbKey] ?? actor.unarmed
         : actor.equipedObjectsRecord.weapons[itemDbKey]
@@ -68,7 +81,8 @@ export default function DiceRollSlide({ slideIndex }: SlideProps) {
     item = consumablesRecord[itemDbKey]
   }
 
-  const { skillLabel, skillId, sumAbilities } = getActorSkillFromAction({ ...form, item }, actor)
+  const o = { actionType, actionSubtype, item }
+  const { skillLabel, skillId, sumAbilities } = getActorSkillFromAction({ ...o, item }, actor)
 
   if (!action) return <SlideError error={slideErrors.noCombatError} />
   if (action.roll === false) return <NoRollSlide />
@@ -78,7 +92,7 @@ export default function DiceRollSlide({ slideIndex }: SlideProps) {
 
   const difficultyLvl = difficultyArray.find(e => difficulty <= e.threshold)
 
-  const dice = form.actorDiceScore ? parseInt(form.actorDiceScore, 10) : 0
+  const dice = actorDiceScore ? parseInt(actorDiceScore, 10) : 0
   const isValid = !Number.isNaN(dice) && dice > 0 && dice < 101
 
   const bonus = getRollBonus(combatStatus, action)
@@ -118,7 +132,7 @@ export default function DiceRollSlide({ slideIndex }: SlideProps) {
           title="JET DE DÉ"
           contentContainerStyle={styles.scoreContainer}
         >
-          <Txt style={styles.score}>{form.actorDiceScore}</Txt>
+          <Txt style={styles.score}>{actorDiceScore}</Txt>
         </Section>
         <Spacer y={layout.globalPadding} />
         <Section

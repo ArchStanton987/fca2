@@ -5,17 +5,18 @@ import ListItemSelectable from "components/ListItemSelectable"
 import ScrollSection from "components/Section/ScrollSection"
 import Txt from "components/Txt"
 import { useCharacter } from "contexts/CharacterContext"
-import { useActionApi, useActionForm } from "providers/ActionProvider"
+import { useActionActorId, useActionApi, useActionSubtype } from "providers/ActionFormProvider"
 import { useCombatStatuses } from "providers/CombatStatusesProvider"
 
 // const title = [{ title: "action", containerStyle: { flex: 1 } }, { title: "pa" }]
 const title = "pa"
 
 export default function PrepareActions() {
-  const { actionSubtype, ...rest } = useActionForm()
+  const actionSubtype = useActionSubtype()
+  const formActorId = useActionActorId()
   const { charId } = useCharacter()
   const { setActionSubtype } = useActionApi()
-  const actorId = rest.actorId === "" ? charId : rest.actorId
+  const actorId = formActorId === "" ? charId : formActorId
   const { currAp } = useCombatStatuses(actorId)
   return (
     <ScrollSection style={{ flex: 1 }} title={title}>
