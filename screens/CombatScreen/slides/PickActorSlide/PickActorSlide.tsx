@@ -1,32 +1,37 @@
+import { getPlayingOrder } from "lib/combat/utils/combat-utils"
+
 import Col from "components/Col"
 import List from "components/List"
 import Section from "components/Section"
 import ScrollSection from "components/Section/ScrollSection"
-import Selectable from "components/Selectable"
 import DrawerSlide from "components/Slides/DrawerSlide"
 import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
-import Txt from "components/Txt"
 import { useActionApi, useActionForm } from "providers/ActionProvider"
 import { useCombatStatus } from "providers/CombatStatusProvider"
+import { useCombatStatuses } from "providers/CombatStatusesProvider"
 import { useContenders } from "providers/ContendersProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
 
-import NextButton from "./NextButton"
+import NextButton from "../NextButton"
+import SelectActorButton from "./SelectActorButton"
 
 export default function PickActorSlide({ slideIndex }: SlideProps) {
   const useCases = useGetUseCases()
   const { scrollTo } = useScrollTo()
+  const combatStatuses = useCombatStatuses()
   const contenders = useContenders()
   const { combatId } = useCombatStatus()
 
+  const orderedIds = Object.keys(getPlayingOrder(combatStatuses))
+
   const enemies: { charId: string; fullname: string }[] = []
   const players: { charId: string; fullname: string }[] = []
-  Object.entries(contenders).forEach(([id, c]) => {
-    const arr = c.meta.isEnemy ? enemies : players
-    arr.push({ charId: id, fullname: c.fullname })
+  orderedIds.forEach(charId => {
+    const arr = contenders[charId].meta.isEnemy ? enemies : players
+    arr.push({ charId, fullname: contenders[charId].fullname })
   })
 
   const { setActorId } = useActionApi()
@@ -48,12 +53,12 @@ export default function PickActorSlide({ slideIndex }: SlideProps) {
           data={players}
           keyExtractor={i => i.charId}
           renderItem={({ item }) => (
-            <Selectable
-              onPress={() => toggleSelect(item.charId)}
+            <SelectActorButton
+              charId={item.charId}
+              fullname={item.fullname}
               isSelected={actorId === item.charId}
-            >
-              <Txt>{item.fullname}</Txt>
-            </Selectable>
+              toggleSelect={() => toggleSelect(item.charId)}
+            />
           )}
         />
       </ScrollSection>
@@ -65,12 +70,12 @@ export default function PickActorSlide({ slideIndex }: SlideProps) {
           data={enemies}
           keyExtractor={i => i.charId}
           renderItem={({ item }) => (
-            <Selectable
-              onPress={() => toggleSelect(item.charId)}
+            <SelectActorButton
+              charId={item.charId}
+              fullname={item.fullname}
               isSelected={actorId === item.charId}
-            >
-              <Txt>{item.fullname}</Txt>
-            </Selectable>
+              toggleSelect={() => toggleSelect(item.charId)}
+            />
           )}
         />
       </ScrollSection>
