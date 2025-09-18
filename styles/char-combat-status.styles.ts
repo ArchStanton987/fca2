@@ -13,7 +13,7 @@ const charCombatStatusStyles = StyleSheet.create({
     textDecorationLine: "line-through"
   },
   wait: {
-    color: colors.difficulty.easy
+    color: colors.difficulty.veryEasy
   }
 })
 

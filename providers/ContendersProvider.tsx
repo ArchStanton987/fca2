@@ -49,11 +49,10 @@ export default function ContendersProvider({ children }: { children: ReactNode }
     return result
   }, [contendersData, squad, createdElements])
 
-  const contendersReqLength = contendersIds.length
-  const contendersLength = Object.keys(contenders).length
+  const hasLength = contendersIds.length === Object.keys(contenders).length
+  const hasCombat = contendersIds.length > 1
 
-  if (contendersLength > 0 && contendersReqLength !== contendersLength) return <LoadingScreen />
-
+  if (hasCombat && !hasLength) return <LoadingScreen />
   return <ContendersContext.Provider value={contenders}>{children}</ContendersContext.Provider>
 }
 

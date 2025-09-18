@@ -17,6 +17,38 @@ export function subscribeToPath<Db>(path: string, onData: (data: Db) => void): (
   return () => unsubscribe() // for React cleanup
 }
 
+// export function subEvent<Db>(
+//   event: typeof onValue | typeof onChildAdded,
+//   path: string,
+//   onData: (data: Db) => void
+// ): () => void {
+//   const dbRef = ref(database, path)
+
+//   const unsubscribe = event(dbRef, snapshot => {
+//     console.log("ON CHILD ADDED, EXISTS ?", snapshot.exists())
+//     if (snapshot.exists()) {
+//       console.log("ON CHILD ADDED, VALUE ?", snapshot.val())
+//       onData(snapshot.val())
+//     }
+//   })
+
+//   return () => unsubscribe() // for React cleanup
+// }
+
+// export function useSubEvent<Db, T = Db>(path: string, cb?: (snapshot: Db) => T) {
+//   const [stored, setStored] = useState<T | Db | undefined>()
+
+//   useEffect(() => {
+//     const unsubscribe = subEvent<Db>(onChildAdded, path, data => {
+//       const newData = cb ? cb(data) : data
+//       setStored(newData)
+//     })
+//     return () => unsubscribe()
+//   }, [path, cb])
+
+//   return stored
+// }
+
 type UseSubParams<Db, T = Db> = {
   path: string
   cb?: (snapshot: Db) => T
