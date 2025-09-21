@@ -53,7 +53,30 @@ export const damageTypeMap: Record<DamageTypeId, DamageType> = {
   }
 }
 
-export type DbWeapon = { id: WeaponId; inMagazine?: number }
+export type DbWeaponData = {
+  id: WeaponId
+  label: string
+  img: string
+  damageType: DamageTypeId
+  damageBasic?: string
+  damageBurst?: string
+  ammoType?: AmmoType
+  range?: number
+  magazine?: number
+  ammoPerShot?: number
+  ammoPerBurst?: number
+  basicApCost?: number
+  specialApCost?: number
+  minStrength: number
+  place: number
+  weight: number
+  value: number
+  frequency: number
+  skillId: SkillId
+  knowledges: Partial<Record<KnowledgeId, KnowledgeId>>
+  tags: Partial<Record<WeaponTagId, WeaponTagId>>
+  isTwoHanded: boolean
+}
 
 export type WeaponData = {
   id: WeaponId
@@ -80,18 +103,18 @@ export type WeaponData = {
   isTwoHanded: boolean
 }
 
-export type Weapon = {
-  id: WeaponId
-  category: "weapon"
-  dbKey: string
-  skill: number
-  isEquiped: boolean
-  data: WeaponData
-  ammo: number
-  inMagazine?: number
-  effects: EffectId[]
-  modifiers: Modifier[]
-}
+// export type Weapon = {
+//   id: WeaponId
+//   category: "weapon"
+//   dbKey: string
+//   skill: number
+//   isEquiped: boolean
+//   data: WeaponData
+//   ammo: number
+//   inMagazine?: number
+//   effects: EffectId[]
+//   modifiers: Modifier[]
+// }
 
 export type WeaponId =
   | "unarmed"

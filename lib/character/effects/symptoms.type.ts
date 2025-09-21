@@ -22,10 +22,10 @@ export type Symptom = {
   value: number
   level?: number
 }
-export type DbSymptoms = Record<ChangeableAttribute, Symptom>
+export type DbSymptoms = Partial<Record<ChangeableAttribute, Symptom>>
 export type Modifier = {
   id: HealthStatusId
   operation: Operation
   value: number
 }
-export type DbModifiers = Record<HealthStatusId, Modifier>
+export type DbModifiers = Partial<Record<HealthStatusId, Modifier>>

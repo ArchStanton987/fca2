@@ -36,3 +36,5 @@ export type Ammo = {
   amount: number
   data: AmmoData
 }
+
+export type AmmoSet = Record<AmmoType, number>
