@@ -8,6 +8,7 @@ import CombatHistoryRtdbRepository from "lib/combat/CombatHistoryRtdbRepository"
 import CombatInfoRtdbRepository from "lib/combat/CombatInfoRtdbRepository"
 import CombatRtdbRepository from "lib/combat/CombatRtdbRepository"
 import CombatStateRtdbRepository from "lib/combat/CombatStateRtdbRepository"
+import InventoryRtdbRepository from "lib/objects/InventoryRtdbRepository"
 import AdditionalClothingsRtdbRepository from "lib/objects/data/clothings/AdditionalClothingsRtdbRepository"
 import AdditionalConsumablesRtdbRepository from "lib/objects/data/consumables/AdditionalConsumablesRtdbRepository"
 import AdditionalMiscRtdbRepository from "lib/objects/data/misc-objects/AdditionalMiscRtdbRepository"
@@ -30,7 +31,9 @@ const repositoryMap = {
     combatStatusRepository: new CombatStatusRtdbRepository(),
     effectsRepository: new EffectsRtdbRepository(),
     //
-    squadRepository: new SquadRtdbRepository()
+    squadRepository: new SquadRtdbRepository(),
+    //
+    inventoryRepository: new InventoryRtdbRepository()
   }
 }
 

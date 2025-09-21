@@ -3,6 +3,7 @@ import { DbCombatStatus } from "lib/character/combat-status/combat-status.types"
 import { DbEffect } from "lib/character/effects/effects.types"
 import { DbStatus } from "lib/character/status/status.types"
 import { DbAction, DbCombatInfo, Roll } from "lib/combat/combats.types"
+import { DbInventory } from "lib/objects/data/objects.types"
 import { DbSquad } from "lib/squad/squad-types"
 
 type CharParams = { charId: string }
@@ -41,6 +42,8 @@ export type EffectsParams = CharParams & { dbKey?: string; childKey?: keyof DbEf
 //
 export type SquadParams = { id?: string; childKey?: keyof DbSquad }
 
+export type InventoryParams = CharParams & { childKey?: keyof DbInventory }
+
 const rtdb = {
   getAdditionalClothings: ({ childKey }: AdditionalClothingsParams) =>
     `v3/additional/clothings/${childKey ?? ""}`,
@@ -59,6 +62,9 @@ const rtdb = {
     `v3/combats/${id}/state/${childKey ?? ""}`,
   getAction: ({ combatId, childKey }: ActionParams) =>
     `v3/combats/${combatId}/state/action/${childKey ?? ""}`,
+
+  getInventory: ({ charId, childKey }: InventoryParams) =>
+    `v3/playables/${charId}/inventory/${childKey ?? ""}`,
 
   // getRound: ({ combatId, id, childKey }: RoundParams) =>
   //   id ? `v3/combats/${combatId}/rounds/${id}/${childKey ?? ""}` : `v3/combats/${combatId}/rounds/`,

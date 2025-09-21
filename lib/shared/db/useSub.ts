@@ -3,7 +3,7 @@ import { useEffect, useMemo } from "react"
 
 import { useQueryClient } from "@tanstack/react-query"
 import database from "config/firebase-env"
-import { onValue, ref } from "firebase/database"
+import { onChildAdded, onChildChanged, onChildRemoved, onValue, ref } from "firebase/database"
 
 export function subscribeToPath<Db>(path: string, onData: (data: Db) => void): () => void {
   const dbRef = ref(database, path)
@@ -17,37 +17,58 @@ export function subscribeToPath<Db>(path: string, onData: (data: Db) => void): (
   return () => unsubscribe() // for React cleanup
 }
 
-// export function subEvent<Db>(
-//   event: typeof onValue | typeof onChildAdded,
-//   path: string,
-//   onData: (data: Db) => void
-// ): () => void {
-//   const dbRef = ref(database, path)
+const eventMap = { onValue, onChildAdded, onChildChanged, onChildRemoved }
 
-//   const unsubscribe = event(dbRef, snapshot => {
-//     console.log("ON CHILD ADDED, EXISTS ?", snapshot.exists())
-//     if (snapshot.exists()) {
-//       console.log("ON CHILD ADDED, VALUE ?", snapshot.val())
-//       onData(snapshot.val())
-//     }
-//   })
+export function subEvent<DbItem>(
+  event: keyof typeof eventMap,
+  path: string,
+  onData: (db: { key: string; value: DbItem }) => void
+): () => void {
+  const dbRef = ref(database, path)
 
-//   return () => unsubscribe() // for React cleanup
-// }
+  const unsubscribe = eventMap[event](dbRef, snapshot => {
+    if (snapshot.exists() && snapshot.key) {
+      onData({ key: snapshot.key, value: snapshot.val() })
+    }
+  })
 
-// export function useSubEvent<Db, T = Db>(path: string, cb?: (snapshot: Db) => T) {
-//   const [stored, setStored] = useState<T | Db | undefined>()
+  return () => unsubscribe() // for React cleanup
+}
 
-//   useEffect(() => {
-//     const unsubscribe = subEvent<Db>(onChildAdded, path, data => {
-//       const newData = cb ? cb(data) : data
-//       setStored(newData)
-//     })
-//     return () => unsubscribe()
-//   }, [path, cb])
+export function useSubCollection<I, T = I>(path: string, cb?: (dbCollectible: I) => T) {
+  const queryClient = useQueryClient()
 
-//   return stored
-// }
+  useEffect(() => {
+    const queryKey = path.split("/")
+
+    const unsubOnChildAdded = subEvent<I>("onChildAdded", path, ({ key, value }) => {
+      queryClient.setQueryData(queryKey, (prev: Record<string, T>) => ({
+        ...prev,
+        [key]: cb ? cb(value) : value
+      }))
+    })
+
+    const unsubOnChildChanged = subEvent<I>("onChildChanged", path, ({ key, value }) => {
+      queryClient.setQueryData(queryKey, (prev: Record<string, T>) => ({
+        ...prev,
+        [key]: cb ? cb(value) : value
+      }))
+    })
+
+    const unsubOnChildRemoved = subEvent<I>("onChildRemoved", path, ({ key }) => {
+      queryClient.setQueryData(queryKey, (prev: Record<string, T>) => {
+        const { [key]: removed, ...remainingData } = prev
+        return remainingData
+      })
+    })
+
+    return () => {
+      unsubOnChildAdded()
+      unsubOnChildChanged()
+      unsubOnChildRemoved()
+    }
+  }, [queryClient, path, cb])
+}
 
 type UseSubParams<Db, T = Db> = {
   path: string
