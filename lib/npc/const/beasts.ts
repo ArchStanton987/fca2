@@ -322,14 +322,14 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
     },
     attacks: [
       {
-        name: "Kick",
+        name: "Frappe",
         skill: 90,
         apCost: 5,
         damage: "1d20+8",
         modifiers: [{ operation: "add", id: "rads", value: 5 }]
       },
       {
-        name: "Spit",
+        name: "Crâche",
         skill: 70,
         apCost: 4,
         damage: "3d6+5",
@@ -382,13 +382,13 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
     },
     attacks: [
       {
-        name: "Stinger",
+        name: "Dard",
         skill: 85,
         apCost: 5,
         damage: "2d10+8",
         effects: ["poisonRadScorpionMedVenom"]
       },
-      { name: "Claw", skill: 75, apCost: 3, damage: "1d10" }
+      { name: "Pince", skill: 75, apCost: 3, damage: "1d10" }
     ]
   },
   grayWolf: {

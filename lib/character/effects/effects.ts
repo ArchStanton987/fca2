@@ -1,82 +1,102 @@
 import { EffectData, EffectId } from "./effects.types"
 
 const effectsMap: Record<EffectId, EffectData> = {
-  cripledHead: {
-    id: "cripledHead",
+  crippledHead: {
+    id: "crippledHead",
     label: "Infirme (tête)",
     symptoms: [],
     length: null,
-    type: "cripled",
+    type: "crippled",
     description:
       "Vous avez pris de vilains coups dans la mouille. Vos capacités cognitives et sensorielles sont clairement dégradées.",
     nextEffectId: null
   },
-  cripledLeftArm: {
-    id: "cripledLeftArm",
+  crippledLeftArm: {
+    id: "crippledLeftArm",
     label: "Infirme (bras gauche)",
     symptoms: [],
     length: null,
-    type: "cripled",
+    type: "crippled",
     description: "Aïe ! Outre la douleur, vous ne pouvez plus utiliser votre bras gauche.",
     nextEffectId: null
   },
-  cripledRightArm: {
-    id: "cripledRightArm",
+  crippledRightArm: {
+    id: "crippledRightArm",
     label: "Infirme (bras droit)",
     symptoms: [],
     length: null,
-    type: "cripled",
+    type: "crippled",
     description: "Aïe ! Outre la douleur, vous ne pouvez plus utiliser votre bras droit.",
     nextEffectId: null
   },
-  cripledLeftTorso: {
-    id: "cripledLeftTorso",
+  crippledLeftTorso: {
+    id: "crippledLeftTorso",
     label: "Infirme (torse gauche)",
     symptoms: [],
     length: null,
-    type: "cripled",
+    type: "crippled",
     description:
       "Ouhh ! Vous avez dû manger sévère, vous avez proablement au moins une côte pétée ! Vous êtes douloureux et essouflé.",
     nextEffectId: null
   },
-  cripledRightTorso: {
-    id: "cripledRightTorso",
+  crippledRightTorso: {
+    id: "crippledRightTorso",
     label: "Infirme (torse droit)",
     symptoms: [],
     length: null,
-    type: "cripled",
+    type: "crippled",
     description:
       "Ouhh ! Vous avez dû manger sévère, vous avez proablement au moins une côte pétée ! Vous êtes douloureux et essouflé.",
     nextEffectId: null
   },
-  cripledLeftLeg: {
-    id: "cripledLeftLeg",
+  crippledLeftLeg: {
+    id: "crippledLeftLeg",
     label: "Infirme (jambe gauche)",
     symptoms: [],
     length: null,
-    type: "cripled",
+    type: "crippled",
     description:
       "Aïe ! Outre la douleur, vous ne pouvez plus utiliser votre jambe gauche. En combat, les déplacements vous coûtent le double de points d'actions.",
     nextEffectId: null
   },
-  cripledRightLeg: {
-    id: "cripledRightLeg",
+  crippledRightLeg: {
+    id: "crippledRightLeg",
     label: "Infirme (jambe droite)",
     symptoms: [],
     length: null,
-    type: "cripled",
+    type: "crippled",
     description:
       "Aïe ! Outre la douleur, vous ne pouvez plus utiliser votre jambe droite. En combat, les déplacements vous coûtent le double de points d'actions.",
     nextEffectId: null
   },
-  cripledGroin: {
-    id: "cripledGroin",
+  crippledGroin: {
+    id: "crippledGroin",
     label: "Infirme (entrejambe)",
     symptoms: [],
     length: null,
-    type: "cripled",
+    type: "crippled",
     description:
       "Bon dieu que ça fait mal ! Quand vous réussirez à vous relever, vous aurez sûrement du mal à vous déplacer.",
+    nextEffectId: null
+  },
+  crippledBody: {
+    id: "crippledBody",
+    label: "Infirme (corps)",
+    symptoms: [],
+    length: null,
+    type: "crippled",
+    description:
+      "Vous avez pris chez en plein dans le buffet, tout est douloureux et plus compliqué maintenant.",
+    nextEffectId: null
+  },
+  crippledTail: {
+    id: "crippledTail",
+    label: "Infirme (Queue)",
+    symptoms: [],
+    length: null,
+    type: "crippled",
+    description:
+      "La nature et peut-être les radiations vous ont doté d'une queue, mais elle fait un mal de chien et vous ne pouvez plus la bouger",
     nextEffectId: null
   },
   woundedTired: {

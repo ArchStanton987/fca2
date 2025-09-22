@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
-import { LimbHpId, healthStates, limbsMap } from "lib/character/health/health"
 import { getMissingHp } from "lib/character/health/health-calc"
+import { LimbHpId, healthStates, limbsMap } from "lib/character/health/healthMap"
 import { getRandomArbitrary } from "lib/common/utils/dice-calc"
 
 import Playable from "../Playable"

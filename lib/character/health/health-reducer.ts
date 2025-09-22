@@ -1,4 +1,4 @@
-import healthMap from "lib/character/health/health"
+import healthMap from "lib/character/health/healthMap"
 
 type ItemUpdate = { count: number; label: string; initValue: number }
 export const defaultHealthUpdate = {

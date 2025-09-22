@@ -1,14 +1,14 @@
 import { Effect, EffectData, EffectId } from "lib/character/effects/effects.types"
-import { limbsMap, radStates } from "lib/character/health/health"
 import { getMissingHp } from "lib/character/health/health-calc"
 import { getHealthState } from "lib/character/health/health-utils"
+import { limbsMap, radStates } from "lib/character/health/healthMap"
 import { DbStatus } from "lib/character/status/status.types"
 
 import Playable from "../Playable"
 import getEffectsUseCases, { getEffectLengthInMs } from "./effects-use-cases"
 
 export const calculatedEffects: EffectData["type"][] = [
-  "cripled",
+  "crippled",
   "healthState",
   "radState",
   "withdrawal"
@@ -61,19 +61,19 @@ export const handleLimbsEffects = (
 ): Promise<void>[] => {
   const promises: Promise<void>[] = []
 
-  Object.values(limbsMap).forEach(({ id, cripledEffect }) => {
+  Object.values(limbsMap).forEach(({ id, crippledEffect }) => {
     const currValue = character.health.limbsHp[id]
     const newValue = newStatus[id]
 
     if (newValue !== currValue) {
-      const currCripledEffect: Effect | undefined = character?.effectsRecord[cripledEffect]
+      const currCripledEffect: Effect | undefined = character?.effectsRecord[crippledEffect]
       // remove cripled effect if the new value is greater than 0
       if (currCripledEffect && newValue > 0) {
         promises.push(effectsUseCases.remove(character.charId, currCripledEffect))
       }
       // add cripled effect if the new value is less than or equal to 0
       if (!currCripledEffect && newValue <= 0) {
-        promises.push(effectsUseCases.add(character, cripledEffect))
+        promises.push(effectsUseCases.add(character, crippledEffect))
       }
     }
   })

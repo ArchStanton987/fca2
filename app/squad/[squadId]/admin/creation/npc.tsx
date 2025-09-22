@@ -2,10 +2,10 @@ import { useState } from "react"
 import { View } from "react-native"
 
 import { DbCombatStatus } from "lib/character/combat-status/combat-status.types"
-import { limbsDefault } from "lib/character/health/health"
+import { limbsDefault } from "lib/character/health/healthMap"
 import { DbCharMeta, species } from "lib/character/meta/meta"
 import { BackgroundId, DbStatus } from "lib/character/status/status.types"
-import enemyTemplates from "lib/npc/const/npc-templates"
+import enemyTemplates, { critters } from "lib/npc/const/npc-templates"
 import { generateDbHuman } from "lib/npc/utils/npc-generation"
 import Toast from "react-native-toast-message"
 
@@ -80,7 +80,8 @@ export default function NpcCreation() {
     let payload
     const { level, ...rest } = form
     const finalLevel = Number.isNaN(parseInt(level, 10)) ? 1 : parseInt(level, 10)
-    const meta: DbCharMeta = { isNpc: true, ...rest }
+    const isCritter = form.templateId in critters
+    const meta: DbCharMeta = { isNpc: true, isCritter, ...rest }
     if (form.speciesId === "human") {
       payload = { ...generateDbHuman(finalLevel, form.templateId), meta }
     } else {

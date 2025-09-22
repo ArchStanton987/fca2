@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { ActivityIndicator, StyleSheet, View } from "react-native"
 
-import { limbsMap } from "lib/character/health/health"
+import { limbsMap } from "lib/character/health/healthMap"
 import { getBodyPart } from "lib/combat/utils/combat-utils"
 
 import NumPad from "components/NumPad/NumPad"

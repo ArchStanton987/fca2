@@ -3,8 +3,8 @@ import { Image, TouchableOpacity, View } from "react-native"
 
 import { router } from "expo-router"
 
-import { limbsMap } from "lib/character/health/health"
 import { HealthStatusId } from "lib/character/health/health-types"
+import { limbsMap } from "lib/character/health/healthMap"
 
 import pipboy from "assets/images/pipboy.png"
 import ProgressionBar from "components/ProgressionBar/ProgressionBar"
@@ -42,7 +42,7 @@ export default function HealthFigure() {
 
   return (
     <View style={{ alignItems: "center" }}>
-      <TouchableOpacity onPress={() => onPressElement("headHp")}>
+      <TouchableOpacity onPress={() => onPressElement("head")}>
         <ProgressionBar
           max={limbsMap.headHp.maxValue}
           min={0}
@@ -53,7 +53,7 @@ export default function HealthFigure() {
       </TouchableOpacity>
       <Spacer y={5} />
       <View style={styles.armsContainer}>
-        <TouchableOpacity onPress={() => onPressElement("rightArmHp")}>
+        <TouchableOpacity onPress={() => onPressElement("rightArm")}>
           <ProgressionBar
             {...smallBarProps}
             max={limbsMap.rightArmHp.maxValue}
@@ -62,7 +62,7 @@ export default function HealthFigure() {
             color={getProgressionBarColor(limbsHp.rightArmHp, limbsMap.rightArmHp.maxValue)}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => onPressElement("leftArmHp")}>
+        <TouchableOpacity onPress={() => onPressElement("leftArm")}>
           <ProgressionBar
             {...smallBarProps}
             max={limbsMap.leftArmHp.maxValue}
@@ -72,11 +72,11 @@ export default function HealthFigure() {
           />
         </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={() => onPressElement("leftTorsoHp")}>
+      <TouchableOpacity onPress={() => onPressElement("leftTorso")}>
         <Image source={pipboy} style={styles.img} />
       </TouchableOpacity>
       <View style={styles.torsoContainer}>
-        <TouchableOpacity onPress={() => onPressElement("rightTorsoHp")}>
+        <TouchableOpacity onPress={() => onPressElement("rightTorso")}>
           <ProgressionBar
             {...smallBarProps}
             max={limbsMap.rightTorsoHp.maxValue}
@@ -85,7 +85,7 @@ export default function HealthFigure() {
             color={getProgressionBarColor(limbsHp.rightTorsoHp, limbsMap.rightTorsoHp.maxValue)}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => onPressElement("leftTorsoHp")}>
+        <TouchableOpacity onPress={() => onPressElement("leftTorso")}>
           <ProgressionBar
             {...smallBarProps}
             max={limbsMap.leftTorsoHp.maxValue}
@@ -97,7 +97,7 @@ export default function HealthFigure() {
       </View>
 
       <View style={styles.legsContainer}>
-        <TouchableOpacity onPress={() => onPressElement("rightLegHp")}>
+        <TouchableOpacity onPress={() => onPressElement("rightLeg")}>
           <ProgressionBar
             {...smallBarProps}
             max={limbsMap.rightLegHp.maxValue}
@@ -106,7 +106,7 @@ export default function HealthFigure() {
             color={getProgressionBarColor(limbsHp.rightLegHp, limbsMap.rightLegHp.maxValue)}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => onPressElement("leftLegHp")}>
+        <TouchableOpacity onPress={() => onPressElement("leftLeg")}>
           <ProgressionBar
             {...smallBarProps}
             max={limbsMap.leftLegHp.maxValue}
@@ -117,7 +117,7 @@ export default function HealthFigure() {
         </TouchableOpacity>
       </View>
       <Spacer y={5} />
-      <TouchableOpacity onPress={() => onPressElement("groinHp")}>
+      <TouchableOpacity onPress={() => onPressElement("groin")}>
         <ProgressionBar
           {...smallBarProps}
           max={limbsMap.groinHp.maxValue}

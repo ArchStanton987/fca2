@@ -8,7 +8,7 @@ export type EffectType =
   | "drug"
   | "poison"
   | "withdrawal"
-  | "cripled"
+  | "crippled"
   | "healthState"
   | "radState"
   | "other"
@@ -44,14 +44,16 @@ export type EffectId =
   | "woundedUnconscious"
   | "dead"
   | "vanished"
-  | "cripledHead"
-  | "cripledLeftArm"
-  | "cripledRightArm"
-  | "cripledLeftTorso"
-  | "cripledRightTorso"
-  | "cripledLeftLeg"
-  | "cripledRightLeg"
-  | "cripledGroin"
+  | "crippledHead"
+  | "crippledLeftArm"
+  | "crippledRightArm"
+  | "crippledLeftTorso"
+  | "crippledRightTorso"
+  | "crippledLeftLeg"
+  | "crippledRightLeg"
+  | "crippledGroin"
+  | "crippledBody"
+  | "crippledTail"
   | "radLvl1"
   | "radLvl2"
   | "radLvl3"
@@ -89,11 +91,11 @@ export type DbEffectData = {
   nextEffectId: string | null
 }
 
-export type Effect = {
-  id: EffectId
-  data: EffectData
-  dbKey?: string
-  startTs?: Date
-  endTs?: Date
-  timeRemaining?: string | null
-}
+// export type Effect = {
+//   id: EffectId
+//   data: EffectData
+//   dbKey?: string
+//   startTs?: Date
+//   endTs?: Date
+//   timeRemaining?: string | null
+// }

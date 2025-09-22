@@ -34,8 +34,10 @@ export const RACE_INIT_KNOWLEDGES: Record<SpeciesId, InitKnowledge[]> = {
   ],
   robot: [],
   mutie: [],
+  halfMutie: [],
   ghoul: [],
-  animal: []
+  deathclaw: [],
+  beast: []
 }
 
 // Free non cumulative knowledge from a category

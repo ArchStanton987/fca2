@@ -1,5 +1,5 @@
 import Character from "lib/character/Character"
-import { limbsMap } from "lib/character/health/health"
+import { limbsMap } from "lib/character/health/healthMap"
 import { getCritFailureThreshold } from "lib/combat/const/crit"
 import { getActorSkillFromAction } from "lib/combat/utils/combat-utils"
 import Toast from "react-native-toast-message"

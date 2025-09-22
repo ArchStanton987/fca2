@@ -39,9 +39,9 @@ import { DbCombatStatus } from "./combat-status/combat-status.types"
 import effectsMap from "./effects/effects"
 import { DbEffects, Effect, EffectData, EffectId } from "./effects/effects.types"
 import { Symptom } from "./effects/symptoms.type"
-import { healthStates, limbsMap, radStates } from "./health/health"
 import { getMaxHP, getMissingHp } from "./health/health-calc"
-import { Health } from "./health/health-types"
+import { DbHealth, Health } from "./health/health-types"
+import { healthStates, limbsMap, radStates } from "./health/healthMap"
 import { DbCharMeta } from "./meta/meta"
 import { DbStatus } from "./status/status.types"
 
@@ -50,6 +50,7 @@ export type DbChar = {
   effects?: DbEffects
   equipedObj?: DbEquipedObjects
   status: DbStatus
+  health: DbHealth
   combatStatus: DbCombatStatus
   meta: DbCharMeta
   combats?: Record<string, string>
@@ -262,23 +263,6 @@ export default class Character implements Playable {
 
   get knowledgesRecord() {
     return this.dbAbilities.knowledges
-  }
-
-  get equipedObjects() {
-    const weapons = Object.entries(this.dbEquipedObjects.weapons || {}).map(([dbKey, value]) => ({
-      dbKey,
-      data: weaponsMap[value.id],
-      inMagazine: value.inMagazine,
-      ...value
-    }))
-    const clothings = Object.entries(this.dbEquipedObjects.clothings || {}).map(
-      ([dbKey, value]) => ({
-        dbKey,
-        data: this.allClothings[value.id],
-        ...value
-      })
-    )
-    return { weapons, clothings }
   }
 
   get effectsRecord() {

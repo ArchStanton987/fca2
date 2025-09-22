@@ -1,5 +1,5 @@
 import { calculatedEffects } from "lib/character/effects/effects-utils"
-import { limbsMap } from "lib/character/health/health"
+import { limbsMap } from "lib/character/health/healthMap"
 
 import List from "components/List"
 import Selectable from "components/Selectable"

@@ -1,7 +1,7 @@
 import { StyleSheet, TouchableOpacity } from "react-native"
 
-import { limbsMap } from "lib/character/health/health"
 import { LimbsHp } from "lib/character/health/health-types"
+import { limbsMap } from "lib/character/health/healthMap"
 
 import Col from "components/Col"
 import List from "components/List"

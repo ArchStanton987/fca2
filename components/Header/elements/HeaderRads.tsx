@@ -3,7 +3,7 @@ import { TouchableOpacity } from "react-native"
 import { router } from "expo-router"
 
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
-import { radStates } from "lib/character/health/health"
+import { radStates } from "lib/character/health/health.const"
 
 import HeaderElement from "components/Header/HeaderElement"
 import Spacer from "components/Spacer"

@@ -31,6 +31,9 @@ export default class Weapon implements ItemInterface {
     tags: Object.keys(payload.tags ?? {}) as WeaponTagId[]
   })
 
+  static getUnarmed = () =>
+    new Weapon({ id: "unarmed", category: "weapons", dbKey: "unarmed", isEquipped: true }, {})
+
   constructor(payload: DbWeapon, allWeapons: Record<string, WeaponData>) {
     this.id = payload.id
     this.dbKey = payload.dbKey

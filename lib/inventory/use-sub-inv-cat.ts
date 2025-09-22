@@ -1,7 +1,9 @@
 import { useCallback } from "react"
 
 import { queryOptions, useQueries, useQuery } from "@tanstack/react-query"
+import { useCharInfo } from "lib/character/character-provider"
 import { Symptom } from "lib/character/effects/symptoms.type"
+import { critters } from "lib/npc/const/npc-templates"
 import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
 import ammoMap from "lib/objects/data/ammo/ammo"
 import { AmmoSet, AmmoType } from "lib/objects/data/ammo/ammo.types"
@@ -14,6 +16,7 @@ import miscObjectsMap from "lib/objects/data/misc-objects/misc-objects"
 import { DbInventory, DbItem, ItemCategory } from "lib/objects/data/objects.types"
 import Weapon from "lib/objects/data/weapons/Weapon"
 import weaponsMap from "lib/objects/data/weapons/weapons"
+import { attackToWeapon } from "lib/objects/data/weapons/weapons.mappers"
 import { useSub, useSubCollection } from "lib/shared/db/useSub"
 
 import useCreatedElements from "hooks/context/useCreatedElements"
@@ -60,7 +63,9 @@ export function useSubItems(charId: string) {
   const path = options.queryKey.join("/")
   const cb = useCallback((db: DbItem) => itemFactory(db, newElements), [newElements])
   useSubCollection(path, cb)
-  return useQuery(options)
+}
+export function useItemsQuery(charId: string) {
+  return useQuery(getItemsOptions(charId))
 }
 
 type ItemRecord = Record<string, Item>
@@ -99,6 +104,18 @@ export function useWeapons(charId: string, isEquipped?: boolean, isGrouped?: boo
     )
   })
 }
+export function useCombatWeapons(charId: string): Weapon[] {
+  const { templateId } = useCharInfo()
+  const equipedWeapons = useWeapons(charId, true)
+  const hasEquipedWeapons = Object.keys(equipedWeapons).length === 0
+  if (hasEquipedWeapons) return Object.values(equipedWeapons)
+  const unarmed = Weapon.getUnarmed()
+  if (critters[templateId]) {
+    return critters[templateId].attacks.map(a => attackToWeapon(a))
+  }
+  return [unarmed]
+}
+
 export function useClothings(charId: string, isEquipped?: boolean, isGrouped?: boolean) {
   const query = getItemsOptions(charId)
   return useQuery({
@@ -134,14 +151,18 @@ export function useSubAmmo(charId: string) {
   const options = getAmmoOptions(charId)
   const path = options.queryKey.join("/")
   useSub(path)
-  return useQuery(options)
+}
+export function useAmmoQuery(charId: string) {
+  return useQuery(getAmmoOptions(charId))
 }
 
 export function useSubCaps(charId: string) {
   const options = getCapsOptions(charId)
   const path = options.queryKey.join("/")
   useSub(path)
-  return useQuery(options)
+}
+export function useCapsQuery(charId: string) {
+  return useQuery(getCapsOptions(charId))
 }
 
 const getItemsCarry = (items: Record<string, Item>) =>

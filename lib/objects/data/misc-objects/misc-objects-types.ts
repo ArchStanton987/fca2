@@ -1,3 +1,5 @@
+import { Symptom } from "lib/character/effects/symptoms.type"
+
 export type MiscObjectId =
   | "brahmin"
   | "ballgag"
@@ -17,8 +19,6 @@ export type MiscObjectId =
   | "tape"
   | "nukieNukaCola"
 
-export type DbMiscObject = { id: MiscObjectId }
-
 export type MiscObjectData = {
   id: MiscObjectId
   label: string
@@ -26,20 +26,22 @@ export type MiscObjectData = {
   value: number
   place: number
   weight: number
+  symptoms: Symptom[]
 }
 
 export type DbMiscObjectData = {
-  id: string
+  id: MiscObjectId
   label: string
   description: string
   value: number
   place: number
   weight: number
+  symptoms: Record<string, Symptom>
 }
 
-export type MiscObject = {
-  id: MiscObjectId
-  dbKey: string
-  category: "misc"
-  data: MiscObjectData
-}
+// export type MiscObject = {
+//   id: MiscObjectId
+//   dbKey: string
+//   category: "misc"
+//   data: MiscObjectData
+// }

@@ -1,7 +1,7 @@
 import { Special } from "../abilities/special/special.types"
 import { getLevelAndThresholds } from "../status/status-calc"
-import { limbsMap } from "./health"
 import { LimbsHp } from "./health-types"
+import { limbsMap } from "./healthMap"
 
 export const getMaxHP = (baseSpecial: Special, exp: number) => {
   const baseMaxHP = baseSpecial.endurance * 2 + 15 + baseSpecial.strength

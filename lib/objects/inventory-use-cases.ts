@@ -1,6 +1,6 @@
 import Playable from "lib/character/Playable"
 import getEffectsUseCases from "lib/character/effects/effects-use-cases"
-import healthMap from "lib/character/health/health"
+import healthMap from "lib/character/health/healthMap"
 import getStatusUseCases from "lib/character/status/status-use-cases"
 import { DbStatus } from "lib/character/status/status.types"
 import { applyMod } from "lib/common/utils/char-calc"

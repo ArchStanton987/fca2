@@ -1,4 +1,5 @@
-import { BodyPart } from "../../health/health-types"
+import { BodyPart } from "lib/objects/data/clothings/clothings.types"
+
 import { Special } from "../special/special.types"
 
 export type SkillId =

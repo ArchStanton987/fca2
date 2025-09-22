@@ -1,9 +1,9 @@
 import { DbSymptoms, Symptom } from "../../../character/effects/symptoms.type"
-import { BodyPart, DbBodyParts } from "../../../character/health/health-types"
+
+export type BodyPart = "head" | "torso" | "arms" | "groin" | "legs"
+export type DbBodyParts = Record<BodyPart, BodyPart>
 
 export type ClothingType = "light" | "medium" | "heavy" | "carry"
-
-export type DbClothing = { id: ClothingId }
 
 export type ClothingData = {
   id: ClothingId
@@ -25,7 +25,7 @@ export type ClothingData = {
 }
 
 export type DbClothingData = {
-  id: string
+  id: ClothingId
   label: string
   type: ClothingType
   armorClass: number
@@ -43,13 +43,13 @@ export type DbClothingData = {
   symptoms: DbSymptoms
 }
 
-export type Clothing = {
-  id: ClothingId
-  dbKey: string
-  category: "clothing"
-  isEquiped: boolean
-  data: ClothingData
-}
+// export type Clothing = {
+//   id: ClothingId
+//   dbKey: string
+//   category: "clothing"
+//   isEquiped: boolean
+//   data: ClothingData
+// }
 
 export type ClothingId =
   | "militaryBelt"

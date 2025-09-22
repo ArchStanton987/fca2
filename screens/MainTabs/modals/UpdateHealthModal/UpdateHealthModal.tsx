@@ -3,8 +3,8 @@ import { TouchableOpacity, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import healthMap from "lib/character/health/health"
 import { HealthStatusId } from "lib/character/health/health-types"
+import healthMap from "lib/character/health/healthMap"
 
 import AmountSelector from "components/AmountSelector"
 import List from "components/List"

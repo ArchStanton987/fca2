@@ -1,226 +1,215 @@
-import Playable from "lib/character/Playable"
-import ammoMap from "lib/objects/data/ammo/ammo"
-import { Ammo, AmmoType } from "lib/objects/data/ammo/ammo.types"
-import clothingsMap from "lib/objects/data/clothings/clothings"
-import { Clothing, ClothingData, ClothingId } from "lib/objects/data/clothings/clothings.types"
-import consumablesMap from "lib/objects/data/consumables/consumables"
-import {
-  Consumable,
-  ConsumableData,
-  ConsumableId
-} from "lib/objects/data/consumables/consumables.types"
-import miscObjectsMap from "lib/objects/data/misc-objects/misc-objects"
-import {
-  MiscObject,
-  MiscObjectData,
-  MiscObjectId
-} from "lib/objects/data/misc-objects/misc-objects-types"
-import { DbInventory } from "lib/objects/data/objects.types"
-import { Weapon } from "lib/objects/data/weapons/weapons.types"
-import { computed, makeObservable, observable } from "mobx"
+// import { AmmoSet, AmmoType } from "lib/objects/data/ammo/ammo.types"
+// import clothingsMap from "lib/objects/data/clothings/clothings"
+// import { Clothing, ClothingData, ClothingId } from "lib/objects/data/clothings/clothings.types"
+// import consumablesMap from "lib/objects/data/consumables/consumables"
+// import {
+//   Consumable,
+//   ConsumableData,
+//   ConsumableId
+// } from "lib/objects/data/consumables/consumables.types"
+// import miscObjectsMap from "lib/objects/data/misc-objects/misc-objects"
+// import {
+//   MiscObject,
+//   MiscObjectData,
+//   MiscObjectId
+// } from "lib/objects/data/misc-objects/misc-objects-types"
+// import { DbInventory } from "lib/objects/data/objects.types"
+// import { Weapon } from "lib/objects/data/weapons/weapons.types"
 
-import { filterUnique } from "utils/array-utils"
+// // import { computed, makeObservable, observable } from "mobx"
+// import { filterUnique } from "utils/array-utils"
 
-import { CreatedElements, defaultCreatedElements } from "./created-elements"
-import { dbToWeapon } from "./data/weapons/weapons.mappers"
+// import { CreatedElements, defaultCreatedElements } from "./created-elements"
+// import { dbToWeapon } from "./data/weapons/weapons.mappers"
 
-type Carriable = {
-  data: { weight: number; place: number }
-  isEquiped?: boolean
-  amount?: number
-}
+// type Carriable = {
+//   data: { weight: number; place: number }
+//   isEquiped?: boolean
+//   amount?: number
+// }
 
-export default class Inventory {
-  dbInventory: DbInventory
-  charData: Playable
-  allClothings: Record<ClothingId, ClothingData>
-  allConsumables: Record<ConsumableId, ConsumableData>
-  allMiscObjects: Record<MiscObjectId, MiscObjectData>
+// export default class Inventory {
+//   ammo: Partial<AmmoSet>
+//   caps: number
+//   items: Record<string, Weapon | Clothing | Consumable | MiscObject>
+//   itemsArray: (Weapon | Clothing | Consumable | MiscObject)[]
+//   weapons: Weapon[]
+//   clothings: Clothing[]
+//   consumables: Consumable[]
+//   miscObjects: MiscObject[]
+//   allClothings: Record<ClothingId, ClothingData>
+//   allConsumables: Record<ConsumableId, ConsumableData>
+//   allMiscObjects: Record<MiscObjectId, MiscObjectData>
 
-  constructor(
-    dbInventory: DbInventory,
-    charData: Playable,
-    newElements: CreatedElements = defaultCreatedElements
-  ) {
-    const { newClothings, newConsumables, newMiscObjects } = newElements
-    this.dbInventory = dbInventory
-    this.charData = charData
-    this.allClothings = { ...clothingsMap, ...newClothings }
-    this.allConsumables = { ...consumablesMap, ...newConsumables }
-    this.allMiscObjects = { ...miscObjectsMap, ...newMiscObjects }
+//   constructor(dbInventory: DbInventory, newElements: CreatedElements = defaultCreatedElements) {
+//     const { newClothings, newConsumables, newMiscObjects } = newElements
+//     this.allClothings = { ...clothingsMap, ...newClothings }
+//     this.allConsumables = { ...consumablesMap, ...newConsumables }
+//     this.allMiscObjects = { ...miscObjectsMap, ...newMiscObjects }
 
-    makeObservable(this, {
-      dbInventory: observable,
-      charData: observable,
-      //
-      weapons: computed,
-      clothings: computed,
-      consumables: computed,
-      miscObjects: computed,
-      ammo: computed,
-      caps: computed,
-      //
-      weaponsRecord: computed,
-      clothingsRecord: computed,
-      consumablesRecord: computed,
-      miscObjectsRecord: computed,
-      ammoRecord: computed,
-      //
-      inventory: computed,
-      //
-      allItems: computed,
-      //
-      groupedConsumables: computed,
-      groupedMiscObjects: computed,
+//     this.ammo = dbInventory.ammo ?? {}
+//     this.caps = dbInventory.caps
 
-      currentCarry: computed
-    })
-  }
+//     // makeObservable(this, {
+//     //   dbInventory: observable,
+//     //   charData: observable,
+//     //   //
+//     //   weapons: computed,
+//     //   clothings: computed,
+//     //   consumables: computed,
+//     //   miscObjects: computed,
+//     //   ammo: computed,
+//     //   caps: computed,
+//     //   //
+//     //   weaponsRecord: computed,
+//     //   clothingsRecord: computed,
+//     //   consumablesRecord: computed,
+//     //   miscObjectsRecord: computed,
+//     //   ammoRecord: computed,
+//     //   //
+//     //   inventory: computed,
+//     //   //
+//     //   allItems: computed,
+//     //   //
+//     //   groupedConsumables: computed,
+//     //   groupedMiscObjects: computed,
 
-  get weapons(): Weapon[] {
-    return Object.entries(this.dbInventory.weapons || {}).map(entry =>
-      dbToWeapon(entry, this.charData, this.dbInventory.ammo)
-    )
-  }
+//     //   currentCarry: computed
+//     // })
+//   }
 
-  get clothings(): Clothing[] {
-    return Object.entries(this.dbInventory.clothings || []).map(([dbKey, { id }]) => {
-      const isEquiped = this.charData.dbEquipedObjects?.clothings?.[dbKey] !== undefined
-      return { data: this.allClothings[id], dbKey, id, isEquiped, category: "clothing" }
-    })
-  }
+//   get weapons() {
+//     return this.itemsArray.filter(e => e.category === "weapon")
+//   }
 
-  get consumables(): Consumable[] {
-    return Object.entries(this.dbInventory.consumables || []).map(([dbKey, value]) => ({
-      data: this.allConsumables[value.id as ConsumableId],
-      dbKey,
-      category: "consumable",
-      id: value.id,
-      remainingUse: value.remainingUse
-    }))
-  }
+//   get clothings() {
+//     return this.itemsArray.filter(e => e.category === "clothing")
+//   }
 
-  get groupedConsumables(): (Consumable & { count: number })[] {
-    return filterUnique(
-      "id",
-      this.consumables.map((consumable, _, currArr) => {
-        const count = currArr.filter(el => el.id === consumable.id).length
-        return { ...consumable, count }
-      })
-    )
-  }
+//   get consumables() {
+//     return this.itemsArray.filter(e => e.category === "consumable")
+//   }
 
-  get miscObjects(): MiscObject[] {
-    return Object.entries(this.dbInventory.miscObjects || {}).map(([dbKey, { id }]) => ({
-      data: this.allMiscObjects[id],
-      category: "misc",
-      dbKey,
-      id
-    }))
-  }
+//   get miscObjects() {
+//     return this.itemsArray.filter(e => e.category === "misc")
+//   }
 
-  get groupedMiscObjects(): (MiscObject & { count: number })[] {
-    return filterUnique(
-      "id",
-      this.miscObjects.map((consumable, _, currArr) => {
-        const count = currArr.filter(el => el.id === consumable.id).length
-        return { ...consumable, count }
-      })
-    )
-  }
+//   get groupedConsumables(): (Consumable & { count: number })[] {
+//     return filterUnique(
+//       "id",
+//       this.consumables.map((consumable, _, currArr) => {
+//         const count = currArr.filter(el => el.id === consumable.id).length
+//         return { ...consumable, count }
+//       })
+//     )
+//   }
 
-  get ammo(): Ammo[] {
-    return Object.entries(this.dbInventory.ammo || {})
-      .filter(([, amount]) => amount > 0)
-      .map(([id, amount]) => ({ data: ammoMap[id as AmmoType], id: id as AmmoType, amount }))
-      .sort((a, b) => b.amount - a.amount)
-  }
+//   getSymptoms() {
+//     this.clothings.map(c => c.data.symptoms)
+//   }
 
-  get caps(): number {
-    return this.dbInventory.caps || 0
-  }
+//   get groupedMiscObjects(): (MiscObject & { count: number })[] {
+//     return filterUnique(
+//       "id",
+//       this.miscObjects.map((consumable, _, currArr) => {
+//         const count = currArr.filter(el => el.id === consumable.id).length
+//         return { ...consumable, count }
+//       })
+//     )
+//   }
 
-  get weaponsRecord() {
-    const weaponsRecord: Record<string, Weapon> = {}
-    this.weapons.forEach(record => {
-      weaponsRecord[record.dbKey] = record
-    })
-    return weaponsRecord
-  }
+//   // get ammo(): Ammo[] {
+//   //   return Object.entries(this.dbInventory.ammo || {})
+//   //     .filter(([, amount]) => amount > 0)
+//   //     .map(([id, amount]) => ({ data: ammoMap[id as AmmoType], id: id as AmmoType, amount }))
+//   //     .sort((a, b) => b.amount - a.amount)
+//   // }
 
-  get clothingsRecord() {
-    const clothingsRecord: Record<string, Clothing> = {}
-    this.clothings.forEach(record => {
-      clothingsRecord[record.dbKey] = record
-    })
-    return clothingsRecord
-  }
+//   // get caps(): number {
+//   //   return this.dbInventory.caps || 0
+//   // }
 
-  get consumablesRecord() {
-    const consumablesRecord: Record<string, Consumable> = {}
-    this.consumables.forEach(record => {
-      consumablesRecord[record.dbKey] = record
-    })
-    return consumablesRecord
-  }
+//   // get weaponsRecord() {
+//   //   const weaponsRecord: Record<string, Weapon> = {}
+//   //   this.weapons.forEach(record => {
+//   //     weaponsRecord[record.dbKey] = record
+//   //   })
+//   //   return weaponsRecord
+//   // }
 
-  get miscObjectsRecord() {
-    const miscObjectsRecord: Record<string, MiscObject> = {}
-    this.miscObjects.forEach(record => {
-      miscObjectsRecord[record.dbKey] = record
-    })
-    return miscObjectsRecord
-  }
+//   // get clothingsRecord() {
+//   //   const clothingsRecord: Record<string, Clothing> = {}
+//   //   this.clothings.forEach(record => {
+//   //     clothingsRecord[record.dbKey] = record
+//   //   })
+//   //   return clothingsRecord
+//   // }
 
-  get ammoRecord() {
-    const ammoRecord = {} as Record<AmmoType, number>
-    this.ammo.forEach(record => {
-      ammoRecord[record.id] = record.amount
-    })
-    return ammoRecord
-  }
+//   // get consumablesRecord() {
+//   //   const consumablesRecord: Record<string, Consumable> = {}
+//   //   this.consumables.forEach(record => {
+//   //     consumablesRecord[record.dbKey] = record
+//   //   })
+//   //   return consumablesRecord
+//   // }
 
-  get inventory() {
-    return {
-      weapons: this.weaponsRecord,
-      clothings: this.clothingsRecord,
-      consumables: this.consumablesRecord,
-      miscObjects: this.miscObjectsRecord,
-      ammo: this.ammoRecord
-    }
-  }
+//   // get miscObjectsRecord() {
+//   //   const miscObjectsRecord: Record<string, MiscObject> = {}
+//   //   this.miscObjects.forEach(record => {
+//   //     miscObjectsRecord[record.dbKey] = record
+//   //   })
+//   //   return miscObjectsRecord
+//   // }
 
-  get allItems() {
-    return {
-      ...this.weaponsRecord,
-      ...this.clothingsRecord,
-      ...this.consumablesRecord,
-      ...this.miscObjectsRecord
-    }
-  }
+//   // get ammoRecord() {
+//   //   const ammoRecord = {} as Record<AmmoType, number>
+//   //   this.ammo.forEach(record => {
+//   //     ammoRecord[record.id] = record.amount
+//   //   })
+//   //   return ammoRecord
+//   // }
 
-  get currentCarry() {
-    const { ammo, clothings, weapons, consumables, miscObjects } = this
-    const arr = [ammo, clothings, weapons, consumables, miscObjects]
+//   // get inventory() {
+//   //   return {
+//   //     weapons: this.weaponsRecord,
+//   //     clothings: this.clothingsRecord,
+//   //     consumables: this.consumablesRecord,
+//   //     miscObjects: this.miscObjectsRecord,
+//   //     ammo: this.ammoRecord
+//   //   }
+//   // }
 
-    const totalCarry = arr.reduce(
-      (acc, curr) => {
-        const { weight, place } = curr.reduce(
-          (acc2, { data, isEquiped, amount }: Carriable) => {
-            const placeToAdd = isEquiped ? 0 : data.place
-            return {
-              weight: acc2.weight + data.weight * (amount || 1),
-              place: acc2.place + placeToAdd * (amount || 1)
-            }
-          },
-          { weight: 0, place: 0 }
-        )
-        return { weight: acc.weight + weight, place: acc.place + place }
-      },
-      { weight: 0, place: 0 }
-    )
-    const currWeight = Math.round(totalCarry.weight * 10) / 10
-    const currPlace = Math.round(totalCarry.place * 10) / 10
-    return { currWeight, currPlace }
-  }
-}
+//   // get allItems() {
+//   //   return {
+//   //     ...this.weaponsRecord,
+//   //     ...this.clothingsRecord,
+//   //     ...this.consumablesRecord,
+//   //     ...this.miscObjectsRecord
+//   //   }
+//   // }
+
+//   get currentCarry() {
+//     const { ammo, clothings, weapons, consumables, miscObjects } = this
+//     const arr = [ammo, clothings, weapons, consumables, miscObjects]
+
+//     const totalCarry = arr.reduce(
+//       (acc, curr) => {
+//         const { weight, place } = curr.reduce(
+//           (acc2, { data, isEquiped, amount }: Carriable) => {
+//             const placeToAdd = isEquiped ? 0 : data.place
+//             return {
+//               weight: acc2.weight + data.weight * (amount || 1),
+//               place: acc2.place + placeToAdd * (amount || 1)
+//             }
+//           },
+//           { weight: 0, place: 0 }
+//         )
+//         return { weight: acc.weight + weight, place: acc.place + place }
+//       },
+//       { weight: 0, place: 0 }
+//     )
+//     const currWeight = Math.round(totalCarry.weight * 10) / 10
+//     const currPlace = Math.round(totalCarry.place * 10) / 10
+//     return { currWeight, currPlace }
+//   }
+// }

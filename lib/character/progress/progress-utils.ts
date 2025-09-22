@@ -50,7 +50,7 @@ export const getRawUsedKnowledgePoints = (knowledges: Record<KnowledgeId, Knowle
 }
 
 export const getAssignedFreeRaceKPoints = (
-  knowledges: Record<KnowledgeId, KnowledgeLevelValue>,
+  knowledges: Partial<Record<KnowledgeId, KnowledgeLevelValue>>,
   speciesId: SpeciesId = "human"
 ) => {
   const freeKnowledges = RACE_INIT_KNOWLEDGES[speciesId]
@@ -62,7 +62,9 @@ export const getAssignedFreeRaceKPoints = (
   }, 0)
 }
 
-export const getAssignedRawKPoints = (knowledges: Record<KnowledgeId, KnowledgeLevelValue>) =>
+export const getAssignedRawKPoints = (
+  knowledges: Partial<Record<KnowledgeId, KnowledgeLevelValue>>
+) =>
   Object.values(knowledges).reduce((acc, curr) => {
     const level = knowledgeLevels.find(el => el.id === curr)
     if (!level) return acc
@@ -70,7 +72,7 @@ export const getAssignedRawKPoints = (knowledges: Record<KnowledgeId, KnowledgeL
   }, 0)
 
 export const getRemainingFreeKPoints = (
-  knowledges: Record<KnowledgeId, KnowledgeLevelValue>,
+  knowledges: Partial<Record<KnowledgeId, KnowledgeLevelValue>>,
   background: BackgroundId,
   speciesId: SpeciesId = "human"
 ) => {

@@ -5,7 +5,6 @@ import { Modifier } from "lib/character/effects/symptoms.type"
 import { HealthStatusId } from "lib/character/health/health-types"
 
 export type ConsumableType = "heal" | "kit" | "drugs"
-export type DbConsumable = { id: ConsumableId; remainingUse?: number }
 
 export type ConsumableData = {
   id: ConsumableId
@@ -43,13 +42,13 @@ export type DbConsumableData = {
   modifiers?: Record<HealthStatusId, Modifier>
 }
 
-export type Consumable = {
-  id: string
-  dbKey: string
-  category: "consumable"
-  remainingUse?: number
-  data: ConsumableData
-}
+// export type Consumable = {
+//   id: string
+//   dbKey: string
+//   category: "consumable"
+//   remainingUse?: number
+//   data: ConsumableData
+// }
 
 export type ConsumableId =
   | "ration"
