@@ -2,7 +2,8 @@
 import { Platform } from "react-native"
 
 import * as Haptics from "expo-haptics"
-import { Weapon, WeaponActionId, WeaponTagId } from "lib/objects/data/weapons/weapons.types"
+import Weapon from "lib/objects/data/weapons/Weapon"
+import { WeaponActionId, WeaponTagId } from "lib/objects/data/weapons/weapons.types"
 
 const getBurstInterval = (weapon: Weapon) => {
   const burstTags = [

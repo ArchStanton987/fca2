@@ -1,9 +1,14 @@
 import Playable from "lib/character/Playable"
+import Abilities from "lib/character/abilities/Abilities"
 import { KnowledgeId } from "lib/character/abilities/knowledges/knowledge-types"
 import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-levels"
+import perksMap from "lib/character/abilities/perks/perks"
+import { PerkId } from "lib/character/abilities/perks/perks.types"
 import traitsMap from "lib/character/abilities/traits/traits"
+import { TraitId } from "lib/character/abilities/traits/traits.types"
 import { getModAttribute } from "lib/common/utils/char-calc"
 
+import { AmmoSet } from "../ammo/ammo.types"
 import { DbWeapon, ItemInterface } from "../objects.types"
 import { MALUS_PER_MISSING_STRENGTH } from "./weapons-const"
 import { DbWeaponData, WeaponData, WeaponId, WeaponTagId } from "./weapons.types"
@@ -44,23 +49,28 @@ export default class Weapon implements ItemInterface {
     this.inMagazine = this.data.ammoType !== null ? inMagazine : null
   }
 
-  getSkillScore(char: Playable) {
+  getSkillScore(abilities: Abilities) {
     const { isTwoHanded, minStrength } = this.data
-    const baseScore = char.skills.curr[this.data.skillId]
+    const baseScore = abilities.skills.curr[this.data.skillId]
 
     const weaponKnowledges = this.data.knowledges
-    const { innateSymptoms, knowledgesRecord, traits, special } = char
+    const { knowledges, traits, special } = abilities
     const { strength } = special.curr
+    const traitsArray = Object.keys(abilities.traits ?? {})
+    const perksArray = Object.keys(abilities.perks ?? {})
+    const traitsSymptoms = traitsArray.map(t => traitsMap[t as TraitId].symptoms)
+    const perksSymptoms = perksArray.map(t => perksMap[t as PerkId].symptoms)
+    const innateSymptoms = [...traitsSymptoms, ...perksSymptoms].flat()
 
     const knowledgesBonus = weaponKnowledges.reduce((acc, curr: KnowledgeId) => {
-      const knowledgeLevel = knowledgesRecord[curr]
+      const knowledgeLevel = knowledges[curr]
       const knowledgeBonus = knowledgeLevels.find(el => el.id === knowledgeLevel)?.bonus || 0
       const innateBonus = getModAttribute(innateSymptoms, curr)
       return acc + knowledgeBonus + innateBonus
     }, 0)
 
     let charTraitSKillModifier = 0
-    if (traits?.find(t => t.id === "lateralized")) {
+    if (traits.lateralized) {
       const { TWO_HANDED_WEAPONS_MOD, ONE_HANDED_WEAPONS_MOD } = traitsMap.lateralized.consts
       charTraitSKillModifier = isTwoHanded ? TWO_HANDED_WEAPONS_MOD : ONE_HANDED_WEAPONS_MOD
     }
@@ -76,6 +86,10 @@ export default class Weapon implements ItemInterface {
       basicApCost = basicApCost !== null ? basicApCost + BASIC_AP_COST_MOD : null
     }
     return { basicApCost, specialApCost }
+  }
+
+  getAmmoCount(ammo: AmmoSet) {
+    return this.data.ammoType ? ammo[this.data.ammoType] : null
   }
 
   // getAttacks() {}

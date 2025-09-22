@@ -1,8 +1,8 @@
 import React from "react"
 import { PressableProps, View } from "react-native"
 
+import Effect from "lib/character/effects/Effect"
 import { changeableAttributesMap } from "lib/character/effects/changeable-attr"
-import { Effect } from "lib/character/effects/effects.types"
 
 import DeleteInput from "components/DeleteInput"
 import ListLabel from "components/ListLabel"
