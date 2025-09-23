@@ -1,6 +1,8 @@
-import { ReactNode, createContext, useContext, useMemo, useState } from "react"
+import { ReactNode, useState } from "react"
 import { Platform } from "react-native"
 
+import { useQueries } from "@tanstack/react-query"
+import { useSub } from "lib/shared/db/useSub"
 import Toast from "react-native-toast-message"
 
 import Txt from "components/Txt"
@@ -8,120 +10,50 @@ import { useSquad } from "contexts/SquadContext"
 import LoadingScreen from "screens/LoadingScreen"
 import { getDDMMYYYY, getHHMM } from "utils/date"
 
-import AbilitiesProvider, {
-  useAbilitiesQuery,
-  useSubAbilities
-} from "./abilities/abilities-provider"
-import Effect from "./effects/Effect"
-import { useEffectsQuery, useSubEffects } from "./effects/sub-effects"
-import Health from "./health/Health"
-import { useHealthQuery, useSubHealth } from "./health/sub-health"
-import { DbCharMeta } from "./meta/meta"
-import { useCharInfoQuery, useSubCharInfo } from "./meta/sub-meta"
-import Progress from "./progress/Progress"
-import { useExpQuery, useSubExp } from "./sub-exp"
+import AbilitiesProvider, { getAbilitiesOptions } from "./abilities/abilities-provider"
+import { EffectsProvider, getEffectsOptions } from "./effects/effects-provider"
+import { HealthProvider, getHealthOptions } from "./health/health-provider"
+import { CharInfoProvider, getCharInfoOptions } from "./meta/meta-provider"
+import { ProgressProvider, getExpOptions } from "./progress/progress-provider"
 
 function CharSubsProvider({ children, charId }: { children: ReactNode; charId: string }) {
-  useSubCharInfo(charId)
-  const charInfoReq = useCharInfoQuery(charId)
+  const charInfoOptions = getCharInfoOptions(charId)
+  useSub(charInfoOptions.queryKey.join("/"))
 
-  useSubAbilities(charId)
-  const abilitiesReq = useAbilitiesQuery(charId)
+  const abilitiesOptions = getAbilitiesOptions(charId)
+  useSub(abilitiesOptions.queryKey.join("/"))
 
-  useSubHealth(charId)
-  const healthReq = useHealthQuery(charId)
+  const healthOptions = getHealthOptions(charId)
+  useSub(healthOptions.queryKey.join("/"))
 
-  useSubEffects(charId)
-  const effectsReq = useEffectsQuery(charId)
+  const effectsOptions = getEffectsOptions(charId)
+  useSub(effectsOptions.queryKey.join("/"))
 
-  useSubExp(charId)
-  const expReq = useExpQuery(charId)
+  const expOptions = getExpOptions(charId)
+  useSub(expOptions.queryKey.join("/"))
 
-  const requests = [charInfoReq, abilitiesReq, healthReq, effectsReq, expReq]
+  const queries = useQueries({
+    queries: [charInfoOptions, abilitiesOptions, healthOptions, effectsOptions, expOptions],
+    combine: req => ({
+      isPending: req.some(r => r.isPending),
+      isError: req.some(r => r.isError),
+      data: req.map(r => r)
+    })
+  })
 
-  const isPending = requests.some(r => r.isPending)
-  const isError = requests.some(r => r.isError)
-
-  if (isError) return <Txt>Erreur lors de la récupération du personnage</Txt>
-  if (isPending) return <LoadingScreen />
+  if (queries.isError) return <Txt>Erreur lors de la récupération du personnage</Txt>
+  if (queries.isPending) return <LoadingScreen />
 
   return children
 }
 
-const CharInfoContext = createContext({} as DbCharMeta)
-
-function CharInfoProvider({ children, charId }: { children: ReactNode; charId: string }) {
-  const charInfo = useCharInfoQuery(charId).data
-  if (!charInfo) return <LoadingScreen />
-  return <CharInfoContext.Provider value={charInfo}>{children}</CharInfoContext.Provider>
-}
-
-export function useCharInfo() {
-  const info = useContext(CharInfoContext)
-  if (!info) throw new Error("CharInfoContext not found")
-  return info
-}
-
-const ExpContext = createContext({} as Progress)
-
-function ProgressProvider({ children, charId }: { children: ReactNode; charId: string }) {
-  const exp = useExpQuery(charId).data
-  const dbAbilities = useAbilitiesQuery(charId).data
-  const charInfo = useCharInfo()
-
-  const progress = useMemo(() => {
-    if (!dbAbilities || typeof exp !== "number") return undefined
-    return new Progress(exp, dbAbilities, charInfo)
-  }, [exp, dbAbilities, charInfo])
-
-  if (!progress) return <LoadingScreen />
-
-  return <ExpContext.Provider value={progress}>{children}</ExpContext.Provider>
-}
-
-export function useProgress() {
-  const exp = useContext(ExpContext)
-  if (!exp) throw new Error("ExpContext not found")
-  return exp
-}
-
-const HealthContext = createContext({} as Health)
-
-function HealthProvider({ children, charId }: { children: ReactNode; charId: string }) {
-  const healthReq = useHealthQuery(charId)
-  if (!healthReq.data) return <LoadingScreen />
-  return <HealthContext.Provider value={healthReq.data}>{children}</HealthContext.Provider>
-}
-
-export function useHealth() {
-  const health = useContext(HealthContext)
-  if (!health) throw new Error("HealthContext not found")
-  return health
-}
-
-const EffectsContext = createContext({} as Record<string, Effect>)
-
-function EffectsProvider({ children, charId }: { children: ReactNode; charId: string }) {
-  const effectsReq = useEffectsQuery(charId)
-  const { calculatedEffects } = useHealth()
-
-  const effects = useMemo(
-    () => ({ ...effectsReq.data, ...calculatedEffects }),
-    [effectsReq.data, calculatedEffects]
-  )
-
-  if (!effects) return <LoadingScreen />
-
-  return <EffectsContext.Provider value={effects}>{children}</EffectsContext.Provider>
-}
-
-export function usePCEffects() {
-  const effects = useContext(EffectsContext)
-  if (!effects) throw new Error("EffectsContext not found")
-  return effects
-}
-
-export function CharacterProvider({ children, charId }: { children: ReactNode; charId: string }) {
+export default function CharacterProvider({
+  children,
+  charId
+}: {
+  children: ReactNode
+  charId: string
+}) {
   const squad = useSquad()
   const [currDatetime, setCurrDatetime] = useState(squad.date.toJSON())
 

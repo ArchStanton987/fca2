@@ -2,8 +2,7 @@
 import { ReactNode, createContext, useContext, useMemo } from "react"
 
 import { queryOptions, useQuery } from "@tanstack/react-query"
-import { useItemSymptoms } from "lib/inventory/use-sub-inv-cat"
-import { useSub } from "lib/shared/db/useSub"
+import { useItemSymptoms } from "lib/inventory/use-cases/get-item-symptoms"
 
 import LoadingScreen from "screens/LoadingScreen"
 
@@ -14,28 +13,14 @@ import { PerkId } from "./perks/perks.types"
 import traitsMap from "./traits/traits"
 import { TraitId } from "./traits/traits.types"
 
-const getAbilitiesOptions = (charId: string) =>
+export const getAbilitiesOptions = (charId: string) =>
   queryOptions({
     queryKey: ["v3", "playables", charId, "abilities"],
     enabled: charId !== "",
     queryFn: () => new Promise<DbAbilities>(() => {})
   })
 
-export function useSubAbilities(charId: string) {
-  const path = getAbilitiesOptions(charId).queryKey.join("/")
-  useSub(path)
-}
-export function useAbilitiesQuery(charId: string) {
-  return useQuery(getAbilitiesOptions(charId))
-}
-
 const AbilitiesContext = createContext({} as Abilities)
-
-export function useAbilities() {
-  const abilities = useContext(AbilitiesContext)
-  if (!abilities) throw new Error("AbilitiesContext not found")
-  return abilities
-}
 
 export default function AbilitiesProvider({
   children,
@@ -44,7 +29,7 @@ export default function AbilitiesProvider({
   children: ReactNode
   charId: string
 }) {
-  const abilitiesReq = useAbilitiesQuery(charId)
+  const abilitiesReq = useQuery(getAbilitiesOptions(charId))
   const symptomsReq = useItemSymptoms(charId)
 
   const abilities = useMemo(() => {
@@ -62,4 +47,10 @@ export default function AbilitiesProvider({
   if (!abilities) return <LoadingScreen />
 
   return <AbilitiesContext.Provider value={abilities}>{children}</AbilitiesContext.Provider>
+}
+
+export function useAbilities() {
+  const abilities = useContext(AbilitiesContext)
+  if (!abilities) throw new Error("AbilitiesContext not found")
+  return abilities
 }

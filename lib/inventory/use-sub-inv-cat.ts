@@ -1,8 +1,7 @@
 import { useCallback } from "react"
 
 import { queryOptions, useQueries, useQuery } from "@tanstack/react-query"
-import { useCharInfo } from "lib/character/character-provider"
-import { Symptom } from "lib/character/effects/symptoms.type"
+import { useCharInfo } from "lib/character/meta/meta-provider"
 import { critters } from "lib/npc/const/npc-templates"
 import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
 import ammoMap from "lib/objects/data/ammo/ammo"
@@ -52,7 +51,7 @@ const getInvOptions = <K extends keyof DbInventory, T>(charId: string, invElemen
 
 export type Item = Clothing | Consumable | MiscObject | Weapon
 
-const getItemsOptions = (charId: string) =>
+export const getItemsOptions = (charId: string) =>
   getInvOptions<"items", Record<string, Item>>(charId, "items")
 const getAmmoOptions = (charId: string) => getInvOptions<"ammo", AmmoSet>(charId, "ammo")
 const getCapsOptions = (charId: string) => getInvOptions<"caps", number>(charId, "caps")
@@ -205,14 +204,4 @@ export function useCarry(charId: string) {
       )
     })
   })
-}
-
-const getItemSymptoms = (items: Record<string, Item>) =>
-  Object.values(items).reduce((acc, item) => {
-    if (item.category === "weapons" || item.category === "consumables") return acc
-    return item.isEquipped ? [...acc, ...item.data.symptoms] : acc
-  }, [] as Symptom[])
-
-export function useItemSymptoms(charId: string) {
-  return useQuery({ ...getItemsOptions(charId), select: getItemSymptoms })
 }
