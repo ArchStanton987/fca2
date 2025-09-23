@@ -2,6 +2,7 @@ import { TouchableOpacity } from "react-native"
 
 import { router } from "expo-router"
 
+import { useCharInfo, useProgress } from "lib/character/character-provider"
 import { getLevelAndThresholds } from "lib/character/status/status-calc"
 
 import HeaderElement from "components/Header/HeaderElement"
@@ -9,14 +10,13 @@ import ProgressionBar from "components/ProgressionBar/ProgressionBar"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import routes from "constants/routes"
-import { useCharacter } from "contexts/CharacterContext"
 import { useSquad } from "contexts/SquadContext"
 import { UpdateStatusModalParams } from "screens/MainTabs/modals/UpdateStatusModal/UpdateStatusModal.params"
 
 export default function HeaderProgression() {
   const { squadId } = useSquad()
-  const { charId, status } = useCharacter()
-  const { exp } = status
+  const { charId } = useCharInfo()
+  const { exp } = useProgress()
 
   const { level, prev, next } = getLevelAndThresholds(exp)
 

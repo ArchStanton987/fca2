@@ -2,6 +2,7 @@ import { ReactNode } from "react"
 
 import { Redirect } from "expo-router"
 
+import { useCharInfo } from "lib/character/character-provider"
 import {
   getDefaultPlayingId,
   getInitiativePrompts,
@@ -10,7 +11,6 @@ import {
 
 import List from "components/List"
 import routes from "constants/routes"
-import { useCharacter } from "contexts/CharacterContext"
 import { useActionActorId, useActionSubtype, useActionType } from "providers/ActionFormProvider"
 import { useCombatState } from "providers/CombatStateProvider"
 import { useCombatStatus } from "providers/CombatStatusProvider"
@@ -40,21 +40,22 @@ function SlideList() {
 }
 
 function WithActionRedirections({ children }: { children: ReactNode }) {
-  const char = useCharacter()
+  const charInfo = useCharInfo()
+  const { charId } = charInfo
   const { action, actorIdOverride } = useCombatState()
   const contendersCombatStatus = useCombatStatuses()
   const combatStatus = useCombatStatus()
 
-  const prompts = getInitiativePrompts(char.charId, contendersCombatStatus)
+  const prompts = getInitiativePrompts(charId, contendersCombatStatus)
   if (prompts.playerShouldRollInitiative) return <InitiativeScreen />
   if (prompts.shouldWaitOthers) return <WaitInitiativeScreen />
 
   const defaultPlayingId = getDefaultPlayingId(contendersCombatStatus)
-  const isDefaultPlayer = typeof defaultPlayingId === "string" && defaultPlayingId === char.charId
-  const isOverrideId = actorIdOverride === char.charId
+  const isDefaultPlayer = typeof defaultPlayingId === "string" && defaultPlayingId === charId
+  const isOverrideId = actorIdOverride === charId
   const isPlaying = isOverrideId || isDefaultPlayer
 
-  const canReact = getPlayerCanReact(char, combatStatus, action)
+  const canReact = getPlayerCanReact(charInfo, combatStatus, action)
   if (canReact) return <Redirect href={{ pathname: routes.combat.reaction }} />
 
   if (!isPlaying) return <ActionUnavailableScreen />

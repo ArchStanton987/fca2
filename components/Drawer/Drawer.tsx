@@ -2,13 +2,14 @@ import { TouchableHighlight } from "react-native"
 
 import { router, useSegments } from "expo-router"
 
+import { useCharInfo, useProgress } from "lib/character/character-provider"
+
 import List from "components/List"
 import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import PlusIcon from "components/icons/PlusIcon"
 import routes, { charRoute } from "constants/routes"
-import { useCharacter } from "contexts/CharacterContext"
 import { useSquad } from "contexts/SquadContext"
 import { UpdateKnowledgesModalParams } from "screens/MainTabs/modals/UpdateKnowledgesModal/UpdateKnowledgesModal.params"
 import { toLocalParams } from "screens/ScreenParams"
@@ -25,13 +26,14 @@ export default function Drawer({ sectionId, navElements }: DrawerProps) {
   const segments = useSegments()
   const squad = useSquad()
   const { squadId } = squad
-  const { charId, progress, meta } = useCharacter()
+  const { charId, firstname } = useCharInfo()
 
+  const progress = useProgress()
   const { availableFreeKnowledgePoints, availableKnowledgePoints, availableSkillPoints } = progress
   const canAddSkill = availableSkillPoints > 0
   const canAddKnowledge = availableKnowledgePoints > 0 || availableFreeKnowledgePoints > 0
 
-  const charDisplayName = meta.firstname
+  const charDisplayName = firstname
 
   const toTabs = (path: string) => {
     router.push({

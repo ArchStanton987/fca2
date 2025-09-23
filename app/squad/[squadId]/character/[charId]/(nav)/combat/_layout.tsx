@@ -2,9 +2,10 @@ import { View } from "react-native"
 
 import { Stack } from "expo-router"
 
+import { useCharInfo } from "lib/character/character-provider"
+
 import Drawer from "components/Drawer/Drawer"
 import Spacer from "components/Spacer"
-import { useCharacter } from "contexts/CharacterContext"
 import { ActionFormProvider } from "providers/ActionFormProvider"
 import CombatProviders from "providers/CombatProviders"
 import { useCombatStatus } from "providers/CombatStatusProvider"
@@ -30,8 +31,7 @@ const getNav = (isGm: boolean, hasCombat: boolean) => {
 }
 
 export default function CombatLayout() {
-  const { meta } = useCharacter()
-  const { isNpc } = meta
+  const { isNpc } = useCharInfo()
   const { combatId } = useCombatStatus()
 
   const navElements = getNav(isNpc, combatId !== "")

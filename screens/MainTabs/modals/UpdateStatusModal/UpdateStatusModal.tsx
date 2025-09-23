@@ -3,6 +3,8 @@ import { TouchableOpacity, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useProgress } from "lib/character/character-provider"
+
 import AmountSelector from "components/AmountSelector"
 import List from "components/List"
 import ModalCta from "components/ModalCta/ModalCta"
@@ -13,7 +15,6 @@ import ViewSection from "components/ViewSection"
 import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import ModalBody from "components/wrappers/ModalBody"
-import { useCharacter } from "contexts/CharacterContext"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import { UpdateStatusModalParams } from "screens/MainTabs/modals/UpdateStatusModal/UpdateStatusModal.params"
 import {
@@ -29,15 +30,15 @@ const defaultState = { exp: { count: 0, initValue: 0 } }
 export default function UpdateStatusModal() {
   const useCases = useGetUseCases()
   const localParams = useLocalSearchParams() as SearchParams<UpdateStatusModalParams>
-  const { initCategory } = fromLocalParams(localParams)
+  const { initCategory, charId } = fromLocalParams(localParams)
+
+  const progress = useProgress()
 
   const [updateState, setUpdateState] = useState<UpdateStatusState>(defaultState)
   const [selectedItem, setSelectedItem] = useState<UpdatableStatusElement | null>(initCategory)
   const [selectedAmount, setSelectedAmount] = useState<number>(1)
 
-  const character = useCharacter()
-  const { status } = character
-  const currentValue = selectedItem ? status[selectedItem] : 0
+  const currentValue = selectedItem ? progress.exp : 0
   const currCount = selectedItem ? updateState[selectedItem].count : 0
   const newValue = currentValue + currCount
 
@@ -49,7 +50,8 @@ export default function UpdateStatusModal() {
   }
 
   const onPressConfirm = async () => {
-    await useCases.status.updateElement(character, "exp", newValue)
+    // await useCases.status.updateElement(character, "exp", newValue)
+    await useCases.character.updateExp({ charId, newExp: newValue })
     router.back()
   }
 

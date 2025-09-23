@@ -8,8 +8,9 @@ import { Skill, SkillId } from "lib/character/abilities/skills/skills.types"
 import { CombatStatus } from "lib/character/combat-status/combat-status.types"
 import { BodyPart, LimbsHp } from "lib/character/health/health-types"
 import { limbsMap } from "lib/character/health/healthMap"
-import { withDodgeSpecies } from "lib/character/meta/meta"
+import { DbCharMeta, withDodgeSpecies } from "lib/character/meta/meta"
 import Inventory from "lib/objects/Inventory"
+import Clothing from "lib/objects/data/clothings/Clothing"
 import { ClothingData } from "lib/objects/data/clothings/clothings.types"
 import { Consumable } from "lib/objects/data/consumables/consumables.types"
 import { DamageTypeId, Weapon } from "lib/objects/data/weapons/weapons.types"
@@ -199,11 +200,13 @@ type DamageEntry = {
   damageType: DamageTypeId
 }
 
-export const getRealDamage = (char: Playable, damage: DamageEntry) => {
+export const getRealDamage = (
+  targetEquipedClothings: Record<string, Clothing>,
+  damage: DamageEntry
+) => {
   const { rawDamage, damageLocalization, damageType } = damage
   let realDamage = rawDamage
-  const targetCharClothings = char.equipedObjects.clothings
-  const relatedClothings = Object.values(targetCharClothings).filter(c =>
+  const relatedClothings = Object.values(targetEquipedClothings).filter(c =>
     c.data.protects.includes(bodyPartMatch[damageLocalization])
   )
 
@@ -272,12 +275,12 @@ export const getRollFinalScore = (roll: Roll) => {
   return sumAbilities - dice + bonus - targetArmorClass - difficulty
 }
 
-export const getPlayerCanReact = (char: Playable, combatStatus: CombatStatus, action: Action) => {
+export const getPlayerCanReact = (info: DbCharMeta, combatStatus: CombatStatus, action: Action) => {
   if (!action) return false
 
-  if (!withDodgeSpecies.includes(char.meta.speciesId)) return false
+  if (!withDodgeSpecies.includes(info.speciesId)) return false
 
-  const playerIsTarget = action.targetId === char.charId
+  const playerIsTarget = action.targetId === info.charId
   if (!playerIsTarget) return false
 
   const { currAp } = combatStatus

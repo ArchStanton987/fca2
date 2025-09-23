@@ -3,20 +3,21 @@ import { TouchableOpacity } from "react-native"
 import { router } from "expo-router"
 
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
+import { useCharInfo, useHealth } from "lib/character/character-provider"
 import { radStates } from "lib/character/health/health.const"
 
 import HeaderElement from "components/Header/HeaderElement"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import routes from "constants/routes"
-import { useCharacter } from "contexts/CharacterContext"
 import { useSquad } from "contexts/SquadContext"
 import { UpdateHealthModalParams } from "screens/MainTabs/modals/UpdateHealthModal/UpdateHealthModal.params"
 import colors from "styles/colors"
 
 export default function HeaderRads() {
   const { squadId } = useSquad()
-  const { health, charId } = useCharacter()
+  const { charId } = useCharInfo()
+  const health = useHealth()
 
   const getColor = () => {
     const radState = radStates.find(state => health.rads >= state.threshold)

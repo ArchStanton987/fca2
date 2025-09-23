@@ -1,3 +1,4 @@
+ajouter charId dans meta
 créer branche depuis avant commit massif
 upgrade item selector (no category)
 amélio perf action

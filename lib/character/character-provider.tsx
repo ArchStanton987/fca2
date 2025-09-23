@@ -1,7 +1,6 @@
 import { ReactNode, createContext, useContext, useMemo, useState } from "react"
 import { Platform } from "react-native"
 
-import { useItemSymptoms } from "lib/inventory/use-sub-inv-cat"
 import Toast from "react-native-toast-message"
 
 import Txt from "components/Txt"
@@ -9,12 +8,10 @@ import { useSquad } from "contexts/SquadContext"
 import LoadingScreen from "screens/LoadingScreen"
 import { getDDMMYYYY, getHHMM } from "utils/date"
 
-import Abilities from "./abilities/Abilities"
-import perksMap from "./abilities/perks/perks"
-import { PerkId } from "./abilities/perks/perks.types"
-import { useAbilitiesQuery, useSubAbilities } from "./abilities/sub-abilities"
-import traitsMap from "./abilities/traits/traits"
-import { TraitId } from "./abilities/traits/traits.types"
+import AbilitiesProvider, {
+  useAbilitiesQuery,
+  useSubAbilities
+} from "./abilities/abilities-provider"
 import Effect from "./effects/Effect"
 import { useEffectsQuery, useSubEffects } from "./effects/sub-effects"
 import Health from "./health/Health"
@@ -86,35 +83,6 @@ export function useProgress() {
   const exp = useContext(ExpContext)
   if (!exp) throw new Error("ExpContext not found")
   return exp
-}
-
-const AbilitiesContext = createContext({} as Abilities)
-
-export function useAbilities() {
-  const abilities = useContext(AbilitiesContext)
-  if (!abilities) throw new Error("AbilitiesContext not found")
-  return abilities
-}
-
-function AbilitiesProvider({ children, charId }: { children: ReactNode; charId: string }) {
-  const abilitiesReq = useAbilitiesQuery(charId)
-  const symptomsReq = useItemSymptoms(charId)
-
-  const abilities = useMemo(() => {
-    if (!abilitiesReq.data) return undefined
-
-    const traits = Object.keys(abilitiesReq.data?.traits ?? {})
-    const perks = Object.keys(abilitiesReq.data?.perks ?? {})
-    const traitsSymptoms = traits.map(t => traitsMap[t as TraitId].symptoms)
-    const perksSymptoms = perks.map(t => perksMap[t as PerkId].symptoms)
-    const innateSymptoms = [...traitsSymptoms, ...perksSymptoms].flat()
-
-    return new Abilities(abilitiesReq.data, innateSymptoms, symptomsReq.data ?? [])
-  }, [abilitiesReq.data, symptomsReq.data])
-
-  if (!abilities) return <LoadingScreen />
-
-  return <AbilitiesContext.Provider value={abilities}>{children}</AbilitiesContext.Provider>
 }
 
 const HealthContext = createContext({} as Health)

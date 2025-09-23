@@ -48,12 +48,13 @@ import { DbStatus } from "./status/status.types"
 export type DbChar = {
   abilities: DbAbilities
   effects?: DbEffects
-  equipedObj?: DbEquipedObjects
-  status: DbStatus
+  // equipedObj?: DbEquipedObjects
+  // status: DbStatus
   health: DbHealth
   combatStatus: DbCombatStatus
   meta: DbCharMeta
   combats?: Record<string, string>
+  exp: number
 } & { inventory: DbInventory }
 
 export default class Character implements Playable {

@@ -3,6 +3,7 @@ import { TouchableOpacity, TouchableOpacityProps, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useCaps } from "lib/inventory/inventory-provider"
 import { AmmoType } from "lib/objects/data/ammo/ammo.types"
 import { DbInventory } from "lib/objects/data/objects.types"
 
@@ -18,7 +19,6 @@ import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import ModalBody from "components/wrappers/ModalBody"
 import routes from "constants/routes"
-import { useInventory } from "contexts/InventoryContext"
 import { useUpdateObjects } from "contexts/UpdateObjectsContext"
 import useCreatedElements from "hooks/context/useCreatedElements"
 import { UpdateObjectsModalParams } from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.params"
@@ -65,8 +65,7 @@ export default function UpdateObjectsModal() {
   const [selectedAmount, setSelectedAmount] = useState<number>(1)
   const [searchInput, setSearchInput] = useState("")
 
-  const inventory = useInventory()
-  const { caps } = inventory
+  const caps = useCaps()
 
   const { state, dispatch } = useUpdateObjects()
 

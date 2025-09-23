@@ -5,6 +5,7 @@ import { Redirect } from "expo-router"
 
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import Slider from "@react-native-community/slider"
+import { useCharInfo } from "lib/character/character-provider"
 import { ActionTypeId, withRollActionsTypes } from "lib/combat/const/actions"
 import difficultyArray from "lib/combat/const/difficulty"
 import { getDefaultPlayingId } from "lib/combat/utils/combat-utils"
@@ -15,7 +16,6 @@ import Section from "components/Section"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import routes from "constants/routes"
-import { useCharacter } from "contexts/CharacterContext"
 import { useCombat } from "providers/CombatProvider"
 import { useCombatState } from "providers/CombatStateProvider"
 import { useCombatStatuses } from "providers/CombatStatusesProvider"
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
 export default function GMActionsScreen() {
   const useCases = useGetUseCases()
   const combat = useCombat()
-  const { meta, charId } = useCharacter()
+  const { isNpc, squadId, charId } = useCharInfo()
   const contenders = useContenders()
   const combatStatuses = useCombatStatuses()
   const { action, actorIdOverride } = useCombatState()
@@ -71,12 +71,8 @@ export default function GMActionsScreen() {
     useCases.combat.resetDifficulty({ combatId: combat.id })
   }
 
-  if (!meta.isNpc)
-    return (
-      <Redirect
-        href={{ pathname: routes.combat.index, params: { charId, squadId: meta.squadId } }}
-      />
-    )
+  if (!isNpc)
+    return <Redirect href={{ pathname: routes.combat.index, params: { charId, squadId } }} />
   if (combat === null)
     return (
       <DrawerPage>

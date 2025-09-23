@@ -1,10 +1,37 @@
-import { HealthStatusId, HealthType } from "./health-types"
-import { LimbData, LimbId } from "./limbs"
+import { EffectId } from "../effects/effects.types"
+import { HealthStatusId } from "./health-types"
+
+export type LimbId =
+  // human
+  | "head"
+  | "leftTorso"
+  | "rightTorso"
+  | "leftArm"
+  | "rightArm"
+  | "leftLeg"
+  | "rightLeg"
+  | "groin"
+  // small critt
+  | "body"
+  | "tail"
+
+export interface LimbData {
+  id: LimbId
+  // hp: number
+  maxHp: number
+  label: string
+  // short: string
+  crippledEffectId: EffectId
+  aim: {
+    aimMalus: number
+    critBonus: number
+  }
+}
 
 export const limbsMap: Record<LimbId, LimbData> = {
   head: {
     id: "head",
-    cripledEffectId: "crippledHead",
+    crippledEffectId: "crippledHead",
     label: "Tête",
     maxHp: 15,
     aim: {
@@ -14,7 +41,7 @@ export const limbsMap: Record<LimbId, LimbData> = {
   },
   leftArm: {
     id: "leftArm",
-    cripledEffectId: "crippledLeftArm",
+    crippledEffectId: "crippledLeftArm",
     label: "Bras gauche",
     maxHp: 20,
     aim: {
@@ -24,7 +51,7 @@ export const limbsMap: Record<LimbId, LimbData> = {
   },
   rightArm: {
     id: "rightArm",
-    cripledEffectId: "crippledRightArm",
+    crippledEffectId: "crippledRightArm",
     label: "Bras droit",
     maxHp: 20,
     aim: {
@@ -34,7 +61,7 @@ export const limbsMap: Record<LimbId, LimbData> = {
   },
   leftTorso: {
     id: "leftTorso",
-    cripledEffectId: "crippledLeftTorso",
+    crippledEffectId: "crippledLeftTorso",
     label: "Torse gauche",
     maxHp: 25,
     aim: {
@@ -44,7 +71,7 @@ export const limbsMap: Record<LimbId, LimbData> = {
   },
   rightTorso: {
     id: "rightTorso",
-    cripledEffectId: "crippledRightTorso",
+    crippledEffectId: "crippledRightTorso",
     label: "Torse droit",
     maxHp: 30,
     aim: {
@@ -81,13 +108,33 @@ export const limbsMap: Record<LimbId, LimbData> = {
       aimMalus: 10,
       critBonus: 10
     }
+  },
+  body: {
+    id: "body",
+    crippledEffectId: "crippledBody",
+    label: "Jambe droite",
+    maxHp: 20,
+    aim: {
+      aimMalus: 10,
+      critBonus: 10
+    }
+  },
+  tail: {
+    id: "tail",
+    crippledEffectId: "crippledTail",
+    label: "Jambe droite",
+    maxHp: 20,
+    aim: {
+      aimMalus: 10,
+      critBonus: 10
+    }
   }
 }
 
 export const limbsDefault = Object.values(limbsMap).reduce((acc, curr) => {
-  acc[curr.id] = curr.maxValue
+  acc[curr.id] = curr.maxHp
   return acc
-}, {} as Record<LimbHpId, number>)
+}, {} as Record<LimbId, number>)
 
 const healthMap: Record<HealthStatusId, HealthType> = {
   headHp: {

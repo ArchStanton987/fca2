@@ -2,12 +2,13 @@ import { TouchableOpacity } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useHealth } from "lib/character/character-provider"
+
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import ProgressionBar from "components/ProgressionBar/ProgressionBar"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import routes from "constants/routes"
-import { useCharacter } from "contexts/CharacterContext"
 import { UpdateHealthModalParams } from "screens/MainTabs/modals/UpdateHealthModal/UpdateHealthModal.params"
 import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
@@ -16,7 +17,7 @@ import HeaderElement from "../HeaderElement"
 
 export default function HeaderHp() {
   const { squadId, charId } = useLocalSearchParams() as SearchParams<DrawerParams>
-  const { health } = useCharacter()
+  const health = useHealth()
 
   const onPress = () => {
     const pathname = routes.modal.updateHealth
@@ -25,8 +26,8 @@ export default function HeaderHp() {
   }
 
   const getColor = () => {
-    if (health.hp <= 0) return colors.red
-    const currHpPercent = (health.hp / health.maxHp) * 100
+    if (health.currHp <= 0) return colors.red
+    const currHpPercent = (health.currHp / health.maxHp) * 100
     if (currHpPercent < 25) return colors.orange
     if (currHpPercent < 50) return colors.yellow
     return colors.secColor
@@ -37,11 +38,11 @@ export default function HeaderHp() {
       <HeaderElement style={{ justifyContent: "flex-end", alignItems: "center" }}>
         <Txt style={{ fontSize: 12, color: getColor() }}>PV:</Txt>
         <Txt style={{ fontSize: 12, color: getColor() }}>
-          {health.hp}/{health.maxHp}
+          {health.currHp}/{health.maxHp}
         </Txt>
         <Spacer x={5} />
         <ProgressionBar
-          value={health.hp}
+          value={health.currHp}
           min={0}
           max={health.maxHp}
           color={getColor()}

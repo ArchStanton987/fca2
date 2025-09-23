@@ -23,6 +23,7 @@ export const withDodgeSpecies: SpeciesId[] = ["human", "ghoul", "mutie", "halfMu
 export type SpeciesId = keyof typeof species
 
 export type DbCharMeta = {
+  charId: string
   speciesId: SpeciesId
   templateId: "player" | keyof typeof humanTemplates | keyof typeof robots | keyof typeof beasts
   background: BackgroundId

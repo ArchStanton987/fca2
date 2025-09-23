@@ -4,7 +4,7 @@ import { useCallback } from "react"
 import { queryOptions, useQuery } from "@tanstack/react-query"
 import { useSub } from "lib/shared/db/useSub"
 
-import { useAbilitiesQuery } from "../abilities/sub-abilities"
+import { useAbilitiesQuery } from "../abilities/abilities-provider"
 import { useExpQuery } from "../sub-exp"
 import Health, { DbHealth } from "./Health"
 

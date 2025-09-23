@@ -1,15 +1,17 @@
+import { useAbilities } from "lib/character/abilities/abilities-provider"
+import { useCharInfo } from "lib/character/character-provider"
 import { useCarry } from "lib/inventory/use-sub-inv-cat"
 
 import HeaderElement from "components/Header/HeaderElement"
 import Txt from "components/Txt"
-import { useCharacter } from "contexts/CharacterContext"
 import { getPlaceColor } from "screens/MainTabs/RecapScreen/EquipedObjSection.utils"
 
 export default function HeaderPlace() {
-  const character = useCharacter()
-  const { maxPlace } = character.secAttr.curr
-  const carry = useCarry(character.charId)
+  const { charId } = useCharInfo()
+  const { secAttr } = useAbilities()
+  const carry = useCarry(charId)
   const { place } = carry.data
+  const { maxPlace } = secAttr.curr
 
   const color = getPlaceColor(place, maxPlace)
 

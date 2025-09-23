@@ -1,27 +1,23 @@
 import { Redirect } from "expo-router"
 
+import { useCharInfo } from "lib/character/character-provider"
 import GMDamageForm from "lib/combat/ui/damage-form/GMDamageForm"
 import { getRealDamage } from "lib/combat/utils/combat-utils"
 
 import DrawerPage from "components/DrawerPage"
 import Txt from "components/Txt"
 import routes from "constants/routes"
-import { useCharacter } from "contexts/CharacterContext"
 import { useCombatState } from "providers/CombatStateProvider"
 import { useContenders } from "providers/ContendersProvider"
 import { DamageFormProvider } from "providers/DamageFormProvider"
 
 export default function GMDamage() {
-  const { meta, charId } = useCharacter()
+  const { charId, isNpc, squadId } = useCharInfo()
   const { action } = useCombatState()
   const contenders = useContenders()
 
-  if (!meta.isNpc)
-    return (
-      <Redirect
-        href={{ pathname: routes.combat.index, params: { charId, squadId: meta.squadId } }}
-      />
-    )
+  if (!isNpc)
+    return <Redirect href={{ pathname: routes.combat.index, params: { charId, squadId } }} />
 
   const {
     damageType,

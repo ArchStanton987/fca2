@@ -1,9 +1,9 @@
 import { ReactNode } from "react"
 
+import { useCharInfo } from "lib/character/character-provider"
 import { getInitiativePrompts } from "lib/combat/utils/combat-utils"
 
 import List from "components/List"
-import { useCharacter } from "contexts/CharacterContext"
 import { useActionActorId, useActionSubtype, useActionType } from "providers/ActionFormProvider"
 import { useCombat } from "providers/CombatProvider"
 import { useCombatStatuses } from "providers/CombatStatusesProvider"
@@ -32,13 +32,13 @@ function SlideList() {
 }
 
 function WithActionRedirections({ children }: { children: ReactNode }) {
-  const char = useCharacter()
+  const { charId } = useCharInfo()
   const combat = useCombat()
   const combatStatuses = useCombatStatuses()
 
   if (!combat?.id) return <SlideError error={slideErrors.noCombatError} />
 
-  const prompts = getInitiativePrompts(char.charId, combatStatuses)
+  const prompts = getInitiativePrompts(charId, combatStatuses)
   if (prompts.playerShouldRollInitiative) return <InitiativeScreen />
   if (prompts.shouldWaitOthers) return <WaitInitiativeScreen />
 

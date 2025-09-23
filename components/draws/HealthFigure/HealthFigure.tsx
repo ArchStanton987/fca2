@@ -3,14 +3,13 @@ import { Image, TouchableOpacity, View } from "react-native"
 
 import { router } from "expo-router"
 
-import { HealthStatusId } from "lib/character/health/health-types"
-import { limbsMap } from "lib/character/health/healthMap"
+import { useCharInfo, useHealth } from "lib/character/character-provider"
+import { LimbId, limbsMap } from "lib/character/health/healthMap"
 
 import pipboy from "assets/images/pipboy.png"
 import ProgressionBar from "components/ProgressionBar/ProgressionBar"
 import Spacer from "components/Spacer"
 import routes from "constants/routes"
-import { useCharacter } from "contexts/CharacterContext"
 import { useSquad } from "contexts/SquadContext"
 import colors from "styles/colors"
 
@@ -21,111 +20,82 @@ const smallBarProps = {
   width: 30
 }
 
+const getProgressionBarColor = (value: number, maxValue: number) => {
+  const currHpPercent = (value / maxValue) * 100
+  if (value <= 0) return colors.red
+  if (currHpPercent < 25) return colors.orange
+  if (currHpPercent < 50) return colors.yellow
+  return colors.secColor
+}
+
+type BarProps = {
+  limbId: LimbId
+  limbHp: number
+  onPress: (id: LimbId) => void
+}
+function Bar({ limbId, limbHp, onPress }: BarProps) {
+  return (
+    <TouchableOpacity onPress={() => onPress(limbId)}>
+      <ProgressionBar
+        max={limbsMap[limbId].maxHp}
+        min={0}
+        value={limbHp}
+        color={getProgressionBarColor(limbHp, limbsMap.head.maxHp)}
+        {...smallBarProps}
+      />
+    </TouchableOpacity>
+  )
+}
+
 export default function HealthFigure() {
   const { squadId } = useSquad()
-  const { health, charId } = useCharacter()
-  const { limbsHp } = health
+  const { charId } = useCharInfo()
+  const { limbs } = useHealth()
+  const { head, leftTorso, rightTorso, leftArm, rightArm, leftLeg, rightLeg, groin, body, tail } =
+    limbs
 
-  const onPressElement = (element: HealthStatusId) => {
+  const onPressElement = (element: LimbId) => {
     const pathname = routes.modal.updateHealth
     const params = { initElement: element, charId, squadId }
     router.push({ pathname, params })
   }
 
-  const getProgressionBarColor = (value: number, maxValue: number) => {
-    const currHpPercent = (value / maxValue) * 100
-    if (value <= 0) return colors.red
-    if (currHpPercent < 25) return colors.orange
-    if (currHpPercent < 50) return colors.yellow
-    return colors.secColor
-  }
-
   return (
     <View style={{ alignItems: "center" }}>
-      <TouchableOpacity onPress={() => onPressElement("head")}>
-        <ProgressionBar
-          max={limbsMap.headHp.maxValue}
-          min={0}
-          value={limbsHp.headHp}
-          color={getProgressionBarColor(limbsHp.headHp, limbsMap.headHp.maxValue)}
-          {...smallBarProps}
-        />
-      </TouchableOpacity>
+      {head !== undefined ? <Bar limbHp={head} limbId="head" onPress={onPressElement} /> : null}
       <Spacer y={5} />
       <View style={styles.armsContainer}>
-        <TouchableOpacity onPress={() => onPressElement("rightArm")}>
-          <ProgressionBar
-            {...smallBarProps}
-            max={limbsMap.rightArmHp.maxValue}
-            min={0}
-            value={limbsHp.rightArmHp}
-            color={getProgressionBarColor(limbsHp.rightArmHp, limbsMap.rightArmHp.maxValue)}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => onPressElement("leftArm")}>
-          <ProgressionBar
-            {...smallBarProps}
-            max={limbsMap.leftArmHp.maxValue}
-            min={0}
-            value={limbsHp.leftArmHp}
-            color={getProgressionBarColor(limbsHp.leftArmHp, limbsMap.leftArmHp.maxValue)}
-          />
-        </TouchableOpacity>
+        {rightArm !== undefined ? (
+          <Bar limbHp={rightArm} limbId="rightArm" onPress={onPressElement} />
+        ) : null}
+        {leftArm !== undefined ? (
+          <Bar limbHp={leftArm} limbId="leftArm" onPress={onPressElement} />
+        ) : null}
       </View>
       <TouchableOpacity onPress={() => onPressElement("leftTorso")}>
         <Image source={pipboy} style={styles.img} />
       </TouchableOpacity>
       <View style={styles.torsoContainer}>
-        <TouchableOpacity onPress={() => onPressElement("rightTorso")}>
-          <ProgressionBar
-            {...smallBarProps}
-            max={limbsMap.rightTorsoHp.maxValue}
-            min={0}
-            value={limbsHp.rightTorsoHp}
-            color={getProgressionBarColor(limbsHp.rightTorsoHp, limbsMap.rightTorsoHp.maxValue)}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => onPressElement("leftTorso")}>
-          <ProgressionBar
-            {...smallBarProps}
-            max={limbsMap.leftTorsoHp.maxValue}
-            min={0}
-            value={limbsHp.leftTorsoHp}
-            color={getProgressionBarColor(limbsHp.leftTorsoHp, limbsMap.leftTorsoHp.maxValue)}
-          />
-        </TouchableOpacity>
+        {rightTorso !== undefined ? (
+          <Bar limbHp={rightTorso} limbId="rightTorso" onPress={onPressElement} />
+        ) : null}
+        {leftTorso !== undefined ? (
+          <Bar limbHp={leftTorso} limbId="leftTorso" onPress={onPressElement} />
+        ) : null}
+        {body !== undefined ? <Bar limbHp={body} limbId="body" onPress={onPressElement} /> : null}
       </View>
 
       <View style={styles.legsContainer}>
-        <TouchableOpacity onPress={() => onPressElement("rightLeg")}>
-          <ProgressionBar
-            {...smallBarProps}
-            max={limbsMap.rightLegHp.maxValue}
-            min={0}
-            value={limbsHp.rightLegHp}
-            color={getProgressionBarColor(limbsHp.rightLegHp, limbsMap.rightLegHp.maxValue)}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => onPressElement("leftLeg")}>
-          <ProgressionBar
-            {...smallBarProps}
-            max={limbsMap.leftLegHp.maxValue}
-            min={0}
-            value={limbsHp.leftLegHp}
-            color={getProgressionBarColor(limbsHp.leftLegHp, limbsMap.leftLegHp.maxValue)}
-          />
-        </TouchableOpacity>
+        {leftLeg !== undefined ? (
+          <Bar limbHp={leftLeg} limbId="leftLeg" onPress={onPressElement} />
+        ) : null}
+        {rightLeg !== undefined ? (
+          <Bar limbHp={rightLeg} limbId="rightLeg" onPress={onPressElement} />
+        ) : null}
       </View>
       <Spacer y={5} />
-      <TouchableOpacity onPress={() => onPressElement("groin")}>
-        <ProgressionBar
-          {...smallBarProps}
-          max={limbsMap.groinHp.maxValue}
-          min={0}
-          value={limbsHp.groinHp}
-          color={getProgressionBarColor(limbsHp.groinHp, limbsMap.groinHp.maxValue)}
-        />
-      </TouchableOpacity>
+      {groin !== undefined ? <Bar limbHp={groin} limbId="groin" onPress={onPressElement} /> : null}
+      {tail !== undefined ? <Bar limbHp={tail} limbId="tail" onPress={onPressElement} /> : null}
     </View>
   )
 }

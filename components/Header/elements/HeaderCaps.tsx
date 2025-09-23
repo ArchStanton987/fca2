@@ -4,19 +4,19 @@ import { TouchableOpacity } from "react-native"
 import { router } from "expo-router"
 
 import { Image } from "expo-image"
+import { useCharInfo } from "lib/character/character-provider"
 import { useCaps } from "lib/inventory/inventory-provider"
 
 import capsIcon from "assets/images/caps-icon.png"
 import HeaderElement from "components/Header/HeaderElement"
 import Txt from "components/Txt"
 import routes from "constants/routes"
-import { useCharacter } from "contexts/CharacterContext"
 import { useSquad } from "contexts/SquadContext"
 import { UpdateObjectsModalParams } from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.params"
 
 export default function HeaderCaps() {
   const caps = useCaps()
-  const { charId } = useCharacter()
+  const { charId } = useCharInfo()
   const { squadId } = useSquad()
 
   const onPress = () => {

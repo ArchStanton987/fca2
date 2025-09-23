@@ -1,8 +1,9 @@
 import React, { memo, useState } from "react"
 import { ScrollView, View } from "react-native"
 
-import { Perk } from "lib/character/abilities/perks/perks.types"
-import { Trait } from "lib/character/abilities/traits/traits.types"
+import { useAbilities } from "lib/character/abilities/abilities-provider"
+import perksMap from "lib/character/abilities/perks/perks"
+import traitsMap from "lib/character/abilities/traits/traits"
 
 import DrawerPage from "components/DrawerPage"
 import List from "components/List"
@@ -10,63 +11,60 @@ import Section from "components/Section"
 import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { useCharacter } from "contexts/CharacterContext"
 import TraitPerkRow from "screens/MainTabs/PerksScreen/TraitPerkRow"
 import layout from "styles/layout"
 
 function PerksScreen() {
-  const { traits, perks } = useCharacter()
+  const { traits, perks } = useAbilities()
+  const [selectedElement, setSelectedElement] = useState<string | null>(null)
 
-  const [selectedElement, setSelectedElement] = useState<Perk | Trait | null>(null)
-
-  const onPressElement = (element: Perk | Trait) => {
-    setSelectedElement(prev => (prev?.id === element.id ? null : element))
+  const onPressElement = (id: string) => {
+    setSelectedElement(prev => (prev === id ? null : id))
   }
 
+  const description = selectedElement
+    ? { ...perksMap, ...traitsMap }?.[selectedElement]?.description
+    : null
   return (
     <DrawerPage>
       <View style={{ flex: 1 }}>
         <Section title="traits" style={{ minHeight: 80 }}>
-          {traits.length > 0 ? (
-            <List
-              data={traits}
-              keyExtractor={item => item.id}
-              renderItem={({ item }) => (
-                <TraitPerkRow
-                  trait={item}
-                  onPress={() => onPressElement(item)}
-                  isSelected={item.id === selectedElement?.id}
-                />
-              )}
-            />
-          ) : null}
+          <List
+            data={Object.values(traits)}
+            keyExtractor={t => t}
+            renderItem={({ item }) => (
+              <TraitPerkRow
+                trait={traitsMap[item]}
+                onPress={() => onPressElement(item)}
+                isSelected={item === selectedElement}
+              />
+            )}
+          />
         </Section>
 
         <Spacer y={layout.globalPadding} />
 
         <ScrollSection style={{ flex: 1, minHeight: 80 }} title="specs">
-          {perks.length > 0 ? (
-            <List
-              data={perks}
-              keyExtractor={item => item.id}
-              renderItem={({ item }) => {
-                const isSelected = item.id === selectedElement?.id
-                return (
-                  <TraitPerkRow
-                    isSelected={isSelected}
-                    trait={item}
-                    onPress={() => onPressElement(item)}
-                  />
-                )
-              }}
-            />
-          ) : null}
+          <List
+            data={Object.values(perks)}
+            keyExtractor={p => p}
+            renderItem={({ item }) => {
+              const isSelected = item === selectedElement
+              return (
+                <TraitPerkRow
+                  isSelected={isSelected}
+                  trait={perksMap[item]}
+                  onPress={() => onPressElement(item)}
+                />
+              )
+            }}
+          />
         </ScrollSection>
       </View>
       <Spacer x={10} />
       <Section title="description" style={{ width: 200 }}>
         <ScrollView>
-          <Txt>{selectedElement?.description}</Txt>
+          <Txt>{description}</Txt>
           <Spacer y={10} />
         </ScrollView>
       </Section>

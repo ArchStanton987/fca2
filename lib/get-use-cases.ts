@@ -7,6 +7,7 @@ import addAdditionalEffect from "./character/effects/add-additional-effect"
 import getEffectsUseCases from "./character/effects/effects-use-cases"
 import { DbEffectData } from "./character/effects/effects.types"
 import subAdditionalEffects from "./character/effects/sub-additional-effects"
+import updateExp, { UpdateExpParams } from "./character/progress/use-cases/update-exp"
 import getStatusUseCases from "./character/status/status-use-cases"
 import subCharacter from "./character/use-cases/sub-character"
 import subCharacterChild, {
@@ -107,7 +108,8 @@ export default function getUseCases(
       sub: (params: PlayableParams) => subCharacter(dbType)(params),
       subChild: <T extends keyof DbChar>(params: SubCharacterChildParams<T>) =>
         subCharacterChild(dbType)(params),
-      updateCombatStatus: (params: UpdateCombatStatusParams) => updateCombatStatus(dbType)(params)
+      updateCombatStatus: (params: UpdateCombatStatusParams) => updateCombatStatus(dbType)(params),
+      updateExp: (params: UpdateExpParams) => updateExp(dbType)(params)
     }
     // effects: {
     //   addEffectsToChar: (params: AddEffectsParams) => addEffects(dbType, createdElements)(params)
