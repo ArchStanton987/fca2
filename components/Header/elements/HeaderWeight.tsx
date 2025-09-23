@@ -1,14 +1,15 @@
+import { useAbilities } from "lib/character/abilities/abilities-provider"
+import { useCharInfo } from "lib/character/meta/meta-provider"
 import { useCarry } from "lib/inventory/use-sub-inv-cat"
 
 import HeaderElement from "components/Header/HeaderElement"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { useCharacter } from "contexts/CharacterContext"
 import { getWeightColor } from "screens/MainTabs/RecapScreen/EquipedObjSection.utils"
 
 export default function HeaderWeight() {
-  const character = useCharacter()
-  const { secAttr, charId } = character
+  const { secAttr } = useAbilities()
+  const { charId } = useCharInfo()
   const { normalCarryWeight, tempCarryWeight, maxCarryWeight } = secAttr.curr
   const carry = useCarry(charId)
   const { weight } = carry.data

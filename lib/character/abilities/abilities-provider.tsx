@@ -1,9 +1,14 @@
 /* eslint-disable import/prefer-default-export */
 import { ReactNode, createContext, useContext, useMemo } from "react"
 
-import { queryOptions, useQuery } from "@tanstack/react-query"
-import { useItemSymptoms } from "lib/inventory/use-cases/get-item-symptoms"
+import { queryOptions, useQueries, useQuery } from "@tanstack/react-query"
+import {
+  useContendersItemSymptoms,
+  useItemSymptoms
+} from "lib/inventory/use-cases/get-item-symptoms"
+import { useMultiSub } from "lib/shared/db/useSub"
 
+import { useCombat } from "providers/CombatProvider"
 import LoadingScreen from "screens/LoadingScreen"
 
 import Abilities from "./Abilities"
@@ -22,13 +27,7 @@ export const getAbilitiesOptions = (charId: string) =>
 
 const AbilitiesContext = createContext({} as Abilities)
 
-export default function AbilitiesProvider({
-  children,
-  charId
-}: {
-  children: ReactNode
-  charId: string
-}) {
+export function AbilitiesProvider({ children, charId }: { children: ReactNode; charId: string }) {
   const abilitiesReq = useQuery(getAbilitiesOptions(charId))
   const symptomsReq = useItemSymptoms(charId)
 
@@ -47,6 +46,59 @@ export default function AbilitiesProvider({
   if (!abilities) return <LoadingScreen />
 
   return <AbilitiesContext.Provider value={abilities}>{children}</AbilitiesContext.Provider>
+}
+
+const ContendersAbilitiesContext = createContext({} as Record<string, Abilities>)
+
+export function ContendersAbilitiesProvider({
+  children,
+  charId
+}: {
+  children: ReactNode
+  charId: string
+}) {
+  const combat = useCombat()
+  const contendersIds = useMemo(
+    () => combat?.contendersIds.filter(id => id === charId) ?? [],
+    [combat, charId]
+  )
+
+  const queries = contendersIds.map(id => getAbilitiesOptions(id))
+  useMultiSub(queries.map(q => ({ path: q.queryKey.join("/") })))
+
+  const contendersAbilities = useQueries({
+    queries,
+    combine: req => ({
+      isPending: req.some(r => r.isPending),
+      isError: req.some(r => r.isError),
+      data: Object.fromEntries(req.map((r, i) => [contendersIds[i], r.data]))
+    })
+  }).data
+
+  const contendersSymptoms = useContendersItemSymptoms(contendersIds).data
+
+  const abilities = useMemo(() => {
+    if (!contendersAbilities) return undefined
+    const result: Record<string, Abilities> = {}
+    Object.entries(contendersAbilities).forEach(([id, ab]) => {
+      if (!ab) return
+      const traits = Object.keys(ab?.traits ?? {})
+      const perks = Object.keys(ab?.perks ?? {})
+      const traitsSymptoms = traits.map(t => traitsMap[t as TraitId].symptoms)
+      const perksSymptoms = perks.map(t => perksMap[t as PerkId].symptoms)
+      const innateSymptoms = [...traitsSymptoms, ...perksSymptoms].flat()
+      result[id] = new Abilities(ab, innateSymptoms, contendersSymptoms[id])
+    })
+    return result
+  }, [contendersAbilities, contendersSymptoms])
+
+  if (!abilities) return <LoadingScreen />
+
+  return (
+    <ContendersAbilitiesContext.Provider value={abilities}>
+      {children}
+    </ContendersAbilitiesContext.Provider>
+  )
 }
 
 export function useAbilities() {
