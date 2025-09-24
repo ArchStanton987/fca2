@@ -1,6 +1,5 @@
-import Playable from "../Playable"
-import effectsMap from "./effects"
-import { getEffectLengthInMs } from "./effects-use-cases"
+import Abilities from "../abilities/Abilities"
+import Effect from "./Effect"
 import { DbEffect, DbEffectData, EffectData, EffectId } from "./effects.types"
 
 export default class EffectsMappers {
@@ -17,17 +16,16 @@ export default class EffectsMappers {
   }
 
   static toDb(
-    char: Playable,
+    traits: Abilities["traits"],
     effectId: EffectId,
-    startDate?: Date,
-    effectLengthInMs?: number,
-    withCreatedEffects: Record<EffectId, EffectData> = effectsMap
+    effectData: EffectData,
+    startDate: Date,
+    effectLengthInMs?: number
   ): DbEffect {
-    const refStartDate = startDate || char.date
-    const dbEffect: DbEffect = { id: effectId, startTs: refStartDate.toJSON() }
-    const lengthInMs = effectLengthInMs ?? getEffectLengthInMs(char, withCreatedEffects[effectId])
+    const dbEffect: DbEffect = { id: effectId, startTs: startDate.toJSON() }
+    const lengthInMs = effectLengthInMs ?? Effect.getEffectLengthInMs(traits, effectData)
     if (lengthInMs) {
-      dbEffect.endTs = new Date(refStartDate.getTime() + lengthInMs).toJSON()
+      dbEffect.endTs = new Date(startDate.getTime() + lengthInMs).toJSON()
     }
     return dbEffect
   }

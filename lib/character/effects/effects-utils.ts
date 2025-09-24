@@ -1,11 +1,12 @@
-import { Effect, EffectData, EffectId } from "lib/character/effects/effects.types"
+import { EffectData, EffectId } from "lib/character/effects/effects.types"
 import { getMissingHp } from "lib/character/health/health-calc"
 import { getHealthState } from "lib/character/health/health-utils"
-import { limbsMap, radStates } from "lib/character/health/healthMap"
+import { limbsMap } from "lib/character/health/healthMap"
 import { DbStatus } from "lib/character/status/status.types"
 
 import Playable from "../Playable"
-import getEffectsUseCases, { getEffectLengthInMs } from "./effects-use-cases"
+import Abilities from "../abilities/Abilities"
+import Effect from "./Effect"
 
 export const calculatedEffects: EffectData["type"][] = [
   "crippled",
@@ -14,13 +15,17 @@ export const calculatedEffects: EffectData["type"][] = [
   "withdrawal"
 ]
 
-export const getExpiringEffects = (char: Playable, refDate: Date) =>
-  char.effects.filter(effect => {
+export const getExpiringEffects = (
+  effects: Record<EffectId, Effect>,
+  traits: Abilities["traits"],
+  refDate: Date
+) =>
+  Object.values(effects).filter(effect => {
     const { startTs, endTs, data } = effect
     const { length } = data
     if (!startTs || !length || !effect.dbKey) return false
     if (endTs && endTs?.getTime() < refDate.getTime()) return true
-    const effectLengthInMs = getEffectLengthInMs(char, data)
+    const effectLengthInMs = Effect.getEffectLengthInMs(traits, data)
     if (!effectLengthInMs) return false
     return startTs.getTime() + effectLengthInMs < refDate.getTime()
   }) as Effect[]
@@ -35,8 +40,8 @@ export const getFollowingEffects = (
       const { data, startTs, endTs } = effect
       if (!data.nextEffectId || !data.length || !startTs) return false
       const nextEffect = allEffects[data.nextEffectId]
-      const prevEffectLengthInMs = getEffectLengthInMs(char, effect.data)
-      const nextEffectLengthInMs = getEffectLengthInMs(char, nextEffect)
+      const prevEffectLengthInMs = Effect.getEffectLengthInMs(char, effect.data)
+      const nextEffectLengthInMs = Effect.getEffectLengthInMs(char, nextEffect)
       if (!prevEffectLengthInMs || !nextEffectLengthInMs) return false
       const prevEffectEndTs = endTs?.getTime() || startTs.getTime() + prevEffectLengthInMs
       const nextEffectStartTs = prevEffectEndTs
@@ -47,7 +52,7 @@ export const getFollowingEffects = (
     .map(el => {
       const { data, startTs, endTs } = el
       if (!data.nextEffectId || !data.length || !startTs) return null
-      const prevEffectLengthInMs = getEffectLengthInMs(char, data)
+      const prevEffectLengthInMs = Effect.getEffectLengthInMs(char, data)
       if (!prevEffectLengthInMs) return null
       const prevEffectEndTs = endTs?.getTime() || startTs.getTime() + prevEffectLengthInMs
       return { effectId: data.nextEffectId, startDate: new Date(prevEffectEndTs) }
