@@ -1,6 +1,6 @@
 import { useQueries, useQuery } from "@tanstack/react-query"
 import { Symptom } from "lib/character/effects/symptoms.type"
-import { useMultiSub } from "lib/shared/db/useSub"
+import { useMultiSub, useSub } from "lib/shared/db/useSub"
 
 import { Item, getItemsOptions } from "../use-sub-inv-cat"
 
@@ -11,7 +11,9 @@ const getItemSymptoms = (items: Record<string, Item>) =>
   }, [] as Symptom[])
 
 export function useItemSymptoms(charId: string) {
-  return useQuery({ ...getItemsOptions(charId), select: getItemSymptoms })
+  const options = getItemsOptions(charId)
+  useSub(options.queryKey.join("/"))
+  return useQuery({ ...options, select: getItemSymptoms })
 }
 
 export function useContendersItemSymptoms(ids: string[]) {

@@ -6,7 +6,7 @@ import {
   useContendersItemSymptoms,
   useItemSymptoms
 } from "lib/inventory/use-cases/get-item-symptoms"
-import { useMultiSub } from "lib/shared/db/useSub"
+import { useMultiSub, useSub } from "lib/shared/db/useSub"
 
 import { useCombat } from "providers/CombatProvider"
 import LoadingScreen from "screens/LoadingScreen"
@@ -101,8 +101,29 @@ export function ContendersAbilitiesProvider({
   )
 }
 
-export function useAbilities() {
-  const abilities = useContext(AbilitiesContext)
-  if (!abilities) throw new Error("AbilitiesContext not found")
-  return abilities
+// export function useAbilities() {
+//   const abilities = useContext(AbilitiesContext)
+//   if (!abilities) throw new Error("AbilitiesContext not found")
+//   return abilities
+// }
+
+function useAbilities(): Abilities
+function useAbilities(charId: string): Abilities | undefined
+function useAbilities(charId?: string) {
+  const abilitiesOptions = getAbilitiesOptions(charId ?? "")
+  useSub(abilitiesOptions.queryKey.join("/"))
+  const dbAbilities = useQuery(abilitiesOptions)
+  const symptoms = useItemSymptoms(charId ?? "").data ?? []
+  const context = useContext(AbilitiesContext)
+  if (!context) throw new Error("AbilitiesContext not found")
+  if (!charId) return context
+
+  if (dbAbilities.isPending || dbAbilities.isError) return undefined
+
+  const traits = Object.keys(dbAbilities.data.traits ?? {})
+  const perks = Object.keys(dbAbilities.data.perks ?? {})
+  const traitsSymptoms = traits.map(t => traitsMap[t as TraitId].symptoms)
+  const perksSymptoms = perks.map(t => perksMap[t as PerkId].symptoms)
+  const innateSymptoms = [...traitsSymptoms, ...perksSymptoms].flat()
+  return new Abilities(dbAbilities.data, innateSymptoms, symptoms)
 }
