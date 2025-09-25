@@ -2,11 +2,12 @@ import { getRemainingTime } from "lib/common/utils/time-calc"
 
 import Abilities from "../abilities/Abilities"
 import effectsMap from "./effects"
-import { DbEffect, EffectData, EffectId } from "./effects.types"
+import { DbEffect, EffectData, EffectId, EffectType } from "./effects.types"
 
 export default class Effect {
   id: EffectId
   data: EffectData
+  type: EffectType
   dbKey?: string
   startTs?: Date
   endTs?: Date
@@ -27,6 +28,7 @@ export default class Effect {
   ) {
     this.id = payload.id
     this.data = allEffects[payload.id]
+    this.type = allEffects[payload.id].type
 
     let timeRemaining = null
     const { length } = allEffects[payload.id]

@@ -1,7 +1,10 @@
+import { getRandomArbitrary } from "lib/common/utils/dice-calc"
+
+import Abilities from "../abilities/Abilities"
 import { Special } from "../abilities/special/special.types"
 import Effect from "../effects/Effect"
 import { EffectId } from "../effects/effects.types"
-import { getMaxHP } from "./health-calc"
+import { getLevelAndThresholds } from "../status/status-calc"
 import { healthStates, radStates } from "./health.const"
 
 type LimbId =
@@ -35,7 +38,7 @@ type LimbData = {
   isVital: boolean
 }
 
-const limbsMap: Record<LimbId, LimbData> = {
+export const limbsMap: Record<LimbId, LimbData> = {
   head: {
     id: "head",
     crippledEffectId: "crippledHead",
@@ -121,23 +124,53 @@ const limbsMap: Record<LimbId, LimbData> = {
 export default class Health {
   maxHp: number
   currHp: number
+  missingHp: number
   limbs: LimbsHp
   rads: number
 
+  static getMaxHp(baseSpecial: Special, exp: number) {
+    const baseMaxHP = baseSpecial.endurance * 2 + 15 + baseSpecial.strength
+    const gainMaxHPPerLvl = Math.ceil(baseSpecial.endurance / 2) + 3
+    const { level } = getLevelAndThresholds(exp)
+    const levelGained = level - 1
+    const result = levelGained * gainMaxHPPerLvl + baseMaxHP
+    return result
+  }
+
+  static getHpDiffOnTimePass(currDate: Date, newDate: Date, healPerHour: number) {
+    const hoursPassed = (newDate.getTime() - currDate.getTime()) / 3600000
+    return Math.round(healPerHour * hoursPassed)
+  }
+
+  static getHealthEffectId(currHp: number, maxHp: number) {
+    const currHpPercent = (currHp / maxHp) * 100
+    const negativeValue = Math.max(currHp, currHpPercent)
+    if (negativeValue < healthStates.vanished.min) return healthStates.vanished.id
+    if (negativeValue < healthStates.dead.min) return healthStates.dead.id
+    if (currHp < 1) return healthStates.woundedUnconscious.id
+    if (currHpPercent < healthStates.woundedExhausted.min) return healthStates.woundedExhausted.id
+    if (currHpPercent < healthStates.woundedTired.min) return healthStates.woundedTired.id
+    return null
+  }
+
+  static getRadEffectId(rads: number) {
+    return radStates.find(radState => rads > radState.threshold)
+  }
+
   constructor(health: DbHealth, baseSPECIAL: Special, exp: number) {
-    this.maxHp = getMaxHP(baseSPECIAL, exp)
+    this.maxHp = Health.getMaxHp(baseSPECIAL, exp)
     this.currHp = health.currHp
+    this.missingHp = this.maxHp - this.currHp
     this.limbs = health.limbs
     this.rads = health.rads
   }
 
   get hpEffects() {
     const result: Partial<Record<EffectId, Effect>> = {}
-    const { currHp, maxHp } = this
-    const currHpPercent = (currHp / maxHp) * 100
-    const healthState = Object.values(healthStates).find(el => currHpPercent < el.min)
-    if (healthState) {
-      result[healthState.id] = new Effect({ id: healthState.id })
+    const effectId = Health.getHealthEffectId(this.currHp, this.maxHp)
+    if (effectId) {
+      const healthEffect = new Effect({ id: effectId })
+      result[effectId] = healthEffect
     }
     return result
   }
@@ -155,8 +188,7 @@ export default class Health {
 
   get radsEffects() {
     const result: Partial<Record<EffectId, Effect>> = {}
-    const { rads } = this
-    const radsState = radStates.find(el => rads > el.threshold)
+    const radsState = Health.getRadEffectId(this.rads)
     if (radsState) {
       result[radsState.id] = new Effect({ id: radsState.id })
     }
@@ -165,5 +197,59 @@ export default class Health {
 
   get calculatedEffects() {
     return { ...this.hpEffects, ...this.crippledEffects, ...this.radsEffects }
+  }
+
+  getNewHpOnTimePass(currDate: Date, newDate: Date, secAttr: Abilities["secAttr"]) {
+    const { healHpPerHour, poisResist } = secAttr.curr
+    const hpDiff = Health.getHpDiffOnTimePass(currDate, newDate, healHpPerHour)
+    if (hpDiff === 0) return 0
+    const isHealing = hpDiff > 0
+    if (isHealing) {
+      const healedHp = Math.min(this.missingHp, hpDiff)
+      return this.currHp + healedHp
+    }
+
+    const rawDamage = Math.abs(hpDiff)
+    const poisonDamageMultiplier = 1 - poisResist / 100
+    const totalDamage = poisonDamageMultiplier * rawDamage
+    return this.currHp - totalDamage
+  }
+
+  getNewLimbsOnTimePass(currDate: Date, newDate: Date, secAttr: Abilities["secAttr"]) {
+    const { healHpPerHour, poisResist } = secAttr.curr
+    const hpDiff = Health.getHpDiffOnTimePass(currDate, newDate, healHpPerHour)
+
+    if (hpDiff === 0) return this.limbs
+
+    const isHealing = hpDiff > 0
+
+    const newLimbsHp = {} as Record<LimbId, number>
+
+    // if hpDiff is positive, character is healing
+    if (isHealing) {
+      const healedHp = Math.min(this.missingHp, hpDiff)
+      for (let i = 0; i < healedHp; i += 1) {
+        const healableLimbs = Object.entries(this.limbs).filter(
+          ([id, value]) => value < limbsMap[id as LimbId].maxValue
+        )
+        const randomIndex = getRandomArbitrary(0, healableLimbs.length)
+        const limbIdToHeal = healableLimbs[randomIndex][0]
+        newLimbsHp[limbIdToHeal as LimbId] += 1
+      }
+      return newLimbsHp
+    }
+
+    // if hpDiff is negative, character is poisoned
+    const baseDamageHp = Math.abs(hpDiff)
+    const poisonDamageMultiplier = 1 - poisResist / 100
+    // damage to be taken with poison resistance
+    const rawDamage = poisonDamageMultiplier * baseDamageHp
+    for (let i = 0; i < rawDamage; i += 1) {
+      const damageableLimbs = Object.entries(this.limbs).filter(([, value]) => value > 0)
+      const randomIndex = getRandomArbitrary(0, damageableLimbs.length)
+      const limbIdToDamage = damageableLimbs[randomIndex][0]
+      newLimbsHp[limbIdToDamage as LimbId] -= 1
+    }
+    return newLimbsHp
   }
 }

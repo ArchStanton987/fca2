@@ -4,11 +4,12 @@ import updateCombatStatus, {
   UpdateCombatStatusParams
 } from "./character/combat-status/use-cases/update-combat-status"
 import addAdditionalEffect from "./character/effects/add-additional-effect"
-import getEffectsUseCases from "./character/effects/effects-use-cases"
 import { DbEffectData } from "./character/effects/effects.types"
 import subAdditionalEffects from "./character/effects/sub-additional-effects"
 import addEffect, { AddEffectParams } from "./character/effects/use-cases/add-effect"
 import removeEffect, { RemoveEffectParams } from "./character/effects/use-cases/remove-effect"
+import updateHp, { UpdateHpParams } from "./character/health/use-cases/update-hp"
+import updateLimbsHp, { UpdateLimbsHpParams } from "./character/health/use-cases/update-limbs-hp"
 import updateExp, { UpdateExpParams } from "./character/progress/use-cases/update-exp"
 import getStatusUseCases from "./character/status/status-use-cases"
 import subCharacter from "./character/use-cases/sub-character"
@@ -54,19 +55,17 @@ import {
   PlayableParams
 } from "./shared/db/api-rtdb"
 import { DbType } from "./shared/db/db.types"
-import getSquadUseCases from "./squad/squad-use-cases"
+import updateDate, { UpdateDateParams } from "./squad/use-cases/update-date"
 
 export default function getUseCases(
   dbType: DbType = "rtdb",
   createdElements = defaultCreatedElements
 ) {
   return {
-    effects: getEffectsUseCases(dbType, createdElements),
     equipedObjects: getEquipedObjectsUseCases(dbType, createdElements),
     inventory: getInventoryUseCases(dbType, createdElements),
     weapons: getWeaponsUseCases(dbType),
     status: getStatusUseCases(dbType, createdElements),
-    squad: getSquadUseCases(dbType),
     abilities: getAbilitiesUseCases(dbType),
     additional: {
       subAdditionalClothings: (params: AdditionalClothingsParams = {}) =>
@@ -113,7 +112,12 @@ export default function getUseCases(
       updateCombatStatus: (params: UpdateCombatStatusParams) => updateCombatStatus(dbType)(params),
       updateExp: (params: UpdateExpParams) => updateExp(dbType)(params),
       addEffect: (params: AddEffectParams) => addEffect(dbType)(params),
-      removeEffect: (params: RemoveEffectParams) => removeEffect(dbType)(params)
+      removeEffect: (params: RemoveEffectParams) => removeEffect(dbType)(params),
+      updateHp: (params: UpdateHpParams) => updateHp(dbType)(params),
+      updateLimbsHp: (params: UpdateLimbsHpParams) => updateLimbsHp(dbType)(params)
+    },
+    gm: {
+      updateDatetime: (params: UpdateDateParams) => updateDate(dbType, createdElements)(params)
     }
   }
 }

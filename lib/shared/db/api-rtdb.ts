@@ -1,6 +1,7 @@
 import { DbChar } from "lib/character/Character"
 import { DbCombatStatus } from "lib/character/combat-status/combat-status.types"
 import { DbEffect } from "lib/character/effects/effects.types"
+import { DbHealth } from "lib/character/health/Health"
 import { DbStatus } from "lib/character/status/status.types"
 import { DbAction, DbCombatInfo, Roll } from "lib/combat/combats.types"
 import { DbInventory } from "lib/objects/data/objects.types"
@@ -37,6 +38,7 @@ export type RollParams = {
 }
 export type PlayableParams = { id?: string; childKey?: keyof DbChar }
 export type StatusParams = CharParams & { childKey?: keyof DbStatus }
+export type HealthParams = CharParams & { childKey?: keyof DbHealth }
 export type CombatStatusParams = CharParams & { childKey?: keyof DbCombatStatus }
 export type EffectsParams = CharParams & { dbKey?: string; childKey?: keyof DbEffect }
 //
@@ -79,6 +81,8 @@ const rtdb = {
 
   getStatus: ({ charId, childKey }: StatusParams) =>
     `v3/playables/${charId}/status/${childKey ?? ""}`,
+  getHealth: ({ charId, childKey }: HealthParams) =>
+    `v3/playables/${charId}/health/${childKey ?? ""}`,
   getCombatStatus: ({ charId, childKey }: CombatStatusParams) =>
     `v3/playables/${charId}/combatStatus/${childKey ?? ""}`,
 
