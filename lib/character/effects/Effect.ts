@@ -1,5 +1,6 @@
 import { getRemainingTime } from "lib/common/utils/time-calc"
 
+import Abilities from "../abilities/Abilities"
 import effectsMap from "./effects"
 import { DbEffect, EffectData, EffectId } from "./effects.types"
 
@@ -10,6 +11,14 @@ export default class Effect {
   startTs?: Date
   endTs?: Date
   timeRemaining?: string | null
+
+  static getEffectLengthInMs = (traits: Abilities["traits"], effect: EffectData) => {
+    const isChemReliant = Object.values(traits ?? {}).some(t => t === "chemReliant")
+    if (typeof effect?.length !== "number") return null
+    const isWithdrawal = effect.type === "withdrawal"
+    const lengthInH = isWithdrawal && isChemReliant ? effect.length * 0.5 : effect.length
+    return lengthInH * 60 * 60 * 1000
+  }
 
   constructor(
     payload: DbEffect,
