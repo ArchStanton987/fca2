@@ -11,7 +11,6 @@ import removeEffect, { RemoveEffectParams } from "./character/effects/use-cases/
 import updateHp, { UpdateHpParams } from "./character/health/use-cases/update-hp"
 import updateLimbsHp, { UpdateLimbsHpParams } from "./character/health/use-cases/update-limbs-hp"
 import updateExp, { UpdateExpParams } from "./character/progress/use-cases/update-exp"
-import getStatusUseCases from "./character/status/status-use-cases"
 import subCharacter from "./character/use-cases/sub-character"
 import subCharacterChild, {
   SubCharacterChildParams
@@ -32,6 +31,7 @@ import setDifficulty, { SetDifficultyParams } from "./combat/use-cases/set-diffi
 import startFight, { StartFightParams } from "./combat/use-cases/start-fight"
 import updateAction, { UpdateActionParams } from "./combat/use-cases/update-action"
 import waitAction, { WaitActionParams } from "./combat/use-cases/wait-action"
+import toggleEquip, { ToggleEquipParams } from "./inventory/use-cases/toggle-equip"
 import createNpc, { CreateNpcParams } from "./npc/use-cases/create-npc"
 import deleteNpc, { DeleteNpcParams } from "./npc/use-cases/delete-npc"
 import { defaultCreatedElements } from "./objects/created-elements"
@@ -45,7 +45,6 @@ import addAdditionalMisc from "./objects/data/misc-objects/add-addictional-misc"
 import { DbMiscObjectData } from "./objects/data/misc-objects/misc-objects-types"
 import subAdditionalMisc from "./objects/data/misc-objects/sub-additional-misc"
 import getWeaponsUseCases from "./objects/data/weapons/weapons-use-cases"
-import getEquipedObjectsUseCases from "./objects/equiped-objects-use-cases"
 import getInventoryUseCases from "./objects/inventory-use-cases"
 import {
   AdditionalClothingsParams,
@@ -62,10 +61,8 @@ export default function getUseCases(
   createdElements = defaultCreatedElements
 ) {
   return {
-    equipedObjects: getEquipedObjectsUseCases(dbType, createdElements),
     inventory: getInventoryUseCases(dbType, createdElements),
     weapons: getWeaponsUseCases(dbType),
-    status: getStatusUseCases(dbType, createdElements),
     abilities: getAbilitiesUseCases(dbType),
     additional: {
       subAdditionalClothings: (params: AdditionalClothingsParams = {}) =>
@@ -114,7 +111,8 @@ export default function getUseCases(
       addEffect: (params: AddEffectParams) => addEffect(dbType)(params),
       removeEffect: (params: RemoveEffectParams) => removeEffect(dbType)(params),
       updateHp: (params: UpdateHpParams) => updateHp(dbType)(params),
-      updateLimbsHp: (params: UpdateLimbsHpParams) => updateLimbsHp(dbType)(params)
+      updateLimbsHp: (params: UpdateLimbsHpParams) => updateLimbsHp(dbType)(params),
+      toggleEquip: (params: ToggleEquipParams) => toggleEquip(dbType, createdElements)(params)
     },
     gm: {
       updateDatetime: (params: UpdateDateParams) => updateDate(dbType, createdElements)(params)

@@ -7,7 +7,7 @@ import { EffectId } from "../effects/effects.types"
 import { getLevelAndThresholds } from "../status/status-calc"
 import { healthStates, radStates } from "./health.const"
 
-type LimbId =
+export type LimbId =
   // human
   | "head"
   | "leftTorso"
@@ -36,6 +36,10 @@ type LimbData = {
   short: string
   maxValue: number
   isVital: boolean
+  aim: {
+    aimMalus: number
+    critBonus: number
+  }
 }
 
 export const limbsMap: Record<LimbId, LimbData> = {
@@ -45,7 +49,11 @@ export const limbsMap: Record<LimbId, LimbData> = {
     label: "PV tête",
     short: "PVtê",
     maxValue: 15,
-    isVital: true
+    isVital: true,
+    aim: {
+      aimMalus: 30,
+      critBonus: 30
+    }
   },
   leftTorso: {
     id: "leftTorso",
@@ -53,7 +61,11 @@ export const limbsMap: Record<LimbId, LimbData> = {
     label: "PV torse gauche",
     short: "PVto",
     maxValue: 25,
-    isVital: true
+    isVital: true,
+    aim: {
+      aimMalus: 0,
+      critBonus: 0
+    }
   },
   rightTorso: {
     id: "rightTorso",
@@ -61,7 +73,11 @@ export const limbsMap: Record<LimbId, LimbData> = {
     label: "PV torse droit",
     short: "PVto",
     maxValue: 30,
-    isVital: true
+    isVital: true,
+    aim: {
+      aimMalus: 0,
+      critBonus: 0
+    }
   },
   leftArm: {
     id: "leftArm",
@@ -69,7 +85,11 @@ export const limbsMap: Record<LimbId, LimbData> = {
     label: "PV bras gauche",
     short: "PVBrG",
     maxValue: 20,
-    isVital: false
+    isVital: false,
+    aim: {
+      aimMalus: 10,
+      critBonus: 10
+    }
   },
   rightArm: {
     id: "rightArm",
@@ -77,7 +97,11 @@ export const limbsMap: Record<LimbId, LimbData> = {
     label: "PV bras droit",
     short: "PVBrD",
     maxValue: 20,
-    isVital: false
+    isVital: false,
+    aim: {
+      aimMalus: 10,
+      critBonus: 10
+    }
   },
   leftLeg: {
     id: "leftLeg",
@@ -85,7 +109,11 @@ export const limbsMap: Record<LimbId, LimbData> = {
     label: "PV jambe gauche",
     short: "PVJaG",
     maxValue: 20,
-    isVital: false
+    isVital: false,
+    aim: {
+      aimMalus: 10,
+      critBonus: 10
+    }
   },
   rightLeg: {
     id: "rightLeg",
@@ -93,7 +121,11 @@ export const limbsMap: Record<LimbId, LimbData> = {
     label: "PV jambe droite",
     short: "PVJaD",
     maxValue: 20,
-    isVital: false
+    isVital: false,
+    aim: {
+      aimMalus: 10,
+      critBonus: 10
+    }
   },
   groin: {
     id: "groin",
@@ -101,7 +133,11 @@ export const limbsMap: Record<LimbId, LimbData> = {
     label: "PV entrejambe",
     short: "PVEnJ",
     maxValue: 15,
-    isVital: false
+    isVital: false,
+    aim: {
+      aimMalus: 30,
+      critBonus: 30
+    }
   },
   body: {
     id: "body",
@@ -109,7 +145,11 @@ export const limbsMap: Record<LimbId, LimbData> = {
     label: "Corps",
     short: "Corps",
     maxValue: 30,
-    isVital: true
+    isVital: true,
+    aim: {
+      aimMalus: 10,
+      critBonus: 10
+    }
   },
   tail: {
     id: "tail",
@@ -117,7 +157,11 @@ export const limbsMap: Record<LimbId, LimbData> = {
     label: "Queue",
     short: "Queue",
     maxValue: 20,
-    isVital: false
+    isVital: false,
+    aim: {
+      aimMalus: 10,
+      critBonus: 10
+    }
   }
 }
 

@@ -1,5 +1,5 @@
 import { EffectId } from "lib/character/effects/effects.types"
-import { LimbsHp } from "lib/character/health/health-types"
+import { LimbId } from "lib/character/health/Health"
 import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 
 import { ActionTypeId } from "./const/actions"
@@ -8,7 +8,7 @@ type CharId = string
 // type NpcId = string
 type PlayableId = string
 type ItemId = string
-type AimZone = keyof LimbsHp
+type AimZone = LimbId
 
 export type Roll = {
   sumAbilities: number
@@ -26,7 +26,7 @@ export type ReactionRoll = {
 export interface DamageEntry {
   charId: string
   entryType: "hp" | "rads" | "effect" | "inactive"
-  localization?: keyof LimbsHp
+  localization?: LimbId
   damage?: number
   duration?: number
   amount?: number
@@ -48,7 +48,7 @@ export type DbAction = {
   itemId?: ItemId | false
   itemDbKey?: string | false
   targetId?: string | false
-  damageLocalization?: keyof LimbsHp | false
+  damageLocalization?: LimbId | false
   aimZone?: AimZone | false
   rawDamage?: number | false
   damageType?: DamageTypeId | false

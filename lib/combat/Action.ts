@@ -1,4 +1,4 @@
-import { LimbsHp } from "lib/character/health/health-types"
+import { LimbId } from "lib/character/health/Health"
 import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 
 import { DamageEntries, DbAction, ReactionRoll, Roll } from "./combats.types"
@@ -6,7 +6,6 @@ import { ActionTypeId } from "./const/actions"
 
 type PlayableId = string
 type ItemId = string
-type AimZone = keyof LimbsHp
 
 export default class Action {
   actionType?: ActionTypeId | ""
@@ -21,8 +20,8 @@ export default class Action {
   itemId?: ItemId | false
   itemDbKey?: string | false
   targetId?: string | false
-  damageLocalization?: keyof LimbsHp | false
-  aimZone?: AimZone | false
+  damageLocalization?: LimbId | false
+  aimZone?: LimbId | false
   rawDamage?: number | false
   damageType?: DamageTypeId | false
 

@@ -1,4 +1,4 @@
-import { LimbsHp } from "lib/character/health/health-types"
+import { LimbId } from "lib/character/health/Health"
 import Action from "lib/combat/Action"
 import { ActionTypeId } from "lib/combat/const/actions"
 import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
@@ -16,8 +16,8 @@ export type ActionFormType = Form<{
   apCost: number
   actorDiceScore?: string
   targetId?: string
-  aimZone?: keyof LimbsHp
-  damageLocalization?: keyof LimbsHp
+  aimZone?: LimbId
+  damageLocalization?: LimbId
   rawDamage?: string
   damageType?: DamageTypeId
   itemDbKey?: string

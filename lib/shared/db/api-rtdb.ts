@@ -45,6 +45,7 @@ export type EffectsParams = CharParams & { dbKey?: string; childKey?: keyof DbEf
 export type SquadParams = { id?: string; childKey?: keyof DbSquad }
 
 export type InventoryParams = CharParams & { childKey?: keyof DbInventory }
+export type ItemsParams = CharParams & { childKey?: string }
 
 const rtdb = {
   getAdditionalClothings: ({ childKey }: AdditionalClothingsParams) =>
@@ -67,6 +68,9 @@ const rtdb = {
 
   getInventory: ({ charId, childKey }: InventoryParams) =>
     `v3/playables/${charId}/inventory/${childKey ?? ""}`,
+
+  getItems: ({ charId, childKey }: ItemsParams) =>
+    `v3/playables/${charId}/inventory/items/${childKey ?? ""}`,
 
   // getRound: ({ combatId, id, childKey }: RoundParams) =>
   //   id ? `v3/combats/${combatId}/rounds/${id}/${childKey ?? ""}` : `v3/combats/${combatId}/rounds/`,

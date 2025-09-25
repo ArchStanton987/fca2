@@ -1,19 +1,17 @@
-// import { DbStatus } from "lib/character/status/status.types"
-import Playable from "lib/character/Playable"
+import Abilities from "lib/character/abilities/Abilities"
 import { KnowledgeId } from "lib/character/abilities/knowledges/knowledge-types"
 import { getKnowledgesBonus } from "lib/character/abilities/knowledges/knowledge-utils"
 import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-levels"
 import skillsMap from "lib/character/abilities/skills/skills"
 import { Skill, SkillId } from "lib/character/abilities/skills/skills.types"
 import { CombatStatus } from "lib/character/combat-status/combat-status.types"
-import { BodyPart, LimbsHp } from "lib/character/health/health-types"
-import { limbsMap } from "lib/character/health/healthMap"
+import { LimbId, limbsMap } from "lib/character/health/Health"
 import { DbCharMeta, withDodgeSpecies } from "lib/character/meta/meta"
-import Inventory from "lib/objects/Inventory"
 import Clothing from "lib/objects/data/clothings/Clothing"
-import { ClothingData } from "lib/objects/data/clothings/clothings.types"
-import { Consumable } from "lib/objects/data/consumables/consumables.types"
-import { DamageTypeId, Weapon } from "lib/objects/data/weapons/weapons.types"
+import { BodyPart, ClothingData } from "lib/objects/data/clothings/clothings.types"
+import Consumable from "lib/objects/data/consumables/Consumable"
+import Weapon from "lib/objects/data/weapons/Weapon"
+import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 
 import { isKeyOf } from "utils/ts-utils"
 
@@ -148,43 +146,44 @@ const getKnowledgesFromAction = <T extends keyof typeof actions>({
 
 export const getActorSkillFromAction = <T extends keyof typeof actions>(
   { actionType, actionSubtype, item }: ActionForm<T>,
-  char: Playable
+  abilities: Abilities
 ) => {
-  if (actionType === "weapon" && item) {
+  if (actionType === "weapon" && item?.category === "weapons") {
     if (actionSubtype !== "hit" && actionSubtype !== "throw") {
-      if (!("skill" in item)) throw new Error("Item is not a weapon")
       const { skillId } = item.data
-      const sumAbilities = item.skill
+      const sumAbilities = item.getSkillScore(abilities)
       return { skillId, skillLabel: skillsMap[skillId].short, sumAbilities }
     }
   }
   const skill = getSkillIdFromAction({ actionType, actionSubtype, item })
   if (!skill) throw new Error("No skill found")
   const knowledges = getKnowledgesFromAction({ actionType, actionSubtype, item })
-  const knowledgeBonus = getKnowledgesBonus(knowledges, char)
-  const sumAbilities = char.skills.curr[skill.id] + knowledgeBonus
+  const knowledgeBonus = getKnowledgesBonus(knowledges, abilities.knowledges)
+  const sumAbilities = abilities.skills.curr[skill.id] + knowledgeBonus
   return { skillId: skill.id, skillLabel: skill.label, sumAbilities }
 }
 
-export const getItemWithSkillFromId = (itemDbKey: string | undefined, inventory: Inventory) => {
-  if (!itemDbKey) return undefined
-  let item
-  if (itemDbKey) {
-    if (inventory.weaponsRecord[itemDbKey]) item = inventory.weaponsRecord[itemDbKey]
-    if (inventory.consumablesRecord[itemDbKey]) item = inventory.consumablesRecord[itemDbKey]
-  }
-  return item
-}
+// export const getItemWithSkillFromId = (itemDbKey: string | undefined, inventory: Inventory) => {
+//   if (!itemDbKey) return undefined
+//   let item
+//   if (itemDbKey) {
+//     if (inventory.weaponsRecord[itemDbKey]) item = inventory.weaponsRecord[itemDbKey]
+//     if (inventory.consumablesRecord[itemDbKey]) item = inventory.consumablesRecord[itemDbKey]
+//   }
+//   return item
+// }
 
-const bodyPartMatch: Record<keyof LimbsHp, BodyPart> = {
-  headHp: "head",
-  leftArmHp: "arms",
-  rightArmHp: "arms",
-  leftTorsoHp: "torso",
-  rightTorsoHp: "torso",
-  groinHp: "groin",
-  leftLegHp: "legs",
-  rightLegHp: "legs"
+const bodyPartMatch: Record<LimbId, BodyPart> = {
+  head: "head",
+  leftArm: "arms",
+  rightArm: "arms",
+  leftTorso: "torso",
+  rightTorso: "torso",
+  groin: "groin",
+  leftLeg: "legs",
+  rightLeg: "legs",
+  body: "torso",
+  tail: "torso"
 }
 
 const clothingDamageResistMatch: Record<Exclude<DamageTypeId, "other">, keyof ClothingData> = {
@@ -196,7 +195,7 @@ const clothingDamageResistMatch: Record<Exclude<DamageTypeId, "other">, keyof Cl
 
 type DamageEntry = {
   rawDamage: number
-  damageLocalization: keyof LimbsHp
+  damageLocalization: LimbId
   damageType: DamageTypeId
 }
 
@@ -225,28 +224,28 @@ export const getRealDamage = (
   return realDamage
 }
 
-export const getItemFromId = (inv: Inventory, itemDbKey?: string) => {
-  if (!itemDbKey) return undefined
-  if (itemDbKey in inv.weaponsRecord) return inv.weaponsRecord[itemDbKey]
-  if (itemDbKey in inv.clothingsRecord) return inv.clothingsRecord[itemDbKey]
-  if (itemDbKey in inv.consumablesRecord) return inv.consumablesRecord[itemDbKey]
-  if (itemDbKey in inv.miscObjectsRecord) return inv.miscObjectsRecord[itemDbKey]
-  return undefined
-}
+// export const getItemFromId = (inv: Inventory, itemDbKey?: string) => {
+//   if (!itemDbKey) return undefined
+//   if (itemDbKey in inv.weaponsRecord) return inv.weaponsRecord[itemDbKey]
+//   if (itemDbKey in inv.clothingsRecord) return inv.clothingsRecord[itemDbKey]
+//   if (itemDbKey in inv.consumablesRecord) return inv.consumablesRecord[itemDbKey]
+//   if (itemDbKey in inv.miscObjectsRecord) return inv.miscObjectsRecord[itemDbKey]
+//   return undefined
+// }
 
-export const getBodyPart = (scoreStr: string): keyof LimbsHp => {
+export const getBodyPart = (scoreStr: string): LimbId => {
   const score = parseInt(scoreStr, 10)
   if (Number.isNaN(score)) throw new Error("invalid score")
   // REWORKED MAP
-  if (score === 69) return "groinHp"
-  if (score <= 10) return "headHp"
-  if (score <= 15) return "groinHp"
-  if (score <= 26) return "leftLegHp"
-  if (score <= 37) return "rightLegHp"
-  if (score <= 48) return "leftArmHp"
-  if (score <= 59) return "rightArmHp"
-  if (score <= 80) return "leftTorsoHp"
-  if (score <= 100) return "rightTorsoHp"
+  if (score === 69) return "groin"
+  if (score <= 10) return "head"
+  if (score <= 15) return "groin"
+  if (score <= 26) return "leftLeg"
+  if (score <= 37) return "rightLeg"
+  if (score <= 48) return "leftArm"
+  if (score <= 59) return "rightArm"
+  if (score <= 80) return "leftTorso"
+  if (score <= 100) return "rightTorso"
   throw new Error("invalid score")
 }
 
@@ -255,8 +254,12 @@ export const getParrySkill = (weaponSkill: SkillId): SkillId => {
   return "melee"
 }
 
-export const getContenderAc = (roundId: number, char: Playable, combatStatus: CombatStatus) => {
-  const currAc = char?.secAttr.curr.armorClass ?? 0
+export const getContenderAc = (
+  roundId: number,
+  abilities: Abilities,
+  combatStatus: CombatStatus
+) => {
+  const currAc = abilities.secAttr.curr.armorClass ?? 0
   const bonusAc = combatStatus?.armorClassBonusRecord?.[roundId] ?? 0
   return currAc + bonusAc
 }
@@ -266,7 +269,7 @@ export const getRollBonus = (
   action?: { aimZone?: Action["aimZone"] }
 ) => {
   const actionBonus = combatStatus.actionBonus ?? 0
-  const aimMalus = action?.aimZone ? limbsMap[action.aimZone].aimMalus : 0
+  const aimMalus = action?.aimZone ? limbsMap[action.aimZone].aim.aimMalus : 0
   return actionBonus - aimMalus
 }
 
@@ -297,22 +300,23 @@ export const getPlayerCanReact = (info: DbCharMeta, combatStatus: CombatStatus, 
 }
 
 export const getReactionAbilities = (
-  char: Playable,
+  abilities: Abilities,
   combatStatus: CombatStatus,
+  equipedWeapons: Record<string, Weapon>,
   combat: Combat
 ) => {
-  const { skills, equipedObjects, knowledgesRecord, secAttr } = char
+  const { skills, knowledges, secAttr } = abilities
   const roundId = combat.currRoundId
 
   const armorClassBonus = combatStatus.armorClassBonusRecord?.[roundId] ?? 0
 
   const actionBonus = combatStatus.actionBonus ?? 0
 
-  const dodgeKBonus = knowledgeLevels.find(el => el.id === knowledgesRecord.kDodge)?.bonus ?? 0
+  const dodgeKBonus = knowledgeLevels.find(el => el.id === knowledges.kDodge)?.bonus ?? 0
 
-  const defaultWeapon = equipedObjects.weapons[0] ?? char.unarmed
+  const defaultWeapon = Object.values(equipedWeapons)[0] ?? Weapon.getUnarmed()
   const weaponSkillId = defaultWeapon.data.skillId
-  const parryKBonus = knowledgeLevels.find(el => el.id === knowledgesRecord.kParry)?.bonus ?? 0
+  const parryKBonus = knowledgeLevels.find(el => el.id === knowledges.kParry)?.bonus ?? 0
   const parrySkillId = getParrySkill(weaponSkillId)
 
   return {
