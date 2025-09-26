@@ -1,6 +1,7 @@
 import colors from "styles/colors"
 
 import { EffectId } from "../effects/effects.types"
+import { LimbId } from "./Health"
 
 export const healthStates: Record<string, { id: EffectId; min: number }> = {
   vanished: { id: "vanished", min: -25 },
@@ -18,3 +19,20 @@ export const radStates: { id: EffectId; threshold: number; color: string }[] = [
   { id: "radLvl2", threshold: 100, color: colors.yellow },
   { id: "radLvl1", threshold: 50, color: colors.yellow }
 ]
+
+export const limbsTemplates: Record<string, LimbId[]> = {
+  humanoid: [
+    "head",
+    "leftTorso",
+    "rightTorso",
+    "leftArm",
+    "rightArm",
+    "leftLeg",
+    "rightLeg",
+    "groin"
+  ],
+  smallCritter: ["head", "body"],
+  smallTailedCritter: ["head", "body", "tail"]
+}
+
+export type LimbsTemplateId = keyof typeof limbsTemplates

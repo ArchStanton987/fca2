@@ -1,5 +1,5 @@
 import { useAbilities } from "lib/character/abilities/abilities-provider"
-import { useCharInfo } from "lib/character/meta/meta-provider"
+import { useCharInfo } from "lib/character/info/info-provider"
 import { useCarry } from "lib/inventory/use-sub-inv-cat"
 
 import HeaderElement from "components/Header/HeaderElement"

@@ -1,7 +1,10 @@
-import Playable from "lib/character/Playable"
+import { ThenableReference } from "firebase/database"
+import Abilities from "lib/character/abilities/Abilities"
 import { CombatStatus } from "lib/character/combat-status/combat-status.types"
-import getEffectsUseCases from "lib/character/effects/effects-use-cases"
-import { getHealthState } from "lib/character/health/health-utils"
+import Effect from "lib/character/effects/Effect"
+import { EffectId } from "lib/character/effects/effects.types"
+import addEffect from "lib/character/effects/use-cases/add-effect"
+import Health from "lib/character/health/Health"
 import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
 import repositoryMap from "lib/shared/db/get-repository"
 
@@ -9,9 +12,17 @@ import { DamageEntries } from "../combats.types"
 
 export type ApplyDamageEntriesParams = {
   roundId: number
-  contenders: Record<string, Playable>
-  combatStatuses: Record<string, CombatStatus>
+  contenders: Record<
+    string,
+    {
+      health: Health
+      combatStatus: CombatStatus
+      abilities: Abilities
+      effects: Record<EffectId, Effect>
+    }
+  >
   damageEntries: DamageEntries
+  currDate: Date
 }
 
 export default function applyDamageEntries(
@@ -20,29 +31,27 @@ export default function applyDamageEntries(
 ) {
   const statusRepo = repositoryMap[dbType].statusRepository
   const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
-  const effectsUseCases = getEffectsUseCases(dbType, createdElements)
 
-  return ({ roundId, contenders, combatStatuses, damageEntries }: ApplyDamageEntriesParams) => {
-    const promises: Promise<void>[] = []
+  return ({ roundId, contenders, damageEntries, currDate }: ApplyDamageEntriesParams) => {
+    const promises: (Promise<void> | ThenableReference)[] = []
     if (damageEntries === false) return null
     // loop through every entry
     Object.values(damageEntries ?? {}).forEach(entry => {
       const { charId, entryType } = entry
-      const char = contenders[charId]
-      const combatStatus = combatStatuses[charId]
-      if (!char) throw new Error("could not find character")
+      const { health, combatStatus, effects, abilities } = contenders[charId]
+      const { traits } = abilities
+      if (!health) throw new Error("could not find character")
       switch (entryType) {
         // handle health points update
         case "hp": {
           if (entryType === "hp") {
             const { localization, damage = 0 } = entry
-            const { limbsHp, hp, maxHp } = char.health
+            const { currHp, maxHp } = health
             if (!localization) throw new Error("Missing damage loc")
-            const currHp = limbsHp[localization]
             // TODO: FIX HP SYSTEM
             const newHp = currHp - damage < 0 ? 0 : currHp - damage
             promises.push(statusRepo.patch({ charId }, { [localization]: newHp }))
-            const hS = getHealthState(hp - damage, maxHp)
+            const hS = Health.getHealthEffectId(currHp - damage, maxHp)
             if (hS === "vanished" || hS === "dead" || hS === "woundedUnconscious") {
               const newStatus = hS === "woundedUnconscious" ? "inactive" : "dead"
               promises.push(combatStatusRepo.patch({ charId }, { combatStatus: newStatus }))
@@ -67,7 +76,7 @@ export default function applyDamageEntries(
         // handle rads
         case "rads": {
           const { amount = 0 } = entry
-          const rads = char.health.rads + amount
+          const rads = health.rads + amount
           promises.push(statusRepo.patch({ charId }, { rads }))
           break
         }
@@ -75,7 +84,13 @@ export default function applyDamageEntries(
         case "effect": {
           const { effectId } = entry
           if (!effectId) throw new Error("Missing effect id in damage entry")
-          promises.push(effectsUseCases.add(char, effectId))
+          // promises.push(effectsUseCases.add(char, effectId))
+          promises.push(
+            addEffect(
+              dbType,
+              createdElements
+            )({ effectId, effects, startDate: currDate, charId, traits })
+          )
           break
         }
         default:

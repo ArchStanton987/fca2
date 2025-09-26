@@ -1,7 +1,7 @@
 import { useCallback } from "react"
 
 import { queryOptions, useQueries, useQuery } from "@tanstack/react-query"
-import { useCharInfo } from "lib/character/meta/meta-provider"
+import { useCharInfo } from "lib/character/info/info-provider"
 import { critters } from "lib/npc/const/npc-templates"
 import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
 import ammoMap from "lib/objects/data/ammo/ammo"

@@ -2,7 +2,7 @@ import { ReactNode, createContext, useContext, useMemo } from "react"
 
 import { queryOptions, useQuery } from "@tanstack/react-query"
 import { getAbilitiesOptions } from "lib/character/abilities/abilities-provider"
-import { useCharInfo } from "lib/character/meta/meta-provider"
+import { useCharInfo } from "lib/character/info/info-provider"
 
 import LoadingScreen from "screens/LoadingScreen"
 

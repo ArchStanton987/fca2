@@ -8,7 +8,7 @@ import { getLevelAndThresholds } from "../status/status-calc"
 import { healthStates, radStates } from "./health.const"
 
 export type LimbId =
-  // human
+  // humanoid
   | "head"
   | "leftTorso"
   | "rightTorso"

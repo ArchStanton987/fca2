@@ -10,15 +10,16 @@ import { useSquad } from "contexts/SquadContext"
 import LoadingScreen from "screens/LoadingScreen"
 import { getDDMMYYYY, getHHMM } from "utils/date"
 
-import AbilitiesProvider, { getAbilitiesOptions } from "./abilities/abilities-provider"
+import { AbilitiesProvider, getAbilitiesOptions } from "./abilities/abilities-provider"
 import { EffectsProvider, getEffectsOptions } from "./effects/effects-provider"
 import { HealthProvider, getHealthOptions } from "./health/health-provider"
-import { CharInfoProvider, getCharInfoOptions } from "./meta/meta-provider"
+import CharInfo, { DbCharInfo } from "./info/CharInfo"
+import { CharInfoProvider, getCharInfoOptions } from "./info/info-provider"
 import { ProgressProvider, getExpOptions } from "./progress/progress-provider"
 
 function CharSubsProvider({ children, charId }: { children: ReactNode; charId: string }) {
   const charInfoOptions = getCharInfoOptions(charId)
-  useSub(charInfoOptions.queryKey.join("/"))
+  useSub<DbCharInfo>(charInfoOptions.queryKey.join("/"), snap => new CharInfo(snap, charId))
 
   const abilitiesOptions = getAbilitiesOptions(charId)
   useSub(abilitiesOptions.queryKey.join("/"))

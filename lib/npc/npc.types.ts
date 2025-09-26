@@ -1,10 +1,4 @@
-import { DbChar } from "lib/character/Character"
 import { BeastAttack } from "lib/objects/data/weapons/weapons.types"
-
-export type DbNonHumanNpc = Pick<DbChar, "meta" | "status" | "combats" | "combatStatus">
-export type DbNpc = DbChar | DbNonHumanNpc
-
-export type NpcType = "human" | "robot" | "animal"
 
 export type NonHumanNpcTemplate = {
   templateId: string

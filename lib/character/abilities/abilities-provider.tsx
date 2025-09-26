@@ -107,9 +107,9 @@ export function ContendersAbilitiesProvider({
 //   return abilities
 // }
 
-function useAbilities(): Abilities
-function useAbilities(charId: string): Abilities | undefined
-function useAbilities(charId?: string) {
+export function useAbilities(): Abilities
+export function useAbilities(charId: string): Abilities | undefined
+export function useAbilities(charId?: string) {
   const abilitiesOptions = getAbilitiesOptions(charId ?? "")
   useSub(abilitiesOptions.queryKey.join("/"))
   const dbAbilities = useQuery(abilitiesOptions)

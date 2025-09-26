@@ -42,7 +42,7 @@ import { Symptom } from "./effects/symptoms.type"
 import { getMaxHP, getMissingHp } from "./health/health-calc"
 import { DbHealth, Health } from "./health/health-types"
 import { healthStates, limbsMap, radStates } from "./health/healthMap"
-import { DbCharMeta } from "./meta/meta"
+import { DbCharMeta } from "./info/CharInfo"
 import { DbStatus } from "./status/status.types"
 
 export type DbChar = {

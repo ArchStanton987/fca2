@@ -6,7 +6,8 @@ import skillsMap from "lib/character/abilities/skills/skills"
 import { Skill, SkillId } from "lib/character/abilities/skills/skills.types"
 import { CombatStatus } from "lib/character/combat-status/combat-status.types"
 import { LimbId, limbsMap } from "lib/character/health/Health"
-import { DbCharMeta, withDodgeSpecies } from "lib/character/meta/meta"
+import CharInfo from "lib/character/info/CharInfo"
+import { withDodgeSpecies } from "lib/character/playable.const"
 import Clothing from "lib/objects/data/clothings/Clothing"
 import { BodyPart, ClothingData } from "lib/objects/data/clothings/clothings.types"
 import Consumable from "lib/objects/data/consumables/Consumable"
@@ -278,7 +279,7 @@ export const getRollFinalScore = (roll: Roll) => {
   return sumAbilities - dice + bonus - targetArmorClass - difficulty
 }
 
-export const getPlayerCanReact = (info: DbCharMeta, combatStatus: CombatStatus, action: Action) => {
+export const getPlayerCanReact = (info: CharInfo, combatStatus: CombatStatus, action: Action) => {
   if (!action) return false
 
   if (!withDodgeSpecies.includes(info.speciesId)) return false

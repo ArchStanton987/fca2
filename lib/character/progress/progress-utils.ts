@@ -12,7 +12,7 @@ import {
   BACKGROUND_INIT_AVAILABLE_KNOWLEDGES_CATEGORIES,
   RACE_INIT_KNOWLEDGES
 } from "../abilities/knowledges/knowledges-const"
-import { SpeciesId } from "../meta/meta"
+import { SpeciesId } from "../playable.const"
 
 export const getHpGainPerLevel = (special: Special) => {
   const { endurance } = special

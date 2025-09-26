@@ -1,4 +1,3 @@
-import Playable from "lib/character/Playable"
 import Abilities from "lib/character/abilities/Abilities"
 import { KnowledgeId } from "lib/character/abilities/knowledges/knowledge-types"
 import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-levels"
@@ -35,6 +34,22 @@ export default class Weapon implements ItemInterface {
     knowledges: Object.keys(payload.knowledges ?? {}) as KnowledgeId[],
     tags: Object.keys(payload.tags ?? {}) as WeaponTagId[]
   })
+
+  static getDamageEst(secAttr: Abilities["secAttr"], weapon: Weapon) {
+    const { damageBasic, damageBurst } = weapon.data
+    if (!damageBasic && !damageBurst) return 0
+    const refDamage = (damageBurst || damageBasic) as string
+    const sections = refDamage.split("+")
+    const sum = sections.reduce((acc, section) => {
+      if (section === "DM") return acc + secAttr.curr.meleeDamage
+      if (section.includes("D")) {
+        const [nDices, faces] = section.split("D").map(Number)
+        return acc + nDices * (faces / 2)
+      }
+      return acc + Number(section)
+    }, 0)
+    return sum
+  }
 
   static getUnarmed = () =>
     new Weapon({ id: "unarmed", category: "weapons", dbKey: "unarmed", isEquipped: true }, {})
@@ -78,9 +93,9 @@ export default class Weapon implements ItemInterface {
     return baseScore + knowledgesBonus + charTraitSKillModifier - strengthMalus
   }
 
-  getApCost({ traits }: Playable) {
+  getApCost(traits: Abilities["traits"]) {
     let { basicApCost, specialApCost } = this.data
-    if (traits?.find(t => t.id === "mrFast")) {
+    if (traits.mrFast) {
       const { BASIC_AP_COST_MOD, SPECIAL_AP_COST_VALUE } = traitsMap.mrFast.consts
       specialApCost = SPECIAL_AP_COST_VALUE
       basicApCost = basicApCost !== null ? basicApCost + BASIC_AP_COST_MOD : null
@@ -90,6 +105,10 @@ export default class Weapon implements ItemInterface {
 
   getAmmoCount(ammo: AmmoSet) {
     return this.data.ammoType ? ammo[this.data.ammoType] : null
+  }
+
+  getDamageEst(secAttr: Abilities["secAttr"]) {
+    return Weapon.getDamageEst(secAttr, this)
   }
 
   // getAttacks() {}

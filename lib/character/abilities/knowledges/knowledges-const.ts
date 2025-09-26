@@ -1,4 +1,4 @@
-import { SpeciesId } from "lib/character/meta/meta"
+import { SpeciesId } from "lib/character/playable.const"
 import { BackgroundId } from "lib/character/status/status.types"
 
 import { KnowledgeCategory, KnowledgeId, KnowledgeLevelValue } from "./knowledge-types"

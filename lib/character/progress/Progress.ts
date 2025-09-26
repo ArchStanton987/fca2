@@ -1,5 +1,5 @@
 import { DbAbilities } from "../abilities/abilities.types"
-import { DbCharMeta } from "../meta/meta"
+import { DbCharInfo } from "../info/CharInfo"
 import { getLevelAndThresholds } from "../status/status-calc"
 import {
   getAssignedFreeRaceKPoints,
@@ -23,7 +23,7 @@ export default class Progress {
   availableKnowledgePoints: number
   availableFreeKnowledgePoints: number
 
-  constructor(exp: number, abilities: DbAbilities, meta: DbCharMeta) {
+  constructor(exp: number, abilities: DbAbilities, meta: DbCharInfo) {
     const { baseSPECIAL, traits, knowledges = {}, upSkills } = abilities
     const traitsArray = Object.values(traits ?? {})
 

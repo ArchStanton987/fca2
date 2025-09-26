@@ -5,16 +5,16 @@ import { queryOptions, useQuery } from "@tanstack/react-query"
 
 import LoadingScreen from "screens/LoadingScreen"
 
-import { DbCharMeta } from "./meta"
+import CharInfo from "./CharInfo"
 
 export const getCharInfoOptions = (charId: string) =>
   queryOptions({
     queryKey: ["v3", "playables", charId, "meta"],
     enabled: charId !== "",
-    queryFn: () => new Promise<DbCharMeta>(() => {})
+    queryFn: () => new Promise<CharInfo>(() => {})
   })
 
-const CharInfoContext = createContext({} as DbCharMeta)
+const CharInfoContext = createContext({} as CharInfo)
 
 export function CharInfoProvider({ children, charId }: { children: ReactNode; charId: string }) {
   const charInfo = useQuery(getCharInfoOptions(charId)).data
