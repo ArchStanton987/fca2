@@ -1,33 +1,32 @@
-import { ScrollView } from "react-native"
+import { ScrollView, TouchableOpacity } from "react-native"
 
-import { useRouter } from "expo-router"
+import { router } from "expo-router"
 
 import { getVersion } from "lib/common/utils/expo-utils"
+import { useSubSquads } from "lib/squad/use-cases/sub-squad"
 
+import List from "components/List"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import RevertColorsPressable from "components/wrappers/RevertColorsPressable/RevertColorsPressable"
-import WithItemSeparator from "components/wrappers/WithItemSeparator"
 import routes from "constants/routes"
-import useRtdbSub from "hooks/db/useRtdbSub"
-import { useGetUseCases } from "providers/UseCasesProvider"
+import LoadingScreen from "screens/LoadingScreen"
 import { getDDMMYYYY } from "utils/date"
 
 import styles from "./SquadSelectionScreen.styles"
 
 export default function SquadSelectionScreen() {
-  const useCases = useGetUseCases()
-  const router = useRouter()
-  const squadsObj = useRtdbSub(useCases.squad.getAll())
-  const squadsArray = squadsObj
-    ? Object.entries(squadsObj).map(([id, squad]) => ({ ...squad, id }))
-    : []
+  const squadsReq = useSubSquads()
 
   const toSquad = (squadId: string) =>
     router.push({ pathname: routes.charSelection, params: { squadId } })
 
   const onLongPress = (squadId: string) =>
     router.push({ pathname: routes.admin.index, params: { squadId } })
+
+  if (squadsReq.isError) return <Txt>Erreur lors de la récupération des parties</Txt>
+  if (squadsReq.isPending) return <LoadingScreen />
+
+  const squadsArray = Object.entries(squadsReq.data).map(([id, value]) => ({ id, ...value }))
 
   return (
     <ScrollView style={styles.container}>
@@ -41,20 +40,22 @@ export default function SquadSelectionScreen() {
       <Spacer y={10} />
       <Txt style={styles.text}>Choisissez votre équipe</Txt>
       <Spacer y={20} />
-      <WithItemSeparator ItemSeparatorComponent={<Spacer y={20} />}>
-        {squadsArray.map(squad => (
-          <RevertColorsPressable
-            key={squad.id}
-            onPress={() => toSquad(squad.id)}
-            onLongPress={() => onLongPress(squad.id)}
+      <List
+        data={squadsArray}
+        keyExtractor={s => s.id}
+        separator={<Spacer y={20} />}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            onPress={() => toSquad(item.id)}
+            onLongPress={() => onLongPress(item.id)}
             delayLongPress={2000}
             style={styles.squadContainer}
           >
-            <Txt style={styles.squadLabel}>{squad.label}</Txt>
-            <Txt style={styles.squadLabel}>{getDDMMYYYY(new Date(squad.datetime))}</Txt>
-          </RevertColorsPressable>
-        ))}
-      </WithItemSeparator>
+            <Txt style={styles.squadLabel}>{item.label}</Txt>
+            <Txt style={styles.squadLabel}>{getDDMMYYYY(item.datetime)}</Txt>
+          </TouchableOpacity>
+        )}
+      />
     </ScrollView>
   )
 }

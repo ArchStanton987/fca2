@@ -2,8 +2,8 @@ import { ReactNode, createContext, useContext, useMemo } from "react"
 
 import Character from "lib/character/Character"
 import NonHuman from "lib/npc/NonHuman"
+import { useSquad } from "lib/squad/use-cases/sub-squad"
 
-import { useSquad } from "contexts/SquadContext"
 import useCreatedElements from "hooks/context/useCreatedElements"
 import useRtdbSubs from "hooks/db/useRtdbSubs"
 import LoadingScreen from "screens/LoadingScreen"

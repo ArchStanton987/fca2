@@ -5,12 +5,12 @@ import { Tabs } from "expo-router"
 
 import Character from "lib/character/Character"
 import NonHuman from "lib/npc/NonHuman"
+import { useSquad } from "lib/squad/use-cases/sub-squad"
 
 import Header from "components/Header/Header"
 import { HeaderElementId } from "components/Header/Header.utils"
 import TabBar from "components/TabBar/TabBar"
 import { AdminContext } from "contexts/AdminContext"
-import { useSquad } from "contexts/SquadContext"
 import useCreatedElements from "hooks/context/useCreatedElements"
 import useGetSquadCharacters from "hooks/db/useGetSquadCharacters"
 import useRtdbSubs from "hooks/db/useRtdbSubs"

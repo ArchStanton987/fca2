@@ -1,3 +1,14 @@
+contenders
+  - effects
+  - health
+  - abilities
+
+
+squad/[squadId]/character/[charId]/
+squad/[squadId]/character/[charId]/combat/action
+squad/[squadId]/admin/datetime => sub tous les NON ENNEMIS ou MEMBERS
+
+
 ajouter charId dans meta
 créer branche depuis avant commit massif
 upgrade item selector (no category)
@@ -19,20 +30,6 @@ check mrFast AP COST
 update healthChangeEntries with modifiers and effects (beasts...)
 
 beasts special & skills
-
-
-TODO: type Playable :
-type Attack: {
-  name: string
-  weaponId?: WeaponId
-  skillScore: number // percentage
-  apCost: number
-  damage: string // dice roll string (e.g., '1d6', '2d4+2')
-  effects?: EffectId[]
-  modifiers?: Modifier[]
-}
-type Weapon : 
-get attacks(): Attack[]
 
 
 COMBAT :

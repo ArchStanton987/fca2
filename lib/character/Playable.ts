@@ -35,7 +35,7 @@ export interface Playable {
   isEnemy: boolean
   date: Date
   squadId: string
-  meta: DbCharInfo
+  info: DbCharInfo
   combatStatus: CombatStatus
   combats: Record<string, string>
   abilities: Abilities

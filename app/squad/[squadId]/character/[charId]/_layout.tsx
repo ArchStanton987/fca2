@@ -1,7 +1,7 @@
 import { Stack, useLocalSearchParams } from "expo-router"
 
 import { NativeStackNavigationOptions } from "@react-navigation/native-stack"
-import { CharacterProvider } from "lib/character/character-provider"
+import CharacterProvider from "lib/character/character-provider"
 import { useCurrCharStore, useSetCurrCharId } from "lib/character/character-store"
 import { InventoryProvider } from "lib/inventory/inventory-provider"
 

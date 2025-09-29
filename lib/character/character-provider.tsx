@@ -3,10 +3,10 @@ import { Platform } from "react-native"
 
 import { useQueries } from "@tanstack/react-query"
 import { useSub } from "lib/shared/db/useSub"
+import { useSquad } from "lib/squad/use-cases/sub-squad"
 import Toast from "react-native-toast-message"
 
 import Txt from "components/Txt"
-import { useSquad } from "contexts/SquadContext"
 import LoadingScreen from "screens/LoadingScreen"
 import { getDDMMYYYY, getHHMM } from "utils/date"
 
@@ -56,12 +56,12 @@ export default function CharacterProvider({
   charId: string
 }) {
   const squad = useSquad()
-  const [currDatetime, setCurrDatetime] = useState(squad.date.toJSON())
+  const [currDatetime, setCurrDatetime] = useState(squad.datetime.toJSON())
 
-  if (squad.date.toJSON() !== currDatetime) {
-    setCurrDatetime(squad.date.toJSON())
-    const newDate = getDDMMYYYY(squad.date)
-    const newHour = getHHMM(squad.date)
+  if (squad.datetime.toJSON() !== currDatetime) {
+    setCurrDatetime(squad.datetime.toJSON())
+    const newDate = getDDMMYYYY(squad.datetime)
+    const newHour = getHHMM(squad.datetime)
     Toast.show({
       type: "custom",
       text1: `Le temps passe ! Nous sommes le ${newDate}, il est ${newHour}.`,
