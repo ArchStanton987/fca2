@@ -46,7 +46,7 @@ export function usePlayablesCharInfo(ids: string[]) {
     combine: req => ({
       isPending: req.some(q => q.isPending),
       isError: req.some(q => q.isError),
-      data: req.map((q, i) => [ids[i], q.data])
+      data: req.map(q => q.data)
     })
   })
 }

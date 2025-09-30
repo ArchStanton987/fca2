@@ -1,10 +1,10 @@
 /* eslint-disable import/prefer-default-export */
 import { ReactNode, createContext, useCallback, useContext, useMemo } from "react"
 
-import { queryOptions, useQuery } from "@tanstack/react-query"
-import { useMultiSub, useSubCollection } from "lib/shared/db/useSub"
+import { queryOptions, useQueries, useQuery } from "@tanstack/react-query"
+import { useSubCollection, useSubMultiCollections } from "lib/shared/db/useSub"
+import { useSquad } from "lib/squad/use-cases/sub-squad"
 
-import { useSquad } from "contexts/SquadContext"
 import useCreatedElements from "hooks/context/useCreatedElements"
 import LoadingScreen from "screens/LoadingScreen"
 
@@ -22,12 +22,12 @@ export const getEffectsOptions = (charId: string) =>
 
 export function useSubEffects(charId: string) {
   const { newEffects } = useCreatedElements()
-  const { date } = useSquad()
+  const { datetime } = useSquad()
   const options = getEffectsOptions(charId)
   const path = options.queryKey.join("/")
   const cb = useCallback(
-    (payload: DbEffect) => new Effect(payload, { ...effectsMap, ...newEffects }, date),
-    [newEffects, date]
+    (payload: DbEffect) => new Effect(payload, { ...effectsMap, ...newEffects }, datetime),
+    [newEffects, datetime]
   )
   useSubCollection(path, cb)
 }
@@ -59,6 +59,26 @@ export function usePCEffects() {
 }
 
 export function useSubPlayablesEffects(ids: string[]) {
-  const options = ids.map(id => getEffectsOptions(id))
-  useSubMultiCollections(options.map(o => ({ path: o.queryKey.join("/") })))
+  const { datetime } = useSquad()
+  const { newEffects } = useCreatedElements()
+  const allEffects = useMemo(() => ({ ...newEffects, ...effectsMap }), [newEffects])
+
+  const cb = useCallback(
+    (payload: DbEffect) => new Effect(payload, allEffects, datetime),
+    [allEffects, datetime]
+  )
+
+  useSubMultiCollections(ids.map(id => ({ path: getEffectsOptions(id).queryKey.join("/"), cb })))
+}
+
+export function usePlayablesEffects(ids: string[]) {
+  const queries = ids.map(id => getEffectsOptions(id))
+  return useQueries({
+    queries,
+    combine: res => ({
+      isPending: res.some(q => q.isPending),
+      isError: res.some(q => q.isError),
+      data: res.map(q => q.data)
+    })
+  })
 }

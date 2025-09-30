@@ -75,6 +75,53 @@ type UseSubParams<Db, T = Db> = {
   cb?: (snapshot: Db) => T
 }
 
+export function useSubMultiCollections<I, T = I>(paramsArray: UseSubParams<I, T>[]) {
+  const queryClient = useQueryClient()
+
+  const memoParams = useMemo(() => paramsArray, [paramsArray])
+  const pathsStr = useMemo(() => JSON.stringify(memoParams.map(p => p.path)), [memoParams])
+
+  useEffect(() => {
+    const paths: string[] = JSON.parse(pathsStr)
+    const childAddedUnsubscribers = paths.map((path, i) =>
+      subEvent<I>("onChildAdded", path, ({ key, value }) => {
+        const queryKey = path.split("/")
+        const { cb } = memoParams[i]
+        queryClient.setQueryData(queryKey, (prev: Record<string, T>) => ({
+          ...prev,
+          [key]: cb ? cb(value) : value
+        }))
+      })
+    )
+    const childChangedUnsubscribers = paths.map((path, i) =>
+      subEvent<I>("onChildChanged", path, ({ key, value }) => {
+        const queryKey = path.split("/")
+        const { cb } = memoParams[i]
+        queryClient.setQueryData(queryKey, (prev: Record<string, T>) => ({
+          ...prev,
+          [key]: cb ? cb(value) : value
+        }))
+      })
+    )
+    const childRemovedUnsubscribers = paths.map(path =>
+      subEvent<I>("onChildChanged", path, ({ key }) => {
+        const queryKey = path.split("/")
+        queryClient.setQueryData(queryKey, (prev: Record<string, T>) => {
+          const { [key]: removed, ...remainingData } = prev
+          return remainingData
+        })
+      })
+    )
+
+    return () => {
+      childAddedUnsubscribers.forEach(unsub => unsub())
+      childChangedUnsubscribers.forEach(unsub => unsub())
+      childRemovedUnsubscribers.forEach(unsub => unsub())
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queryClient, pathsStr])
+}
+
 export function useSub<Db, T = Db>(path: string, cb?: (snapshot: Db) => T) {
   const queryClient = useQueryClient()
 

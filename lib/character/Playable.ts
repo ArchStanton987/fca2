@@ -32,7 +32,7 @@ export type DbPlayable = {
 export interface Playable {
   info: CharInfo
   combatStatus: CombatStatus
-  combats: Record<string, string>
+  // combats: Record<string, string>
   abilities: Abilities
   health: Health
   progress: Progress
