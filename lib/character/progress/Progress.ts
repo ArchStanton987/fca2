@@ -1,4 +1,4 @@
-import { DbAbilities } from "../abilities/abilities.types"
+import Abilities from "../abilities/Abilities"
 import { DbCharInfo } from "../info/CharInfo"
 import { getLevelAndThresholds } from "../status/status-calc"
 import {
@@ -23,8 +23,10 @@ export default class Progress {
   availableKnowledgePoints: number
   availableFreeKnowledgePoints: number
 
-  constructor(exp: number, abilities: DbAbilities, meta: DbCharInfo) {
-    const { baseSPECIAL, traits, knowledges = {}, upSkills } = abilities
+  constructor(exp: number, abilities: Abilities, meta: DbCharInfo) {
+    const baseSPECIAL = abilities.special.base
+    const { knowledges, traits } = abilities
+    const upSkills = abilities.skills.up
     const traitsArray = Object.values(traits ?? {})
 
     const { background, speciesId } = meta

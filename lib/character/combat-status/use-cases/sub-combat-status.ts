@@ -1,5 +1,3 @@
-import { useCallback } from "react"
-
 import { queryOptions, useQueries, useQuery } from "@tanstack/react-query"
 import { useMultiSub, useSub } from "lib/shared/db/useSub"
 
@@ -21,21 +19,20 @@ export function useCharCombatStatus(charId: string) {
   return useQuery(q)
 }
 
-export const useContendersCombatStatus = (ids: string[]) => {
+export function useSubPlayablesCombatStatus(ids: string[]) {
   const options = ids.map(id => combatStatusOptions(id))
   const subs = options.map(o => ({ path: o.queryKey.join("/"), cb }))
   useMultiSub<DbCombatStatus, CombatStatus>(subs)
+}
+
+export const usePlayablesCombatStatus = (ids: string[]) => {
+  const queries = ids.map(id => combatStatusOptions(id))
   return useQueries({
-    queries: options,
-    combine: useCallback(
-      (
-        results: Array<ReturnType<typeof useQuery<CombatStatus>>>
-      ): { isError: boolean; isPending: boolean; data: Record<string, CombatStatus> } => ({
-        isError: results.some(r => r.isError),
-        isPending: results.some(r => r.isPending),
-        data: Object.fromEntries(ids.map((id, i) => (results[i].data ? [id, results[i].data] : [])))
-      }),
-      [ids]
-    )
+    queries,
+    combine: res => ({
+      isError: res.some(r => r.isError),
+      isPending: res.some(r => r.isPending),
+      data: res.map(cs => cs.data)
+    })
   })
 }

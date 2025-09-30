@@ -107,6 +107,35 @@ export function ContendersAbilitiesProvider({
 //   return abilities
 // }
 
+export function useSubPlayablesAbilities(ids: string[]) {
+  const queries = ids.map(id => getAbilitiesOptions(id))
+  useMultiSub(queries.map(q => ({ path: q.queryKey.join("/") })))
+}
+
+export function usePlayablesAbilities(ids: string[]) {
+  const queries = ids.map(id => getAbilitiesOptions(id))
+  useMultiSub(queries.map(q => ({ path: q.queryKey.join("/") })))
+
+  const itemsSymptomsReq = useContendersItemSymptoms(ids)
+
+  return useQueries({
+    queries,
+    combine: req => ({
+      isPending: req.some(r => r.isPending) || itemsSymptomsReq.isPending,
+      isError: req.some(r => r.isError) || itemsSymptomsReq.isError,
+      data: req.map((r, i) => {
+        const traits = Object.keys(r.data?.traits ?? {})
+        const perks = Object.keys(r.data?.perks ?? {})
+        const traitsSymptoms = traits.map(t => traitsMap[t as TraitId].symptoms)
+        const perksSymptoms = perks.map(t => perksMap[t as PerkId].symptoms)
+        const innateSymptoms = [...traitsSymptoms, ...perksSymptoms].flat()
+        if (!r.data) return undefined
+        return new Abilities(r.data, innateSymptoms, itemsSymptomsReq.data[i])
+      })
+    })
+  })
+}
+
 export function useAbilities(): Abilities
 export function useAbilities(charId: string): Abilities | undefined
 export function useAbilities(charId?: string) {

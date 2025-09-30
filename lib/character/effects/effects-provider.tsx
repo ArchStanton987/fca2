@@ -2,7 +2,7 @@
 import { ReactNode, createContext, useCallback, useContext, useMemo } from "react"
 
 import { queryOptions, useQuery } from "@tanstack/react-query"
-import { useSubCollection } from "lib/shared/db/useSub"
+import { useMultiSub, useSubCollection } from "lib/shared/db/useSub"
 
 import { useSquad } from "contexts/SquadContext"
 import useCreatedElements from "hooks/context/useCreatedElements"
@@ -56,4 +56,9 @@ export function usePCEffects() {
   const effects = useContext(EffectsContext)
   if (!effects) throw new Error("EffectsContext not found")
   return effects
+}
+
+export function useSubPlayablesEffects(ids: string[]) {
+  const options = ids.map(id => getEffectsOptions(id))
+  useSubMultiCollections(options.map(o => ({ path: o.queryKey.join("/") })))
 }

@@ -1,13 +1,13 @@
 /* eslint-disable import/prefer-default-export */
 import { ReactNode, createContext, useCallback, useContext } from "react"
 
-import { queryOptions, useQuery } from "@tanstack/react-query"
-import { useSub } from "lib/shared/db/useSub"
+import { queryOptions, useQueries, useQuery } from "@tanstack/react-query"
+import { useMultiSub, useSub } from "lib/shared/db/useSub"
 
 import LoadingScreen from "screens/LoadingScreen"
 
-import { getAbilitiesOptions } from "../abilities/abilities-provider"
-import { useProgress } from "../progress/progress-provider"
+import { getAbilitiesOptions, usePlayablesAbilities } from "../abilities/abilities-provider"
+import { usePlayablesProgress, useProgress } from "../progress/progress-provider"
 import Health, { DbHealth } from "./Health"
 
 export const getHealthOptions = (charId: string) =>
@@ -51,4 +51,28 @@ export function useHealth() {
   const health = useContext(HealthContext)
   if (!health) throw new Error("HealthContext not found")
   return health
+}
+
+export function useSubPlayablesHealth(ids: string[]) {
+  const queries = ids.map(id => getHealthOptions(id))
+  useMultiSub(queries.map(q => ({ path: q.queryKey.join("/") })))
+}
+
+export function usePlayablesHealth(ids: string[]) {
+  const queries = ids.map(id => getHealthOptions(id))
+
+  const abilitiesReq = usePlayablesAbilities(ids)
+  const progressReq = usePlayablesProgress(ids)
+
+  return useQueries({
+    queries,
+    combine: res => ({
+      isPending: res.some(q => q.isPending),
+      isError: res.some(q => q.isError),
+      data: res.map((q, i) => {
+        if (!q.data || !abilitiesReq.data[i] || !progressReq.data[i]) return undefined
+        return new Health(q.data, abilitiesReq.data[i].special.base, progressReq.data[i].exp)
+      })
+    })
+  })
 }
