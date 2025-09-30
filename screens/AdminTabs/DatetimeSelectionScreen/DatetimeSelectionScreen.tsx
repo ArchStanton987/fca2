@@ -1,6 +1,10 @@
-import { memo, useState } from "react"
+import { useState } from "react"
 import { View } from "react-native"
 
+import { useLocalSearchParams } from "expo-router"
+
+import { usePlayables } from "lib/character/playables-provider"
+import { useSquad } from "lib/squad/use-cases/sub-squad"
 import Toast from "react-native-toast-message"
 
 import AmountSelector from "components/AmountSelector"
@@ -12,8 +16,6 @@ import ViewSection from "components/ViewSection"
 import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import RevertColorsPressable from "components/wrappers/RevertColorsPressable/RevertColorsPressable"
-import { useAdmin } from "contexts/AdminContext"
-import { useSquad } from "contexts/SquadContext"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import { getDDMMYYYY, getHHMM } from "utils/date"
@@ -24,12 +26,13 @@ type Timespan = "MIN" | "HOUR" | "DAY"
 const timespans: Timespan[] = ["MIN", "HOUR", "DAY"]
 const selectors = [1, 5, 20, 60]
 
-function DatetimeSelectionScreen() {
+export default function DatetimeSelectionScreen() {
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
   const useCases = useGetUseCases()
   const squad = useSquad()
-  const { characters, npcs } = useAdmin()
+  const characters = usePlayables()
 
-  const [newDate, setNewDate] = useState<Date>(squad.date)
+  const [newDate, setNewDate] = useState<Date>(squad.datetime)
   const [selectedTimespan, setSelectedTimespan] = useState<Timespan>("MIN")
   const [selectedAmount, setSelectedAmount] = useState<number>(1)
 
@@ -53,16 +56,13 @@ function DatetimeSelectionScreen() {
     setNewDate(newDateCopy)
   }
 
-  const onPressReset = () => setNewDate(squad.date)
+  const onPressReset = () => setNewDate(squad.datetime)
 
   const onPressSave = async () => {
     if (!newDate) return
     try {
-      await useCases.squad.updateDate(
-        squad.squadId,
-        newDate,
-        Object.values({ ...characters, ...npcs })
-      )
+      const payload = { characters, squadId, currDate: squad.datetime, newDate }
+      await useCases.gm.updateDatetime(payload)
       Toast.show({
         type: "custom",
         text1: "Le temps a bien été modifié"
@@ -144,5 +144,3 @@ function DatetimeSelectionScreen() {
     </>
   )
 }
-
-export default memo(DatetimeSelectionScreen)

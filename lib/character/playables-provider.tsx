@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useMemo } from "react"
+import { ReactNode, createContext, useContext, useMemo } from "react"
 
 import LoadingScreen from "screens/LoadingScreen"
 
@@ -17,33 +17,33 @@ const PlayablesContext = createContext({} as Record<string, Character>)
 
 export default function PlayablesProvider({
   children,
-  playablesIds
+  ids
 }: {
   children: ReactNode
-  playablesIds: string[]
+  ids: string[]
 }) {
-  useSubPlayablesCharInfo(playablesIds)
-  const charInfoData = usePlayablesCharInfo(playablesIds).data
+  useSubPlayablesCharInfo(ids)
+  const charInfoData = usePlayablesCharInfo(ids).data
 
-  useSubPlayablesAbilities(playablesIds)
-  const abilitiesData = usePlayablesAbilities(playablesIds).data
+  useSubPlayablesAbilities(ids)
+  const abilitiesData = usePlayablesAbilities(ids).data
 
-  useSubPlayablesProgress(playablesIds)
-  const progressData = usePlayablesProgress(playablesIds).data
+  useSubPlayablesProgress(ids)
+  const progressData = usePlayablesProgress(ids).data
 
-  useSubPlayablesHealth(playablesIds)
-  const healthData = usePlayablesHealth(playablesIds).data
+  useSubPlayablesHealth(ids)
+  const healthData = usePlayablesHealth(ids).data
 
-  useSubPlayablesCombatStatus(playablesIds)
-  const combatStatusData = usePlayablesCombatStatus(playablesIds).data
+  useSubPlayablesCombatStatus(ids)
+  const combatStatusData = usePlayablesCombatStatus(ids).data
 
-  useSubPlayablesEffects(playablesIds)
-  const effectsData = usePlayablesEffects(playablesIds).data
+  useSubPlayablesEffects(ids)
+  const effectsData = usePlayablesEffects(ids).data
 
   const playables = useMemo(
     () =>
       Object.fromEntries(
-        playablesIds
+        ids
           .map((id, i) => {
             const info = charInfoData[i]
             const abilities = abilitiesData[i]
@@ -58,18 +58,20 @@ export default function PlayablesProvider({
           })
           .filter(([, value]) => !!value)
       ),
-    [
-      abilitiesData,
-      charInfoData,
-      combatStatusData,
-      effectsData,
-      healthData,
-      playablesIds,
-      progressData
-    ]
+    [abilitiesData, charInfoData, combatStatusData, effectsData, healthData, ids, progressData]
   )
 
-  if (Object.keys(playables).length !== playablesIds.length) return <LoadingScreen />
+  if (Object.keys(playables).length !== ids.length) return <LoadingScreen />
 
   return <PlayablesContext.Provider value={playables}>{children}</PlayablesContext.Provider>
+}
+
+export function usePlayables(): Record<string, Character>
+export function usePlayables(id: string): Character
+export function usePlayables(id?: string) {
+  const playables = useContext(PlayablesContext)
+  if (!playables) throw new Error("Could not fint PlayablesContext")
+  if (!id) return playables
+  if (!playables[id]) throw new Error(`Playable with id ${id} could not be found`)
+  return playables[id]
 }

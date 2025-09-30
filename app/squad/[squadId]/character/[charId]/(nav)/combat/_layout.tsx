@@ -2,7 +2,7 @@ import { View } from "react-native"
 
 import { Stack } from "expo-router"
 
-import { useCharInfo } from "lib/character/character-provider"
+import { useCharInfo } from "lib/character/info/info-provider"
 
 import Drawer from "components/Drawer/Drawer"
 import Spacer from "components/Spacer"
