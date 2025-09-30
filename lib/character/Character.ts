@@ -1,335 +1,38 @@
-import { Perk, PerkId } from "lib/character/abilities/perks/perks.types"
-import { Trait, TraitId } from "lib/character/abilities/traits/traits.types"
-import {
-  getAssignedFreeRaceKPoints,
-  getAssignedRawKPoints,
-  getHpGainPerLevel,
-  getInitKnowledgePoints,
-  getInitSkillsPoints,
-  getRemainingFreeKPoints,
-  getSkillPointsPerLevel,
-  getSpecLevelInterval
-} from "lib/character/progress/progress-utils"
-import { Progress } from "lib/character/progress/progress.types"
-import { getLevelAndThresholds } from "lib/character/status/status-calc"
-import { getRemainingTime } from "lib/common/utils/time-calc"
-import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
-import { ClothingData, ClothingId } from "lib/objects/data/clothings/clothings.types"
-import { DbEquipedObjects, DbInventory } from "lib/objects/data/objects.types"
-import weaponsMap from "lib/objects/data/weapons/weapons"
-import { dbToWeapon } from "lib/objects/data/weapons/weapons.mappers"
-import { Weapon } from "lib/objects/data/weapons/weapons.types"
-import { computed, makeObservable, observable } from "mobx"
+import { Playable } from "./Playable"
+import Abilities from "./abilities/Abilities"
+import { CombatStatus } from "./combat-status/combat-status.types"
+import Effect from "./effects/Effect"
+import { EffectId } from "./effects/effects.types"
+import Health from "./health/Health"
+import CharInfo from "./info/CharInfo"
+import Progress from "./progress/Progress"
 
-import { getModAttribute } from "../common/utils/char-calc"
-import clothingsMap from "../objects/data/clothings/clothings"
-import Playable from "./Playable"
-import Squad from "./Squad"
-import { DbAbilities } from "./abilities/abilities.types"
-import { KnowledgeId } from "./abilities/knowledges/knowledge-types"
-import perksMap from "./abilities/perks/perks"
-import { secAttrArray } from "./abilities/sec-attr/sec-attr"
-import { SecAttrsValues } from "./abilities/sec-attr/sec-attr-types"
-import skillsMap from "./abilities/skills/skills"
-import { SkillsValues } from "./abilities/skills/skills.types"
-import { specialArray } from "./abilities/special/special"
-import { Special } from "./abilities/special/special.types"
-import traitsMap from "./abilities/traits/traits"
-import { DbCombatStatus } from "./combat-status/combat-status.types"
-import effectsMap from "./effects/effects"
-import { DbEffects, Effect, EffectData, EffectId } from "./effects/effects.types"
-import { Symptom } from "./effects/symptoms.type"
-import { getMaxHP, getMissingHp } from "./health/health-calc"
-import { DbHealth, Health } from "./health/health-types"
-import { healthStates, limbsMap, radStates } from "./health/healthMap"
-import { DbCharMeta } from "./info/CharInfo"
-import { DbStatus } from "./status/status.types"
-
-export type DbChar = {
-  abilities: DbAbilities
-  effects?: DbEffects
-  // equipedObj?: DbEquipedObjects
-  // status: DbStatus
-  health: DbHealth
-  combatStatus: DbCombatStatus
-  meta: DbCharMeta
-  combats?: Record<string, string>
-  exp: number
-} & { inventory: DbInventory }
+type CharacterPayload = {
+  info: CharInfo
+  combatStatus: CombatStatus
+  combats: Record<string, string>
+  abilities: Abilities
+  health: Health
+  progress: Progress
+  effects: Record<EffectId, Effect>
+}
 
 export default class Character implements Playable {
-  charId: string
-  fullname: string
-  isEnemy: boolean
-  dbAbilities: DbAbilities
-  dbEffects: DbEffects
-  dbEquipedObjects: DbEquipedObjects
-  status: DbStatus
-  date: Date
-  squadId: Squad["squadId"]
-  meta: DbCharMeta
+  info: CharInfo
+  combatStatus: CombatStatus
   combats: Record<string, string>
+  abilities: Abilities
+  health: Health
+  progress: Progress
+  effects: Record<EffectId, Effect>
 
-  allClothings: Record<ClothingId, ClothingData>
-  allEffects: Record<EffectId, EffectData>
-
-  constructor(
-    id: string,
-    obj: Omit<DbChar, "inventory" | "combatStatus">,
-    squad: { date: Date; squadId: string; membersRecord: Record<string, any> },
-    newElements: CreatedElements = defaultCreatedElements
-  ) {
-    const { newClothings, newEffects } = newElements
-    const { lastname, firstname } = obj.meta
-    this.charId = id
-    this.fullname = lastname ? `${firstname} ${lastname}` : firstname
-    this.isEnemy = !(this.charId in squad.membersRecord)
-    this.dbAbilities = {
-      ...obj.abilities,
-      traits: obj.abilities.traits ?? [],
-      perks: obj.abilities.perks ?? [],
-      knowledges: obj.abilities.knowledges ?? {}
-    }
-    this.dbEffects = obj.effects || {}
-    this.dbEquipedObjects = obj.equipedObj || {}
-    this.status = obj.status
-    this.squadId = squad.squadId
-    this.meta = obj.meta
-    this.combats = obj.combats || {}
-    this.date = squad.date
-    this.allClothings = { ...clothingsMap, ...newClothings }
-    this.allEffects = { ...effectsMap, ...newEffects }
-
-    makeObservable(this, {
-      dbAbilities: observable,
-      dbEffects: observable,
-      dbEquipedObjects: observable,
-      status: observable,
-      squadId: observable,
-      date: observable,
-      //
-      innateSymptoms: computed,
-      health: computed,
-      effects: computed,
-      symptoms: computed,
-      special: computed,
-      secAttr: computed,
-      skills: computed,
-      knowledges: computed,
-      equipedObjects: computed,
-      //
-      effectsRecord: computed,
-      //
-      progress: computed,
-      //
-      traits: computed,
-      traitsRecord: computed,
-      perks: computed,
-      perksRecord: computed,
-      //
-      unarmed: computed
-    })
-  }
-
-  get innateSymptoms() {
-    const traitsSymptoms = this.dbAbilities?.traits?.map(el => traitsMap[el].symptoms) || []
-    const perksSymptoms = this.dbAbilities?.perks?.map(el => perksMap[el].symptoms) || []
-    return [...traitsSymptoms, ...perksSymptoms].flat()
-  }
-
-  get health(): Health {
-    const maxHp = getMaxHP(this.dbAbilities.baseSPECIAL, this.status.exp)
-    const missingHp = getMissingHp(this.status)
-    const currHp = maxHp - missingHp
-    return {
-      maxHp,
-      missingHp,
-      hp: currHp,
-      rads: this.status.rads,
-      limbsHp: {
-        headHp: this.status.headHp,
-        leftTorsoHp: this.status.leftTorsoHp,
-        rightTorsoHp: this.status.rightTorsoHp,
-        leftArmHp: this.status.leftArmHp,
-        rightArmHp: this.status.rightArmHp,
-        leftLegHp: this.status.leftLegHp,
-        rightLegHp: this.status.rightLegHp,
-        groinHp: this.status.groinHp
-      }
-    }
-  }
-
-  get effects(): Effect[] {
-    // get all calculated effects
-    // hp effects
-    const { hp, maxHp } = this.health
-    const currHpPercent = (hp / maxHp) * 100
-    const healthState = Object.values(healthStates).find(el => currHpPercent < el.min)
-    const hpEffects = healthState ? [{ id: healthState.id, data: effectsMap[healthState.id] }] : []
-    // // cripled effects
-    const { limbsHp } = this.health
-    const noHpLimbs = Object.values(limbsMap).filter(el => limbsHp[el.id] === 0)
-    const cripledEffects = noHpLimbs.map(el => ({
-      id: limbsMap[el.id].cripledEffect,
-      data: effectsMap[limbsMap[el.id].cripledEffect]
-    }))
-    // // rads effects
-    const { rads } = this.health
-    const radsState = radStates.find(el => rads > el.threshold)
-    const radsEffects = radsState ? [{ id: radsState.id, data: this.allEffects[radsState.id] }] : []
-    // // get all calculated effects objects
-    const calculatedEffects = [...hpEffects, ...cripledEffects, ...radsEffects]
-
-    // get all db stored effects
-    const effectsIds = Object.entries(this.dbEffects).map(([dbKey, value]) => {
-      let timeRemaining = null
-      const { length } = this.allEffects[value.id]
-      let startTs
-      let endTs
-      if (value.endTs) {
-        timeRemaining = getRemainingTime(this.date.getTime(), value.endTs)
-        endTs = new Date(value.endTs)
-      }
-      if (value.startTs && length) {
-        const lengthInMs = length * 3600000
-        const end = new Date(value.startTs).getTime() + lengthInMs
-        startTs = new Date(value.startTs)
-        timeRemaining = getRemainingTime(this.date.getTime(), end)
-      }
-
-      return { ...value, timeRemaining, dbKey, data: this.allEffects[value.id], startTs, endTs }
-    })
-    return [...calculatedEffects, ...effectsIds]
-  }
-
-  get symptoms(): Symptom[] {
-    const clothingsIds = Object.values(this.dbEquipedObjects.clothings || []).map(el => el.id)
-    const clothingsSymptoms = clothingsIds.map(el => this.allClothings[el].symptoms)
-    const effectsSymptoms = this.effects.map(el => this.allEffects[el.id].symptoms)
-    return [...effectsSymptoms, ...clothingsSymptoms].flat()
-  }
-
-  get special() {
-    const result = { base: {}, mod: {}, curr: {} } as {
-      base: Special
-      mod: Special
-      curr: Special
-    }
-    specialArray.forEach(({ id }) => {
-      result.base[id] = getModAttribute(this.innateSymptoms, id, this.dbAbilities.baseSPECIAL[id])
-      result.curr[id] = getModAttribute(this.symptoms, id, result.base[id])
-      result.mod[id] = result.curr[id] - result.base[id]
-    })
-    return result
-  }
-
-  get secAttr() {
-    const result = { base: {}, mod: {}, curr: {} } as {
-      base: SecAttrsValues
-      mod: SecAttrsValues
-      curr: SecAttrsValues
-    }
-    secAttrArray.forEach(({ id, calc }) => {
-      result.base[id] = getModAttribute(this.innateSymptoms, id, calc(this.special.base))
-      const currWithInnate = getModAttribute(this.innateSymptoms, id, calc(this.special.curr))
-      result.curr[id] = getModAttribute(this.symptoms, id, currWithInnate)
-      result.mod[id] = result.curr[id] - result.base[id]
-    })
-    return result
-  }
-
-  get skills() {
-    const result = { base: {}, up: {}, mod: {}, curr: {} } as {
-      base: SkillsValues
-      up: SkillsValues
-      mod: SkillsValues
-      curr: SkillsValues
-    }
-    Object.values(skillsMap).forEach(({ id, calc }) => {
-      result.base[id] = getModAttribute(this.innateSymptoms, id, calc(this.special.base))
-      result.up[id] = this.dbAbilities.upSkills[id]
-      const currWithInnate = getModAttribute(this.innateSymptoms, id, calc(this.special.curr))
-      const calcCurr = getModAttribute(this.symptoms, id, currWithInnate)
-      result.curr[id] = Math.max(calcCurr + result.up[id], 1)
-      result.mod[id] = result.curr[id] - result.base[id] - result.up[id]
-    })
-    return result
-  }
-
-  get knowledges() {
-    return Object.entries(this.dbAbilities.knowledges)
-      .map(([id, value]) => ({ id: id as KnowledgeId, value }))
-      .sort((a, b) => b.value - a.value)
-  }
-
-  get knowledgesRecord() {
-    return this.dbAbilities.knowledges
-  }
-
-  get effectsRecord() {
-    const effectsRecord = {} as Record<EffectId, Effect>
-    Object.values(this.effects).forEach(effect => {
-      effectsRecord[effect.id] = { ...effect }
-    })
-    return effectsRecord
-  }
-
-  get progress(): Progress {
-    const { traits, knowledges } = this.dbAbilities
-    const { background, exp } = this.status
-    const { level } = getLevelAndThresholds(exp)
-
-    const initSkillPoints = getInitSkillsPoints()
-    const skillPointsPerLevel = getSkillPointsPerLevel(this.special.base, traits || [])
-    const unlockedSkillPoints = skillPointsPerLevel * (level - 1) + initSkillPoints
-    const usedSkillsPoints = Object.values(this.skills.up).reduce((acc, curr) => curr + acc, 0)
-    const initKPoints = getInitKnowledgePoints()
-    const unlockedKnowledgePoints = initKPoints + (level - 1)
-    const rawKpointsAssigned = getAssignedRawKPoints(knowledges)
-    const freeRaceKPointsAssigned = getAssignedFreeRaceKPoints(knowledges, "human")
-    const usedKnowledgePoints = rawKpointsAssigned - freeRaceKPointsAssigned
-    const availableFreeKnowledgePoints = getRemainingFreeKPoints(knowledges, background)
-
-    return {
-      exp: this.status.exp,
-      level: getLevelAndThresholds(this.status.exp).level,
-      hpGainPerLevel: getHpGainPerLevel(this.special.base),
-      specLevelInterval: getSpecLevelInterval(traits || []),
-      usedSkillsPoints,
-      availableSkillPoints: unlockedSkillPoints - usedSkillsPoints,
-      usedKnowledgePoints,
-      availableKnowledgePoints: unlockedKnowledgePoints - usedKnowledgePoints,
-      availableFreeKnowledgePoints
-    }
-  }
-
-  get traits(): Trait[] {
-    const { traits } = this.dbAbilities
-    return traits?.map(traitId => traitsMap[traitId]) || []
-  }
-
-  get traitsRecord(): Record<TraitId, Trait> {
-    const traitsRecord = {} as Record<TraitId, Trait>
-    this.traits.forEach(trait => {
-      traitsRecord[trait.id] = { ...trait }
-    })
-    return traitsRecord
-  }
-
-  get perks() {
-    const { perks } = this.dbAbilities
-    return perks?.map(perkId => perksMap[perkId]) || []
-  }
-
-  get perksRecord() {
-    const perksRecord = {} as Record<PerkId, Perk>
-    this.perks.forEach(perk => {
-      perksRecord[perk.id] = { ...perk }
-    })
-    return perksRecord
-  }
-
-  get unarmed(): Weapon {
-    return dbToWeapon(["unarmed", { id: "unarmed" }], this, undefined)
+  constructor(payload: CharacterPayload) {
+    this.info = payload.info
+    this.combatStatus = payload.combatStatus
+    this.combats = payload.combats
+    this.abilities = payload.abilities
+    this.health = payload.health
+    this.progress = payload.progress
+    this.effects = payload.effects
   }
 }

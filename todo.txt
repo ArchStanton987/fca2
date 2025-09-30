@@ -6,7 +6,7 @@ contenders
 
 squad/[squadId]/character/[charId]/
 squad/[squadId]/character/[charId]/combat/action
-squad/[squadId]/admin/datetime => sub tous les NON ENNEMIS ou MEMBERS
+squad/[squadId]/admin/datetime => sub tous les NON ENNEMIS
 
 
 ajouter charId dans meta

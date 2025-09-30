@@ -54,8 +54,8 @@ export default function updateDate(
         const newLimbsHp = health.getNewLimbsOnTimePass(currDate, newDate, abilities.secAttr)
         promises.push(updateLimbsHp(dbType)({ charId, newLimbsHp }))
       }
-
-      promises.push(squadRepo.setChild({ id: squadId, childKey: "datetime" }, newDate.toJSON()))
     })
+    promises.push(squadRepo.setChild({ id: squadId, childKey: "datetime" }, newDate.toJSON()))
+    return promises
   }
 }

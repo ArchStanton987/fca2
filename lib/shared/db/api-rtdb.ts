@@ -1,4 +1,4 @@
-import { DbChar } from "lib/character/Character"
+import { DbPlayable } from "lib/character/Playable"
 import { DbCombatStatus } from "lib/character/combat-status/combat-status.types"
 import { DbEffect } from "lib/character/effects/effects.types"
 import { DbHealth } from "lib/character/health/Health"
@@ -36,7 +36,7 @@ export type RollParams = {
   id?: number
   childKey?: keyof Roll
 }
-export type PlayableParams = { id?: string; childKey?: keyof DbChar }
+export type PlayableParams = { id?: string; childKey?: keyof DbPlayable }
 export type StatusParams = CharParams & { childKey?: keyof DbStatus }
 export type HealthParams = CharParams & { childKey?: keyof DbHealth }
 export type CombatStatusParams = CharParams & { childKey?: keyof DbCombatStatus }

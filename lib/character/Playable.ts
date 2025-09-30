@@ -7,7 +7,7 @@ import { CombatStatus, DbCombatStatus } from "./combat-status/combat-status.type
 import Effect from "./effects/Effect"
 import { EffectId } from "./effects/effects.types"
 import Health, { DbHealth } from "./health/Health"
-import { DbCharInfo } from "./info/CharInfo"
+import CharInfo, { DbCharInfo } from "./info/CharInfo"
 import Progress from "./progress/Progress"
 
 export type PlayingCharacterSpecies = "human" | "ghoul" | "mutie" | "half-mutie" | "deathclaw"
@@ -30,17 +30,11 @@ export type DbPlayable = {
 }
 
 export interface Playable {
-  charId: string
-  fullname: string
-  isEnemy: boolean
-  date: Date
-  squadId: string
-  info: DbCharInfo
+  info: CharInfo
   combatStatus: CombatStatus
   combats: Record<string, string>
   abilities: Abilities
   health: Health
   progress: Progress
   effects: Record<EffectId, Effect>
-  // unarmed: Weapon
 }

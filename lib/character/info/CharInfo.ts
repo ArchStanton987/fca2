@@ -35,6 +35,7 @@ export default class CharInfo {
   squadId: string
   firstname: string
   lastname: string
+  fullname: string
   description?: string
   isNpc: boolean
   isEnemy: boolean
@@ -48,6 +49,8 @@ export default class CharInfo {
     this.squadId = payload.squadId
     this.firstname = payload.firstname
     this.lastname = payload.lastname
+    const { firstname, lastname } = this
+    this.fullname = lastname ? `${firstname} ${lastname}` : firstname
     this.description = payload.description
     this.isNpc = payload.isNpc
     this.isEnemy = payload.isEnemy

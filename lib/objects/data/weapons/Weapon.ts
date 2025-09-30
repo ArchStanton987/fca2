@@ -84,13 +84,13 @@ export default class Weapon implements ItemInterface {
       return acc + knowledgeBonus + innateBonus
     }, 0)
 
-    let charTraitSKillModifier = 0
+    let charTraitSkillModifier = 0
     if (traits.lateralized) {
       const { TWO_HANDED_WEAPONS_MOD, ONE_HANDED_WEAPONS_MOD } = traitsMap.lateralized.consts
-      charTraitSKillModifier = isTwoHanded ? TWO_HANDED_WEAPONS_MOD : ONE_HANDED_WEAPONS_MOD
+      charTraitSkillModifier = isTwoHanded ? TWO_HANDED_WEAPONS_MOD : ONE_HANDED_WEAPONS_MOD
     }
     const strengthMalus = Math.max(0, minStrength - strength) * MALUS_PER_MISSING_STRENGTH
-    return baseScore + knowledgesBonus + charTraitSKillModifier - strengthMalus
+    return baseScore + knowledgesBonus + charTraitSkillModifier - strengthMalus
   }
 
   getApCost(traits: Abilities["traits"]) {
