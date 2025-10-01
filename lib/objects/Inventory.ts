@@ -1,26 +1,6 @@
-// import { AmmoSet, AmmoType } from "lib/objects/data/ammo/ammo.types"
-// import clothingsMap from "lib/objects/data/clothings/clothings"
-// import { Clothing, ClothingData, ClothingId } from "lib/objects/data/clothings/clothings.types"
-// import consumablesMap from "lib/objects/data/consumables/consumables"
-// import {
-//   Consumable,
-//   ConsumableData,
-//   ConsumableId
-// } from "lib/objects/data/consumables/consumables.types"
-// import miscObjectsMap from "lib/objects/data/misc-objects/misc-objects"
-// import {
-//   MiscObject,
-//   MiscObjectData,
-//   MiscObjectId
-// } from "lib/objects/data/misc-objects/misc-objects-types"
-// import { DbInventory } from "lib/objects/data/objects.types"
-// import { Weapon } from "lib/objects/data/weapons/weapons.types"
+import { Item } from "lib/inventory/use-sub-inv-cat"
 
-// // import { computed, makeObservable, observable } from "mobx"
-// import { filterUnique } from "utils/array-utils"
-
-// import { CreatedElements, defaultCreatedElements } from "./created-elements"
-// import { dbToWeapon } from "./data/weapons/weapons.mappers"
+import { AmmoSet } from "./data/ammo/ammo.types"
 
 // type Carriable = {
 //   data: { weight: number; place: number }
@@ -213,3 +193,15 @@
 //     return { currWeight, currPlace }
 //   }
 // }
+
+export default class Inventory {
+  ammo: Partial<AmmoSet>
+  caps: number
+  items: Record<string, Item>
+
+  constructor(payload: { ammo: Partial<AmmoSet>; caps: number; items: Record<string, Item> }) {
+    this.ammo = payload.ammo
+    this.caps = payload.caps
+    this.items = payload.items
+  }
+}

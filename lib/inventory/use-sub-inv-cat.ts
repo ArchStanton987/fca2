@@ -16,7 +16,7 @@ import { DbInventory, DbItem, ItemCategory } from "lib/objects/data/objects.type
 import Weapon from "lib/objects/data/weapons/Weapon"
 import weaponsMap from "lib/objects/data/weapons/weapons"
 import { attackToWeapon } from "lib/objects/data/weapons/weapons.mappers"
-import { useSub, useSubCollection } from "lib/shared/db/useSub"
+import { useMultiSub, useSub, useSubCollection, useSubMultiCollections } from "lib/shared/db/useSub"
 
 import useCreatedElements from "hooks/context/useCreatedElements"
 import { filterUnique } from "utils/array-utils"
@@ -63,8 +63,24 @@ export function useSubItems(charId: string) {
   const cb = useCallback((db: DbItem) => itemFactory(db, newElements), [newElements])
   useSubCollection(path, cb)
 }
+export function useMultiSubItems(ids: string[]) {
+  const newElements = useCreatedElements()
+  const options = ids.map(id => getItemsOptions(id))
+  const cb = useCallback((db: DbItem) => itemFactory(db, newElements), [newElements])
+  useSubMultiCollections(options.map(o => ({ path: o.queryKey.join("/"), cb })))
+}
 export function useItemsQuery(charId: string) {
   return useQuery(getItemsOptions(charId))
+}
+export function useItemsQueries(ids: string[]) {
+  return useQueries({
+    queries: ids.map(id => getItemsOptions(id)),
+    combine: res => ({
+      isPending: res.map(q => q.isPending),
+      isError: res.map(q => q.isError),
+      data: res.map(q => q)
+    })
+  })
 }
 
 type ItemRecord = Record<string, Item>
@@ -151,8 +167,22 @@ export function useSubAmmo(charId: string) {
   const path = options.queryKey.join("/")
   useSub(path)
 }
+export function useMultiSubAmmo(ids: string[]) {
+  const options = ids.map(id => getAmmoOptions(id))
+  useMultiSub(options.map(o => ({ path: o.queryKey.join("/") })))
+}
 export function useAmmoQuery(charId: string) {
   return useQuery(getAmmoOptions(charId))
+}
+export function useAmmoQueries(ids: string[]) {
+  return useQueries({
+    queries: ids.map(id => getAmmoOptions(id)),
+    combine: res => ({
+      isPending: res.map(q => q.isPending),
+      isError: res.map(q => q.isError),
+      data: res.map(q => q)
+    })
+  })
 }
 
 export function useSubCaps(charId: string) {
@@ -160,8 +190,22 @@ export function useSubCaps(charId: string) {
   const path = options.queryKey.join("/")
   useSub(path)
 }
+export function useMultiSubCaps(ids: string[]) {
+  const options = ids.map(id => getCapsOptions(id))
+  useMultiSub(options.map(o => ({ path: o.queryKey.join("/") })))
+}
 export function useCapsQuery(charId: string) {
   return useQuery(getCapsOptions(charId))
+}
+export function useCapsQueries(ids: string[]) {
+  return useQueries({
+    queries: ids.map(id => getCapsOptions(id)),
+    combine: res => ({
+      isPending: res.map(q => q.isPending),
+      isError: res.map(q => q.isError),
+      data: res.map(q => q)
+    })
+  })
 }
 
 const getItemsCarry = (items: Record<string, Item>) =>
