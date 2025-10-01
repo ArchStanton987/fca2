@@ -14,11 +14,11 @@ import colors from "styles/colors"
 import layout from "styles/layout"
 
 const pNavElements = [
-  { path: "recap", label: "Recap" },
+  { path: "combat-recap", label: "Recap" },
   { path: "action", label: "Action" }
 ]
 const gmNavElements = [
-  { path: "recap", label: "Recap" },
+  { path: "combat-recap", label: "Recap" },
   { path: "action-order", label: "MJ (ordre)" },
   { path: "gm-action", label: "MJ (action)" },
   { path: "gm-difficulty", label: "MJ (diff)" },

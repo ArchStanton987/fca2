@@ -24,7 +24,7 @@ import { useInventory } from "contexts/InventoryContext"
 import { useActionApi } from "providers/ActionFormProvider"
 import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useContenders } from "providers/ContendersProvider"
-import { useInventories } from "providers/InventoriesProvider"
+import { useInventories } from "providers/PlayableInventoriesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import AmmoIndicator from "screens/CombatScreen/AmmoIndicator"
 import PlayButton from "screens/CombatScreen/slides/PlayButton"
@@ -178,7 +178,7 @@ function WeaponInfoUi({ weapon, isHuman, hasMalus }: WeaponInfoUiProps) {
   )
 }
 
-function NoCombatWeaponIndicator({
+export function NoCombatWeaponIndicator({
   style,
   contentContainerStyle,
   withActions
@@ -239,7 +239,7 @@ function NoCombatWeaponIndicator({
   )
 }
 
-function CombatWeaponIndicator({
+export function CombatWeaponIndicator({
   contenderId,
   style,
   contentContainerStyle
@@ -291,33 +291,5 @@ function CombatWeaponIndicator({
         <WeaponInfoUi weapon={weapon} hasMalus={hasMalus} isHuman={isHuman} />
       </Pressable>
     </Section>
-  )
-}
-
-export default function WeaponIndicator({
-  contenderId,
-  style,
-  contentContainerStyle,
-  withActions
-}: {
-  contenderId?: string
-  style?: StyleProp<ViewStyle>
-  contentContainerStyle?: StyleProp<ViewStyle>
-  withActions: boolean
-}) {
-  if (contenderId)
-    return (
-      <CombatWeaponIndicator
-        contenderId={contenderId}
-        style={style}
-        contentContainerStyle={contentContainerStyle}
-      />
-    )
-  return (
-    <NoCombatWeaponIndicator
-      style={style}
-      contentContainerStyle={contentContainerStyle}
-      withActions={withActions}
-    />
   )
 }
