@@ -1,27 +1,14 @@
-contenders
-  - effects
-  - health
-  - abilities
-
-
-squad/[squadId]/character/[charId]/
-squad/[squadId]/character/[charId]/combat/action
-squad/[squadId]/admin/datetime => sub tous les NON ENNEMIS
+créer 2 combats récap différents (1 avec contexte combat)
+MAJ dépendances
+use Guard
 
 
 ajouter charId dans meta
-créer branche depuis avant commit massif
 upgrade item selector (no category)
 amélio perf action
 
-useMultiSub (inv / char)
-
 migrations: 
    meta : isCritter
-
-refactor Inventory
-memo numpad & others
-onChildAdd / autres méthodes firebase
 
 test chaque action / sous action
 test unarmed

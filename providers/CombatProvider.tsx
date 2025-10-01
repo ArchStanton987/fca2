@@ -1,9 +1,9 @@
 import { createContext, useContext, useMemo } from "react"
 
+import { useLocalSearchParams } from "expo-router"
+
 import Combat from "lib/combat/Combat"
 import { useSubCombatHistory, useSubCombatInfo } from "lib/combat/use-cases/sub-combat"
-
-import { useSquad } from "contexts/SquadContext"
 
 import { useCombatStatus } from "./CombatStatusProvider"
 
@@ -14,7 +14,7 @@ const defaultCombatContext: CombatContextType = null
 const CombatContext = createContext<CombatContextType>(defaultCombatContext)
 
 export default function CombatProvider({ children }: { children: React.ReactNode }) {
-  const squad = useSquad()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
 
   const combatId = useCombatStatus()?.combatId ?? ""
   const combatHistoryReq = useSubCombatHistory(combatId)
@@ -26,9 +26,9 @@ export default function CombatProvider({ children }: { children: React.ReactNode
       history: combatHistoryReq.data ?? {},
       ...combatInfoReq.data,
       id: combatId,
-      gameId: squad.squadId
+      gameId: squadId
     })
-  }, [combatHistoryReq, combatInfoReq, squad.squadId, combatId])
+  }, [combatHistoryReq, combatInfoReq, squadId, combatId])
 
   return <CombatContext.Provider value={combat}>{children}</CombatContext.Provider>
 }
