@@ -1,4 +1,4 @@
-import { DbChar } from "./character/Character"
+import { DbPlayable } from "./character/Playable"
 import getAbilitiesUseCases from "./character/abilities/abilities-use-cases"
 import updateCombatStatus, {
   UpdateCombatStatusParams
@@ -104,7 +104,7 @@ export default function getUseCases(
     character: {
       subCharacters: (ids: string[]) => subCharacters(dbType)(ids),
       sub: (params: PlayableParams) => subCharacter(dbType)(params),
-      subChild: <T extends keyof DbChar>(params: SubCharacterChildParams<T>) =>
+      subChild: <T extends keyof DbPlayable>(params: SubCharacterChildParams<T>) =>
         subCharacterChild(dbType)(params),
       updateCombatStatus: (params: UpdateCombatStatusParams) => updateCombatStatus(dbType)(params),
       updateExp: (params: UpdateExpParams) => updateExp(dbType)(params),

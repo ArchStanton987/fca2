@@ -4,11 +4,11 @@ import { View } from "react-native"
 import { Slot } from "expo-router"
 
 import { useSubGameCombatsInfo } from "lib/combat/use-cases/sub-combat"
+import { useSquad } from "lib/squad/use-cases/sub-squad"
 
 import AdminDrawer from "components/Drawer/AdminDrawer"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { useSquad } from "contexts/SquadContext"
 import LoadingScreen from "screens/LoadingScreen"
 import styles from "styles/DrawerLayout.styles"
 import layout from "styles/layout"
@@ -16,7 +16,7 @@ import layout from "styles/layout"
 export default function CombatsLayout() {
   const { combats } = useSquad()
 
-  const combatsIds = useMemo(() => Object.keys(combats), [combats])
+  const combatsIds = useMemo(() => Object.keys(combats ?? {}), [combats])
   const combatsReq = useSubGameCombatsInfo(combatsIds)
 
   if (combatsReq.isPending) return <LoadingScreen />

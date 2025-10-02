@@ -2,6 +2,8 @@ import { useState } from "react"
 import { ScrollView, View } from "react-native"
 
 import Character from "lib/character/Character"
+import { usePlayables } from "lib/character/playables-provider"
+import { useSquad } from "lib/squad/use-cases/sub-squad"
 import Toast from "react-native-toast-message"
 
 import CheckBox from "components/CheckBox/CheckBox"
@@ -16,8 +18,6 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import TxtInput from "components/TxtInput"
 import PlusIcon from "components/icons/PlusIcon"
-import { useAdmin } from "contexts/AdminContext"
-import { useSquad } from "contexts/SquadContext"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -41,15 +41,17 @@ export default function CombatCreation() {
   const useCases = useGetUseCases()
   const squad = useSquad()
 
-  const { characters, npcs } = useAdmin()
-  const allPlayable = { ...characters, ...npcs }
+  const allPlayable = usePlayables()
 
   const squadPlayers: Record<string, string> = {}
-  Object.keys(characters ?? {}).forEach(id => {
+  Object.keys(squad.members ?? {}).forEach(id => {
     squadPlayers[id] = id
   })
 
-  const npcList = Object.entries(npcs ?? {}).map(([id, npc]) => ({ id, ...npc }))
+  const npcList = Object.keys(squad.npcs ?? {}).map(id => ({
+    id,
+    fullname: allPlayable[id].info.fullname
+  }))
 
   const [form, setForm] = useState<Form>({ ...defaultForm, players: squadPlayers })
   const [isStartingNow, setIsStartingNow] = useState(true)
@@ -59,7 +61,6 @@ export default function CombatCreation() {
   }
 
   const toggleChar = (type: "players" | "npcs", id: string) => {
-    if (!npcs) return
     if (id in form[type]) {
       setForm(prev => {
         const prevType = { ...prev[type] }
@@ -88,7 +89,7 @@ export default function CombatCreation() {
       return
     }
 
-    const { date, squadId } = squad
+    const { datetime } = squad
     const contendersIds = Object.keys({ ...form.players, ...form.npcs })
     const contenders = Object.fromEntries(
       contendersIds.map(id => {
@@ -98,7 +99,7 @@ export default function CombatCreation() {
       })
     )
 
-    const payload = { ...form, date: date.toJSON(), isStartingNow, gameId: squadId, contenders }
+    const payload = { ...form, date: datetime.toJSON(), isStartingNow, gameId: , contenders }
     try {
       await useCases.combat.create(payload)
       Toast.show({ type: "custom", text1: "Le combat a été créé" })
@@ -173,7 +174,7 @@ export default function CombatCreation() {
             <SelectorButton
               onPress={() => toggleChar("npcs", item)}
               isSelected={item in form.npcs}
-              label={npcs[item].meta.firstname}
+              label={allPlayable[item].info.fullname}
             />
           )}
         />
@@ -196,7 +197,7 @@ export default function CombatCreation() {
                   style={isSelected && { backgroundColor: colors.terColor, color: colors.secColor }}
                   onPress={() => toggleChar("npcs", item.id)}
                 >
-                  {item.meta.firstname}
+                  {item.fullname}
                 </Txt>
               )
             }}

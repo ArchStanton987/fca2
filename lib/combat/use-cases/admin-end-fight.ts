@@ -1,26 +1,25 @@
 import { ThenableReference } from "firebase/database"
-import Abilities from "lib/character/abilities/Abilities"
-import { CombatStatus, DbCombatStatus } from "lib/character/combat-status/combat-status.types"
+import Character from "lib/character/Character"
+import { DbCombatStatus } from "lib/character/combat-status/combat-status.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
 export type AdminEndFightParams = {
   shouldDeleteNpcs?: boolean
   combatId: string
-  combatStatuses: Record<string, CombatStatus>
-  contendersAbilities: Record<string, Abilities>
+  contenders: Record<string, Character>
 }
 
 export default function adminEndFight(dbType: keyof typeof repositoryMap = "rtdb") {
   const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
   const playableRepo = repositoryMap[dbType].playableRepository
 
-  return ({ combatId, combatStatuses, contendersAbilities }: AdminEndFightParams) => {
+  return ({ combatId, contenders }: AdminEndFightParams) => {
     const promises: (Promise<void> | ThenableReference)[] = []
-    Object.entries(combatStatuses).forEach(([charId, combatStatus]) => {
+    Object.entries(contenders).forEach(([charId, { abilities, combatStatus }]) => {
       // reset character ap, currFightId, combatStatus
       if (combatId === combatStatus.combatId) {
         const defaultCombatStatus: DbCombatStatus = {
-          currAp: contendersAbilities[charId].secAttr.curr.actionPoints
+          currAp: abilities.secAttr.curr.actionPoints
         }
         promises.push(combatStatusRepo.set({ charId }, defaultCombatStatus))
       }

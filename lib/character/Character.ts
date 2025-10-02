@@ -10,7 +10,7 @@ import Progress from "./progress/Progress"
 type CharacterPayload = {
   info: CharInfo
   combatStatus: CombatStatus
-  // combats: Record<string, string>
+  combats: Record<string, string>
   abilities: Abilities
   health: Health
   progress: Progress
@@ -20,7 +20,7 @@ type CharacterPayload = {
 export default class Character implements Playable {
   info: CharInfo
   combatStatus: CombatStatus
-  // combats: Record<string, string>
+  combats: Record<string, string>
   abilities: Abilities
   health: Health
   progress: Progress
@@ -29,7 +29,7 @@ export default class Character implements Playable {
   constructor(payload: CharacterPayload) {
     this.info = payload.info
     this.combatStatus = payload.combatStatus
-    // this.combats = payload.combats
+    this.combats = payload.combats
     this.abilities = payload.abilities
     this.health = payload.health
     this.progress = payload.progress
