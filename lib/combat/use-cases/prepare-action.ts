@@ -1,4 +1,5 @@
 import { CombatStatus } from "lib/character/combat-status/combat-status.types"
+import { UseCaseConfig } from "lib/get-use-cases"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import { DbAction } from "../combats.types"
@@ -15,8 +16,8 @@ export type PrepareActionParams = {
   combatStatuses: Record<string, CombatStatus>
 }
 
-export default function prepareAction(dbType: keyof typeof repositoryMap = "rtdb") {
-  const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
+export default function prepareAction({ db }: UseCaseConfig) {
+  const combatStatusRepo = repositoryMap[db].combatStatusRepository
 
   return ({ roundId, action, combatStatuses }: PrepareActionParams) => {
     const { apCost = 0, actionSubtype, actorId } = action

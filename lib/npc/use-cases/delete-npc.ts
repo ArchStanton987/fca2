@@ -1,5 +1,6 @@
 import Squad from "lib/character/Squad"
 import { CombatStatus } from "lib/character/combat-status/combat-status.types"
+import { UseCaseConfig } from "lib/get-use-cases"
 import repositoryMap from "lib/shared/db/get-repository"
 
 export type DeleteNpcParams = {
@@ -8,9 +9,9 @@ export type DeleteNpcParams = {
   squad: Squad
 }
 
-export default function deleteNpc(dbType: keyof typeof repositoryMap = "rtdb") {
-  const playableRepo = repositoryMap[dbType].playableRepository
-  const squadRepo = repositoryMap[dbType].squadRepository
+export default function deleteNpc({ db }: UseCaseConfig) {
+  const playableRepo = repositoryMap[db].playableRepository
+  const squadRepo = repositoryMap[db].squadRepository
 
   return async ({ npcId, npcCombatStatus, squad }: DeleteNpcParams) => {
     const isFighting = !!npcCombatStatus.combatId

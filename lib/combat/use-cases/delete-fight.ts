@@ -1,5 +1,6 @@
 import { Playable } from "lib/character/Playable"
 import { DbCombatStatus } from "lib/character/combat-status/combat-status.types"
+import { UseCaseConfig } from "lib/get-use-cases"
 import repositoryMap from "lib/shared/db/get-repository"
 
 export type DeleteFightParams = {
@@ -8,11 +9,11 @@ export type DeleteFightParams = {
   contenders: Record<string, Playable>
 }
 
-export default function deleteFight(dbType: keyof typeof repositoryMap = "rtdb") {
-  const combatRepo = repositoryMap[dbType].combatRepository
-  const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
-  const playableRepo = repositoryMap[dbType].playableRepository
-  const squadRepo = repositoryMap[dbType].squadRepository
+export default function deleteFight({ db }: UseCaseConfig) {
+  const combatRepo = repositoryMap[db].combatRepository
+  const combatStatusRepo = repositoryMap[db].combatStatusRepository
+  const playableRepo = repositoryMap[db].playableRepository
+  const squadRepo = repositoryMap[db].squadRepository
 
   return ({ gameId, combatId, contenders }: DeleteFightParams) => {
     const promises: Promise<void>[] = []

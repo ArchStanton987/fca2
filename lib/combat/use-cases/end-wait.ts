@@ -1,3 +1,4 @@
+import { UseCaseConfig } from "lib/get-use-cases"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import CombatState from "../CombatState"
@@ -8,9 +9,9 @@ export type EndWaitParams = {
   charId: string
 }
 
-export default function endWait(dbType: keyof typeof repositoryMap = "rtdb") {
-  const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
-  const combatStateRepo = repositoryMap[dbType].combatStateRepository
+export default function endWait({ db }: UseCaseConfig) {
+  const combatStatusRepo = repositoryMap[db].combatStatusRepository
+  const combatStateRepo = repositoryMap[db].combatStateRepository
 
   return ({ combatId, combatState, charId }: EndWaitParams) => {
     const promises = []

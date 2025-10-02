@@ -1,6 +1,6 @@
 import Playable from "lib/character/Playable"
 import { CombatStatus } from "lib/character/combat-status/combat-status.types"
-import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
+import { UseCaseConfig } from "lib/get-use-cases"
 import { Clothing } from "lib/objects/data/clothings/clothings.types"
 import { Consumable } from "lib/objects/data/consumables/consumables.types"
 import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
@@ -27,11 +27,9 @@ export type CombatActionParams = {
   item?: Clothing | Consumable | MiscObject | Weapon
 }
 
-export default function doCombatAction(
-  dbType: keyof typeof repositoryMap = "rtdb",
-  newElements: CreatedElements = defaultCreatedElements
-) {
-  const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
+export default function doCombatAction(config: UseCaseConfig) {
+  const { db } = config
+  const combatStatusRepo = repositoryMap[db].combatStatusRepository
 
   return async ({ action, combat, contenders, combatStatuses, item }: CombatActionParams) => {
     const { apCost = 0, actorId, actionType, actionSubtype } = action
@@ -67,19 +65,19 @@ export default function doCombatAction(
         if (isEndingRound) throw new Error("End of the round: invalid action")
         const activePlayersWithAp = getActivePlayersWithAp(combatStatuses)
         if (activePlayersWithAp.length <= 1) throw new Error("No other players with AP")
-        promises.push(waitAction(dbType)({ action }))
+        promises.push(waitAction(config)({ action }))
         break
       }
 
       case "prepare":
-        promises.push(prepareAction(dbType)({ action, combatStatuses, roundId }))
+        promises.push(prepareAction(config)({ action, combatStatuses, roundId }))
         break
 
       case "item":
         if (actionSubtype !== "pickUp") {
           if (!item) throw new Error("Item is required for item action")
         }
-        promises.push(itemAction(dbType, newElements)({ action, contenders, combat, item }))
+        promises.push(itemAction(config)({ action, contenders, combat, item }))
         break
 
       default:
@@ -91,16 +89,16 @@ export default function doCombatAction(
       const damageEntries = action.healthChangeEntries
 
       promises.push(
-        applyDamageEntries(dbType)({ roundId, contenders, combatStatuses, damageEntries })
+        applyDamageEntries(config)({ roundId, contenders, combatStatuses, damageEntries })
       )
     }
 
     // save action in combat
-    promises.push(saveAction(dbType)({ action, combat, contenders: combatStatuses }))
+    promises.push(saveAction(config)({ action, combat, contenders: combatStatuses }))
 
     // handle char status reset & new round creation
     if (isEndingRound) {
-      promises.push(setNewRound(dbType)({ contenders, combatStatuses, combat }))
+      promises.push(setNewRound(config)({ contenders, combatStatuses, combat }))
     } else {
       // set actor action points
       const newAp = combatStatus.currAp - apCost

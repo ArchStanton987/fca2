@@ -5,7 +5,7 @@ import Effect from "lib/character/effects/Effect"
 import { EffectId } from "lib/character/effects/effects.types"
 import addEffect from "lib/character/effects/use-cases/add-effect"
 import Health from "lib/character/health/Health"
-import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
+import { UseCaseConfig } from "lib/get-use-cases"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import { DamageEntries } from "../combats.types"
@@ -25,12 +25,10 @@ export type ApplyDamageEntriesParams = {
   currDate: Date
 }
 
-export default function applyDamageEntries(
-  dbType: keyof typeof repositoryMap = "rtdb",
-  createdElements: CreatedElements = defaultCreatedElements
-) {
-  const statusRepo = repositoryMap[dbType].statusRepository
-  const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
+export default function applyDamageEntries(config: UseCaseConfig) {
+  const { db } = config
+  const statusRepo = repositoryMap[db].statusRepository
+  const combatStatusRepo = repositoryMap[db].combatStatusRepository
 
   return ({ roundId, contenders, damageEntries, currDate }: ApplyDamageEntriesParams) => {
     const promises: (Promise<void> | ThenableReference)[] = []
@@ -86,10 +84,7 @@ export default function applyDamageEntries(
           if (!effectId) throw new Error("Missing effect id in damage entry")
           // promises.push(effectsUseCases.add(char, effectId))
           promises.push(
-            addEffect(
-              dbType,
-              createdElements
-            )({ effectId, effects, startDate: currDate, charId, traits })
+            addEffect(config)({ effectId, effects, startDate: currDate, charId, traits })
           )
           break
         }

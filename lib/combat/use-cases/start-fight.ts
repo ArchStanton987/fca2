@@ -1,4 +1,5 @@
 import Playable from "lib/character/Playable"
+import { UseCaseConfig } from "lib/get-use-cases"
 import repositoryMap from "lib/shared/db/get-repository"
 
 export type StartFightParams = {
@@ -6,8 +7,8 @@ export type StartFightParams = {
   contenders: Record<string, Playable>
 }
 
-export default function startFight(dbType: keyof typeof repositoryMap = "rtdb") {
-  const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
+export default function startFight({ db }: UseCaseConfig) {
+  const combatStatusRepo = repositoryMap[db].combatStatusRepository
 
   return async ({ combatId, contenders }: StartFightParams) => {
     const promises: Promise<void>[] = []

@@ -1,3 +1,5 @@
+import { QueryClient } from "@tanstack/react-query"
+
 import { DbPlayable } from "./character/Playable"
 import getAbilitiesUseCases from "./character/abilities/abilities-use-cases"
 import updateCombatStatus, {
@@ -34,7 +36,7 @@ import waitAction, { WaitActionParams } from "./combat/use-cases/wait-action"
 import toggleEquip, { ToggleEquipParams } from "./inventory/use-cases/toggle-equip"
 import createNpc, { CreateNpcParams } from "./npc/use-cases/create-npc"
 import deleteNpc, { DeleteNpcParams } from "./npc/use-cases/delete-npc"
-import { defaultCreatedElements } from "./objects/created-elements"
+import { CreatedElements, defaultCreatedElements } from "./objects/created-elements"
 import addAdditionalClothing from "./objects/data/clothings/add-additional-clothings"
 import { DbClothingData } from "./objects/data/clothings/clothings.types"
 import subAdditionalClothings from "./objects/data/clothings/sub-additional-clothings"
@@ -56,66 +58,76 @@ import {
 import { DbType } from "./shared/db/db.types"
 import updateDate, { UpdateDateParams } from "./squad/use-cases/update-date"
 
-export default function getUseCases(
-  dbType: DbType = "rtdb",
-  createdElements = defaultCreatedElements
-) {
+type GetUseCasesParams = {
+  db?: DbType
+  createdElements?: CreatedElements
+  store: QueryClient
+}
+
+export type UseCaseConfig = Required<GetUseCasesParams>
+
+export default function getUseCases(payload: UseCaseConfig) {
+  const config = {
+    db: payload.db ?? "rtdb",
+    createdElements: payload.createdElements ?? defaultCreatedElements,
+    store: payload.store
+  }
+
   return {
-    inventory: getInventoryUseCases(dbType, createdElements),
-    weapons: getWeaponsUseCases(dbType),
-    abilities: getAbilitiesUseCases(dbType),
+    inventory: getInventoryUseCases(config),
+    weapons: getWeaponsUseCases(config),
+    abilities: getAbilitiesUseCases(config),
     additional: {
       subAdditionalClothings: (params: AdditionalClothingsParams = {}) =>
-        subAdditionalClothings(dbType)(params),
+        subAdditionalClothings(config)(params),
       subAdditionalConsumables: (params: AdditionalConsumablesParams = {}) =>
-        subAdditionalConsumables(dbType)(params),
-      subAdditionalMisc: (params: AdditionalMiscParams = {}) => subAdditionalMisc(dbType)(params),
+        subAdditionalConsumables(config)(params),
+      subAdditionalMisc: (params: AdditionalMiscParams = {}) => subAdditionalMisc(config)(params),
       subAdditionalEffects: (params: AdditionalEffectsParams = {}) =>
-        subAdditionalEffects(dbType)(params),
+        subAdditionalEffects(config)(params),
 
-      addClothing: (data: DbClothingData) => addAdditionalClothing(dbType)(data),
-      addConsumable: (data: DbConsumableData) => addAdditionalConsumable(dbType)(data),
-      addMiscObject: (data: DbMiscObjectData) => addAdditionalMisc(dbType)(data),
-      addEffect: (data: DbEffectData) => addAdditionalEffect(dbType)(data)
+      addClothing: (data: DbClothingData) => addAdditionalClothing(config)(data),
+      addConsumable: (data: DbConsumableData) => addAdditionalConsumable(config)(data),
+      addMiscObject: (data: DbMiscObjectData) => addAdditionalMisc(config)(data),
+      addEffect: (data: DbEffectData) => addAdditionalEffect(config)(data)
     },
     combat: {
-      startFight: (data: StartFightParams) => startFight(dbType)(data),
-      adminEndFight: (data: AdminEndFightParams) => adminEndFight(dbType)(data),
-      create: (data: CreateFightParams) => createFight(dbType)(data),
-      delete: (data: DeleteFightParams) => deleteFight(dbType)(data),
+      startFight: (data: StartFightParams) => startFight(config)(data),
+      adminEndFight: (data: AdminEndFightParams) => adminEndFight(config)(data),
+      create: (data: CreateFightParams) => createFight(config)(data),
+      delete: (data: DeleteFightParams) => deleteFight(config)(data),
       // ACTIONS
-      doCombatAction: (data: CombatActionParams) => doCombatAction(dbType, createdElements)(data),
-      waitAction: (data: WaitActionParams) => waitAction(dbType)(data),
-      endWait: (data: EndWaitParams) => endWait(dbType)(data),
-      prepareAction: (data: PrepareActionParams) => prepareAction(dbType)(data),
+      doCombatAction: (data: CombatActionParams) => doCombatAction(config)(data),
+      waitAction: (data: WaitActionParams) => waitAction(config)(data),
+      endWait: (data: EndWaitParams) => endWait(config)(data),
+      prepareAction: (data: PrepareActionParams) => prepareAction(config)(data),
       // ACTION HELPERS
-      updateAction: (data: UpdateActionParams) => updateAction(dbType)(data),
-      saveAction: (data: SaveActionParams) => saveAction(dbType)(data),
-      setDifficulty: (data: SetDifficultyParams) => setDifficulty(dbType)(data),
-      resetDifficulty: (data: ResetDifficultyParams) => resetDifficulty(dbType)(data),
+      updateAction: (data: UpdateActionParams) => updateAction(config)(data),
+      saveAction: (data: SaveActionParams) => saveAction(config)(data),
+      setDifficulty: (data: SetDifficultyParams) => setDifficulty(config)(data),
+      resetDifficulty: (data: ResetDifficultyParams) => resetDifficulty(config)(data),
       // GM
-      applyDamageEntries: (data: ApplyDamageEntriesParams) =>
-        applyDamageEntries(dbType, createdElements)(data)
+      applyDamageEntries: (data: ApplyDamageEntriesParams) => applyDamageEntries(config)(data)
     },
     npc: {
-      create: (data: CreateNpcParams) => createNpc(dbType)(data),
-      delete: (params: DeleteNpcParams) => deleteNpc(dbType)(params)
+      create: (data: CreateNpcParams) => createNpc(config)(data),
+      delete: (params: DeleteNpcParams) => deleteNpc(config)(params)
     },
     character: {
-      subCharacters: (ids: string[]) => subCharacters(dbType)(ids),
-      sub: (params: PlayableParams) => subCharacter(dbType)(params),
+      subCharacters: (ids: string[]) => subCharacters(config)(ids),
+      sub: (params: PlayableParams) => subCharacter(config)(params),
       subChild: <T extends keyof DbPlayable>(params: SubCharacterChildParams<T>) =>
-        subCharacterChild(dbType)(params),
-      updateCombatStatus: (params: UpdateCombatStatusParams) => updateCombatStatus(dbType)(params),
-      updateExp: (params: UpdateExpParams) => updateExp(dbType)(params),
-      addEffect: (params: AddEffectParams) => addEffect(dbType)(params),
-      removeEffect: (params: RemoveEffectParams) => removeEffect(dbType)(params),
-      updateHp: (params: UpdateHpParams) => updateHp(dbType)(params),
-      updateLimbsHp: (params: UpdateLimbsHpParams) => updateLimbsHp(dbType)(params),
-      toggleEquip: (params: ToggleEquipParams) => toggleEquip(dbType, createdElements)(params)
+        subCharacterChild(config)(params),
+      updateCombatStatus: (params: UpdateCombatStatusParams) => updateCombatStatus(config)(params),
+      updateExp: (params: UpdateExpParams) => updateExp(config)(params),
+      addEffect: (params: AddEffectParams) => addEffect(config)(params),
+      removeEffect: (params: RemoveEffectParams) => removeEffect(config)(params),
+      updateHp: (params: UpdateHpParams) => updateHp(config)(params),
+      updateLimbsHp: (params: UpdateLimbsHpParams) => updateLimbsHp(config)(params),
+      toggleEquip: (params: ToggleEquipParams) => toggleEquip(config)(params)
     },
     gm: {
-      updateDatetime: (params: UpdateDateParams) => updateDate(dbType, createdElements)(params)
+      updateDatetime: (params: UpdateDateParams) => updateDate(config)(params)
     }
   }
 }

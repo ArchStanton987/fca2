@@ -1,6 +1,5 @@
 import Abilities from "lib/character/abilities/Abilities"
-import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
-import { DbType } from "lib/shared/db/db.types"
+import { UseCaseConfig } from "lib/get-use-cases"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import Effect from "../Effect"
@@ -17,12 +16,9 @@ export type AddEffectParams = {
   lengthInMs?: number
 }
 
-export default function addEffect(
-  dbType: DbType = "rtdb",
-  { newEffects }: CreatedElements = defaultCreatedElements
-) {
-  const effectsRepo = repositoryMap[dbType].effectsRepository
-  const allEffects = { ...effectsMap, ...newEffects }
+export default function addEffect({ db, createdElements }: UseCaseConfig) {
+  const effectsRepo = repositoryMap[db].effectsRepository
+  const allEffects = { ...effectsMap, ...createdElements.newEffects }
 
   return ({ effectId, charId, startDate, effects, traits, lengthInMs }: AddEffectParams) => {
     const effectData = allEffects[effectId]

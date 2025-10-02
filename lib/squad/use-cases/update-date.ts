@@ -5,8 +5,7 @@ import addEffect from "lib/character/effects/use-cases/add-effect"
 import removeEffect from "lib/character/effects/use-cases/remove-effect"
 import updateHp from "lib/character/health/use-cases/update-hp"
 import updateLimbsHp from "lib/character/health/use-cases/update-limbs-hp"
-import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
-import { DbType } from "lib/shared/db/db.types"
+import { UseCaseConfig } from "lib/get-use-cases"
 import repositoryMap from "lib/shared/db/get-repository"
 
 export type UpdateDateParams = {
@@ -16,13 +15,11 @@ export type UpdateDateParams = {
   newDate: Date
 }
 
-export default function updateDate(
-  dbType: DbType = "rtdb",
-  { newEffects }: CreatedElements = defaultCreatedElements
-) {
-  const allEffects = { ...newEffects, ...effectsMap }
+export default function updateDate(config: UseCaseConfig) {
+  const { db, createdElements } = config
+  const allEffects = { ...createdElements.newEffects, ...effectsMap }
 
-  const squadRepo = repositoryMap[dbType].squadRepository
+  const squadRepo = repositoryMap[db].squadRepository
 
   return async ({ characters, currDate, newDate, squadId }: UpdateDateParams) => {
     const promises = []
@@ -30,12 +27,12 @@ export default function updateDate(
       const { traits } = abilities
       const expiringEffects = getExpiringEffects(effects, traits, newDate)
       expiringEffects.forEach(expiredEffect => {
-        promises.push(removeEffect(dbType)({ charId, dbKey: expiredEffect.dbKey }))
+        promises.push(removeEffect(config)({ charId, dbKey: expiredEffect.dbKey }))
       })
 
       const followingEffects = getFollowingEffects(effects, traits, newDate, allEffects)
       followingEffects.forEach(({ effectId, startDate }) => {
-        promises.push(addEffect(dbType)({ effectId, charId, startDate, effects, traits }))
+        promises.push(addEffect(config)({ effectId, charId, startDate, effects, traits }))
       })
 
       const hasPoison = Object.values(effects).some(e => e.type === "poison")
@@ -43,10 +40,10 @@ export default function updateDate(
 
       if (hasPoison || hasMissingHp) {
         const newHpValue = health.getNewHpOnTimePass(currDate, newDate, abilities.secAttr)
-        promises.push(updateHp(dbType)({ charId, newHpValue }))
+        promises.push(updateHp(config)({ charId, newHpValue }))
 
         const newLimbsHp = health.getNewLimbsOnTimePass(currDate, newDate, abilities.secAttr)
-        promises.push(updateLimbsHp(dbType)({ charId, newLimbsHp }))
+        promises.push(updateLimbsHp(config)({ charId, newLimbsHp }))
       }
     })
     promises.push(squadRepo.setChild({ id: squadId, childKey: "datetime" }, newDate.toJSON()))

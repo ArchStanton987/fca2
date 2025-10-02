@@ -1,4 +1,4 @@
-import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
+import { UseCaseConfig } from "lib/get-use-cases"
 import clothingsMap from "lib/objects/data/clothings/clothings"
 import { ClothingId } from "lib/objects/data/clothings/clothings.types"
 import repositoryMap from "lib/shared/db/get-repository"
@@ -11,13 +11,13 @@ export type ToggleEquipParams = {
   equippedItems: Record<string, Item>
 }
 
-export default function toggleEquip(
-  dbType: keyof typeof repositoryMap = "rtdb",
-  { newClothings }: CreatedElements = defaultCreatedElements
-) {
-  const itemsRepo = repositoryMap[dbType].itemsRepository
+export default function toggleEquip({ db, createdElements }: UseCaseConfig) {
+  const itemsRepo = repositoryMap[db].itemsRepository
 
-  const allClothings = { ...clothingsMap, ...newClothings } as unknown as typeof clothingsMap
+  const allClothings = {
+    ...clothingsMap,
+    ...createdElements.newClothings
+  } as unknown as typeof clothingsMap
 
   return ({ charId, itemId, equippedItems }: ToggleEquipParams) => {
     const item = equippedItems[itemId]

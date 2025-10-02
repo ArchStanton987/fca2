@@ -1,9 +1,10 @@
+import { UseCaseConfig } from "lib/get-use-cases"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import { DbEffectData } from "./effects.types"
 
-export default function addAdditionalEffect(dbType: keyof typeof repositoryMap = "rtdb") {
-  const repository = repositoryMap[dbType].additionalEffectsRepository
+export default function addAdditionalEffect({ db }: UseCaseConfig) {
+  const repository = repositoryMap[db].additionalEffectsRepository
 
   return (params: DbEffectData) => repository.setChild({ childKey: params.id }, params)
 }

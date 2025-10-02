@@ -4,6 +4,7 @@ import healthMap from "lib/character/health/healthMap"
 import getStatusUseCases from "lib/character/status/status-use-cases"
 import { DbStatus } from "lib/character/status/status.types"
 import { applyMod } from "lib/common/utils/char-calc"
+import { UseCaseConfig } from "lib/get-use-cases"
 
 import { getRepository } from "../RepositoryBuilder"
 import Inventory from "./Inventory"
@@ -25,10 +26,7 @@ import {
 } from "./fbInventoryRepository"
 import { ExchangeState } from "./objects-reducer"
 
-const getInventoryUseCases = (
-  db: keyof typeof getRepository = "rtdb",
-  createdElements: CreatedElements = defaultCreatedElements
-) => {
+const getInventoryUseCases = ({ db, createdElements }: UseCaseConfig) => {
   const repository = getRepository[db].inventory
   const equipedObjectsRepository = getRepository[db].equipedObjects
   const effectsUseCases = getEffectsUseCases(db, createdElements)

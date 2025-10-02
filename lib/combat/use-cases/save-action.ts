@@ -1,4 +1,5 @@
 import { CombatStatus } from "lib/character/combat-status/combat-status.types"
+import { UseCaseConfig } from "lib/get-use-cases"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import Combat from "../Combat"
@@ -10,11 +11,11 @@ export type SaveActionParams = {
   combat: Combat
 }
 
-export default function saveAction(dbType: keyof typeof repositoryMap = "rtdb") {
-  const actionRepo = repositoryMap[dbType].actionRepository
-  const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
-  const combatStateRepo = repositoryMap[dbType].combatStateRepository
-  const combatHistoryRepo = repositoryMap[dbType].combatHistoryRepository
+export default function saveAction({ db }: UseCaseConfig) {
+  const actionRepo = repositoryMap[db].actionRepository
+  const combatStatusRepo = repositoryMap[db].combatStatusRepository
+  const combatStateRepo = repositoryMap[db].combatStateRepository
+  const combatHistoryRepo = repositoryMap[db].combatHistoryRepository
 
   return async ({ action, combat, contenders }: SaveActionParams) => {
     const promises = []

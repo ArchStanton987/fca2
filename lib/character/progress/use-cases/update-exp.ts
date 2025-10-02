@@ -1,3 +1,4 @@
+import { UseCaseConfig } from "lib/get-use-cases"
 import repositoryMap from "lib/shared/db/get-repository"
 
 export type UpdateExpParams = {
@@ -5,8 +6,8 @@ export type UpdateExpParams = {
   newExp: number
 }
 
-export default function updateExp(dbType: keyof typeof repositoryMap = "rtdb") {
-  const playableRepo = repositoryMap[dbType].playableRepository
+export default function updateExp({ db }: UseCaseConfig) {
+  const playableRepo = repositoryMap[db].playableRepository
 
   return ({ charId, newExp }: UpdateExpParams) =>
     playableRepo.setChild({ id: charId, childKey: "exp" }, newExp)

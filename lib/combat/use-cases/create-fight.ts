@@ -1,4 +1,5 @@
 import Playable from "lib/character/Playable"
+import { UseCaseConfig } from "lib/get-use-cases"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import startFight from "./start-fight"
@@ -13,9 +14,10 @@ export type CreateFightParams = {
   isStartingNow: boolean
 }
 
-export default function createFight(dbType: keyof typeof repositoryMap = "rtdb") {
-  const squadRepo = repositoryMap[dbType].squadRepository
-  const combatRepo = repositoryMap[dbType].combatRepository
+export default function createFight(config: UseCaseConfig) {
+  const { db } = config
+  const squadRepo = repositoryMap[db].squadRepository
+  const combatRepo = repositoryMap[db].combatRepository
 
   return async ({ isStartingNow, contenders, ...rest }: CreateFightParams) => {
     const info = {
@@ -35,7 +37,7 @@ export default function createFight(dbType: keyof typeof repositoryMap = "rtdb")
     squadRepo.patchChild({ id: rest.gameId, childKey: "combats" }, { [combatId]: combatId })
 
     if (isStartingNow) {
-      await startFight(dbType)({ combatId, contenders })
+      await startFight(config)({ combatId, contenders })
     }
     return combatId
   }

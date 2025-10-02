@@ -1,3 +1,4 @@
+import { UseCaseConfig } from "lib/get-use-cases"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import { DbAction } from "../combats.types"
@@ -7,8 +8,8 @@ export type UpdateActionParams = {
   payload: Partial<DbAction>
 }
 
-export default function updateAction(dbType: keyof typeof repositoryMap = "rtdb") {
-  const actionRepo = repositoryMap[dbType].actionRepository
+export default function updateAction({ db }: UseCaseConfig) {
+  const actionRepo = repositoryMap[db].actionRepository
 
   return ({ combatId, payload }: UpdateActionParams) => {
     const updatedAction = JSON.parse(JSON.stringify(payload)) // sanitize payload, removes undefined

@@ -1,3 +1,4 @@
+import { UseCaseConfig } from "lib/get-use-cases"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import { DbCombatStatus } from "../combat-status.types"
@@ -7,8 +8,8 @@ export type UpdateCombatStatusParams = {
   charId: string
 }
 
-export default function updateCombatStatus(dbType: keyof typeof repositoryMap = "rtdb") {
-  const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
+export default function updateCombatStatus({ db }: UseCaseConfig) {
+  const combatStatusRepo = repositoryMap[db].combatStatusRepository
 
   return ({ payload, charId }: UpdateCombatStatusParams) =>
     combatStatusRepo.patch({ charId }, payload)

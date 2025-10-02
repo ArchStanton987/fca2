@@ -1,8 +1,9 @@
 import { getRepository } from "lib/RepositoryBuilder"
 import Playable from "lib/character/Playable"
+import { UseCaseConfig } from "lib/get-use-cases"
 import { Weapon, WeaponActionId } from "lib/objects/data/weapons/weapons.types"
 
-const getWeaponsUseCases = (db: keyof typeof getRepository = "rtdb") => {
+const getWeaponsUseCases = ({ db, createdElements }: UseCaseConfig) => {
   const invRepository = getRepository[db].inventory
   const equObjRepository = getRepository[db].equipedObjects
 
