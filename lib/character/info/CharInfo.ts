@@ -20,7 +20,7 @@ export type DbCharInfo = {
   background: BackgroundId
   squadId: string
   firstname: string
-  lastname: string
+  lastname?: string
   description?: string
   isNpc: boolean
   isEnemy: boolean
@@ -34,7 +34,7 @@ export default class CharInfo {
   background: BackgroundId
   squadId: string
   firstname: string
-  lastname: string
+  lastname?: string
   fullname: string
   description?: string
   isNpc: boolean

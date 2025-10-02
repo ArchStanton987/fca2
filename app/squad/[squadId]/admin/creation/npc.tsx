@@ -1,12 +1,15 @@
 import { useState } from "react"
 import { View } from "react-native"
 
+import { useLocalSearchParams } from "expo-router"
+
 import { DbCombatStatus } from "lib/character/combat-status/combat-status.types"
 import { DbCharInfo } from "lib/character/info/CharInfo"
 import { species } from "lib/character/playable.const"
 import { BackgroundId, DbStatus } from "lib/character/status/status.types"
 import enemyTemplates, { critters } from "lib/npc/const/npc-templates"
 import { generateDbHuman } from "lib/npc/utils/npc-generation"
+import { useSquad } from "lib/squad/use-cases/sub-squad"
 import Toast from "react-native-toast-message"
 
 import Col from "components/Col"
@@ -20,7 +23,6 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import TxtInput from "components/TxtInput"
 import PlusIcon from "components/icons/PlusIcon"
-import { useSquad } from "contexts/SquadContext"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
 
@@ -39,6 +41,7 @@ type NpcForm = {
 }
 
 export default function NpcCreation() {
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
   const useCases = useGetUseCases()
   const squad = useSquad()
 
@@ -46,7 +49,7 @@ export default function NpcCreation() {
     speciesId: "human",
     templateId: "gunner",
     background: "other",
-    squadId: squad.squadId,
+    squadId,
     description: "",
     firstname: "",
     lastname: "",

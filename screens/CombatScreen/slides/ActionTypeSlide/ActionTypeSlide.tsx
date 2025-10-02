@@ -4,7 +4,6 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import actions from "lib/combat/const/actions"
 import WeaponIndicator from "lib/combat/ui/WeaponIndicator"
 import { getActivePlayersWithAp } from "lib/combat/utils/combat-utils"
-import getUseCases from "lib/get-use-cases"
 import Toast from "react-native-toast-message"
 
 import List from "components/List"
@@ -28,6 +27,7 @@ import { useCombat } from "providers/CombatProvider"
 import { useCombatStatuses } from "providers/CombatStatusesProvider"
 import { useContenders } from "providers/ContendersProvider"
 import { useScrollTo } from "providers/SlidesProvider"
+import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
 
@@ -45,7 +45,7 @@ const toastMessages = {
 } as const
 
 export default function ActionTypeSlide({ slideIndex }: SlideProps) {
-  const useCases = getUseCases()
+  const useCases = useGetUseCases()
   const { charId, meta } = useCharacter()
   const { isNpc } = meta
   const contenders = useContenders()

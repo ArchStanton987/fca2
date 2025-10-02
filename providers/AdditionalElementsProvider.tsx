@@ -75,6 +75,7 @@ export default function AdditionalElementsProvider({ children }: { children: Rea
 
   const value = useMemo(
     () => ({
+      newWeapons: {},
       newClothings,
       newConsumables,
       newMiscObjects,
