@@ -66,7 +66,7 @@ type GetUseCasesParams = {
 
 export type UseCaseConfig = Required<GetUseCasesParams>
 
-export default function getUseCases(payload: UseCaseConfig) {
+export default function getUseCases(payload: GetUseCasesParams) {
   const config = {
     db: payload.db ?? "rtdb",
     createdElements: payload.createdElements ?? defaultCreatedElements,

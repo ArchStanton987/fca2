@@ -3,6 +3,7 @@ import { getModAttribute } from "lib/common/utils/char-calc"
 import { Symptom } from "../effects/symptoms.type"
 import { DbAbilities } from "./abilities.types"
 import { KnowledgeId, KnowledgeLevelValue } from "./knowledges/knowledge-types"
+import perksMap from "./perks/perks"
 import { PerkId } from "./perks/perks.types"
 import { secAttrArray } from "./sec-attr/sec-attr"
 import { SecAttrsValues } from "./sec-attr/sec-attr-types"
@@ -10,6 +11,7 @@ import skillsMap from "./skills/skills"
 import { SkillsValues } from "./skills/skills.types"
 import { specialArray } from "./special/special"
 import { Special } from "./special/special.types"
+import traitsMap from "./traits/traits"
 import { TraitId } from "./traits/traits.types"
 
 export default class Abilities {
@@ -38,7 +40,13 @@ export default class Abilities {
 
   traits: Partial<Record<TraitId, TraitId>>
 
-  constructor(payload: DbAbilities, innateSymptoms: Symptom[], itemsSymptoms: Symptom[]) {
+  constructor(payload: DbAbilities, itemsSymptoms: Symptom[]) {
+    const traits = Object.keys(payload?.traits ?? {})
+    const perks = Object.keys(payload?.perks ?? {})
+    const traitsSymptoms = traits.map(t => traitsMap[t as TraitId].symptoms)
+    const perksSymptoms = perks.map(t => perksMap[t as PerkId].symptoms)
+    const innateSymptoms = [...traitsSymptoms, ...perksSymptoms].flat()
+
     const special = { base: {}, mod: {}, curr: {} } as {
       base: Special
       mod: Special

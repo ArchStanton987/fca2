@@ -1,5 +1,6 @@
 /* eslint-disable import/prefer-default-export */
-import { BeastAttack, Weapon, WeaponId } from "./weapons.types"
+import Weapon from "./Weapon"
+import { BeastAttack, DbWeaponData, WeaponData, WeaponId } from "./weapons.types"
 
 // export const dbToWeapon = (
 //   [dbKey, dbWeapon]: [string, DbWeapon],
@@ -53,6 +54,35 @@ import { BeastAttack, Weapon, WeaponId } from "./weapons.types"
 //     modifiers: []
 //   }
 // }
+
+export default class WeaponMappers {
+  static dbWeaponDataToDomain(payload: DbWeaponData): WeaponData {
+    return {
+      id: payload.id,
+      label: payload.label,
+      img: payload.img,
+      damageType: payload.damageType,
+      damageBasic: payload.damageBasic ?? null,
+      damageBurst: payload.damageBurst ?? null,
+      ammoType: payload.ammoType ?? null,
+      range: payload.range ?? null,
+      magazine: payload.magazine ?? null,
+      ammoPerShot: payload.ammoPerShot ?? null,
+      ammoPerBurst: payload.ammoPerBurst ?? null,
+      basicApCost: payload.basicApCost ?? null,
+      specialApCost: payload.specialApCost ?? null,
+      minStrength: payload.minStrength,
+      place: payload.place,
+      weight: payload.weight,
+      value: payload.value,
+      frequency: payload.frequency,
+      skillId: payload.skillId,
+      knowledges: Object.values(payload.knowledges),
+      tags: Object.values(payload.tags),
+      isTwoHanded: payload.isTwoHanded
+    }
+  }
+}
 
 export const attackToWeapon = (attack: BeastAttack): Weapon => {
   const { name, skill, apCost, damage, effects, modifiers } = attack
