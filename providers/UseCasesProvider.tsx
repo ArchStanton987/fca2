@@ -3,16 +3,16 @@ import { ReactNode, createContext, useContext, useMemo } from "react"
 import { useQueryClient } from "@tanstack/react-query"
 import getUseCases from "lib/get-use-cases"
 
-import useCreatedElements from "hooks/context/useCreatedElements"
+import { useCollectiblesData } from "./AdditionalElementsProvider"
 
 export const UseCasesContext = createContext({} as ReturnType<typeof getUseCases>)
 
 export default function UseCasesProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient()
-  const createdElements = useCreatedElements()
+  const collectiblesData = useCollectiblesData()
   const useCases = useMemo(
-    () => getUseCases({ dbType: "rtdb", createdElements, store: queryClient }),
-    [createdElements, queryClient]
+    () => getUseCases({ db: "rtdb", collectiblesData, store: queryClient }),
+    [collectiblesData, queryClient]
   )
 
   return <UseCasesContext.Provider value={useCases}>{children}</UseCasesContext.Provider>

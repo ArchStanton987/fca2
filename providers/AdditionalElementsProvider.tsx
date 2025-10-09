@@ -94,6 +94,11 @@ export default function AdditionalElementsProvider({ children }: { children: Rea
   )
 }
 
+export function useCollectiblesData() {
+  const context = useContext(AdditionalElementsContext)
+  if (!context) throw new Error("Additional elements context not found")
+  return context
+}
 export function useWeaponData(id: string) {
   const context = useContext(AdditionalElementsContext)
   if (!context) throw new Error("Additional elements context not found")
