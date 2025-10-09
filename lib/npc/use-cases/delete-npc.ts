@@ -1,6 +1,6 @@
 import Squad from "lib/character/Squad"
 import { CombatStatus } from "lib/character/combat-status/combat-status.types"
-import { UseCaseConfig } from "lib/get-use-cases"
+import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
 export type DeleteNpcParams = {
@@ -9,7 +9,7 @@ export type DeleteNpcParams = {
   squad: Squad
 }
 
-export default function deleteNpc({ db }: UseCaseConfig) {
+export default function deleteNpc({ db }: UseCasesConfig) {
   const playableRepo = repositoryMap[db].playableRepository
   const squadRepo = repositoryMap[db].squadRepository
 

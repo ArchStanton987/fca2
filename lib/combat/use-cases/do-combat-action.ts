@@ -1,6 +1,6 @@
 import Playable from "lib/character/Playable"
 import { CombatStatus } from "lib/character/combat-status/combat-status.types"
-import { UseCaseConfig } from "lib/get-use-cases"
+import { UseCasesConfig } from "lib/get-use-case.types"
 import { Clothing } from "lib/objects/data/clothings/clothings.types"
 import { Consumable } from "lib/objects/data/consumables/consumables.types"
 import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
@@ -27,7 +27,7 @@ export type CombatActionParams = {
   item?: Clothing | Consumable | MiscObject | Weapon
 }
 
-export default function doCombatAction(config: UseCaseConfig) {
+export default function doCombatAction(config: UseCasesConfig) {
   const { db } = config
   const combatStatusRepo = repositoryMap[db].combatStatusRepository
 

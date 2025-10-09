@@ -4,11 +4,10 @@ import healthMap from "lib/character/health/healthMap"
 import getStatusUseCases from "lib/character/status/status-use-cases"
 import { DbStatus } from "lib/character/status/status.types"
 import { applyMod } from "lib/common/utils/char-calc"
-import { UseCaseConfig } from "lib/get-use-cases"
+import { UseCasesConfig } from "lib/get-use-case.types"
 
 import { getRepository } from "../RepositoryBuilder"
 import Inventory from "./Inventory"
-import { CreatedElements, defaultCreatedElements } from "./created-elements"
 import { AmmoType } from "./data/ammo/ammo.types"
 import clothingsMap from "./data/clothings/clothings"
 import { Clothing, ClothingId } from "./data/clothings/clothings.types"
@@ -26,7 +25,7 @@ import {
 } from "./fbInventoryRepository"
 import { ExchangeState } from "./objects-reducer"
 
-const getInventoryUseCases = ({ db, createdElements }: UseCaseConfig) => {
+const getInventoryUseCases = ({ db, createdElements }: UseCasesConfig) => {
   const repository = getRepository[db].inventory
   const equipedObjectsRepository = getRepository[db].equipedObjects
   const effectsUseCases = getEffectsUseCases(db, createdElements)

@@ -4,9 +4,9 @@ import {
   KnowledgeLevelValue
 } from "lib/character/abilities/knowledges/knowledge-types"
 import { SkillsValues } from "lib/character/abilities/skills/skills.types"
-import { UseCaseConfig } from "lib/get-use-cases"
+import { UseCasesConfig } from "lib/get-use-case.types"
 
-function getAbilitiesUseCases({ db }: UseCaseConfig) {
+function getAbilitiesUseCases({ db }: UseCasesConfig) {
   const repository = getRepository[db].abilities
 
   return {

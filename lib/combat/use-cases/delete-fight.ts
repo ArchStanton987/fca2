@@ -1,6 +1,6 @@
 import { Playable } from "lib/character/Playable"
 import { DbCombatStatus } from "lib/character/combat-status/combat-status.types"
-import { UseCaseConfig } from "lib/get-use-cases"
+import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
 export type DeleteFightParams = {
@@ -9,7 +9,7 @@ export type DeleteFightParams = {
   contenders: Record<string, Playable>
 }
 
-export default function deleteFight({ db }: UseCaseConfig) {
+export default function deleteFight({ db }: UseCasesConfig) {
   const combatRepo = repositoryMap[db].combatRepository
   const combatStatusRepo = repositoryMap[db].combatStatusRepository
   const playableRepo = repositoryMap[db].playableRepository

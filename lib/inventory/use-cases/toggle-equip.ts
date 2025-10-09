@@ -1,4 +1,4 @@
-import { UseCaseConfig } from "lib/get-use-cases"
+import { UseCasesConfig } from "lib/get-use-case.types"
 import clothingsMap from "lib/objects/data/clothings/clothings"
 import { ClothingId } from "lib/objects/data/clothings/clothings.types"
 import repositoryMap from "lib/shared/db/get-repository"
@@ -11,7 +11,7 @@ export type ToggleEquipParams = {
   equippedItems: Record<string, Item>
 }
 
-export default function toggleEquip({ db, createdElements }: UseCaseConfig) {
+export default function toggleEquip({ db, createdElements }: UseCasesConfig) {
   const itemsRepo = repositoryMap[db].itemsRepository
 
   const allClothings = {

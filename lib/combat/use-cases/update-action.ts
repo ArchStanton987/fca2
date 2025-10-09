@@ -1,4 +1,4 @@
-import { UseCaseConfig } from "lib/get-use-cases"
+import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import { DbAction } from "../combats.types"
@@ -8,7 +8,7 @@ export type UpdateActionParams = {
   payload: Partial<DbAction>
 }
 
-export default function updateAction({ db }: UseCaseConfig) {
+export default function updateAction({ db }: UseCasesConfig) {
   const actionRepo = repositoryMap[db].actionRepository
 
   return ({ combatId, payload }: UpdateActionParams) => {

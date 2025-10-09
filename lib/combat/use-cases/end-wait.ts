@@ -1,4 +1,4 @@
-import { UseCaseConfig } from "lib/get-use-cases"
+import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import CombatState from "../CombatState"
@@ -9,7 +9,7 @@ export type EndWaitParams = {
   charId: string
 }
 
-export default function endWait({ db }: UseCaseConfig) {
+export default function endWait({ db }: UseCasesConfig) {
   const combatStatusRepo = repositoryMap[db].combatStatusRepository
   const combatStateRepo = repositoryMap[db].combatStateRepository
 

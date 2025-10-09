@@ -5,7 +5,7 @@ import Effect from "lib/character/effects/Effect"
 import { EffectId } from "lib/character/effects/effects.types"
 import addEffect from "lib/character/effects/use-cases/add-effect"
 import Health from "lib/character/health/Health"
-import { UseCaseConfig } from "lib/get-use-cases"
+import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import { DamageEntries } from "../combats.types"
@@ -25,7 +25,7 @@ export type ApplyDamageEntriesParams = {
   currDate: Date
 }
 
-export default function applyDamageEntries(config: UseCaseConfig) {
+export default function applyDamageEntries(config: UseCasesConfig) {
   const { db } = config
   const statusRepo = repositoryMap[db].statusRepository
   const combatStatusRepo = repositoryMap[db].combatStatusRepository

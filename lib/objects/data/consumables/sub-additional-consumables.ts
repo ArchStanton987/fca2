@@ -1,8 +1,8 @@
-import { UseCaseConfig } from "lib/get-use-cases"
+import { UseCasesConfig } from "lib/get-use-case.types"
 import { AdditionalConsumablesParams } from "lib/shared/db/api-rtdb"
 import repositoryMap from "lib/shared/db/get-repository"
 
-export default function subAdditionalConsumables({ db }: UseCaseConfig) {
+export default function subAdditionalConsumables({ db }: UseCasesConfig) {
   const repository = repositoryMap[db].additionalConsumablesRepository
 
   return (params: AdditionalConsumablesParams) => repository.sub(params)

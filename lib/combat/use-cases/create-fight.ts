@@ -1,5 +1,5 @@
 import Playable from "lib/character/Playable"
-import { UseCaseConfig } from "lib/get-use-cases"
+import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import startFight from "./start-fight"
@@ -14,7 +14,7 @@ export type CreateFightParams = {
   isStartingNow: boolean
 }
 
-export default function createFight(config: UseCaseConfig) {
+export default function createFight(config: UseCasesConfig) {
   const { db } = config
   const squadRepo = repositoryMap[db].squadRepository
   const combatRepo = repositoryMap[db].combatRepository

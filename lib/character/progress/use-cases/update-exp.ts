@@ -1,4 +1,4 @@
-import { UseCaseConfig } from "lib/get-use-cases"
+import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
 export type UpdateExpParams = {
@@ -6,7 +6,7 @@ export type UpdateExpParams = {
   newExp: number
 }
 
-export default function updateExp({ db }: UseCaseConfig) {
+export default function updateExp({ db }: UseCasesConfig) {
   const playableRepo = repositoryMap[db].playableRepository
 
   return ({ charId, newExp }: UpdateExpParams) =>

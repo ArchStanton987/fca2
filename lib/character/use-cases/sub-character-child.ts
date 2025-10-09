@@ -1,4 +1,4 @@
-import { UseCaseConfig } from "lib/get-use-cases"
+import { UseCasesConfig } from "lib/get-use-case.types"
 import { PlayableParams } from "lib/shared/db/api-rtdb"
 import repositoryMap from "lib/shared/db/get-repository"
 
@@ -9,7 +9,7 @@ export type SubCharacterChildParams<T> = PlayableParams & {
   childKey: T
 }
 
-export default function subCharacterChild({ db }: UseCaseConfig) {
+export default function subCharacterChild({ db }: UseCasesConfig) {
   const repository = repositoryMap[db].playableRepository
   return <T extends keyof DbChar>(params: SubCharacterChildParams<T>) =>
     repository.subChild({

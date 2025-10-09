@@ -1,7 +1,7 @@
 import { ThenableReference } from "firebase/database"
 import Character from "lib/character/Character"
 import { DbCombatStatus } from "lib/character/combat-status/combat-status.types"
-import { UseCaseConfig } from "lib/get-use-cases"
+import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
 export type AdminEndFightParams = {
@@ -10,7 +10,7 @@ export type AdminEndFightParams = {
   contenders: Record<string, Character>
 }
 
-export default function adminEndFight({ db }: UseCaseConfig) {
+export default function adminEndFight({ db }: UseCasesConfig) {
   const combatStatusRepo = repositoryMap[db].combatStatusRepository
   const playableRepo = repositoryMap[db].playableRepository
 

@@ -1,5 +1,5 @@
 import Abilities from "lib/character/abilities/Abilities"
-import { UseCaseConfig } from "lib/get-use-cases"
+import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import Effect from "../Effect"
@@ -16,7 +16,7 @@ export type AddEffectParams = {
   lengthInMs?: number
 }
 
-export default function addEffect({ db, createdElements }: UseCaseConfig) {
+export default function addEffect({ db, createdElements }: UseCasesConfig) {
   const effectsRepo = repositoryMap[db].effectsRepository
   const allEffects = { ...effectsMap, ...createdElements.newEffects }
 

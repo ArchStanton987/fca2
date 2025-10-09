@@ -1,5 +1,5 @@
 import { CombatStatus } from "lib/character/combat-status/combat-status.types"
-import { UseCaseConfig } from "lib/get-use-cases"
+import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import Combat from "../Combat"
@@ -11,7 +11,7 @@ export type SaveActionParams = {
   combat: Combat
 }
 
-export default function saveAction({ db }: UseCaseConfig) {
+export default function saveAction({ db }: UseCasesConfig) {
   const actionRepo = repositoryMap[db].actionRepository
   const combatStatusRepo = repositoryMap[db].combatStatusRepository
   const combatStateRepo = repositoryMap[db].combatStateRepository

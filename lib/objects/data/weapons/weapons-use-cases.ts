@@ -1,9 +1,11 @@
 import { getRepository } from "lib/RepositoryBuilder"
-import Playable from "lib/character/Playable"
-import { UseCaseConfig } from "lib/get-use-cases"
-import { Weapon, WeaponActionId } from "lib/objects/data/weapons/weapons.types"
+import { Playable } from "lib/character/Playable"
+import { UseCasesConfig } from "lib/get-use-case.types"
+import { WeaponActionId } from "lib/objects/data/weapons/weapons.types"
 
-const getWeaponsUseCases = ({ db, createdElements }: UseCaseConfig) => {
+import Weapon from "./Weapon"
+
+const getWeaponsUseCases = ({ db, collectiblesData }: UseCasesConfig) => {
   const invRepository = getRepository[db].inventory
   const equObjRepository = getRepository[db].equipedObjects
 

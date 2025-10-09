@@ -1,5 +1,3 @@
-import { QueryClient } from "@tanstack/react-query"
-
 import { DbPlayable } from "./character/Playable"
 import getAbilitiesUseCases from "./character/abilities/abilities-use-cases"
 import updateCombatStatus, {
@@ -33,10 +31,10 @@ import setDifficulty, { SetDifficultyParams } from "./combat/use-cases/set-diffi
 import startFight, { StartFightParams } from "./combat/use-cases/start-fight"
 import updateAction, { UpdateActionParams } from "./combat/use-cases/update-action"
 import waitAction, { WaitActionParams } from "./combat/use-cases/wait-action"
+import { UseCasesConfig } from "./get-use-case.types"
 import toggleEquip, { ToggleEquipParams } from "./inventory/use-cases/toggle-equip"
 import createNpc, { CreateNpcParams } from "./npc/use-cases/create-npc"
 import deleteNpc, { DeleteNpcParams } from "./npc/use-cases/delete-npc"
-import { CreatedElements, defaultCreatedElements } from "./objects/created-elements"
 import addAdditionalClothing from "./objects/data/clothings/add-additional-clothings"
 import { DbClothingData } from "./objects/data/clothings/clothings.types"
 import subAdditionalClothings from "./objects/data/clothings/sub-additional-clothings"
@@ -55,24 +53,9 @@ import {
   AdditionalMiscParams,
   PlayableParams
 } from "./shared/db/api-rtdb"
-import { DbType } from "./shared/db/db.types"
 import updateDate, { UpdateDateParams } from "./squad/use-cases/update-date"
 
-type GetUseCasesParams = {
-  db?: DbType
-  createdElements?: CreatedElements
-  store: QueryClient
-}
-
-export type UseCaseConfig = Required<GetUseCasesParams>
-
-export default function getUseCases(payload: GetUseCasesParams) {
-  const config = {
-    db: payload.db ?? "rtdb",
-    createdElements: payload.createdElements ?? defaultCreatedElements,
-    store: payload.store
-  }
-
+export default function getUseCases(config: UseCasesConfig) {
   return {
     inventory: getInventoryUseCases(config),
     weapons: getWeaponsUseCases(config),

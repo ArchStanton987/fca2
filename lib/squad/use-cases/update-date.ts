@@ -5,7 +5,7 @@ import addEffect from "lib/character/effects/use-cases/add-effect"
 import removeEffect from "lib/character/effects/use-cases/remove-effect"
 import updateHp from "lib/character/health/use-cases/update-hp"
 import updateLimbsHp from "lib/character/health/use-cases/update-limbs-hp"
-import { UseCaseConfig } from "lib/get-use-cases"
+import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
 export type UpdateDateParams = {
@@ -15,7 +15,7 @@ export type UpdateDateParams = {
   newDate: Date
 }
 
-export default function updateDate(config: UseCaseConfig) {
+export default function updateDate(config: UseCasesConfig) {
   const { db, createdElements } = config
   const allEffects = { ...createdElements.newEffects, ...effectsMap }
 

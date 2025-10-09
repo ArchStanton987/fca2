@@ -1,6 +1,6 @@
 import { DbPlayable } from "lib/character/Playable"
 import Squad from "lib/character/Squad"
-import { UseCaseConfig } from "lib/get-use-cases"
+import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
 export type CreateNpcParams = {
@@ -9,7 +9,7 @@ export type CreateNpcParams = {
   squadId: string
 }
 
-export default function createNpc({ db }: UseCaseConfig) {
+export default function createNpc({ db }: UseCasesConfig) {
   const playableRepo = repositoryMap[db].playableRepository
   const squadRepo = repositoryMap[db].squadRepository
 
