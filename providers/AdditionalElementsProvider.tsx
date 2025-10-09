@@ -108,24 +108,24 @@ export function useWeaponData(id: string) {
 export function useClothingData(id: string) {
   const context = useContext(AdditionalElementsContext)
   if (!context) throw new Error("Additional elements context not found")
-  if (!(id in context.clothings)) throw new Error(`Could not find weapon with id : ${id}`)
+  if (!(id in context.clothings)) throw new Error(`Could not find clothing with id : ${id}`)
   return context.clothings[id]
 }
 export function useConsumablesData(id: string) {
   const context = useContext(AdditionalElementsContext)
   if (!context) throw new Error("Additional elements context not found")
-  if (!(id in context.consumables)) throw new Error(`Could not find weapon with id : ${id}`)
+  if (!(id in context.consumables)) throw new Error(`Could not find consumable with id : ${id}`)
   return context.consumables[id]
 }
 export function useMiscObjectsData(id: string) {
   const context = useContext(AdditionalElementsContext)
   if (!context) throw new Error("Additional elements context not found")
-  if (!(id in context.miscObjects)) throw new Error(`Could not find weapon with id : ${id}`)
+  if (!(id in context.miscObjects)) throw new Error(`Could not find misc object with id : ${id}`)
   return context.miscObjects[id]
 }
 export function useEffectsData(id: string) {
   const context = useContext(AdditionalElementsContext)
   if (!context) throw new Error("Additional elements context not found")
-  if (!(id in context.effects)) throw new Error(`Could not find weapon with id : ${id}`)
+  if (!(id in context.effects)) throw new Error(`Could not find effect with id : ${id}`)
   return context.effects[id]
 }
