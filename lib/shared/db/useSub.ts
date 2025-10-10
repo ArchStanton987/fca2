@@ -35,39 +35,48 @@ export function subEvent<DbItem>(
   return () => unsubscribe() // for React cleanup
 }
 
+const fakeSub = () => () => {}
+
 export function useSubCollection<I, T = I>(path: string, cb?: (dbCollectible: I) => T) {
   const queryClient = useQueryClient()
+  const queryExists = queryClient.getQueryState(path.split("/")) !== undefined
 
   useEffect(() => {
     const queryKey = path.split("/")
 
-    const unsubOnChildAdded = subEvent<I>("onChildAdded", path, ({ key, value }) => {
-      queryClient.setQueryData(queryKey, (prev: Record<string, T>) => ({
-        ...prev,
-        [key]: cb ? cb(value) : value
-      }))
-    })
+    const unsubOnChildAdded = !queryExists
+      ? subEvent<I>("onChildAdded", path, ({ key, value }) => {
+          queryClient.setQueryData(queryKey, (prev: Record<string, T>) => ({
+            ...prev,
+            [key]: cb ? cb(value) : value
+          }))
+        })
+      : fakeSub()
 
-    const unsubOnChildChanged = subEvent<I>("onChildChanged", path, ({ key, value }) => {
-      queryClient.setQueryData(queryKey, (prev: Record<string, T>) => ({
-        ...prev,
-        [key]: cb ? cb(value) : value
-      }))
-    })
+    const unsubOnChildChanged = !queryExists
+      ? subEvent<I>("onChildChanged", path, ({ key, value }) => {
+          queryClient.setQueryData(queryKey, (prev: Record<string, T>) => ({
+            ...prev,
+            [key]: cb ? cb(value) : value
+          }))
+        })
+      : fakeSub()
 
-    const unsubOnChildRemoved = subEvent<I>("onChildRemoved", path, ({ key }) => {
-      queryClient.setQueryData(queryKey, (prev: Record<string, T>) => {
-        const { [key]: removed, ...remainingData } = prev
-        return remainingData
-      })
-    })
+    const unsubOnChildRemoved = !queryExists
+      ? subEvent<I>("onChildRemoved", path, ({ key }) => {
+          queryClient.setQueryData(queryKey, (prev: Record<string, T>) => {
+            const { [key]: removed, ...remainingData } = prev
+            return remainingData
+          })
+        })
+      : fakeSub()
 
     return () => {
       unsubOnChildAdded()
       unsubOnChildChanged()
       unsubOnChildRemoved()
     }
-  }, [queryClient, path, cb])
+  }, [queryClient, path, cb, queryExists])
 }
 
 type UseSubParams<Db, T = Db> = {
@@ -79,7 +88,12 @@ export function useSubMultiCollections<I, T = I>(paramsArray: UseSubParams<I, T>
   const queryClient = useQueryClient()
 
   const memoParams = useMemo(() => paramsArray, [paramsArray])
-  const pathsStr = useMemo(() => JSON.stringify(memoParams.map(p => p.path)), [memoParams])
+  const pathsStr = useMemo(() => {
+    const validPaths = memoParams
+      .map(p => p.path)
+      .filter(path => queryClient.getQueryState(path.split("/")) === undefined)
+    return JSON.stringify(validPaths)
+  }, [memoParams, queryClient])
 
   useEffect(() => {
     const paths: string[] = JSON.parse(pathsStr)
@@ -124,22 +138,30 @@ export function useSubMultiCollections<I, T = I>(paramsArray: UseSubParams<I, T>
 
 export function useSub<Db, T = Db>(path: string, cb?: (snapshot: Db) => T) {
   const queryClient = useQueryClient()
+  const queryExists = queryClient.getQueryState(path.split("/")) !== undefined
 
   useEffect(() => {
-    const unsubscribe = subscribeToPath<Db>(path, data => {
-      const newData = cb?.(data) ?? data
-      const queryKey = path.split("/")
-      queryClient.setQueryData(queryKey, newData)
-    })
+    const unsubscribe = !queryExists
+      ? subscribeToPath<Db>(path, data => {
+          const newData = cb?.(data) ?? data
+          const queryKey = path.split("/")
+          queryClient.setQueryData(queryKey, newData)
+        })
+      : fakeSub()
     return () => unsubscribe()
-  }, [queryClient, path, cb])
+  }, [queryClient, path, cb, queryExists])
 }
 
 export function useMultiSub<Db, T = Db>(paramsArray: UseSubParams<Db, T>[]) {
   const queryClient = useQueryClient()
 
   const memoParams = useMemo(() => paramsArray, [paramsArray])
-  const pathsStr = useMemo(() => JSON.stringify(memoParams.map(p => p.path)), [memoParams])
+  const pathsStr = useMemo(() => {
+    const validPaths = memoParams
+      .map(p => p.path)
+      .filter(path => queryClient.getQueryState(path.split("/")) === undefined)
+    return JSON.stringify(validPaths)
+  }, [memoParams, queryClient])
 
   useEffect(() => {
     const paths: string[] = JSON.parse(pathsStr)
