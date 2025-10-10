@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from "react"
+import { ReactNode, Suspense, useEffect } from "react"
 import { Platform, View } from "react-native"
 
 import { Slot, SplashScreen } from "expo-router"
@@ -66,13 +66,15 @@ export default function RootLayout() {
           <View style={{ flex: 1, backgroundColor: colors.primColor }}>
             <AuthContainer>
               <ErrorBoundary fallback={<ErrorUi />}>
-                <AdditionalElementsProvider>
-                  <UseCasesProvider>
-                    <StatusBar hidden />
-                    <Slot />
-                    <Toast config={toastConfig} />
-                  </UseCasesProvider>
-                </AdditionalElementsProvider>
+                <Suspense fallback={<LoadingScreen />}>
+                  <AdditionalElementsProvider>
+                    <UseCasesProvider>
+                      <StatusBar hidden />
+                      <Slot />
+                      <Toast config={toastConfig} />
+                    </UseCasesProvider>
+                  </AdditionalElementsProvider>
+                </Suspense>
               </ErrorBoundary>
             </AuthContainer>
           </View>
@@ -84,13 +86,17 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <View style={{ flex: 1, backgroundColor: colors.primColor }}>
         <AuthContainer>
-          <AdditionalElementsProvider>
-            <UseCasesProvider>
-              <StatusBar hidden />
-              <Slot />
-              <Toast config={toastConfig} />
-            </UseCasesProvider>
-          </AdditionalElementsProvider>
+          <ErrorBoundary fallback={<ErrorUi />}>
+            <Suspense fallback={<LoadingScreen />}>
+              <AdditionalElementsProvider>
+                <UseCasesProvider>
+                  <StatusBar hidden />
+                  <Slot />
+                  <Toast config={toastConfig} />
+                </UseCasesProvider>
+              </AdditionalElementsProvider>
+            </Suspense>
+          </ErrorBoundary>
         </AuthContainer>
       </View>
     </QueryClientProvider>

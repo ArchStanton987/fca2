@@ -23,13 +23,13 @@ export default class Progress {
   availableKnowledgePoints: number
   availableFreeKnowledgePoints: number
 
-  constructor(exp: number, abilities: Abilities, meta: DbCharInfo) {
+  constructor(exp: number, abilities: Abilities, charInfo: DbCharInfo) {
     const baseSPECIAL = abilities.special.base
     const { knowledges, traits } = abilities
     const upSkills = abilities.skills.up
     const traitsArray = Object.values(traits ?? {})
 
-    const { background, speciesId } = meta
+    const { background, speciesId } = charInfo
 
     this.exp = exp
     this.level = getLevelAndThresholds(exp).level
