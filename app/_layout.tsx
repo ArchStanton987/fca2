@@ -9,6 +9,8 @@ import { useKeepAwake } from "expo-keep-awake"
 import * as ScreenOrientation from "expo-screen-orientation"
 import { StatusBar } from "expo-status-bar"
 import { toastConfig } from "lib/common/ui/toast"
+import ErrorUi from "lib/shared/ui/ErrorUi"
+import { ErrorBoundary } from "react-error-boundary"
 import Toast from "react-native-toast-message"
 
 import fonts from "assets/fonts"
@@ -63,13 +65,15 @@ export default function RootLayout() {
         <QueryClientProvider client={queryClient}>
           <View style={{ flex: 1, backgroundColor: colors.primColor }}>
             <AuthContainer>
-              <AdditionalElementsProvider>
-                <UseCasesProvider>
-                  <StatusBar hidden />
-                  <Slot />
-                  <Toast config={toastConfig} />
-                </UseCasesProvider>
-              </AdditionalElementsProvider>
+              <ErrorBoundary fallback={<ErrorUi />}>
+                <AdditionalElementsProvider>
+                  <UseCasesProvider>
+                    <StatusBar hidden />
+                    <Slot />
+                    <Toast config={toastConfig} />
+                  </UseCasesProvider>
+                </AdditionalElementsProvider>
+              </ErrorBoundary>
             </AuthContainer>
           </View>
         </QueryClientProvider>

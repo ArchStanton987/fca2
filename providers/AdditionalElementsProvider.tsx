@@ -87,11 +87,7 @@ export default function AdditionalElementsProvider({ children }: { children: Rea
   if (queries.isPending) return <LoadingScreen />
   if (queries.isError) return <Txt>Erreur lors de la récupération des objets créés</Txt>
 
-  return (
-    <AdditionalElementsContext.Provider value={value}>
-      {children}
-    </AdditionalElementsContext.Provider>
-  )
+  return <AdditionalElementsContext value={value}>{children}</AdditionalElementsContext>
 }
 
 export function useCollectiblesData() {
