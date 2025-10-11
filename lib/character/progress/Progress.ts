@@ -24,9 +24,9 @@ export default class Progress {
   availableFreeKnowledgePoints: number
 
   constructor(exp: number, abilities: Abilities, charInfo: DbCharInfo) {
-    const baseSPECIAL = abilities.special.base
-    const { knowledges, traits } = abilities
-    const upSkills = abilities.skills.up
+    const { knowledges = {}, traits, special, skills } = abilities
+    const baseSPECIAL = special.base
+    const upSkills = skills.up
     const traitsArray = Object.values(traits ?? {})
 
     const { background, speciesId } = charInfo

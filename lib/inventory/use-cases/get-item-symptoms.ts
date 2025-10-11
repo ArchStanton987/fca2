@@ -1,4 +1,4 @@
-import { useQueries, useQuery } from "@tanstack/react-query"
+import { useQuery, useSuspenseQueries } from "@tanstack/react-query"
 import { Symptom } from "lib/character/effects/symptoms.type"
 import { useMultiSub, useSub } from "lib/shared/db/useSub"
 
@@ -16,16 +16,12 @@ export function useItemSymptoms(charId: string) {
   return useQuery({ ...options, select: getItemSymptoms })
 }
 
-export function useContendersItemSymptoms(ids: string[]) {
+export function usePlayablesItemSymptoms(ids: string[]) {
   const queries = ids.map(id => getItemsOptions(id))
   useMultiSub(queries.map(q => ({ path: q.queryKey.join("/") })))
 
-  return useQueries({
+  return useSuspenseQueries({
     queries,
-    combine: req => ({
-      isPending: req.some(r => r.isPending),
-      isError: req.some(r => r.isError),
-      data: Object.fromEntries(req.map((r, i) => [ids[i], getItemSymptoms(r.data ?? {})]))
-    })
+    combine: req => Object.fromEntries(req.map((r, i) => [ids[i], getItemSymptoms(r.data ?? {})]))
   })
 }

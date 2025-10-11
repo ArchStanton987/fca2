@@ -1,42 +1,34 @@
 import { useCallback } from "react"
 
-import { queryOptions, useQueries, useQuery } from "@tanstack/react-query"
+import { queryOptions, useSuspenseQueries, useSuspenseQuery } from "@tanstack/react-query"
 import { useCharInfo } from "lib/character/info/info-provider"
 import { critters } from "lib/npc/const/npc-templates"
-import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
 import ammoMap from "lib/objects/data/ammo/ammo"
 import { AmmoSet, AmmoType } from "lib/objects/data/ammo/ammo.types"
 import Clothing from "lib/objects/data/clothings/Clothing"
-import clothingsMap from "lib/objects/data/clothings/clothings"
 import Consumable from "lib/objects/data/consumables/Consumable"
-import consumablesMap from "lib/objects/data/consumables/consumables"
 import MiscObject from "lib/objects/data/misc-objects/MiscObject"
-import miscObjectsMap from "lib/objects/data/misc-objects/misc-objects"
 import { DbInventory, DbItem, ItemCategory } from "lib/objects/data/objects.types"
 import Weapon from "lib/objects/data/weapons/Weapon"
-import weaponsMap from "lib/objects/data/weapons/weapons"
 import { attackToWeapon } from "lib/objects/data/weapons/weapons.mappers"
-import { useMultiSub, useSub, useSubCollection, useSubMultiCollections } from "lib/shared/db/useSub"
+import { useMultiSub, useSubMultiCollections } from "lib/shared/db/useSub"
 
-import useCreatedElements from "hooks/context/useCreatedElements"
+import { AdditionalElContextType, useCollectiblesData } from "providers/AdditionalElementsProvider"
 import { filterUnique } from "utils/array-utils"
 
-const itemFactory = (item: DbItem, newItems: CreatedElements = defaultCreatedElements) => {
-  const { newClothings, newConsumables, newMiscObjects, newWeapons } = newItems
-  const allClothings = { ...clothingsMap, ...newClothings }
-  const allConsumables = { ...consumablesMap, ...newConsumables }
-  const allMiscObjects = { ...miscObjectsMap, ...newMiscObjects }
-  const allWeapons = { ...weaponsMap, ...newWeapons }
-
+const itemFactory = (
+  item: DbItem,
+  { weapons, clothings, consumables, miscObjects }: AdditionalElContextType
+) => {
   switch (item.category) {
     case "clothings":
-      return new Clothing(item, allClothings)
+      return new Clothing(item, clothings)
     case "consumables":
-      return new Consumable(item, allConsumables)
+      return new Consumable(item, consumables)
     case "misc":
-      return new MiscObject(item, allMiscObjects)
+      return new MiscObject(item, miscObjects)
     case "weapons":
-      return new Weapon(item, allWeapons)
+      return new Weapon(item, weapons)
     default:
       throw new Error("unknown db item type")
   }
@@ -56,31 +48,11 @@ export const getItemsOptions = (charId: string) =>
 const getAmmoOptions = (charId: string) => getInvOptions<"ammo", AmmoSet>(charId, "ammo")
 const getCapsOptions = (charId: string) => getInvOptions<"caps", number>(charId, "caps")
 
-export function useSubItems(charId: string) {
-  const newElements = useCreatedElements()
-  const options = getItemsOptions(charId)
-  const path = options.queryKey.join("/")
-  const cb = useCallback((db: DbItem) => itemFactory(db, newElements), [newElements])
-  useSubCollection(path, cb)
-}
 export function useMultiSubItems(ids: string[]) {
-  const newElements = useCreatedElements()
+  const collectiblesData = useCollectiblesData()
   const options = ids.map(id => getItemsOptions(id))
-  const cb = useCallback((db: DbItem) => itemFactory(db, newElements), [newElements])
+  const cb = useCallback((db: DbItem) => itemFactory(db, collectiblesData), [collectiblesData])
   useSubMultiCollections(options.map(o => ({ path: o.queryKey.join("/"), cb })))
-}
-export function useItemsQuery(charId: string) {
-  return useQuery(getItemsOptions(charId))
-}
-export function useItemsQueries(ids: string[]) {
-  return useQueries({
-    queries: ids.map(id => getItemsOptions(id)),
-    combine: res => ({
-      isPending: res.map(q => q.isPending),
-      isError: res.map(q => q.isError),
-      data: res.map(q => q)
-    })
-  })
 }
 
 type ItemRecord = Record<string, Item>
@@ -111,7 +83,7 @@ const selector = (items: ItemRecord, cat: ItemCategory, { isEquipped, isGrouped 
 
 export function useWeapons(charId: string, isEquipped?: boolean, isGrouped?: boolean) {
   const query = getItemsOptions(charId)
-  return useQuery({
+  return useSuspenseQuery({
     ...query,
     select: useCallback(
       (items: ItemRecord) => selector(items, "weapons", { isEquipped, isGrouped }),
@@ -120,8 +92,8 @@ export function useWeapons(charId: string, isEquipped?: boolean, isGrouped?: boo
   })
 }
 export function useCombatWeapons(charId: string): Weapon[] {
-  const { templateId } = useCharInfo()
-  const equipedWeapons = useWeapons(charId, true)
+  const templateId = useCharInfo(charId, state => state.templateId).data
+  const equipedWeapons = useWeapons(charId, true).data
   const hasEquipedWeapons = Object.keys(equipedWeapons).length === 0
   if (hasEquipedWeapons) return Object.values(equipedWeapons)
   const unarmed = Weapon.getUnarmed()
@@ -133,7 +105,7 @@ export function useCombatWeapons(charId: string): Weapon[] {
 
 export function useClothings(charId: string, isEquipped?: boolean, isGrouped?: boolean) {
   const query = getItemsOptions(charId)
-  return useQuery({
+  return useSuspenseQuery({
     ...query,
     select: useCallback(
       (items: ItemRecord) => selector(items, "clothings", { isEquipped, isGrouped }),
@@ -143,7 +115,7 @@ export function useClothings(charId: string, isEquipped?: boolean, isGrouped?: b
 }
 export function useConsumables(charId: string, isEquipped?: boolean, isGrouped?: boolean) {
   const query = getItemsOptions(charId)
-  return useQuery({
+  return useSuspenseQuery({
     ...query,
     select: useCallback(
       (items: ItemRecord) => selector(items, "consumables", { isEquipped, isGrouped }),
@@ -153,7 +125,7 @@ export function useConsumables(charId: string, isEquipped?: boolean, isGrouped?:
 }
 export function useMiscObjects(charId: string, isEquipped?: boolean, isGrouped?: boolean) {
   const query = getItemsOptions(charId)
-  return useQuery({
+  return useSuspenseQuery({
     ...query,
     select: useCallback(
       (items: ItemRecord) => selector(items, "misc", { isEquipped, isGrouped }),
@@ -162,50 +134,14 @@ export function useMiscObjects(charId: string, isEquipped?: boolean, isGrouped?:
   })
 }
 
-export function useSubAmmo(charId: string) {
-  const options = getAmmoOptions(charId)
-  const path = options.queryKey.join("/")
-  useSub(path)
-}
 export function useMultiSubAmmo(ids: string[]) {
   const options = ids.map(id => getAmmoOptions(id))
   useMultiSub(options.map(o => ({ path: o.queryKey.join("/") })))
 }
-export function useAmmoQuery(charId: string) {
-  return useQuery(getAmmoOptions(charId))
-}
-export function useAmmoQueries(ids: string[]) {
-  return useQueries({
-    queries: ids.map(id => getAmmoOptions(id)),
-    combine: res => ({
-      isPending: res.map(q => q.isPending),
-      isError: res.map(q => q.isError),
-      data: res.map(q => q)
-    })
-  })
-}
 
-export function useSubCaps(charId: string) {
-  const options = getCapsOptions(charId)
-  const path = options.queryKey.join("/")
-  useSub(path)
-}
 export function useMultiSubCaps(ids: string[]) {
   const options = ids.map(id => getCapsOptions(id))
   useMultiSub(options.map(o => ({ path: o.queryKey.join("/") })))
-}
-export function useCapsQuery(charId: string) {
-  return useQuery(getCapsOptions(charId))
-}
-export function useCapsQueries(ids: string[]) {
-  return useQueries({
-    queries: ids.map(id => getCapsOptions(id)),
-    combine: res => ({
-      isPending: res.map(q => q.isPending),
-      isError: res.map(q => q.isError),
-      data: res.map(q => q)
-    })
-  })
 }
 
 const getItemsCarry = (items: Record<string, Item>) =>
@@ -233,12 +169,10 @@ export function useCarry(charId: string) {
   const itemsCarryOptions = queryOptions({ ...getItemsOptions(charId), select: getItemsCarry })
   const ammoCarryOptions = queryOptions({ ...getAmmoOptions(charId), select: getAmmoCarry })
   const capsCarryOptions = queryOptions({ ...getCapsOptions(charId), select: getCapsCarry })
-  return useQueries({
+  return useSuspenseQueries({
     queries: [itemsCarryOptions, ammoCarryOptions, capsCarryOptions],
-    combine: res => ({
-      isPending: res.some(r => r.isPending),
-      isError: res.some(r => r.isError),
-      data: res.reduce(
+    combine: res =>
+      res.reduce(
         (acc, { data }) => {
           if (!data) return acc
           const { place = 0, weight = 0 } = data
@@ -246,6 +180,5 @@ export function useCarry(charId: string) {
         },
         { weight: 0, place: 0 }
       )
-    })
   })
 }

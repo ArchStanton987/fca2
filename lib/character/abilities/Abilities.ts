@@ -40,12 +40,13 @@ export default class Abilities {
 
   traits: Partial<Record<TraitId, TraitId>>
 
-  constructor(payload: DbAbilities, itemsSymptoms: Symptom[]) {
+  constructor(payload: DbAbilities, healthSymptoms: Symptom[], itemsSymptoms: Symptom[]) {
     const traits = Object.keys(payload?.traits ?? {})
     const perks = Object.keys(payload?.perks ?? {})
     const traitsSymptoms = traits.map(t => traitsMap[t as TraitId].symptoms)
     const perksSymptoms = perks.map(t => perksMap[t as PerkId].symptoms)
     const innateSymptoms = [...traitsSymptoms, ...perksSymptoms].flat()
+    const currSymptoms = [...healthSymptoms, ...itemsSymptoms]
 
     const special = { base: {}, mod: {}, curr: {} } as {
       base: Special
@@ -54,7 +55,7 @@ export default class Abilities {
     }
     specialArray.forEach(({ id }) => {
       special.base[id] = getModAttribute(innateSymptoms, id, payload.baseSPECIAL[id])
-      special.curr[id] = getModAttribute(itemsSymptoms, id, special.base[id])
+      special.curr[id] = getModAttribute(currSymptoms, id, special.base[id])
       special.mod[id] = special.curr[id] - special.base[id]
     })
     this.special = special
@@ -67,7 +68,7 @@ export default class Abilities {
     secAttrArray.forEach(({ id, calc }) => {
       secAttr.base[id] = getModAttribute(innateSymptoms, id, calc(this.special.base))
       const currWithInnate = getModAttribute(innateSymptoms, id, calc(this.special.curr))
-      secAttr.curr[id] = getModAttribute(itemsSymptoms, id, currWithInnate)
+      secAttr.curr[id] = getModAttribute(currSymptoms, id, currWithInnate)
       secAttr.mod[id] = secAttr.curr[id] - secAttr.base[id]
     })
     this.secAttr = secAttr
@@ -82,7 +83,7 @@ export default class Abilities {
       skills.base[id] = getModAttribute(innateSymptoms, id, calc(this.special.base))
       skills.up[id] = payload.upSkills[id]
       const currWithInnate = getModAttribute(innateSymptoms, id, calc(this.special.curr))
-      const calcCurr = getModAttribute(itemsSymptoms, id, currWithInnate)
+      const calcCurr = getModAttribute(currSymptoms, id, currWithInnate)
       skills.curr[id] = Math.max(calcCurr + skills.up[id], 1)
       skills.mod[id] = skills.curr[id] - skills.base[id] - skills.up[id]
     })
