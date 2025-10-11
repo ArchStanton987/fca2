@@ -5,21 +5,7 @@ import { Special } from "../abilities/special/special.types"
 import Effect from "../effects/Effect"
 import { EffectId } from "../effects/effects.types"
 import { getLevelAndThresholds } from "../status/status-calc"
-import { healthStates, radStates } from "./health.const"
-
-export type LimbId =
-  // humanoid
-  | "head"
-  | "leftTorso"
-  | "rightTorso"
-  | "leftArm"
-  | "rightArm"
-  | "leftLeg"
-  | "rightLeg"
-  | "groin"
-  // small critt
-  | "body"
-  | "tail"
+import { LimbId, healthStates, radStates } from "./health.const"
 
 type LimbsHp = Partial<Record<LimbId, number>>
 

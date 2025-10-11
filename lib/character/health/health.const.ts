@@ -1,7 +1,20 @@
 import colors from "styles/colors"
 
 import { EffectId } from "../effects/effects.types"
-import { LimbId } from "./Health"
+
+export type LimbId =
+  // humanoid
+  | "head"
+  | "leftTorso"
+  | "rightTorso"
+  | "leftArm"
+  | "rightArm"
+  | "leftLeg"
+  | "rightLeg"
+  | "groin"
+  // small critt
+  | "body"
+  | "tail"
 
 export const healthStates: Record<string, { id: EffectId; min: number }> = {
   vanished: { id: "vanished", min: -25 },
