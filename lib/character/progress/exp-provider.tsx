@@ -1,4 +1,4 @@
-import { queryOptions, useSuspenseQueries } from "@tanstack/react-query"
+import { queryOptions, useSuspenseQueries, useSuspenseQuery } from "@tanstack/react-query"
 import { useMultiSub } from "lib/shared/db/useSub"
 
 export const getExpOptions = (charId: string) =>
@@ -18,4 +18,8 @@ export function usePlayablesExp(ids: string[]) {
     queries: ids.map(id => getExpOptions(id)),
     combine: queries => Object.fromEntries(ids.map((id, i) => [id, queries[i].data]))
   })
+}
+
+export function useExp(id: string) {
+  return useSuspenseQuery(getExpOptions(id))
 }

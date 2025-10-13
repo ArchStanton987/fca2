@@ -3,6 +3,7 @@ import { TouchableHighlight } from "react-native"
 import { router, useLocalSearchParams, useSegments } from "expo-router"
 
 import { useCharInfo } from "lib/character/info/info-provider"
+import { useProgress } from "lib/character/progress/progress-provider"
 
 import List from "components/List"
 import ScrollSection from "components/Section/ScrollSection"
@@ -27,7 +28,7 @@ export default function Drawer({ sectionId, navElements }: DrawerProps) {
   const segments = useSegments()
   const charInfo = useCharInfo(charId, data => ({ firstname: data.firstname }))
 
-  const progress = useProgress()
+  const progress = useProgress(charId)
   const { availableFreeKnowledgePoints, availableKnowledgePoints, availableSkillPoints } = progress
   const canAddSkill = availableSkillPoints > 0
   const canAddKnowledge = availableKnowledgePoints > 0 || availableFreeKnowledgePoints > 0

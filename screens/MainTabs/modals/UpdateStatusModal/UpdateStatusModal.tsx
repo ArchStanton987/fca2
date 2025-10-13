@@ -3,7 +3,7 @@ import { TouchableOpacity, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import { useProgress } from "lib/character/use-cases/sub-playables"
+import { useProgress } from "lib/character/progress/progress-provider"
 
 import AmountSelector from "components/AmountSelector"
 import List from "components/List"
@@ -32,7 +32,7 @@ export default function UpdateStatusModal() {
   const localParams = useLocalSearchParams() as SearchParams<UpdateStatusModalParams>
   const { initCategory, charId } = fromLocalParams(localParams)
 
-  const progress = useProgress()
+  const progress = useProgress(charId)
 
   const [updateState, setUpdateState] = useState<UpdateStatusState>(defaultState)
   const [selectedItem, setSelectedItem] = useState<UpdatableStatusElement | null>(initCategory)
@@ -50,7 +50,6 @@ export default function UpdateStatusModal() {
   }
 
   const onPressConfirm = async () => {
-    // await useCases.status.updateElement(character, "exp", newValue)
     await useCases.character.updateExp({ charId, newExp: newValue })
     router.back()
   }

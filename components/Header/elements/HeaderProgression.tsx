@@ -2,8 +2,8 @@ import { TouchableOpacity } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useExp } from "lib/character/progress/exp-provider"
 import { getLevelAndThresholds } from "lib/character/status/status-calc"
-import { useProgress } from "lib/character/use-cases/sub-playables"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import HeaderElement from "components/Header/HeaderElement"
@@ -16,9 +16,9 @@ import { SearchParams } from "screens/ScreenParams"
 
 export default function HeaderProgression() {
   const { squadId, charId } = useLocalSearchParams() as SearchParams<DrawerParams>
-  const { exp } = useProgress()
+  const exp = useExp(charId)
 
-  const { level, prev, next } = getLevelAndThresholds(exp)
+  const { level, prev, next } = getLevelAndThresholds(exp.data)
 
   const onPress = () => {
     const pathname = routes.modal.updateStatus
@@ -31,7 +31,7 @@ export default function HeaderProgression() {
       <HeaderElement>
         <Txt style={{ fontSize: 12 }}>NIV:{level}</Txt>
         <Spacer x={5} />
-        <ProgressionBar value={exp} min={prev} max={next} width={40} />
+        <ProgressionBar value={exp.data} min={prev} max={next} width={40} />
       </HeaderElement>
     </TouchableOpacity>
   )
