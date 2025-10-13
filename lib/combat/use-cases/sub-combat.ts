@@ -32,7 +32,13 @@ export function useSubCombatState(combatId: string) {
   const options = combatStateOptions(combatId)
   const path = options.queryKey.join("/")
   useSub<DbCombatState, CombatState>(path, cb)
-  return useQuery(options)
+}
+
+export function useCombatState<TData = CombatState>(
+  combatId: string,
+  select?: (data: CombatState) => TData
+) {
+  return useSuspenseQuery({ ...combatStateOptions(combatId), select })
 }
 
 export function useSubCombatHistory(combatId: string) {

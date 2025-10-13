@@ -4,11 +4,18 @@ import { Stack, useLocalSearchParams } from "expo-router"
 
 import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { useCharInfo } from "lib/character/info/info-provider"
+import SubPlayables from "lib/character/use-cases/sub-playables"
+import {
+  useCombatInfo,
+  useSubCombatHistory,
+  useSubCombatInfo,
+  useSubCombatState
+} from "lib/combat/use-cases/sub-combat"
+import { useDatetime } from "lib/squad/use-cases/sub-squad"
 
 import Drawer from "components/Drawer/Drawer"
 import Spacer from "components/Spacer"
 import { ActionFormProvider } from "providers/ActionFormProvider"
-import CombatProviders from "providers/CombatProviders"
 import styles from "styles/DrawerLayout.styles"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -31,14 +38,20 @@ const getNav = (isGm: boolean, hasCombat: boolean) => {
 }
 
 export default function CombatLayout() {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
-  const isGameMaster = useCharInfo(charId, state => state.isNpc)
-  const isInCombat = useCombatStatus(charId, state => state.combatId !== "")
+  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const isGameMaster = useCharInfo(charId, info => info.isNpc)
+  const combatId = useCombatStatus(charId, data => data.combatId)
+  const isInCombat = combatId.data !== ""
+  const contenders = useCombatInfo(combatId.data, combat => combat.contenders)
+  const datetime = useDatetime(squadId)
+  const navElements = getNav(isGameMaster.data, isInCombat)
 
-  const navElements = getNav(isGameMaster.data, isInCombat.data)
+  useSubCombatState(combatId.data)
+  useSubCombatHistory(combatId.data)
+  useSubCombatInfo(combatId.data)
 
   return (
-    <CombatProviders>
+    <SubPlayables playablesIds={Object.keys(contenders)} datetime={datetime.data}>
       <ActionFormProvider>
         <View style={styles.drawerLayout}>
           <Drawer sectionId="combat" navElements={navElements} />
@@ -49,10 +62,10 @@ export default function CombatLayout() {
               contentStyle: { backgroundColor: colors.primColor, padding: 0 }
             }}
           >
-            <Stack.Protected guard={!isInCombat.data}>
+            <Stack.Protected guard={!isInCombat}>
               <Stack.Screen name="recap" />
             </Stack.Protected>
-            <Stack.Protected guard={isInCombat.data}>
+            <Stack.Protected guard={isInCombat}>
               <Stack.Screen name="combat-recap" />
             </Stack.Protected>
             <Stack.Protected guard={!isGameMaster.data}>
@@ -67,6 +80,6 @@ export default function CombatLayout() {
           </Stack>
         </View>
       </ActionFormProvider>
-    </CombatProviders>
+    </SubPlayables>
   )
 }
