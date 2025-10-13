@@ -3,7 +3,7 @@ import { ScrollView, View } from "react-native"
 
 import Character from "lib/character/Character"
 import { usePlayables } from "lib/character/playables-provider"
-import { useSquad } from "lib/squad/use-cases/sub-squad"
+import {  useSquadMembers, useSquadNpcs } from "lib/squad/use-cases/sub-squad"
 import Toast from "react-native-toast-message"
 
 import CheckBox from "components/CheckBox/CheckBox"
@@ -21,6 +21,7 @@ import PlusIcon from "components/icons/PlusIcon"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
+import { useLocalSearchParams } from "expo-router"
 
 type Form = {
   location?: string
@@ -38,17 +39,19 @@ const defaultForm: Form = {
 }
 
 export default function CombatCreation() {
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
   const useCases = useGetUseCases()
-  const squad = useSquad()
+  const { data: members } = useSquadMembers(squadId)
+  const { data: npcs } = useSquadNpcs(squadId)
 
   const allPlayable = usePlayables()
 
   const squadPlayers: Record<string, string> = {}
-  Object.keys(squad.members ?? {}).forEach(id => {
+  Object.keys(members ?? {}).forEach(id => {
     squadPlayers[id] = id
   })
 
-  const npcList = Object.keys(squad.npcs ?? {}).map(id => ({
+  const npcList = Object.keys(npcs ?? {}).map(id => ({
     id,
     fullname: allPlayable[id].info.fullname
   }))

@@ -3,7 +3,7 @@ import { View } from "react-native"
 import { Tabs, useLocalSearchParams } from "expo-router"
 
 import SubPlayables from "lib/character/use-cases/sub-playables"
-import { useSquad } from "lib/squad/use-cases/sub-squad"
+import { useDatetime, useSquadMembers, useSquadNpcs } from "lib/squad/use-cases/sub-squad"
 
 import Header from "components/Header/Header"
 import { HeaderElementId } from "components/Header/Header.utils"
@@ -22,14 +22,12 @@ function TabBarComponent(props: any) {
 
 export default function AdminLayout() {
   const { squadId } = useLocalSearchParams<{ squadId: string }>()
-  const squad = useSquad(squadId, state => ({
-    members: state.members,
-    npcs: state.npcs,
-    datetime: state.datetime
-  }))
-  const playablesIds = Object.keys({ ...squad.data.members, ...squad.data.npcs })
+  const { data: datetime } = useDatetime(squadId)
+  const { data: members } = useSquadMembers(squadId)
+  const { data: npcs } = useSquadNpcs(squadId)
+  const playablesIds = Object.keys({ ...members, ...npcs })
   return (
-    <SubPlayables playablesIds={playablesIds} datetime={squad.data.datetime}>
+    <SubPlayables playablesIds={playablesIds} datetime={datetime}>
       <View style={{ padding: 10, flex: 1 }}>
         <Tabs
           tabBar={TabBarComponent}

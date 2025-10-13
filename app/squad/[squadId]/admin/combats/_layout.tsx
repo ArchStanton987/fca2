@@ -1,10 +1,10 @@
 import { useMemo } from "react"
 import { View } from "react-native"
 
-import { Slot } from "expo-router"
+import { Slot, useLocalSearchParams } from "expo-router"
 
 import { useSubGameCombatsInfo } from "lib/combat/use-cases/sub-combat"
-import { useSquad } from "lib/squad/use-cases/sub-squad"
+import { useSquadCombats } from "lib/squad/use-cases/sub-squad"
 
 import AdminDrawer from "components/Drawer/AdminDrawer"
 import Spacer from "components/Spacer"
@@ -14,7 +14,8 @@ import styles from "styles/DrawerLayout.styles"
 import layout from "styles/layout"
 
 export default function CombatsLayout() {
-  const { combats } = useSquad()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const { data: combats } = useSquadCombats(squadId)
 
   const combatsIds = useMemo(() => Object.keys(combats ?? {}), [combats])
   const combatsReq = useSubGameCombatsInfo(combatsIds)

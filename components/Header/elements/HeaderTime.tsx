@@ -1,10 +1,14 @@
+import { useLocalSearchParams } from "expo-router"
+
+import { useDatetime } from "lib/squad/use-cases/sub-squad"
+
 import HeaderElement from "components/Header/HeaderElement"
 import Txt from "components/Txt"
-import { useSquad } from "contexts/SquadContext"
 import { getHHMM } from "utils/date"
 
 export default function HeaderTime() {
-  const { date } = useSquad()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const { data: date } = useDatetime(squadId)
 
   const displayDate = getHHMM(date)
 

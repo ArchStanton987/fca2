@@ -3,13 +3,13 @@ import { TouchableHighlight, TouchableOpacity, View } from "react-native"
 import { useLocalSearchParams, useRouter } from "expo-router"
 
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs"
+import { useSquadMembers } from "lib/squad/use-cases/sub-squad"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import List from "components/List"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { adminRoute, charRoute } from "constants/routes"
-import { useSquad } from "contexts/SquadContext"
 import { SearchParams } from "screens/ScreenParams"
 import layout from "styles/layout"
 
@@ -23,8 +23,8 @@ export default function TabBar(props: BottomTabBarProps & { tabBarId: TabBarId }
   const router = useRouter()
   const localParams = useLocalSearchParams() as SearchParams<DrawerParams>
   const { charId, squadId } = localParams
-  const squad = useSquad()
-  const isNpc = charId && !(charId in squad.membersRecord)
+  const members = useSquadMembers(squadId)
+  const isNpc = charId && !(charId in members)
 
   const onPressTab = (routeName: string) => {
     if (tabBarId === "char") {

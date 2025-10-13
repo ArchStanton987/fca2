@@ -1,6 +1,6 @@
 import { PressableProps } from "react-native"
 
-import { router } from "expo-router"
+import { router, useLocalSearchParams } from "expo-router"
 
 import { Ammo } from "lib/objects/data/ammo/ammo.types"
 
@@ -9,8 +9,6 @@ import ListLabel from "components/ListLabel"
 import ListScoreLabel from "components/ListScoreLabel"
 import Selectable from "components/Selectable"
 import routes from "constants/routes"
-import { useCharacter } from "contexts/CharacterContext"
-import { useSquad } from "contexts/SquadContext"
 
 type AmmoRowProps = PressableProps & {
   ammo: Ammo
@@ -19,8 +17,7 @@ type AmmoRowProps = PressableProps & {
 }
 
 export default function AmmoRow({ ammo, isSelected, onPress }: AmmoRowProps) {
-  const { squadId } = useSquad()
-  const { charId } = useCharacter()
+  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
 
   const onPressDel = () => {
     router.push({

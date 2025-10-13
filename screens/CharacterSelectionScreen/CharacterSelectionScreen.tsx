@@ -1,13 +1,13 @@
 import { TouchableOpacity, View } from "react-native"
 
-import { router } from "expo-router"
+import { router, useLocalSearchParams } from "expo-router"
 
 import { useQueries } from "@tanstack/react-query"
 import { useSetCurrCharId } from "lib/character/character-store"
 import { getCharInfoOptions } from "lib/character/info/info-provider"
-import { getExpOptions } from "lib/character/progress/progress-provider"
+import { getExpOptions } from "lib/character/progress/exp-provider"
 import { useMultiSub } from "lib/shared/db/useSub"
-import { useSquad } from "lib/squad/use-cases/sub-squad"
+import { useSquadMembers } from "lib/squad/use-cases/sub-squad"
 
 import List from "components/List"
 import Spacer from "components/Spacer"
@@ -18,7 +18,8 @@ import LoadingScreen from "screens/LoadingScreen"
 import styles from "./CharacterSelectionScreen.styles"
 
 export default function CharacterSelectionScreen() {
-  const squad = useSquad()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const { data: members } = useSquadMembers(squadId)
 
   const setChar = useSetCurrCharId()
 
@@ -27,7 +28,7 @@ export default function CharacterSelectionScreen() {
     router.push({ pathname: routes.main.index, params: { charId } })
   }
 
-  const squadMembers = Object.keys(squad.members)
+  const squadMembers = Object.keys(members)
 
   const expOptions = squadMembers.map(c => getExpOptions(c))
   useMultiSub(expOptions.map(o => ({ path: o.queryKey.join("/") })))

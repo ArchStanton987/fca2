@@ -19,9 +19,27 @@ export function useSubSquads() {
   return useSuspenseQuery(options)
 }
 
-export function useSquad<TData = Squad>(id: string, select?: (data: Squad) => TData) {
-  return useSuspenseQuery({
-    ...getSquadsOptions(),
-    select: squads => (select ? select(squads[id]) : squads[id])
-  })
+export function useSquads<TData = Record<string, Squad>>(
+  select?: (data: Record<string, Squad>) => TData
+) {
+  return useSuspenseQuery({ ...getSquadsOptions(), select })
+}
+
+export function useSquad(squadId: string) {
+  return useSquads(squads => squads[squadId])
+}
+export function useDatetime(squadId: string) {
+  return useSquads(squads => squads[squadId].datetime)
+}
+export function useSquadMembers(squadId: string) {
+  return useSquads(squads => squads[squadId].members)
+}
+export function useSquadNpcs(squadId: string) {
+  return useSquads(squads => squads[squadId].npcs)
+}
+export function useSquadLabel(squadId: string) {
+  return useSquads(squads => squads[squadId].label)
+}
+export function useSquadCombats(squadId: string) {
+  return useSquads(squads => squads[squadId].combats)
 }

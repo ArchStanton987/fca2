@@ -1,10 +1,12 @@
 import { useState } from "react"
 import { View } from "react-native"
 
-import { router } from "expo-router"
+import { router, useLocalSearchParams } from "expo-router"
 
+import { useAbilities } from "lib/character/abilities/abilities-provider"
 import skillsMap from "lib/character/abilities/skills/skills"
 import { SkillId } from "lib/character/abilities/skills/skills.types"
+import { useProgress } from "lib/character/progress/progress-provider"
 
 import ModalCta from "components/ModalCta/ModalCta"
 import ScrollableSection from "components/ScrollableSection"
@@ -14,8 +16,6 @@ import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import ModalBody from "components/wrappers/ModalBody"
 import routes from "constants/routes"
-import { useCharacter } from "contexts/CharacterContext"
-import { useSquad } from "contexts/SquadContext"
 import colors from "styles/colors"
 
 import styles from "./UpdateSkillsModal.styles"
@@ -59,10 +59,14 @@ function Row({ label, skillId, values, onModSkill, canAdd, canRemove }: RowProps
 }
 
 export default function UpdateSkillsModal() {
-  const { squadId } = useSquad()
-  const { skills, progress, charId } = useCharacter()
-  const { availableSkillPoints, usedSkillsPoints } = progress
-  const { base, up } = skills
+  const { squadId, charId } = useLocalSearchParams<{ squadId: string; charId: string }>()
+  const { availableSkillPoints, usedSkillsPoints } = useProgress(charId)
+  const {
+    data: { base, up }
+  } = useAbilities(charId, abilities => ({
+    base: abilities.skills.base,
+    up: abilities.skills.up
+  }))
 
   const [newUpSkills, setNewUpskills] = useState(up)
 

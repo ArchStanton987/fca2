@@ -6,7 +6,7 @@ import { Stack, useLocalSearchParams } from "expo-router"
 import { NativeStackNavigationOptions } from "@react-navigation/native-stack"
 import { useCurrCharStore, useSetCurrCharId } from "lib/character/character-store"
 import SubPlayables from "lib/character/use-cases/sub-playables"
-import { useSquad } from "lib/squad/use-cases/sub-squad"
+import { useDatetime } from "lib/squad/use-cases/sub-squad"
 import Toast from "react-native-toast-message"
 
 import { ReactionProvider } from "providers/ReactionProvider"
@@ -30,17 +30,17 @@ export default function CharStack() {
   const currCharId = useCurrCharStore(state => state.charId)
   const setChar = useSetCurrCharId()
 
-  const { data: squad } = useSquad(squadId)
-  const [currDatetime, setCurrDatetime] = useState(() => squad.datetime.toJSON())
+  const { data: datetime } = useDatetime(squadId)
+  const [currDatetime, setCurrDatetime] = useState(() => datetime.toJSON())
 
   if (charId && currCharId === null) {
     setChar(charId)
   }
 
-  if (squad.datetime.toJSON() !== currDatetime) {
-    setCurrDatetime(squad.datetime.toJSON())
-    const newDate = getDDMMYYYY(squad.datetime)
-    const newHour = getHHMM(squad.datetime)
+  if (datetime.toJSON() !== currDatetime) {
+    setCurrDatetime(datetime.toJSON())
+    const newDate = getDDMMYYYY(datetime)
+    const newHour = getHHMM(datetime)
     Toast.show({
       type: "custom",
       text1: `Le temps passe ! Nous sommes le ${newDate}, il est ${newHour}.`,
@@ -51,7 +51,7 @@ export default function CharStack() {
   if (!currCharId) return <LoadingScreen />
   return (
     <Suspense fallback={<LoadingScreen />}>
-      <SubPlayables playablesIds={[currCharId]} datetime={squad.datetime}>
+      <SubPlayables playablesIds={[currCharId]} datetime={datetime}>
         <UpdatesProvider>
           <ReactionProvider>
             <Stack

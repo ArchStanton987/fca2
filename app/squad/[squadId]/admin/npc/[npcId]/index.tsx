@@ -4,22 +4,21 @@ import { router, useLocalSearchParams } from "expo-router"
 
 import { useSetCurrCharId } from "lib/character/character-store"
 import { useCharCombatStatus } from "lib/character/combat-status/use-cases/sub-combat-status"
+import { useSquad } from "lib/squad/use-cases/sub-squad"
 
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { useAdmin } from "contexts/AdminContext"
-import { useSquad } from "contexts/SquadContext"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
 
 export default function EnemyScreen() {
   const useCases = useGetUseCases()
-  const { npcId } = useLocalSearchParams<{ npcId: string }>()
+  const { npcId, squadId } = useLocalSearchParams<{ npcId: string; squadId: string }>()
 
-  const squad = useSquad()
+  const { data: squad } = useSquad(squadId)
   const { npcs } = useAdmin()
   const currNpc = npcs[npcId]
   const npcCombatStatusReq = useCharCombatStatus(npcId)
@@ -30,7 +29,7 @@ export default function EnemyScreen() {
     setChar(npcId)
     router.push({
       pathname: "/squad/[squadId]/character/[charId]/main/recap",
-      params: { charId: npcId, squadId: squad.squadId }
+      params: { charId: npcId, squadId }
     })
   }
 

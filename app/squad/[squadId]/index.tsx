@@ -4,10 +4,10 @@ import { router, useLocalSearchParams } from "expo-router"
 
 import { useSetCurrCharId } from "lib/character/character-store"
 import { useSubPlayablesCharInfo } from "lib/character/info/info-provider"
-import { useSubPlayablesExp } from "lib/character/progress/progress-provider"
+import { useSubPlayablesExp } from "lib/character/progress/exp-provider"
 import PickCharacterCard from "lib/character/ui/PickCharacterCard/PickCharacterCard"
 import WelcomeHeader from "lib/shared/ui/welcome/WelcomeHeader"
-import { useSquad } from "lib/squad/use-cases/sub-squad"
+import { useSquadMembers } from "lib/squad/use-cases/sub-squad"
 
 import List from "components/List"
 import Spacer from "components/Spacer"
@@ -15,7 +15,7 @@ import routes from "constants/routes"
 
 export default function CharacterSelection() {
   const { squadId } = useLocalSearchParams<{ squadId: string }>()
-  const { data: squad } = useSquad(squadId)
+  const { data: members } = useSquadMembers(squadId)
 
   const setChar = useSetCurrCharId()
 
@@ -24,7 +24,7 @@ export default function CharacterSelection() {
     router.push({ pathname: routes.main.index, params: { charId } })
   }
 
-  const squadMembers = Object.keys(squad.members)
+  const squadMembers = Object.keys(members)
   useSubPlayablesCharInfo(squadMembers)
   useSubPlayablesExp(squadMembers)
 

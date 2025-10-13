@@ -4,7 +4,7 @@ import { View } from "react-native"
 import { useLocalSearchParams } from "expo-router"
 
 import { usePlayables } from "lib/character/playables-provider"
-import { useSquad } from "lib/squad/use-cases/sub-squad"
+import { useDatetime } from "lib/squad/use-cases/sub-squad"
 import Toast from "react-native-toast-message"
 
 import AmountSelector from "components/AmountSelector"
@@ -29,10 +29,10 @@ const selectors = [1, 5, 20, 60]
 export default function DatetimeSelectionScreen() {
   const { squadId } = useLocalSearchParams<{ squadId: string }>()
   const useCases = useGetUseCases()
-  const squad = useSquad()
+  const { data: datetime } = useDatetime(squadId)
   const characters = usePlayables()
 
-  const [newDate, setNewDate] = useState<Date>(squad.datetime)
+  const [newDate, setNewDate] = useState<Date>(() => datetime)
   const [selectedTimespan, setSelectedTimespan] = useState<Timespan>("MIN")
   const [selectedAmount, setSelectedAmount] = useState<number>(1)
 
@@ -56,12 +56,12 @@ export default function DatetimeSelectionScreen() {
     setNewDate(newDateCopy)
   }
 
-  const onPressReset = () => setNewDate(squad.datetime)
+  const onPressReset = () => setNewDate(datetime)
 
   const onPressSave = async () => {
     if (!newDate) return
     try {
-      const payload = { characters, squadId, currDate: squad.datetime, newDate }
+      const payload = { characters, squadId, currDate: datetime, newDate }
       await useCases.gm.updateDatetime(payload)
       Toast.show({
         type: "custom",

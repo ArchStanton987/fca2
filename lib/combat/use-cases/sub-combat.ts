@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import { useCallback } from "react"
 
-import { queryOptions, useQueries, useQuery } from "@tanstack/react-query"
+import { queryOptions, useQueries, useQuery, useSuspenseQuery } from "@tanstack/react-query"
 import { useMultiSub, useSub } from "lib/shared/db/useSub"
 
 import CombatState from "../CombatState"
@@ -39,14 +39,26 @@ export function useSubCombatHistory(combatId: string) {
   const options = combatHistoryOptions(combatId)
   const path = options.queryKey.join("/")
   useSub<DbCombatHistory>(path)
-  return useQuery(options)
+}
+
+export function useCombatHistory<TData = DbCombatHistory>(
+  combatId: string,
+  select?: (data: DbCombatHistory) => TData
+) {
+  return useSuspenseQuery({ ...combatHistoryOptions(combatId), select })
 }
 
 export function useSubCombatInfo(combatId: string) {
   const options = combatInfoOptions(combatId)
   const path = options.queryKey.join("/")
   useSub<DbCombatInfo>(path)
-  return useQuery(options)
+}
+
+export function useCombatInfo<TData = DbCombatInfo>(
+  combatId: string,
+  select?: (data: DbCombatInfo) => TData
+) {
+  return useSuspenseQuery({ ...combatInfoOptions(combatId), select })
 }
 
 export function useSubGameCombatsInfo(ids: string[]) {

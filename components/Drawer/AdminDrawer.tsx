@@ -1,6 +1,6 @@
 import { TouchableHighlight } from "react-native"
 
-import { router, usePathname } from "expo-router"
+import { router, useLocalSearchParams, usePathname } from "expo-router"
 
 import List from "components/List"
 import ScrollSection from "components/Section/ScrollSection"
@@ -8,7 +8,6 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import PlusIcon from "components/icons/PlusIcon"
 import { adminRoute } from "constants/routes"
-import { useSquad } from "contexts/SquadContext"
 
 import styles from "./Drawer.styles"
 
@@ -19,9 +18,8 @@ type DrawerProps = {
 }
 
 export default function AdminDrawer({ sectionId, navElements }: DrawerProps) {
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
   const pathname = usePathname()
-  const squad = useSquad()
-  const { squadId } = squad
 
   const toTabs = (path: string) => {
     const params = { squadId }

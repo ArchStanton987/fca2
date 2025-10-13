@@ -1,7 +1,7 @@
 import React, { memo, useState } from "react"
 import { View } from "react-native"
 
-import { router } from "expo-router"
+import { router, useLocalSearchParams } from "expo-router"
 
 import { Effect } from "lib/character/effects/effects.types"
 
@@ -15,7 +15,6 @@ import Txt from "components/Txt"
 import PlusIcon from "components/icons/PlusIcon"
 import routes from "constants/routes"
 import { useCharacter } from "contexts/CharacterContext"
-import { useSquad } from "contexts/SquadContext"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import EffectRow from "screens/MainTabs/EffectsScreen/EffectRow"
 import layout from "styles/layout"
@@ -45,9 +44,9 @@ const title: ComposedTitleProps = [
 ]
 
 function EffectsScreen() {
+  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
   const useCases = useGetUseCases()
-  const { squadId } = useSquad()
-  const { effects, charId } = useCharacter()
+  const { effects } = useCharacter()
 
   const [selectedId, setSelectedId] = useState<Effect["id"] | null>(null)
 

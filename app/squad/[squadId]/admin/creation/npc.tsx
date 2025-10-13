@@ -43,7 +43,7 @@ type NpcForm = {
 export default function NpcCreation() {
   const { squadId } = useLocalSearchParams<{ squadId: string }>()
   const useCases = useGetUseCases()
-  const squad = useSquad()
+  const { data: squad } = useSquad(squadId)
 
   const defaultForm: NpcForm = {
     speciesId: "human",
