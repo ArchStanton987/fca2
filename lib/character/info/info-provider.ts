@@ -1,4 +1,9 @@
-import { queryOptions, useSuspenseQueries, useSuspenseQuery } from "@tanstack/react-query"
+import {
+  QueryClient,
+  queryOptions,
+  useSuspenseQueries,
+  useSuspenseQuery
+} from "@tanstack/react-query"
 import { useMultiSub } from "lib/shared/db/useSub"
 
 import CharInfo, { DbCharInfo } from "./CharInfo"
@@ -33,4 +38,10 @@ export function usePlayablesCharInfo(ids: string[]) {
 
 export function useCharInfo<TData = CharInfo>(id: string, select?: (data: CharInfo) => TData) {
   return useSuspenseQuery(getCharInfoOptions(id, select))
+}
+
+export function getCharInfo(store: QueryClient, charId: string) {
+  const info = store.getQueryData(getCharInfoOptions(charId).queryKey)
+  if (!info) throw new Error(`Could not find playable with id : ${charId}`)
+  return info
 }

@@ -1,9 +1,8 @@
 import { UseCasesConfig } from "lib/get-use-case.types"
-import clothingsMap from "lib/objects/data/clothings/clothings"
 import { ClothingId } from "lib/objects/data/clothings/clothings.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
-import { Item } from "../use-sub-inv-cat"
+import { Item, getItems } from "../use-sub-inv-cat"
 
 export type ToggleEquipParams = {
   charId: string
@@ -11,15 +10,17 @@ export type ToggleEquipParams = {
   equippedItems: Record<string, Item>
 }
 
-export default function toggleEquip({ db, createdElements }: UseCasesConfig) {
+export default function toggleEquip({ db, collectiblesData, store }: UseCasesConfig) {
   const itemsRepo = repositoryMap[db].itemsRepository
+  const { clothings } = collectiblesData
 
-  const allClothings = {
-    ...clothingsMap,
-    ...createdElements.newClothings
-  } as unknown as typeof clothingsMap
-
-  return ({ charId, itemId, equippedItems }: ToggleEquipParams) => {
+  return ({ charId, itemId }: ToggleEquipParams) => {
+    const items = getItems(store, charId)
+    const equippedItems = Object.fromEntries(
+      Object.entries(items)
+        .filter(([, value]) => value.isEquipped)
+        .map(([id, value]) => [id, value])
+    )
     const item = equippedItems[itemId]
     if (!item) throw new Error(`Item with id : ${itemId} wasn't found in equipped items`)
 
@@ -45,7 +46,7 @@ export default function toggleEquip({ db, createdElements }: UseCasesConfig) {
         .map(obj => obj.data.protects)
         .flat()
       const hasClothOnBodyPart = protectedBodyParts.some(part =>
-        allClothings[item.id as ClothingId].protects.includes(part)
+        clothings[item.id as ClothingId].protects.includes(part)
       )
       if (hasClothOnBodyPart)
         throw new Error("Vous ne pouvez pas avoir plusieurs armures sur la même partie du corps")

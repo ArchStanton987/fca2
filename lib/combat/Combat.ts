@@ -14,7 +14,6 @@ export const defaultAction = {
 
 export default class Combat {
   id: string
-  gameId: string
   date: Date
   location?: string
   title: string
@@ -22,17 +21,24 @@ export default class Combat {
   contendersIds: string[]
   history: Record<number, Record<number, Action>>
 
-  constructor(payload: DbCombatInfo & { history: DbCombatHistory; id: string; gameId: string }) {
-    this.id = payload.id
-    this.gameId = payload.gameId
-    this.date = new Date(payload.date)
-    this.location = payload.location
-    this.title = payload.title
-    this.description = payload.description || ""
-    this.contendersIds = Object.keys(payload.contenders ?? {})
+  constructor({
+    info,
+    history,
+    combatId
+  }: {
+    info: DbCombatInfo
+    history: DbCombatHistory
+    combatId: string
+  }) {
+    this.id = combatId
+    this.date = new Date(info.date)
+    this.location = info.location
+    this.title = info.title
+    this.description = info.description || ""
+    this.contendersIds = Object.keys(info.contenders ?? {})
 
     this.history = Object.fromEntries(
-      Object.entries(payload.history ?? {}).map(([rId, round]) => {
+      Object.entries(history ?? {}).map(([rId, round]) => {
         const roundId = Number(rId)
         const actions = Object.fromEntries(
           Object.entries(round ?? {}).map(([aId, dbAction]) => {

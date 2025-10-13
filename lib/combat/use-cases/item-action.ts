@@ -1,13 +1,9 @@
 import Playable from "lib/character/Playable"
-import { CreatedElements, defaultCreatedElements } from "lib/objects/created-elements"
-import { Clothing } from "lib/objects/data/clothings/clothings.types"
-import { Consumable } from "lib/objects/data/consumables/consumables.types"
+import { UseCasesConfig } from "lib/get-use-case.types"
+import toggleEquip from "lib/inventory/use-cases/toggle-equip"
+import { Item } from "lib/inventory/use-sub-inv-cat"
 import { isConsumableItem } from "lib/objects/data/consumables/consumables.utils"
-import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
-import { Weapon } from "lib/objects/data/weapons/weapons.types"
-import getEquipedObjectsUseCases from "lib/objects/equiped-objects-use-cases"
 import getInventoryUseCases from "lib/objects/inventory-use-cases"
-import repositoryMap from "lib/shared/db/get-repository"
 
 import Combat from "../Combat"
 import { DbAction } from "../combats.types"
@@ -17,14 +13,10 @@ export type CombatActionParams = {
   action: DbAction & { actorId: string }
   combat: Combat
   contenders: Record<string, Playable>
-  item?: Clothing | Consumable | MiscObject | Weapon
+  item?: Item
 }
 
-export default function itemAction(
-  dbType: keyof typeof repositoryMap = "rtdb",
-  newElements: CreatedElements = defaultCreatedElements
-) {
-  const { toggle } = getEquipedObjectsUseCases(dbType, newElements)
+export default function itemAction(config: UseCasesConfig) {
   const { consume, drop } = getInventoryUseCases(dbType, newElements)
 
   return async ({ action, contenders, item }: CombatActionParams) => {
@@ -47,7 +39,7 @@ export default function itemAction(
         if (!item) throw new Error("Item not found")
         const isEquipable = "isEquiped" in item
         if (!isEquipable) throw new Error("Item is not equipable")
-        return toggle(char, item)
+        return toggleEquip(config)(char, item)
       }
       case "pickUp":
         // no op, handled in add object modal

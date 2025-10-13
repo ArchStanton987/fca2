@@ -1,6 +1,11 @@
 import { useCallback } from "react"
 
-import { queryOptions, useSuspenseQueries, useSuspenseQuery } from "@tanstack/react-query"
+import {
+  QueryClient,
+  queryOptions,
+  useSuspenseQueries,
+  useSuspenseQuery
+} from "@tanstack/react-query"
 import { useCharInfo } from "lib/character/info/info-provider"
 import { critters } from "lib/npc/const/npc-templates"
 import ammoMap from "lib/objects/data/ammo/ammo"
@@ -134,6 +139,10 @@ export function useMiscObjects(charId: string, isEquipped?: boolean, isGrouped?:
   })
 }
 
+export function useItem(charId: string, itemId: string) {
+  return useSuspenseQuery({ ...getItemsOptions(charId), select: items => items[itemId] })
+}
+
 export function useMultiSubAmmo(ids: string[]) {
   const options = ids.map(id => getAmmoOptions(id))
   useMultiSub(options.map(o => ({ path: o.queryKey.join("/") })))
@@ -185,4 +194,10 @@ export function useCarry(charId: string) {
         { weight: 0, place: 0 }
       )
   })
+}
+
+export function getItems(store: QueryClient, charId: string) {
+  const items = store.getQueryData(getItemsOptions(charId).queryKey)
+  if (!items) throw new Error(`Items of char with id : ${charId} could not be found`)
+  return items
 }

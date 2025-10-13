@@ -3,6 +3,7 @@ import { View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useAbilities } from "lib/character/abilities/abilities-provider"
 import skillsMap from "lib/character/abilities/skills/skills"
 import { SkillId, SkillsValues } from "lib/character/abilities/skills/skills.types"
 
@@ -12,7 +13,6 @@ import ScrollableSection from "components/ScrollableSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import ModalBody from "components/wrappers/ModalBody"
-import { useCharacter } from "contexts/CharacterContext"
 import { useGetUseCases } from "providers/UseCasesProvider"
 
 type SkillsConfirmationModalParams = DrawerParams & {
@@ -20,15 +20,15 @@ type SkillsConfirmationModalParams = DrawerParams & {
 }
 
 export default function UpdateSkillsConfirmation() {
+  const { charId } = useLocalSearchParams<{ charId: string }>()
   const useCases = useGetUseCases()
-  const { charId, skills } = useCharacter()
-  const { up } = skills
+  const { data: upSkills } = useAbilities(charId, abilities => abilities.skills.up)
   const params = useLocalSearchParams<SkillsConfirmationModalParams>()
   const newUpSkills: SkillsValues = JSON.parse(params.newUpSkills as string)
 
   const modifiedSkills = Object.entries(newUpSkills)
-    .filter(([skillId, value]) => value > up[skillId as SkillId])
-    .map(([id, value]) => ({ id, value: value - up[id as SkillId] }))
+    .filter(([skillId, value]) => value > upSkills[skillId as SkillId])
+    .map(([id, value]) => ({ id, value: value - upSkills[id as SkillId] }))
 
   const onPressConfirm = async () => {
     await useCases.abilities.updateUpSkills(charId, newUpSkills)

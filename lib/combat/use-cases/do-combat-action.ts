@@ -1,14 +1,16 @@
-import Playable from "lib/character/Playable"
-import { CombatStatus } from "lib/character/combat-status/combat-status.types"
+import {
+  getCombatStatus,
+  getCombatStatuses
+} from "lib/character/combat-status/combat-status-provider"
+import { getCharInfo } from "lib/character/info/info-provider"
 import { UseCasesConfig } from "lib/get-use-case.types"
-import { Clothing } from "lib/objects/data/clothings/clothings.types"
-import { Consumable } from "lib/objects/data/consumables/consumables.types"
-import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
+import Clothing from "lib/objects/data/clothings/Clothing"
+import Consumable from "lib/objects/data/consumables/Consumable"
+import MiscObject from "lib/objects/data/misc-objects/MiscObject"
+import Weapon from "lib/objects/data/weapons/Weapon"
 import weaponsMap from "lib/objects/data/weapons/weapons"
-import { Weapon } from "lib/objects/data/weapons/weapons.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
-import Combat from "../Combat"
 import { DbAction } from "../combats.types"
 import { getActivePlayersWithAp, getIsActionEndingRound } from "../utils/combat-utils"
 import applyDamageEntries from "./apply-damage-entries"
@@ -16,31 +18,32 @@ import itemAction from "./item-action"
 import prepareAction from "./prepare-action"
 import saveAction from "./save-action"
 import setNewRound from "./set-new-round"
+import { getCombat } from "./sub-combat"
 import waitAction from "./wait-action"
 import weaponAction from "./weapon-action"
 
 export type CombatActionParams = {
+  combatId: string
   action: DbAction & { actorId: string }
-  combat: Combat
-  contenders: Record<string, Playable>
-  combatStatuses: Record<string, CombatStatus>
   item?: Clothing | Consumable | MiscObject | Weapon
 }
 
 export default function doCombatAction(config: UseCasesConfig) {
-  const { db } = config
+  const { db, store } = config
   const combatStatusRepo = repositoryMap[db].combatStatusRepository
 
-  return async ({ action, combat, contenders, combatStatuses, item }: CombatActionParams) => {
+  return async ({ action, combatId, item }: CombatActionParams) => {
     const { apCost = 0, actorId, actionType, actionSubtype } = action
-    const char = contenders[actorId]
-    const combatStatus = combatStatuses[actorId]
-    const { charId, meta } = char
+    const charId = actorId
+    const combatStatus = getCombatStatus(store, charId)
+    const meta = getCharInfo(store, charId)
+    const combat = getCombat(store, combatId)
 
     const roundId = combat?.currRoundId
 
     if (apCost > combatStatus.currAp) throw new Error("Not enough AP to perform this action")
 
+    const combatStatuses = getCombatStatuses(store, combat?.contendersIds ?? [])
     const isEndingRound = getIsActionEndingRound(combatStatuses, { apCost, ...action })
 
     const promises = []
@@ -49,7 +52,7 @@ export default function doCombatAction(config: UseCasesConfig) {
     switch (actionType) {
       case "weapon": {
         // handle case with species which can't carry weapon
-        if (meta.speciesId === "robot" || meta.speciesId === "animal") break
+        if (meta.speciesId === "robot" || meta.speciesId === "beast") break
         if (!item) throw new Error("Item is required for weapon action")
         if (!(item?.data?.id in weaponsMap)) throw new Error("item is not a weapon")
         // @ts-ignore

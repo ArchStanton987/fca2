@@ -4,20 +4,15 @@
     "allowJs": true,
     "esModuleInterop": true,
     "jsx": "react-native",
-    "lib": [
-      "DOM",
-      "ESNext"
-    ],
-    "moduleResolution": "node",
+    "lib": ["DOM", "ESNext"],
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "noEmit": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "target": "ESNext",
     "baseUrl": "."
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx"
-  ],
+  "include": ["**/*.ts", "**/*.tsx"],
   "extends": "expo/tsconfig.base"
 }

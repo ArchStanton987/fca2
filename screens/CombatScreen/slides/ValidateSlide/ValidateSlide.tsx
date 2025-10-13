@@ -1,19 +1,18 @@
 import { StyleSheet, TouchableOpacity } from "react-native"
 
-import { getItemFromId } from "lib/combat/utils/combat-utils"
+import { useLocalSearchParams } from "expo-router"
+
+import { useCombatId } from "lib/character/combat-status/combat-status-provider"
+import { useCombatState } from "lib/combat/use-cases/sub-combat"
+import { useItem } from "lib/inventory/use-sub-inv-cat"
+import Weapon from "lib/objects/data/weapons/Weapon"
 import Toast from "react-native-toast-message"
 
 import Section from "components/Section"
 import DrawerSlide from "components/Slides/DrawerSlide"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { useCharacter } from "contexts/CharacterContext"
 import { useActionActorId, useActionApi } from "providers/ActionFormProvider"
-import { useCombat } from "providers/CombatProvider"
-import { useCombatState } from "providers/CombatStateProvider"
-import { useCombatStatuses } from "providers/CombatStatusesProvider"
-import { useContenders } from "providers/ContendersProvider"
-import { useInventories } from "providers/InventoriesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 
@@ -36,18 +35,14 @@ const styles = StyleSheet.create({
 })
 
 export default function ValidateSlide() {
+  const { charId } = useLocalSearchParams<{ charId: string }>()
   const useCases = useGetUseCases()
-  const combatStatuses = useCombatStatuses()
-  const { charId } = useCharacter()
   const { reset } = useActionApi()
   const formActorId = useActionActorId()
-  const combat = useCombat()
-  const { action } = useCombatState()
+  const { data: combatId } = useCombatId(charId)
+  const { data: action } = useCombatState(charId, cs => cs.action)
   const actorId = formActorId === "" ? charId : formActorId
-  const inv = useInventories(actorId)
-  const contenders = useContenders()
-  const actor = contenders[actorId]
-  const { unarmed } = actor
+  const { data: item = Weapon.getUnarmed() } = useItem(actorId, action?.itemDbKey || "")
 
   if (!action) return <SlideError error={slideErrors.noCombatError} />
   const { rawDamage, itemDbKey } = action
@@ -55,17 +50,8 @@ export default function ValidateSlide() {
   const isWaitingForGm = isDamageRolled && action?.healthChangeEntries === undefined
 
   const submit = async () => {
-    if (!combat) return
     try {
-      const itemKey = typeof itemDbKey === "string" ? itemDbKey : undefined
-      const item = getItemFromId(inv, itemKey) ?? unarmed
-      await useCases.combat.doCombatAction({
-        combat,
-        combatStatuses,
-        contenders,
-        action,
-        item
-      })
+      await useCases.combat.doCombatAction({ combatId, action, item })
       Toast.show({ type: "custom", text1: "Action réalisée !" })
       reset()
     } catch (err) {

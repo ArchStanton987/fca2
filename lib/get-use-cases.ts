@@ -1,4 +1,3 @@
-import { DbPlayable } from "./character/Playable"
 import getAbilitiesUseCases from "./character/abilities/abilities-use-cases"
 import updateCombatStatus, {
   UpdateCombatStatusParams
@@ -11,11 +10,6 @@ import removeEffect, { RemoveEffectParams } from "./character/effects/use-cases/
 import updateHp, { UpdateHpParams } from "./character/health/use-cases/update-hp"
 import updateLimbsHp, { UpdateLimbsHpParams } from "./character/health/use-cases/update-limbs-hp"
 import updateExp, { UpdateExpParams } from "./character/progress/use-cases/update-exp"
-import subCharacter from "./character/use-cases/sub-character"
-import subCharacterChild, {
-  SubCharacterChildParams
-} from "./character/use-cases/sub-character-child"
-import subCharacters from "./character/use-cases/sub-characters"
 import adminEndFight, { AdminEndFightParams } from "./combat/use-cases/admin-end-fight"
 import applyDamageEntries, {
   ApplyDamageEntriesParams
@@ -50,8 +44,7 @@ import {
   AdditionalClothingsParams,
   AdditionalConsumablesParams,
   AdditionalEffectsParams,
-  AdditionalMiscParams,
-  PlayableParams
+  AdditionalMiscParams
 } from "./shared/db/api-rtdb"
 import updateDate, { UpdateDateParams } from "./squad/use-cases/update-date"
 
@@ -97,10 +90,6 @@ export default function getUseCases(config: UseCasesConfig) {
       delete: (params: DeleteNpcParams) => deleteNpc(config)(params)
     },
     character: {
-      subCharacters: (ids: string[]) => subCharacters(config)(ids),
-      sub: (params: PlayableParams) => subCharacter(config)(params),
-      subChild: <T extends keyof DbPlayable>(params: SubCharacterChildParams<T>) =>
-        subCharacterChild(config)(params),
       updateCombatStatus: (params: UpdateCombatStatusParams) => updateCombatStatus(config)(params),
       updateExp: (params: UpdateExpParams) => updateExp(config)(params),
       addEffect: (params: AddEffectParams) => addEffect(config)(params),

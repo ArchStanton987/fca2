@@ -1,9 +1,11 @@
 import { useState } from "react"
 import { ScrollView, View } from "react-native"
 
+import { useLocalSearchParams } from "expo-router"
+
 import Character from "lib/character/Character"
 import { usePlayables } from "lib/character/playables-provider"
-import {  useSquadMembers, useSquadNpcs } from "lib/squad/use-cases/sub-squad"
+import { useDatetime, useSquadMembers, useSquadNpcs } from "lib/squad/use-cases/sub-squad"
 import Toast from "react-native-toast-message"
 
 import CheckBox from "components/CheckBox/CheckBox"
@@ -21,7 +23,6 @@ import PlusIcon from "components/icons/PlusIcon"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
-import { useLocalSearchParams } from "expo-router"
 
 type Form = {
   location?: string
@@ -43,6 +44,7 @@ export default function CombatCreation() {
   const useCases = useGetUseCases()
   const { data: members } = useSquadMembers(squadId)
   const { data: npcs } = useSquadNpcs(squadId)
+  const { data: datetime } = useDatetime(squadId)
 
   const allPlayable = usePlayables()
 
@@ -92,7 +94,6 @@ export default function CombatCreation() {
       return
     }
 
-    const { datetime } = squad
     const contendersIds = Object.keys({ ...form.players, ...form.npcs })
     const contenders = Object.fromEntries(
       contendersIds.map(id => {
@@ -102,7 +103,7 @@ export default function CombatCreation() {
       })
     )
 
-    const payload = { ...form, date: datetime.toJSON(), isStartingNow, gameId: , contenders }
+    const payload = { ...form, date: datetime.toJSON(), isStartingNow, gameId: squadId, contenders }
     try {
       await useCases.combat.create(payload)
       Toast.show({ type: "custom", text1: "Le combat a été créé" })
