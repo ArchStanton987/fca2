@@ -1,8 +1,8 @@
 import { View } from "react-native"
 
-import { Tabs } from "expo-router"
+import { Tabs, useLocalSearchParams } from "expo-router"
 
-import PlayablesProvider from "lib/character/playables-provider"
+import SubPlayables from "lib/character/use-cases/sub-playables"
 import { useSquad } from "lib/squad/use-cases/sub-squad"
 
 import Header from "components/Header/Header"
@@ -21,10 +21,15 @@ function TabBarComponent(props: any) {
 }
 
 export default function AdminLayout() {
-  const { members, npcs } = useSquad()
-  const ids = Object.keys({ ...members, ...npcs })
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const squad = useSquad(squadId, state => ({
+    members: state.members,
+    npcs: state.npcs,
+    datetime: state.datetime
+  }))
+  const playablesIds = Object.keys({ ...squad.data.members, ...squad.data.npcs })
   return (
-    <PlayablesProvider ids={ids}>
+    <SubPlayables playablesIds={playablesIds} datetime={squad.data.datetime}>
       <View style={{ padding: 10, flex: 1 }}>
         <Tabs
           tabBar={TabBarComponent}
@@ -41,6 +46,6 @@ export default function AdminLayout() {
           <Tabs.Screen name="creation" options={{ title: "Creation" }} />
         </Tabs>
       </View>
-    </PlayablesProvider>
+    </SubPlayables>
   )
 }

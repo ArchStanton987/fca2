@@ -1,16 +1,15 @@
 import React from "react"
 import { Image, TouchableOpacity, View } from "react-native"
 
-import { router } from "expo-router"
+import { router, useLocalSearchParams } from "expo-router"
 
-import { useCharInfo, useHealth } from "lib/character/character-provider"
+import { useHealth } from "lib/character/health/health-provider"
 import { LimbId, limbsMap } from "lib/character/health/healthMap"
 
 import pipboy from "assets/images/pipboy.png"
 import ProgressionBar from "components/ProgressionBar/ProgressionBar"
 import Spacer from "components/Spacer"
 import routes from "constants/routes"
-import { useSquad } from "contexts/SquadContext"
 import colors from "styles/colors"
 
 import styles from "./HealthFigure.styles"
@@ -48,11 +47,10 @@ function Bar({ limbId, limbHp, onPress }: BarProps) {
 }
 
 export default function HealthFigure() {
-  const { squadId } = useSquad()
-  const { charId } = useCharInfo()
-  const { limbs } = useHealth()
+  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const limbs = useHealth(charId, data => data.limbs)
   const { head, leftTorso, rightTorso, leftArm, rightArm, leftLeg, rightLeg, groin, body, tail } =
-    limbs
+    limbs.data
 
   const onPressElement = (element: LimbId) => {
     const pathname = routes.modal.updateHealth

@@ -1,6 +1,6 @@
 import { ReactNode } from "react"
 
-import { useCharInfo } from "lib/character/character-provider"
+import { useCharInfo } from "lib/character/use-cases/sub-playables"
 import { getInitiativePrompts } from "lib/combat/utils/combat-utils"
 
 import List from "components/List"

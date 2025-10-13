@@ -4,9 +4,8 @@ import { Platform } from "react-native"
 import { Stack, useLocalSearchParams } from "expo-router"
 
 import { NativeStackNavigationOptions } from "@react-navigation/native-stack"
-import CharacterProvider from "lib/character/character-provider"
 import { useCurrCharStore, useSetCurrCharId } from "lib/character/character-store"
-import InventorySubsProvider from "lib/inventory/inventory-provider"
+import SubPlayables from "lib/character/use-cases/sub-playables"
 import { useSquad } from "lib/squad/use-cases/sub-squad"
 import Toast from "react-native-toast-message"
 
@@ -52,31 +51,29 @@ export default function CharStack() {
   if (!currCharId) return <LoadingScreen />
   return (
     <Suspense fallback={<LoadingScreen />}>
-      <InventorySubsProvider playablesIds={[currCharId]}>
-        <CharacterProvider playablesIds={[currCharId]} datetime={squad.datetime}>
-          <UpdatesProvider>
-            <ReactionProvider>
-              <Stack
-                screenOptions={{
-                  headerShown: false,
-                  contentStyle: { backgroundColor: colors.primColor, padding: 10 }
-                }}
-              >
-                <Stack.Screen name="(nav)" />
-                <Stack.Screen name="(modal)/update-effects" options={modalOptions} />
-                <Stack.Screen name="(modal)/update-effects-confirmation" options={modalOptions} />
-                <Stack.Screen name="(modal)/update-objects" options={modalOptions} />
-                <Stack.Screen name="(modal)/update-objects-confirmation" options={modalOptions} />
-                <Stack.Screen name="(modal)/update-status" options={modalOptions} />
-                <Stack.Screen name="(modal)/update-health" options={modalOptions} />
-                <Stack.Screen name="(modal)/update-skills" options={modalOptions} />
-                <Stack.Screen name="(modal)/update-skills-confirmation" options={modalOptions} />
-                <Stack.Screen name="(modal)/update-knowledges" options={modalOptions} />
-              </Stack>
-            </ReactionProvider>
-          </UpdatesProvider>
-        </CharacterProvider>
-      </InventorySubsProvider>
+      <SubPlayables playablesIds={[currCharId]} datetime={squad.datetime}>
+        <UpdatesProvider>
+          <ReactionProvider>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                contentStyle: { backgroundColor: colors.primColor, padding: 10 }
+              }}
+            >
+              <Stack.Screen name="(nav)" />
+              <Stack.Screen name="(modal)/update-effects" options={modalOptions} />
+              <Stack.Screen name="(modal)/update-effects-confirmation" options={modalOptions} />
+              <Stack.Screen name="(modal)/update-objects" options={modalOptions} />
+              <Stack.Screen name="(modal)/update-objects-confirmation" options={modalOptions} />
+              <Stack.Screen name="(modal)/update-status" options={modalOptions} />
+              <Stack.Screen name="(modal)/update-health" options={modalOptions} />
+              <Stack.Screen name="(modal)/update-skills" options={modalOptions} />
+              <Stack.Screen name="(modal)/update-skills-confirmation" options={modalOptions} />
+              <Stack.Screen name="(modal)/update-knowledges" options={modalOptions} />
+            </Stack>
+          </ReactionProvider>
+        </UpdatesProvider>
+      </SubPlayables>
     </Suspense>
   )
 }

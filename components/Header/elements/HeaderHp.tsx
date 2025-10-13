@@ -2,7 +2,7 @@ import { TouchableOpacity } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import { useHealth } from "lib/character/character-provider"
+import { useHealth } from "lib/character/health/health-provider"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import ProgressionBar from "components/ProgressionBar/ProgressionBar"
@@ -17,7 +17,7 @@ import HeaderElement from "../HeaderElement"
 
 export default function HeaderHp() {
   const { squadId, charId } = useLocalSearchParams() as SearchParams<DrawerParams>
-  const health = useHealth()
+  const { data: health } = useHealth(charId)
 
   const onPress = () => {
     const pathname = routes.modal.updateHealth

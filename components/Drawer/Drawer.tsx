@@ -1,8 +1,8 @@
 import { TouchableHighlight } from "react-native"
 
-import { router, useSegments } from "expo-router"
+import { router, useLocalSearchParams, useSegments } from "expo-router"
 
-import { useCharInfo, useProgress } from "lib/character/character-provider"
+import { useCharInfo } from "lib/character/info/info-provider"
 
 import List from "components/List"
 import ScrollSection from "components/Section/ScrollSection"
@@ -10,7 +10,6 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import PlusIcon from "components/icons/PlusIcon"
 import routes, { charRoute } from "constants/routes"
-import { useSquad } from "contexts/SquadContext"
 import { UpdateKnowledgesModalParams } from "screens/MainTabs/modals/UpdateKnowledgesModal/UpdateKnowledgesModal.params"
 import { toLocalParams } from "screens/ScreenParams"
 
@@ -23,17 +22,15 @@ type DrawerProps = {
 }
 
 export default function Drawer({ sectionId, navElements }: DrawerProps) {
+  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+
   const segments = useSegments()
-  const squad = useSquad()
-  const { squadId } = squad
-  const { charId, firstname } = useCharInfo()
+  const charInfo = useCharInfo(charId, data => ({ firstname: data.firstname }))
 
   const progress = useProgress()
   const { availableFreeKnowledgePoints, availableKnowledgePoints, availableSkillPoints } = progress
   const canAddSkill = availableSkillPoints > 0
   const canAddKnowledge = availableKnowledgePoints > 0 || availableFreeKnowledgePoints > 0
-
-  const charDisplayName = firstname
 
   const toTabs = (path: string) => {
     router.push({
@@ -60,7 +57,11 @@ export default function Drawer({ sectionId, navElements }: DrawerProps) {
   // TODO: differentiate progress & combat badges
 
   return (
-    <ScrollSection style={styles.drawerContainer} title={charDisplayName} titleVariant="shiny">
+    <ScrollSection
+      style={styles.drawerContainer}
+      title={charInfo.data.firstname}
+      titleVariant="shiny"
+    >
       <List
         data={navElements}
         keyExtractor={item => item.label}

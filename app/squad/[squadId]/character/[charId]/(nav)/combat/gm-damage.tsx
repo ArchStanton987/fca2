@@ -1,6 +1,6 @@
-import { Redirect } from "expo-router"
+import { Redirect, useLocalSearchParams } from "expo-router"
 
-import { useCharInfo } from "lib/character/character-provider"
+import { useCharInfo } from "lib/character/info/info-provider"
 import GMDamageForm from "lib/combat/ui/damage-form/GMDamageForm"
 import { getRealDamage } from "lib/combat/utils/combat-utils"
 
@@ -12,7 +12,8 @@ import { useContenders } from "providers/ContendersProvider"
 import { DamageFormProvider } from "providers/DamageFormProvider"
 
 export default function GMDamage() {
-  const { charId, isNpc, squadId } = useCharInfo()
+  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const { data: isNpc } = useCharInfo(charId, state => ({ isNpc: state.isNpc }))
   const { action } = useCombatState()
   const contenders = useContenders()
 

@@ -3,7 +3,7 @@ import { TouchableOpacity, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import { useProgress } from "lib/character/character-provider"
+import { useProgress } from "lib/character/use-cases/sub-playables"
 
 import AmountSelector from "components/AmountSelector"
 import List from "components/List"

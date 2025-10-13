@@ -1,14 +1,14 @@
 import { View } from "react-native"
 
-import { Stack } from "expo-router"
+import { Stack, useLocalSearchParams } from "expo-router"
 
+import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { useCharInfo } from "lib/character/info/info-provider"
 
 import Drawer from "components/Drawer/Drawer"
 import Spacer from "components/Spacer"
 import { ActionFormProvider } from "providers/ActionFormProvider"
 import CombatProviders from "providers/CombatProviders"
-import { useCombatStatus } from "providers/CombatStatusProvider"
 import styles from "styles/DrawerLayout.styles"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -31,10 +31,11 @@ const getNav = (isGm: boolean, hasCombat: boolean) => {
 }
 
 export default function CombatLayout() {
-  const { isNpc } = useCharInfo()
-  const { combatId } = useCombatStatus()
+  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const isGameMaster = useCharInfo(charId, state => state.isNpc)
+  const isInCombat = useCombatStatus(charId, state => state.combatId !== "")
 
-  const navElements = getNav(isNpc, combatId !== "")
+  const navElements = getNav(isGameMaster.data, isInCombat.data)
 
   return (
     <CombatProviders>
@@ -48,9 +49,21 @@ export default function CombatLayout() {
               contentStyle: { backgroundColor: colors.primColor, padding: 0 }
             }}
           >
-            {navElements.map(({ path }) => (
-              <Stack.Screen key={path} name={path} />
-            ))}
+            <Stack.Protected guard={!isInCombat.data}>
+              <Stack.Screen name="recap" />
+            </Stack.Protected>
+            <Stack.Protected guard={isInCombat.data}>
+              <Stack.Screen name="combat-recap" />
+            </Stack.Protected>
+            <Stack.Protected guard={!isGameMaster.data}>
+              <Stack.Screen name="action" />
+            </Stack.Protected>
+            <Stack.Protected guard={isGameMaster.data}>
+              <Stack.Screen name="action-order" />
+              <Stack.Screen name="gm-action" />
+              <Stack.Screen name="gm-difficulty" />
+              <Stack.Screen name="gm-damage" />
+            </Stack.Protected>
           </Stack>
         </View>
       </ActionFormProvider>

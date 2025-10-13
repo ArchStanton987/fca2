@@ -144,6 +144,10 @@ export function useMultiSubCaps(ids: string[]) {
   useMultiSub(options.map(o => ({ path: o.queryKey.join("/") })))
 }
 
+export function useCaps(id: string) {
+  return useSuspenseQuery(getCapsOptions(id))
+}
+
 const getItemsCarry = (items: Record<string, Item>) =>
   Object.values(items).reduce(
     (acc, curr) => {

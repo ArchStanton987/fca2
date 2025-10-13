@@ -1,4 +1,4 @@
-import { queryOptions, useSuspenseQueries } from "@tanstack/react-query"
+import { queryOptions, useSuspenseQueries, useSuspenseQuery } from "@tanstack/react-query"
 import { useMultiSub } from "lib/shared/db/useSub"
 
 import { usePlayablesBaseSpecial } from "../abilities/base-special-provider"
@@ -43,4 +43,8 @@ export function usePlayablesHealthEffects(ids: string[]) {
         ])
       )
   })
+}
+
+export function useHealth<TData = Health>(id: string, select?: (data: Health) => TData) {
+  return useSuspenseQuery({ ...getHealthOptions(id), select })
 }

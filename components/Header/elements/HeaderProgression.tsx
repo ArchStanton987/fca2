@@ -1,21 +1,21 @@
 import { TouchableOpacity } from "react-native"
 
-import { router } from "expo-router"
+import { router, useLocalSearchParams } from "expo-router"
 
-import { useCharInfo, useProgress } from "lib/character/character-provider"
 import { getLevelAndThresholds } from "lib/character/status/status-calc"
+import { useProgress } from "lib/character/use-cases/sub-playables"
 
+import { DrawerParams } from "components/Drawer/Drawer.params"
 import HeaderElement from "components/Header/HeaderElement"
 import ProgressionBar from "components/ProgressionBar/ProgressionBar"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import routes from "constants/routes"
-import { useSquad } from "contexts/SquadContext"
 import { UpdateStatusModalParams } from "screens/MainTabs/modals/UpdateStatusModal/UpdateStatusModal.params"
+import { SearchParams } from "screens/ScreenParams"
 
 export default function HeaderProgression() {
-  const { squadId } = useSquad()
-  const { charId } = useCharInfo()
+  const { squadId, charId } = useLocalSearchParams() as SearchParams<DrawerParams>
   const { exp } = useProgress()
 
   const { level, prev, next } = getLevelAndThresholds(exp)

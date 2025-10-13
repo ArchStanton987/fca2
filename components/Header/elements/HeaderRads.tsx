@@ -1,22 +1,22 @@
 import { TouchableOpacity } from "react-native"
 
-import { router } from "expo-router"
+import { router, useLocalSearchParams } from "expo-router"
 
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
-import { useCharInfo, useHealth } from "lib/character/character-provider"
 import { radStates } from "lib/character/health/health.const"
+import { useHealth } from "lib/character/use-cases/sub-playables"
 
+import { DrawerParams } from "components/Drawer/Drawer.params"
 import HeaderElement from "components/Header/HeaderElement"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import routes from "constants/routes"
-import { useSquad } from "contexts/SquadContext"
 import { UpdateHealthModalParams } from "screens/MainTabs/modals/UpdateHealthModal/UpdateHealthModal.params"
+import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
 
 export default function HeaderRads() {
-  const { squadId } = useSquad()
-  const { charId } = useCharInfo()
+  const { squadId, charId } = useLocalSearchParams() as SearchParams<DrawerParams>
   const health = useHealth()
 
   const getColor = () => {

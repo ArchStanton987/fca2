@@ -1,23 +1,20 @@
 import React from "react"
 import { TouchableOpacity } from "react-native"
 
-import { router } from "expo-router"
+import { router, useLocalSearchParams } from "expo-router"
 
 import { Image } from "expo-image"
-import { useCharInfo } from "lib/character/character-provider"
-import { useCaps } from "lib/inventory/inventory-provider"
+import { useCaps } from "lib/inventory/use-sub-inv-cat"
 
 import capsIcon from "assets/images/caps-icon.png"
 import HeaderElement from "components/Header/HeaderElement"
 import Txt from "components/Txt"
 import routes from "constants/routes"
-import { useSquad } from "contexts/SquadContext"
 import { UpdateObjectsModalParams } from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.params"
 
 export default function HeaderCaps() {
-  const caps = useCaps()
-  const { charId } = useCharInfo()
-  const { squadId } = useSquad()
+  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const caps = useCaps(charId)
 
   const onPress = () => {
     const pathname = routes.modal.updateObjects
@@ -33,7 +30,7 @@ export default function HeaderCaps() {
           style={{ height: 15, width: 15, marginRight: 3 }}
           source={capsIcon}
         />
-        <Txt style={{ fontSize: 12 }}>{caps}</Txt>
+        <Txt style={{ fontSize: 12 }}>{caps.data}</Txt>
       </HeaderElement>
     </TouchableOpacity>
   )

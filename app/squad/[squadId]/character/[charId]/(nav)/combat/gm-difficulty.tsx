@@ -1,11 +1,12 @@
 import { useCallback, useState } from "react"
 import { StyleSheet, TouchableOpacity } from "react-native"
 
-import { Redirect } from "expo-router"
+import { Redirect, useLocalSearchParams } from "expo-router"
 
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import Slider from "@react-native-community/slider"
-import { useCharInfo } from "lib/character/character-provider"
+import { useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
+import { useCharInfo } from "lib/character/info/info-provider"
 import { ActionTypeId, withRollActionsTypes } from "lib/combat/const/actions"
 import difficultyArray from "lib/combat/const/difficulty"
 import { getDefaultPlayingId } from "lib/combat/utils/combat-utils"
@@ -18,7 +19,6 @@ import Txt from "components/Txt"
 import routes from "constants/routes"
 import { useCombat } from "providers/CombatProvider"
 import { useCombatState } from "providers/CombatStateProvider"
-import { useCombatStatuses } from "providers/CombatStatusesProvider"
 import { useContenders } from "providers/ContendersProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import DeleteButton from "screens/CombatScreen/slides/DeleteButton"
@@ -39,11 +39,12 @@ const styles = StyleSheet.create({
 })
 
 export default function GMActionsScreen() {
+  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const { data: isNpc } = useCharInfo(charId, state => ({ isNpc: state.isNpc }))
   const useCases = useGetUseCases()
   const combat = useCombat()
-  const { isNpc, squadId, charId } = useCharInfo()
   const contenders = useContenders()
-  const combatStatuses = useCombatStatuses()
+  const combatStatuses = useCombatStatuses(combat?.contendersIds ?? [])
   const { action, actorIdOverride } = useCombatState()
 
   const [hasRoll, setHasRoll] = useState(false)

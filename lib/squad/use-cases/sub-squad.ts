@@ -19,6 +19,9 @@ export function useSubSquads() {
   return useSuspenseQuery(options)
 }
 
-export function useSquad(id: string) {
-  return useSuspenseQuery({ ...getSquadsOptions(), select: squads => squads[id] })
+export function useSquad<TData = Squad>(id: string, select?: (data: Squad) => TData) {
+  return useSuspenseQuery({
+    ...getSquadsOptions(),
+    select: squads => (select ? select(squads[id]) : squads[id])
+  })
 }

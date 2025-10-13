@@ -1,8 +1,9 @@
 import { StyleSheet } from "react-native"
 
-import { Redirect } from "expo-router"
+import { Redirect, useLocalSearchParams } from "expo-router"
 
-import { useCharInfo } from "lib/character/character-provider"
+import { useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
+import { useCharInfo } from "lib/character/info/info-provider"
 import { getDefaultPlayingId, getPlayingOrder } from "lib/combat/utils/combat-utils"
 
 import Col from "components/Col"
@@ -15,7 +16,6 @@ import Txt from "components/Txt"
 import routes from "constants/routes"
 import { useCombat } from "providers/CombatProvider"
 import { useCombatState } from "providers/CombatStateProvider"
-import { useCombatStatuses } from "providers/CombatStatusesProvider"
 import OrderRow, { OrderRowHeader } from "screens/GMActionOrder/OrderRow"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -61,12 +61,13 @@ const styles = StyleSheet.create({
 })
 
 export default function GMCombatScreen() {
+  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
   const combat = useCombat()
   const { actorIdOverride } = useCombatState()
-  const contendersCombatStatus = useCombatStatuses()
-  const { charId, isNpc, squadId } = useCharInfo()
+  const contendersCombatStatus = useCombatStatuses(combat?.contendersIds ?? [])
+  const charInfo = useCharInfo(charId, state => ({ isNpc: state.isNpc }))
 
-  if (!isNpc)
+  if (!charInfo.data.isNpc)
     return <Redirect href={{ pathname: routes.combat.index, params: { charId, squadId } }} />
 
   const defaultPlayingId = getDefaultPlayingId(contendersCombatStatus)
