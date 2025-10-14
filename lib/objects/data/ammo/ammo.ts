@@ -148,3 +148,5 @@ const ammoMap: Record<AmmoType, AmmoData> = {
 }
 
 export default ammoMap
+
+export const defaultAmmoSet = Object.fromEntries(Object.keys(ammoMap).map(type => [type, 0]))

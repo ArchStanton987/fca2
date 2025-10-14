@@ -26,9 +26,13 @@ import startFight, { StartFightParams } from "./combat/use-cases/start-fight"
 import updateAction, { UpdateActionParams } from "./combat/use-cases/update-action"
 import waitAction, { WaitActionParams } from "./combat/use-cases/wait-action"
 import { UseCasesConfig } from "./get-use-case.types"
+import consume, { ConsumeParams } from "./inventory/use-cases/consume"
+import drop, { DropItemParams } from "./inventory/use-cases/drop"
 import toggleEquip, { ToggleEquipParams } from "./inventory/use-cases/toggle-equip"
 import createNpc, { CreateNpcParams } from "./npc/use-cases/create-npc"
 import deleteNpc, { DeleteNpcParams } from "./npc/use-cases/delete-npc"
+import updateAmmo, { UpdateAmmoParams } from "./objects/data/ammo/use-cases/update-ammo"
+import updateCaps, { UpdateCapsParams } from "./objects/data/caps/use-cases/update-caps"
 import addAdditionalClothing from "./objects/data/clothings/add-additional-clothings"
 import { DbClothingData } from "./objects/data/clothings/clothings.types"
 import subAdditionalClothings from "./objects/data/clothings/sub-additional-clothings"
@@ -38,8 +42,9 @@ import subAdditionalConsumables from "./objects/data/consumables/sub-additional-
 import addAdditionalMisc from "./objects/data/misc-objects/add-addictional-misc"
 import { DbMiscObjectData } from "./objects/data/misc-objects/misc-objects-types"
 import subAdditionalMisc from "./objects/data/misc-objects/sub-additional-misc"
-import getWeaponsUseCases from "./objects/data/weapons/weapons-use-cases"
-import getInventoryUseCases from "./objects/inventory-use-cases"
+import loadWeapon, { LoadWeaponParams } from "./objects/data/weapons/use-cases/load-weapon"
+import unloadWeapon, { UnloadWeaponParams } from "./objects/data/weapons/use-cases/unload-weapon"
+import useWeapon, { UseWeaponParams } from "./objects/data/weapons/use-cases/use-weapon"
 import {
   AdditionalClothingsParams,
   AdditionalConsumablesParams,
@@ -50,8 +55,17 @@ import updateDate, { UpdateDateParams } from "./squad/use-cases/update-date"
 
 export default function getUseCases(config: UseCasesConfig) {
   return {
-    inventory: getInventoryUseCases(config),
-    weapons: getWeaponsUseCases(config),
+    inventory: {
+      updateCaps: (data: UpdateCapsParams) => updateCaps(config)(data),
+      updateAmmo: (data: UpdateAmmoParams) => updateAmmo(config)(data),
+      drop: (data: DropItemParams) => drop(config)(data),
+      consume: (data: ConsumeParams) => consume(config)(data)
+    },
+    weapons: {
+      load: (data: LoadWeaponParams) => loadWeapon(config)(data),
+      unload: (data: UnloadWeaponParams) => unloadWeapon(config)(data),
+      useWeapon: (data: UseWeaponParams) => useWeapon(config)(data)
+    },
     abilities: getAbilitiesUseCases(config),
     additional: {
       subAdditionalClothings: (params: AdditionalClothingsParams = {}) =>

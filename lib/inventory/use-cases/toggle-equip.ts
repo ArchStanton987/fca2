@@ -6,22 +6,22 @@ import { getItems } from "../use-sub-inv-cat"
 
 export type ToggleEquipParams = {
   charId: string
-  itemId: string
+  itemDbKey: string
 }
 
 export default function toggleEquip({ db, collectiblesData, store }: UseCasesConfig) {
   const itemsRepo = repositoryMap[db].itemsRepository
   const { clothings } = collectiblesData
 
-  return ({ charId, itemId }: ToggleEquipParams) => {
+  return ({ charId, itemDbKey }: ToggleEquipParams) => {
     const items = getItems(store, charId)
     const equippedItems = Object.fromEntries(
       Object.entries(items)
         .filter(([, value]) => value.isEquipped)
         .map(([id, value]) => [id, value])
     )
-    const item = equippedItems[itemId]
-    if (!item) throw new Error(`Item with id : ${itemId} wasn't found in equipped items`)
+    const item = equippedItems[itemDbKey]
+    if (!item) throw new Error(`Item with id : ${itemDbKey} wasn't found in equipped items`)
 
     // UNEQUIP
     if (item.isEquipped) {

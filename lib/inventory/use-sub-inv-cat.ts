@@ -8,7 +8,7 @@ import {
 } from "@tanstack/react-query"
 import { useCharInfo } from "lib/character/info/info-provider"
 import { critters } from "lib/npc/const/npc-templates"
-import ammoMap from "lib/objects/data/ammo/ammo"
+import ammoMap, { defaultAmmoSet } from "lib/objects/data/ammo/ammo"
 import { AmmoSet, AmmoType } from "lib/objects/data/ammo/ammo.types"
 import Clothing from "lib/objects/data/clothings/Clothing"
 import Consumable from "lib/objects/data/consumables/Consumable"
@@ -143,9 +143,11 @@ export function useItem(charId: string, itemId: string) {
   return useSuspenseQuery({ ...getItemsOptions(charId), select: items => items[itemId] })
 }
 
+const ammoCb = (data: Partial<AmmoSet>) => ({ ...defaultAmmoSet, ...data })
+
 export function useMultiSubAmmo(ids: string[]) {
   const options = ids.map(id => getAmmoOptions(id))
-  useMultiSub(options.map(o => ({ path: o.queryKey.join("/") })))
+  useMultiSub(options.map(o => ({ path: o.queryKey.join("/"), cb: ammoCb })))
 }
 
 export function useMultiSubCaps(ids: string[]) {

@@ -1,24 +1,21 @@
-import Playable from "lib/character/Playable"
-import getWeaponsUseCases from "lib/objects/data/weapons/weapons-use-cases"
-import { Weapon } from "lib/objects/data/weapons/weapons.types"
-import getInventoryUseCases from "lib/objects/inventory-use-cases"
-import repositoryMap from "lib/shared/db/get-repository"
+import { UseCasesConfig } from "lib/get-use-case.types"
+import drop from "lib/inventory/use-cases/drop"
+import Weapon from "lib/objects/data/weapons/Weapon"
+import loadWeapon from "lib/objects/data/weapons/use-cases/load-weapon"
+import unloadWeapon from "lib/objects/data/weapons/use-cases/unload-weapon"
+import useWeapon from "lib/objects/data/weapons/use-cases/use-weapon"
 
 import { DbAction } from "../combats.types"
 
 export type WeaponActionParams = {
   action: DbAction & { actorId: string }
-  contenders: Record<string, Playable>
   item?: Weapon
 }
 
-export default function weaponAction(dbType: keyof typeof repositoryMap = "rtdb") {
-  const { load, unload, use } = getWeaponsUseCases(dbType)
-  const { drop } = getInventoryUseCases(dbType)
-  return async ({ action, contenders, item }: WeaponActionParams) => {
+export default function weaponAction(config: UseCasesConfig) {
+  return async ({ action, item }: WeaponActionParams) => {
     const { actionSubtype = "", actorId } = action
-    const char = contenders[actorId]
-    const { charId } = char
+    const charId = actorId
 
     switch (actionSubtype) {
       case "hit":
@@ -27,16 +24,16 @@ export default function weaponAction(dbType: keyof typeof repositoryMap = "rtdb"
       case "aim":
       case "burst":
         if (!item) throw new Error("Missing item")
-        return use(char, item, actionSubtype)
+        return useWeapon(config)({ charId, weapon: item, actionId: "burst" })
       case "reload":
         if (!item) throw new Error("Missing item")
-        return load(char, item)
+        return loadWeapon(config)({ charId, weapon: item })
       case "unload":
         if (!item) throw new Error("Missing item")
-        return unload(char, item)
+        return unloadWeapon(config)({ charId, weapon: item })
       case "throw":
         if (!item) throw new Error("Missing item")
-        return drop(charId, item)
+        return drop(config)({ charId, item })
       default:
         throw new Error(`Unknown action subtype : ${actionSubtype} for weapon actions`)
     }

@@ -3,7 +3,7 @@ import repositoryMap from "lib/shared/db/get-repository"
 
 import { Item } from "../use-sub-inv-cat"
 
-export type DropParams = {
+export type DropItemParams = {
   charId: string
   item: Item
 }
@@ -11,5 +11,5 @@ export type DropParams = {
 export default function drop(config: UseCasesConfig) {
   const { db } = config
   const itemsRepo = repositoryMap[db].itemsRepository
-  return ({ charId, item }: DropParams) => itemsRepo.delete({ charId, dbKey: item.dbKey })
+  return ({ charId, item }: DropItemParams) => itemsRepo.delete({ charId, dbKey: item.dbKey })
 }
