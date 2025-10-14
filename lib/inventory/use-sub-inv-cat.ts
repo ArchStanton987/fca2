@@ -201,3 +201,13 @@ export function getItems(store: QueryClient, charId: string) {
   if (!items) throw new Error(`Items of char with id : ${charId} could not be found`)
   return items
 }
+
+export function getCaps(store: QueryClient, charId: string) {
+  return store.getQueryData(getCapsOptions(charId).queryKey) ?? 0
+}
+
+export function getAmmo(store: QueryClient, charId: string) {
+  const ammoSet = store.getQueryData(getAmmoOptions(charId).queryKey)
+  if (!ammoSet) throw new Error(`Ammo of char with id : ${charId} could not be found`)
+  return ammoSet
+}

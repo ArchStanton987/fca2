@@ -1,7 +1,7 @@
 import { AmmoSet } from "./ammo/ammo.types"
 import { ClothingId, DbClothingData } from "./clothings/clothings.types"
-import { DbConsumableData } from "./consumables/consumables.types"
-import { DbMiscObjectData } from "./misc-objects/misc-objects-types"
+import { ConsumableId, DbConsumableData } from "./consumables/consumables.types"
+import { DbMiscObjectData, MiscObjectId } from "./misc-objects/misc-objects-types"
 import { DbWeaponData, WeaponId } from "./weapons/weapons.types"
 
 export type DbEquipedObjects = {
@@ -11,15 +11,8 @@ export type DbEquipedObjects = {
 
 export type ItemCategory = "weapons" | "clothings" | "consumables" | "misc"
 
-// export type DbItem<Cat extends ItemCategory, Id extends string> = {
-//   id: Id
-//   dbKey: string
-//   category: Cat
-//   isEquipped: boolean
-// }
 export interface ItemInterface {
   id: string
-  dbKey: string
   category: ItemCategory
   isEquipped: boolean
 }
@@ -37,13 +30,13 @@ export interface DbClothing extends ItemInterface {
   data?: Partial<DbClothingData>
 }
 export interface DbConsumable extends ItemInterface {
-  id: WeaponId
+  id: ConsumableId
   category: "consumables"
   data?: Partial<DbConsumableData>
   remainingUse?: number
 }
 export interface DbMiscObject extends ItemInterface {
-  id: WeaponId
+  id: MiscObjectId
   category: "misc"
   data?: Partial<DbMiscObjectData>
 }
