@@ -1,18 +1,20 @@
 import { useCallback } from "react"
 
-import { queryOptions } from "@tanstack/react-query"
+import { QueryClient, queryOptions, useSuspenseQuery } from "@tanstack/react-query"
 import { useSubMultiCollections } from "lib/shared/db/useSub"
 
 import { useCollectiblesData } from "providers/AdditionalElementsProvider"
 
 import Effect from "./Effect"
-import { DbEffect } from "./effects.types"
+import { DbEffect, EffectId } from "./effects.types"
+
+type Effects = Record<EffectId, Effect>
 
 export const getEffectsOptions = (charId: string) =>
   queryOptions({
     queryKey: ["v3", "playables", charId, "effects"],
     enabled: charId !== "",
-    queryFn: () => new Promise<Record<string, Effect>>(() => {})
+    queryFn: () => new Promise<Effects>(() => {})
   })
 
 export function useSubPlayablesEffects(ids: string[], datetime: Date) {
@@ -22,4 +24,16 @@ export function useSubPlayablesEffects(ids: string[], datetime: Date) {
     [effects, datetime]
   )
   useSubMultiCollections(ids.map(id => ({ path: getEffectsOptions(id).queryKey.join("/"), cb })))
+}
+
+export function useCharEffects<TData = Effects>(charId: string, select?: (data: Effects) => TData) {
+  return useSuspenseQuery({ ...getEffectsOptions(charId), select })
+}
+
+export function useCharEffect(charId: string, effectId: EffectId) {
+  return useCharEffects(charId, effects => effects[effectId])
+}
+
+export function getEffects(store: QueryClient, charId: string) {
+  return store.getQueryData(getEffectsOptions(charId).queryKey) ?? ({} as Effects)
 }

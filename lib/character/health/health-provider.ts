@@ -1,4 +1,9 @@
-import { queryOptions, useSuspenseQueries, useSuspenseQuery } from "@tanstack/react-query"
+import {
+  QueryClient,
+  queryOptions,
+  useSuspenseQueries,
+  useSuspenseQuery
+} from "@tanstack/react-query"
 import { useMultiSub } from "lib/shared/db/useSub"
 
 import { usePlayablesBaseSpecial } from "../abilities/base-special-provider"
@@ -47,4 +52,10 @@ export function usePlayablesHealthEffects(ids: string[]) {
 
 export function useHealth<TData = Health>(id: string, select?: (data: Health) => TData) {
   return useSuspenseQuery({ ...getHealthOptions(id), select })
+}
+
+export function getHealth(store: QueryClient, charId: string) {
+  const health = store.getQueryData(getHealthOptions(charId).queryKey)
+  if (!health) throw new Error(`Could not find health for character : ${charId}`)
+  return health
 }

@@ -1,4 +1,9 @@
-import { queryOptions, useSuspenseQueries, useSuspenseQuery } from "@tanstack/react-query"
+import {
+  QueryClient,
+  queryOptions,
+  useSuspenseQueries,
+  useSuspenseQuery
+} from "@tanstack/react-query"
 import { usePlayablesItemSymptoms } from "lib/inventory/use-cases/get-item-symptoms"
 import { useMultiSub } from "lib/shared/db/useSub"
 
@@ -33,4 +38,9 @@ export function usePlayablesAbilities(ids: string[]) {
 
 export function useAbilities<TData = Abilities>(id: string, select?: (data: Abilities) => TData) {
   return useSuspenseQuery({ ...getDbAbilitiesOptions(id), select })
+}
+
+export function getTraits(store: QueryClient, charId: string) {
+  const ab = store.getQueryData(getDbAbilitiesOptions(charId).queryKey)
+  return ab?.traits ?? {}
 }
