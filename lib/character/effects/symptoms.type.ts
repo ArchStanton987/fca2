@@ -3,9 +3,10 @@ import { KnowledgeId } from "../abilities/knowledges/knowledge-types"
 import { SecAttrId } from "../abilities/sec-attr/sec-attr-types"
 import { SkillId } from "../abilities/skills/skills.types"
 import { SpecialId } from "../abilities/special/special.types"
-import { HealthStatusId } from "../health/health-types"
 
 export type Operation = "add" | "mult" | "abs"
+
+type Modifiable = "currHp" | "rads"
 
 export type ChangeableAttribute =
   | SpecialId
@@ -13,7 +14,8 @@ export type ChangeableAttribute =
   | SkillId
   | CombatModId
   | KnowledgeId
-  | HealthStatusId
+  // for modifiers
+  | Modifiable
 
 // Symptom is temporary, Modifier is permanent
 export type Symptom = {
@@ -24,8 +26,8 @@ export type Symptom = {
 }
 export type DbSymptoms = Partial<Record<ChangeableAttribute, Symptom>>
 export type Modifier = {
-  id: HealthStatusId
+  id: Modifiable
   operation: Operation
   value: number
 }
-export type DbModifiers = Partial<Record<HealthStatusId, Modifier>>
+export type DbModifiers = Partial<Record<Modifiable, Modifier>>

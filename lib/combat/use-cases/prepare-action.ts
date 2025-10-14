@@ -1,4 +1,4 @@
-import { CombatStatus } from "lib/character/combat-status/combat-status.types"
+import { getCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
@@ -13,15 +13,15 @@ import {
 export type PrepareActionParams = {
   action: DbAction & { actorId: string }
   roundId: number
-  combatStatuses: Record<string, CombatStatus>
 }
 
-export default function prepareAction({ db }: UseCasesConfig) {
+export default function prepareAction({ db, store }: UseCasesConfig) {
   const combatStatusRepo = repositoryMap[db].combatStatusRepository
 
-  return ({ roundId, action, combatStatuses }: PrepareActionParams) => {
+  return ({ roundId, action }: PrepareActionParams) => {
     const { apCost = 0, actionSubtype, actorId } = action
     const charId = actorId
+    const combatStatus = getCombatStatus(store, charId)
 
     const promises = []
 
@@ -32,11 +32,11 @@ export default function prepareAction({ db }: UseCasesConfig) {
     const newBonus = apCost * multiplier
 
     if (isVisualize) {
-      const currBonus = combatStatuses[charId].actionBonus
+      const currBonus = combatStatus.actionBonus
       const actionBonus = Math.min(currBonus + newBonus, maxValue)
       promises.push(combatStatusRepo.patch({ charId }, { actionBonus }))
     } else {
-      const currBonus = combatStatuses[charId].armorClassBonusRecord[roundId] ?? 0
+      const currBonus = combatStatus.armorClassBonusRecord[roundId] ?? 0
       const acBonus = Math.min(currBonus + newBonus, maxValue)
       promises.push(
         combatStatusRepo.patchChild(

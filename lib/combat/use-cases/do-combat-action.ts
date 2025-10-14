@@ -73,7 +73,7 @@ export default function doCombatAction(config: UseCasesConfig) {
       }
 
       case "prepare":
-        promises.push(prepareAction(config)({ action, combatStatuses, roundId }))
+        promises.push(prepareAction(config)({ action, roundId }))
         break
 
       case "item":

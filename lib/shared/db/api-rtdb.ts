@@ -4,7 +4,13 @@ import { DbEffect } from "lib/character/effects/effects.types"
 import { DbHealth } from "lib/character/health/Health"
 import { DbStatus } from "lib/character/status/status.types"
 import { DbAction, DbCombatInfo, Roll } from "lib/combat/combats.types"
-import { DbInventory } from "lib/objects/data/objects.types"
+import {
+  DbClothing,
+  DbConsumable,
+  DbInventory,
+  DbMiscObject,
+  DbWeapon
+} from "lib/objects/data/objects.types"
 import { DbSquad } from "lib/squad/squad-types"
 
 type CharParams = { charId: string }
@@ -45,7 +51,10 @@ export type EffectsParams = CharParams & { dbKey?: string; childKey?: keyof DbEf
 export type SquadParams = { id?: string; childKey?: keyof DbSquad }
 
 export type InventoryParams = CharParams & { childKey?: keyof DbInventory }
-export type ItemsParams = CharParams & { childKey?: string }
+export type ItemsParams = CharParams & {
+  dbKey?: string
+  childKey?: keyof DbConsumable | keyof DbWeapon | keyof DbClothing | keyof DbMiscObject
+}
 
 const rtdb = {
   getAdditionalClothings: ({ childKey }: AdditionalClothingsParams) =>
@@ -69,8 +78,8 @@ const rtdb = {
   getInventory: ({ charId, childKey }: InventoryParams) =>
     `v3/playables/${charId}/inventory/${childKey ?? ""}`,
 
-  getItems: ({ charId, childKey }: ItemsParams) =>
-    `v3/playables/${charId}/inventory/items/${childKey ?? ""}`,
+  getItems: ({ charId, dbKey, childKey }: ItemsParams) =>
+    `v3/playables/${charId}/inventory/items/${dbKey}/${childKey ?? ""}`,
 
   // getRound: ({ combatId, id, childKey }: RoundParams) =>
   //   id ? `v3/combats/${combatId}/rounds/${id}/${childKey ?? ""}` : `v3/combats/${combatId}/rounds/`,

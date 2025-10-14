@@ -1,4 +1,4 @@
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query"
+import { QueryClient, queryOptions, useSuspenseQuery } from "@tanstack/react-query"
 import Squad from "lib/character/Squad"
 import { useSubCollection } from "lib/shared/db/useSub"
 
@@ -42,4 +42,14 @@ export function useSquadLabel(squadId: string) {
 }
 export function useSquadCombats(squadId: string) {
   return useSquads(squads => squads[squadId].combats)
+}
+export function getSquad(store: QueryClient, squadId: string) {
+  const squads = store.getQueryData(getSquadsOptions().queryKey) ?? {}
+  if (!squads[squadId]) throw new Error(`Squad with id : ${squadId} could not be found.`)
+  return squads[squadId]
+}
+export function getDatetime(store: QueryClient, squadId: string) {
+  const squads = store.getQueryData(getSquadsOptions().queryKey) ?? {}
+  if (!squads[squadId]) throw new Error(`Squad with id : ${squadId} could not be found.`)
+  return squads[squadId].datetime
 }

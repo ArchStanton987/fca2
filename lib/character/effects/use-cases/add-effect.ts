@@ -1,30 +1,33 @@
-import Abilities from "lib/character/abilities/Abilities"
+import { getTraits } from "lib/character/abilities/abilities-provider"
+import { getCharInfo } from "lib/character/info/info-provider"
 import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
+import { getDatetime } from "lib/squad/use-cases/sub-squad"
 
-import Effect from "../Effect"
-import effectsMap from "../effects"
+import { getEffects } from "../effects-provider"
 import EffectsMappers from "../effects.mappers"
 import { EffectId } from "../effects.types"
 
 export type AddEffectParams = {
   effectId: EffectId
-  effects: Record<EffectId, Effect>
-  startDate: Date
   charId: string
-  traits: Abilities["traits"]
   lengthInMs?: number
 }
 
-export default function addEffect({ db, createdElements }: UseCasesConfig) {
+export default function addEffect({ db, collectiblesData, store }: UseCasesConfig) {
   const effectsRepo = repositoryMap[db].effectsRepository
-  const allEffects = { ...effectsMap, ...createdElements.newEffects }
+  const allEffects = collectiblesData.effects
 
-  return ({ effectId, charId, startDate, effects, traits, lengthInMs }: AddEffectParams) => {
+  return ({ effectId, charId, lengthInMs }: AddEffectParams) => {
     const effectData = allEffects[effectId]
-    const existingEffect = effects[effectId]
+
+    const charInfo = getCharInfo(store, charId)
+    const currentCharEffects = getEffects(store, charId)
+    const startDate = getDatetime(store, charInfo.squadId)
+    const traits = getTraits(store, charId)
     const dbEffect = EffectsMappers.toDb(traits, effectId, effectData, startDate, lengthInMs)
-    if (existingEffect) {
+    if (effectId in currentCharEffects) {
+      const existingEffect = currentCharEffects[effectId]
       return effectsRepo.patch({ charId, dbKey: existingEffect.dbKey }, dbEffect)
     }
     return effectsRepo.add({ charId }, dbEffect)
