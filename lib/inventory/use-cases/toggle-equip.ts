@@ -2,12 +2,11 @@ import { UseCasesConfig } from "lib/get-use-case.types"
 import { ClothingId } from "lib/objects/data/clothings/clothings.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
-import { Item, getItems } from "../use-sub-inv-cat"
+import { getItems } from "../use-sub-inv-cat"
 
 export type ToggleEquipParams = {
   charId: string
   itemId: string
-  equippedItems: Record<string, Item>
 }
 
 export default function toggleEquip({ db, collectiblesData, store }: UseCasesConfig) {

@@ -8,6 +8,8 @@ import { UseCasesConfig } from "lib/get-use-case.types"
 import Consumable from "lib/objects/data/consumables/Consumable"
 import repositoryMap from "lib/shared/db/get-repository"
 
+import drop from "./drop"
+
 export type ConsumeParams = {
   charId: string
   consumable: Consumable
@@ -48,7 +50,7 @@ export default function consume(config: UseCasesConfig) {
     const shouldRemoveObject = remainingUse === null || remainingUse <= 1
     const { dbKey } = consumable
     if (shouldRemoveObject) {
-      promises.push(itemsRepo.delete({ charId, dbKey }))
+      promises.push(drop(config)({ charId, item: consumable }))
     } else {
       promises.push(
         itemsRepo.patch(
