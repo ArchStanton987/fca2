@@ -3,9 +3,9 @@ import { TouchableOpacity, TouchableOpacityProps, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import { useCaps } from "lib/inventory/inventory-provider"
+import { useCaps } from "lib/inventory/use-sub-inv-cat"
 import { AmmoType } from "lib/objects/data/ammo/ammo.types"
-import { DbInventory } from "lib/objects/data/objects.types"
+import { DbInventory, ItemCategory } from "lib/objects/data/objects.types"
 
 import AmountSelector from "components/AmountSelector"
 import List from "components/List"
@@ -20,10 +20,9 @@ import PlusIcon from "components/icons/PlusIcon"
 import ModalBody from "components/wrappers/ModalBody"
 import routes from "constants/routes"
 import { useUpdateObjects } from "contexts/UpdateObjectsContext"
-import useCreatedElements from "hooks/context/useCreatedElements"
-import { UpdateObjectsModalParams } from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.params"
+import { useCollectiblesData } from "providers/AdditionalElementsProvider"
 import { getCategoriesMap } from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.utils"
-import { SearchParams, fromLocalParams, toLocalParams } from "screens/ScreenParams"
+import { toLocalParams } from "screens/ScreenParams"
 
 import styles from "./UpdateObjectsModal.styles"
 
@@ -58,19 +57,22 @@ function ListItemHeader() {
 }
 
 export default function UpdateObjectsModal() {
-  const localParams = useLocalSearchParams() as SearchParams<UpdateObjectsModalParams>
-  const { squadId, charId, initCategory = "weapons" } = fromLocalParams(localParams)
-  const [selectedCat, setSelectedCat] = useState<keyof DbInventory>(initCategory)
+  const { charId, squadId, initCategory } = useLocalSearchParams<{
+    charId: string
+    squadId: string
+    initCategory?: ItemCategory
+  }>()
+  const [selectedCat, setSelectedCat] = useState<ItemCategory>(initCategory ?? "weapons")
   const [selectedItem, setSelectedItem] = useState<SelectedItem>(null)
   const [selectedAmount, setSelectedAmount] = useState<number>(1)
   const [searchInput, setSearchInput] = useState("")
 
-  const caps = useCaps()
+  const caps = useCaps(charId)
 
   const { state, dispatch } = useUpdateObjects()
 
-  const createdElements = useCreatedElements()
-  const categoriesMap = getCategoriesMap(createdElements)
+  const allCollectibles = useCollectiblesData()
+  const categoriesMap = getCategoriesMap(allCollectibles)
   const categories = Object.values(categoriesMap)
 
   const onPressMod = (modType: "minus" | "plus") => {
