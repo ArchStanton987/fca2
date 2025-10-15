@@ -142,12 +142,22 @@ export function useMiscObjects(charId: string, isEquipped?: boolean, isGrouped?:
 export function useItem(charId: string, itemId: string) {
   return useSuspenseQuery({ ...getItemsOptions(charId), select: items => items[itemId] })
 }
+export function useItemCount(charId: string, itemId: string) {
+  return useSuspenseQuery({
+    ...getItemsOptions(charId),
+    select: data => Object.values(data).filter(e => e.id === itemId).length
+  })
+}
 
 const ammoCb = (data: Partial<AmmoSet>) => ({ ...defaultAmmoSet, ...data })
 
 export function useMultiSubAmmo(ids: string[]) {
   const options = ids.map(id => getAmmoOptions(id))
   useMultiSub(options.map(o => ({ path: o.queryKey.join("/"), cb: ammoCb })))
+}
+
+export function useAmmo<TData = AmmoSet>(id: string, select?: (data: AmmoSet) => TData) {
+  return useSuspenseQuery({ ...getAmmoOptions(id), select })
 }
 
 export function useMultiSubCaps(ids: string[]) {

@@ -1,16 +1,18 @@
-import { useMemo, useState } from "react"
-import { TouchableOpacity, TouchableOpacityProps, View } from "react-native"
+import { useMemo } from "react"
+import { TouchableOpacityProps, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import { useCaps } from "lib/inventory/use-sub-inv-cat"
+import { Item } from "lib/inventory/use-sub-inv-cat"
 import { AmmoType } from "lib/objects/data/ammo/ammo.types"
-import { DbInventory, ItemCategory } from "lib/objects/data/objects.types"
+import { ItemCategory } from "lib/objects/data/objects.types"
 
 import AmountSelector from "components/AmountSelector"
 import List from "components/List"
 import ModalCta from "components/ModalCta/ModalCta"
+import Row from "components/Row"
 import ScrollableSection from "components/ScrollableSection"
+import Selectable from "components/Selectable"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import TxtInput from "components/TxtInput"
@@ -19,41 +21,66 @@ import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import ModalBody from "components/wrappers/ModalBody"
 import routes from "constants/routes"
-import { useUpdateObjects } from "contexts/UpdateObjectsContext"
 import { useCollectiblesData } from "providers/AdditionalElementsProvider"
-import { getCategoriesMap } from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.utils"
+import {
+  getCategoriesMap,
+  useBarterActions,
+  useBarterAmount,
+  useBarterCategory,
+  useBarterInput,
+  useBarterItemCount,
+  useBarterSelectedItem,
+  useInInvCount
+} from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.utils"
 import { toLocalParams } from "screens/ScreenParams"
 
 import styles from "./UpdateObjectsModal.styles"
 
-type SelectedItem = { id: string; label: string; inInventory: number } | null
-
 type ListItemRowProps = TouchableOpacityProps & {
+  id: "caps" | AmmoType | Item["id"]
   label: string
-  inv: string | number
-  mod: string | number
-  prev: string | number
-  isSelected?: boolean
+  isSelected: boolean
 }
 
-function ListItemRow({ label, inv, mod, prev, isSelected, ...rest }: ListItemRowProps) {
+function ModButtons() {
+  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const actions = useBarterActions()
+  const selectedItem = useBarterSelectedItem()
+  const inInv = useInInvCount(charId, selectedItem ?? "")
   return (
-    <TouchableOpacity
-      style={[styles.listItemContainer, isSelected && styles.listItemContainerSelected]}
-      {...rest}
-    >
+    <View style={styles.iconsContainer}>
+      <MinusIcon size={62} onPress={() => actions.onPressMod("minus", inInv)} />
+      <PlusIcon size={62} onPress={() => actions.onPressMod("plus", inInv)} />
+    </View>
+  )
+}
+
+function ListItemRow({ id, label, isSelected, ...rest }: ListItemRowProps) {
+  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const inInv = useInInvCount(charId, id)
+  const mod = useBarterItemCount(id)
+  const final = inInv + mod
+  return (
+    <Selectable isSelected={isSelected} style={styles.listItemContainer} {...rest}>
       <Txt style={[styles.listItem, styles.listItemLabel]} numberOfLines={1}>
         {label}
       </Txt>
-      <Txt style={[styles.listItem, styles.listItemInfo]}>{inv}</Txt>
+      <Txt style={[styles.listItem, styles.listItemInfo]}>{inInv}</Txt>
       <Txt style={[styles.listItem, styles.listItemInfo]}>{mod}</Txt>
-      <Txt style={[styles.listItem, styles.listItemInfo]}>{prev}</Txt>
-    </TouchableOpacity>
+      <Txt style={[styles.listItem, styles.listItemInfo]}>{final}</Txt>
+    </Selectable>
   )
 }
 
 function ListItemHeader() {
-  return <ListItemRow label="Obj" inv="Inv" mod="Mod" prev="Prev" />
+  return (
+    <Row style={styles.listItemContainer}>
+      <Txt style={[styles.listItem, styles.listItemLabel]}>Obj</Txt>
+      <Txt style={[styles.listItem, styles.listItemLabel]}>Inv</Txt>
+      <Txt style={[styles.listItem, styles.listItemLabel]}>Mod</Txt>
+      <Txt style={[styles.listItem, styles.listItemLabel]}>Prev</Txt>
+    </Row>
+  )
 }
 
 export default function UpdateObjectsModal() {
@@ -62,34 +89,16 @@ export default function UpdateObjectsModal() {
     squadId: string
     initCategory?: ItemCategory
   }>()
-  const [selectedCat, setSelectedCat] = useState<ItemCategory>(initCategory ?? "weapons")
-  const [selectedItem, setSelectedItem] = useState<SelectedItem>(null)
-  const [selectedAmount, setSelectedAmount] = useState<number>(1)
-  const [searchInput, setSearchInput] = useState("")
 
-  const caps = useCaps(charId)
+  const actions = useBarterActions()
 
-  const { state, dispatch } = useUpdateObjects()
+  const category = useBarterCategory()
+  const searchInput = useBarterInput()
+  const selectedItem = useBarterSelectedItem()
+  const selectedAmount = useBarterAmount()
 
   const allCollectibles = useCollectiblesData()
-  const categoriesMap = getCategoriesMap(allCollectibles)
-  const categories = Object.values(categoriesMap)
-
-  const onPressMod = (modType: "minus" | "plus") => {
-    if (selectedItem === null) return
-    const count = modType === "minus" ? -selectedAmount : selectedAmount
-    const { inInventory, label, id } = selectedItem
-    const payload = { category: selectedCat, id, count, label, inInventory }
-    dispatch({ type: "modObject", payload })
-  }
-
-  const onPressCategory = (category: keyof DbInventory) => {
-    if (category === "caps") {
-      const { id, label } = categoriesMap.caps
-      setSelectedItem({ id, label, inInventory: caps })
-    }
-    setSelectedCat(category)
-  }
+  const categories = getCategoriesMap(allCollectibles)
 
   const onPressNext = () => {
     const params = toLocalParams({ squadId, charId })
@@ -97,48 +106,41 @@ export default function UpdateObjectsModal() {
   }
 
   const onPressCancel = () => {
-    dispatch({ type: "reset" })
+    actions.reset()
     router.back()
   }
 
-  const getInInv = (id: string) => {
-    if (selectedCat === "caps") return caps
-    if (selectedCat === "ammo") return inventory.ammoRecord[id as AmmoType] || 0
-    return inventory[selectedCat].filter(el => el.id === id).length || 0
-  }
-
-  const hasSearch = categoriesMap[selectedCat]?.hasSearch
+  const hasSearch = categories[category]?.hasSearch
 
   const objectsList = useMemo(() => {
-    if (selectedCat === null) return []
-    const { data } = categoriesMap[selectedCat]
+    if (category === null) return []
+    const { data } = categories[category]
     const list = Object.values(data).map(({ id, label }) => ({ id, label }))
-    if (!categoriesMap[selectedCat]?.hasSearch) return list
+    if (!categories[category]?.hasSearch) return list
     return searchInput.length > 2
       ? list.filter(el => {
-          if (selectedCat === "weapons" && el.id === "unarmed") return false
+          if (category === "weapons" && el.id === "unarmed") return false
           return el.label.toLowerCase().includes(searchInput.toLowerCase())
         })
       : []
-  }, [selectedCat, searchInput, categoriesMap])
+  }, [category, searchInput, categories])
 
   return (
     <ModalBody>
       <View style={styles.row}>
         <ScrollableSection title="CATEGORIES" style={styles.categoriesSection}>
-          {categories.map(({ id, label }) => (
-            <TouchableOpacity
-              key={id}
-              style={[
-                styles.listItemContainer,
-                selectedCat === id && styles.listItemContainerSelected
-              ]}
-              onPress={() => onPressCategory(id as keyof DbInventory)}
-            >
-              <Txt style={styles.listItem}>{label}</Txt>
-              <Spacer y={5} />
-            </TouchableOpacity>
-          ))}
+          <List
+            data={Object.values(categories)}
+            keyExtractor={c => c.id}
+            renderItem={({ item }) => (
+              <Selectable
+                isSelected={category === item.id}
+                onPress={() => actions.selectCategory(item.id)}
+              >
+                <Txt style={styles.listItem}>{item.label}</Txt>
+              </Selectable>
+            )}
+          />
         </ScrollableSection>
         <Spacer x={15} />
         <ScrollableSection title="LISTE" style={styles.listSection}>
@@ -146,39 +148,33 @@ export default function UpdateObjectsModal() {
             data={objectsList}
             keyExtractor={item => item.id}
             ListHeaderComponent={ListItemHeader}
-            renderItem={({ item }) => {
-              const count = state[selectedCat][item.id]?.count || 0
-              const inInventory = getInInv(item.id)
-              return (
-                <ListItemRow
-                  label={item.label}
-                  inv={inInventory}
-                  mod={count}
-                  prev={inInventory + count}
-                  isSelected={selectedItem?.id === item.id}
-                  onPress={() => setSelectedItem({ ...item, inInventory })}
-                />
-              )
-            }}
+            renderItem={({ item }) => (
+              <ListItemRow
+                id={item.id}
+                label={item.label}
+                isSelected={selectedItem === item.id}
+                onPress={() => actions.selectItem(item.id)}
+              />
+            )}
           />
         </ScrollableSection>
         <Spacer x={15} />
         <View>
           {hasSearch && (
             <ViewSection title="RECHERCHE" style={styles.searchSection}>
-              <TxtInput value={searchInput} onChangeText={e => setSearchInput(e)} />
+              <TxtInput value={searchInput} onChangeText={e => actions.setInput(e)} />
             </ViewSection>
           )}
           <ViewSection title="AJOUTER" style={styles.addSection}>
             <View style={{ flex: 1, justifyContent: "space-evenly" }}>
               <List
-                data={categoriesMap[selectedCat].selectors}
+                data={categories[category].selectors}
                 keyExtractor={item => item.toString()}
                 renderItem={({ item }) => (
                   <AmountSelector
                     value={item}
                     isSelected={selectedAmount === item}
-                    onPress={() => setSelectedAmount(item)}
+                    onPress={() => actions.selectAmount(item)}
                   />
                 )}
                 style={{
@@ -186,10 +182,7 @@ export default function UpdateObjectsModal() {
                   justifyContent: "space-evenly"
                 }}
               />
-              <View style={styles.iconsContainer}>
-                <MinusIcon size={62} onPress={() => onPressMod("minus")} />
-                <PlusIcon size={62} onPress={() => onPressMod("plus")} />
-              </View>
+              <ModButtons />
             </View>
           </ViewSection>
         </View>
