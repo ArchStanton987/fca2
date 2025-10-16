@@ -3,6 +3,7 @@ import { View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useBarterActions } from "lib/objects/barter-store"
 import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
@@ -33,11 +34,15 @@ function MiscObjScreen() {
 
   const { groupedMiscObjects } = useInventory()
 
-  const onPressAdd = () =>
+  const barterActions = useBarterActions()
+
+  const onPressAdd = () => {
+    barterActions.selectCategory("miscObjects")
     router.push({
-      pathname: routes.modal.updateObjects,
-      params: { squadId, charId, initCategory: "miscObjects" }
+      pathname: routes.modal.barter,
+      params: { squadId, charId }
     })
+  }
 
   const onPressHeader = () => setIsAscSort(prev => !prev)
   const title = getTitle(onPressHeader)

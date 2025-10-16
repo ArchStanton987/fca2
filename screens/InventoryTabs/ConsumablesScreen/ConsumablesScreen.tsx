@@ -3,6 +3,7 @@ import { View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useBarterActions } from "lib/objects/barter-store"
 import { Consumable } from "lib/objects/data/consumables/consumables.types"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
@@ -37,15 +38,18 @@ function ConsumablesScreen() {
   const { groupedConsumables } = useInventory()
   const character = useCharacter()
 
-  const onPressAdd = () =>
+  const barterActions = useBarterActions()
+
+  const onPressAdd = () => {
+    barterActions.selectCategory("consumables")
     router.push({
-      pathname: routes.modal.updateObjects,
+      pathname: routes.modal.barter,
       params: {
         squadId: localParams.squadId,
-        charId: localParams.charId,
-        initCategory: "consumables"
+        charId: localParams.charId
       }
     })
+  }
 
   const onDelete = (item: Consumable) => {
     useCases.inventory.drop(character.charId, item)

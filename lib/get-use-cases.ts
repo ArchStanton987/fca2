@@ -26,6 +26,7 @@ import startFight, { StartFightParams } from "./combat/use-cases/start-fight"
 import updateAction, { UpdateActionParams } from "./combat/use-cases/update-action"
 import waitAction, { WaitActionParams } from "./combat/use-cases/wait-action"
 import { UseCasesConfig } from "./get-use-case.types"
+import barter, { BarterParams } from "./inventory/use-cases/barter"
 import consume, { ConsumeParams } from "./inventory/use-cases/consume"
 import drop, { DropItemParams } from "./inventory/use-cases/drop"
 import toggleEquip, { ToggleEquipParams } from "./inventory/use-cases/toggle-equip"
@@ -56,6 +57,7 @@ import updateDate, { UpdateDateParams } from "./squad/use-cases/update-date"
 export default function getUseCases(config: UseCasesConfig) {
   return {
     inventory: {
+      barter: (data: BarterParams) => barter(config)(data),
       updateCaps: (data: UpdateCapsParams) => updateCaps(config)(data),
       updateAmmo: (data: UpdateAmmoParams) => updateAmmo(config)(data),
       drop: (data: DropItemParams) => drop(config)(data),

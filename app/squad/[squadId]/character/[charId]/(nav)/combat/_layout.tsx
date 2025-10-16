@@ -6,9 +6,9 @@ import { useCombatStatus } from "lib/character/combat-status/combat-status-provi
 import { useCharInfo } from "lib/character/info/info-provider"
 import SubPlayables from "lib/character/use-cases/sub-playables"
 import {
-  useCombatInfo,
+  useCombat,
+  useSubCombat,
   useSubCombatHistory,
-  useSubCombatInfo,
   useSubCombatState
 } from "lib/combat/use-cases/sub-combat"
 import { useDatetime } from "lib/squad/use-cases/sub-squad"
@@ -42,16 +42,16 @@ export default function CombatLayout() {
   const isGameMaster = useCharInfo(charId, info => info.isNpc)
   const combatId = useCombatStatus(charId, data => data.combatId)
   const isInCombat = combatId.data !== ""
-  const contenders = useCombatInfo(combatId.data, combat => combat.contenders)
+  const { data: contenders } = useCombat(combatId.data, combat => combat.contendersIds)
   const datetime = useDatetime(squadId)
   const navElements = getNav(isGameMaster.data, isInCombat)
 
   useSubCombatState(combatId.data)
   useSubCombatHistory(combatId.data)
-  useSubCombatInfo(combatId.data)
+  useSubCombat(combatId.data)
 
   return (
-    <SubPlayables playablesIds={Object.keys(contenders)} datetime={datetime.data}>
+    <SubPlayables playablesIds={contenders} datetime={datetime.data}>
       <ActionFormProvider>
         <View style={styles.drawerLayout}>
           <Drawer sectionId="combat" navElements={navElements} />

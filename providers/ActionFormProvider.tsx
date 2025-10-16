@@ -1,14 +1,16 @@
 import { ReactNode, createContext, useContext, useState } from "react"
 
-import { ActionStore, createActionStore } from "lib/combat/action-store"
-import { StoreApi, useStore } from "zustand"
+import { useLocalSearchParams } from "expo-router"
 
-import { useCombatState } from "./CombatStateProvider"
+import { ActionStore, createActionStore } from "lib/combat/action-store"
+import { useCombatState } from "lib/combat/use-cases/sub-combat"
+import { StoreApi, useStore } from "zustand"
 
 const ActionContext = createContext<StoreApi<ActionStore>>({} as StoreApi<ActionStore>)
 
 export function ActionFormProvider({ children }: { children: ReactNode }) {
-  const { action } = useCombatState()
+  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const { data: action } = useCombatState(charId, state => state.action)
 
   const [actionStore] = useState(() => createActionStore(action))
 

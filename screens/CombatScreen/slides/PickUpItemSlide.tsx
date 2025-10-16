@@ -1,34 +1,30 @@
+import { useLocalSearchParams } from "expo-router"
+
+import { useCombatId } from "lib/character/combat-status/combat-status-provider"
+import { useCombatState } from "lib/combat/use-cases/sub-combat"
+import { useBarterStock } from "lib/objects/barter-store"
+import UpdateObjects from "lib/objects/ui/barter/BarterSection"
 import Toast from "react-native-toast-message"
 
 import DrawerSlide from "components/Slides/DrawerSlide"
 import { SlideProps } from "components/Slides/Slide.types"
-import UpdateObjects from "components/UpdateObjects/UpdateObjects"
-import { useCharacter } from "contexts/CharacterContext"
-import { useUpdateObjects } from "contexts/UpdateObjectsContext"
 import { useActionActorId, useActionApi } from "providers/ActionFormProvider"
-import { useCombat } from "providers/CombatProvider"
-import { useCombatState } from "providers/CombatStateProvider"
-import { useCombatStatuses } from "providers/CombatStatusesProvider"
-import { useContenders } from "providers/ContendersProvider"
-import { useInventories } from "providers/InventoriesProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 
 export default function PickUpItemSlide({ slideIndex }: SlideProps) {
-  const useCases = useGetUseCases()
-  const combatStatuses = useCombatStatuses()
-  const contenders = useContenders()
-  const { charId } = useCharacter()
+  const { charId } = useLocalSearchParams<{ charId: string }>()
 
-  const { state } = useUpdateObjects()
+  const useCases = useGetUseCases()
+
   const { reset } = useActionApi()
   const formActorId = useActionActorId()
 
-  const combat = useCombat()
-  const { action } = useCombatState()
+  const { data: combatId } = useCombatId(charId)
+  const { data: action } = useCombatState(combatId, state => state.action)
   const actorId = formActorId === "" ? charId : formActorId
-  const actor = contenders[actorId]
-  const inventory = useInventories(actorId)
+
+  const exchange = useBarterStock()
 
   const { scrollTo } = useScrollTo()
 
@@ -43,10 +39,9 @@ export default function PickUpItemSlide({ slideIndex }: SlideProps) {
   }
 
   const onPressNext = async () => {
-    if (!combat) throw new Error("No combat found")
     try {
-      await useCases.inventory.exchange(actor, state, inventory)
-      await useCases.combat.doCombatAction({ combat, contenders, combatStatuses, action })
+      await useCases.inventory.barter({ charId: actorId, ...exchange })
+      await useCases.combat.doCombatAction({ combatId, action })
       Toast.show({ type: "custom", text1: "Action réalisée" })
       reset()
     } catch (error) {

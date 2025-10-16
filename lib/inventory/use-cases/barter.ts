@@ -107,6 +107,6 @@ export default function barter(config: UseCasesConfig) {
       promises.push(updateAmmo(config)({ charId, ammo: newAmmo }))
     }
 
-    return promises
+    return Promise.all(promises)
   }
 }

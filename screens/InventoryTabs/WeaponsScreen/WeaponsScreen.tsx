@@ -4,6 +4,7 @@ import { View } from "react-native"
 import { router, useLocalSearchParams } from "expo-router"
 
 import { getDamageEst } from "lib/common/utils/dice-calc"
+import { useBarterActions } from "lib/objects/barter-store"
 import { Weapon } from "lib/objects/data/weapons/weapons.types"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
@@ -68,14 +69,18 @@ function WeaponsScreen() {
   const char = useCharacter()
   const { weapons } = useInventory()
 
+  const barterActions = useBarterActions()
+
   const toggleSelect = (weapon: Weapon) =>
     setSelectedWeapon(prev => (prev?.dbKey === weapon.dbKey ? null : weapon))
 
-  const onPressAdd = () =>
+  const onPressAdd = () => {
+    barterActions.selectCategory("weapons")
     router.push({
-      pathname: routes.modal.updateObjects,
-      params: { squadId: localParams.squadId, charId: localParams.charId, initCategory: "weapons" }
+      pathname: routes.modal.barter,
+      params: { squadId: localParams.squadId, charId: localParams.charId }
     })
+  }
 
   const onPressWeaponHeader = (type: WeaponSortableKey) => {
     setSort(prev => ({ type, isAsc: prev.type === type ? !prev.isAsc : true }))

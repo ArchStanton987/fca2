@@ -21,6 +21,11 @@ const styles = StyleSheet.create({
     width: 200,
     flex: 1
   },
+  centeredSection: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center"
+  },
   iconsContainer: {
     flexDirection: "row",
     justifyContent: "space-evenly",

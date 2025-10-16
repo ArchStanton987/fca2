@@ -2,6 +2,8 @@ import { StyleSheet, View } from "react-native"
 
 import { router } from "expo-router"
 
+import { getCategoriesMap } from "lib/objects/barter-store"
+
 import ModalCta from "components/ModalCta/ModalCta"
 import ScrollableSection from "components/ScrollableSection"
 import Spacer from "components/Spacer"
@@ -11,7 +13,6 @@ import { useCharacter } from "contexts/CharacterContext"
 import { useInventory } from "contexts/InventoryContext"
 import { useUpdateObjects } from "contexts/UpdateObjectsContext"
 import { useGetUseCases } from "providers/UseCasesProvider"
-import { getCategoriesMap } from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.utils"
 import colors from "styles/colors"
 
 const styles = StyleSheet.create({

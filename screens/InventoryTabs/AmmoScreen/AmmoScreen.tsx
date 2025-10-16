@@ -3,6 +3,7 @@ import { View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useBarterActions } from "lib/objects/barter-store"
 import { Ammo } from "lib/objects/data/ammo/ammo.types"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
@@ -34,15 +35,18 @@ function AmmoScreen() {
 
   const { ammo } = useInventory()
 
-  const onPressAdd = () =>
+  const barterActions = useBarterActions()
+
+  const onPressAdd = () => {
+    barterActions.selectCategory("ammo")
     router.push({
-      pathname: routes.modal.updateObjects,
+      pathname: routes.modal.barter,
       params: {
         squadId: localParams.squadId,
-        charId: localParams.charId,
-        initCategory: "ammo"
+        charId: localParams.charId
       }
     })
+  }
 
   const onPressHeader = (type: AmmoSortableKey) => {
     setSort(prev => ({ type, isAsc: prev.type === type ? !prev.isAsc : true }))

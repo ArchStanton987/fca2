@@ -5,21 +5,23 @@ import { router, useLocalSearchParams } from "expo-router"
 
 import { Image } from "expo-image"
 import { useCaps } from "lib/inventory/use-sub-inv-cat"
+import { useBarterActions } from "lib/objects/barter-store"
 
 import capsIcon from "assets/images/caps-icon.png"
 import HeaderElement from "components/Header/HeaderElement"
 import Txt from "components/Txt"
 import routes from "constants/routes"
-import { UpdateObjectsModalParams } from "screens/MainTabs/modals/UpdateObjectsModal/UpdateObjectsModal.params"
 
 export default function HeaderCaps() {
   const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
   const caps = useCaps(charId)
 
+  const barterActions = useBarterActions()
+
   const onPress = () => {
-    const pathname = routes.modal.updateObjects
-    const params: UpdateObjectsModalParams = { charId, squadId, initCategory: "caps" }
-    router.push({ pathname, params })
+    barterActions.selectCategory("caps")
+    const pathname = routes.modal.barter
+    router.push({ pathname, params: { charId, squadId } })
   }
 
   return (

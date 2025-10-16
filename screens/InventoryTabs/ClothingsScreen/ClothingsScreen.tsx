@@ -2,6 +2,7 @@ import React, { memo, useMemo, useState } from "react"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useBarterActions } from "lib/objects/barter-store"
 import { Clothing } from "lib/objects/data/clothings/clothings.types"
 
 import Col from "components/Col"
@@ -49,15 +50,18 @@ function ClothingsScreen() {
 
   const { clothings } = useInventory()
 
-  const onPressAdd = () =>
+  const barterActions = useBarterActions()
+
+  const onPressAdd = () => {
+    barterActions.selectCategory("clothings")
     router.push({
-      pathname: routes.modal.updateObjects,
+      pathname: routes.modal.barter,
       params: {
         squadId: localParams.squadId,
-        charId: localParams.charId,
-        initCategory: "clothings"
+        charId: localParams.charId
       }
     })
+  }
 
   const onPressClothingHeader = (type: ClothingSortableKey) => {
     setSort(prev => ({ type, isAsc: prev.type === type ? !prev.isAsc : true }))

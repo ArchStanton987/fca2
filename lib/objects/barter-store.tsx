@@ -9,7 +9,13 @@ import { StoreApi, createStore, useStore } from "zustand"
 import { AdditionalElContextType } from "providers/AdditionalElementsProvider"
 import { isKeyOf } from "utils/ts-utils"
 
-type InventoryCategory = "weapons" | "clothings" | "consumables" | "miscObjects" | "ammo" | "caps"
+export type InventoryCategory =
+  | "weapons"
+  | "clothings"
+  | "consumables"
+  | "miscObjects"
+  | "ammo"
+  | "caps"
 type RecordCat = {
   weapons: Record<string, number>
   clothings: Record<string, number>
@@ -166,7 +172,17 @@ export const useBarterCategory = () => useBarterStore(state => state.category)
 export const useBarterAmount = () => useBarterStore(state => state.amount)
 export const useBarterSelectedItem = () => useBarterStore(state => state.selectedItem)
 export const useBarterInput = () => useBarterStore(state => state.searchInput)
-export const useBarterStock = () => useBarterStore(state => state.barter)
+export const useBarterStock = () =>
+  useBarterStore(state => ({
+    ammo: state.barter.ammo,
+    caps: state.barter.caps,
+    items: {
+      ...state.barter.weapons,
+      ...state.barter.clothings,
+      ...state.barter.consumables,
+      ...state.barter.miscObjects
+    }
+  }))
 export const useBarterItemCount = (id: string) =>
   useBarterStore(state => {
     const cat = state.category
@@ -175,6 +191,7 @@ export const useBarterItemCount = (id: string) =>
     }
     return state.barter[cat][id]
   })
+
 export const useBarterWeapons = () => useBarterStore(state => state.barter.weapons)
 export const useBarterWeapon = (id: string) => useBarterStore(state => state.barter.weapons[id])
 export const useBarterClothings = () => useBarterStore(state => state.barter.clothings)
@@ -187,6 +204,7 @@ export const useBarterMiscObject = (id: string) =>
   useBarterStore(state => state.barter.miscObjects[id])
 export const useBarterAmmos = () => useBarterStore(state => state.barter.ammo)
 export const useBarterAmmo = (id: string) => useBarterStore(state => state.barter.ammo[id])
+export const useBarterCaps = () => useBarterStore(state => state.barter.caps)
 
 export const useInInvCount = (charId: string, id: "caps" | AmmoType | Item["id"]) => {
   const caps = useCaps(charId)

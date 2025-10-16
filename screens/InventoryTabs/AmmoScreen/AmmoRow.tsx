@@ -2,6 +2,7 @@ import { PressableProps } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useBarterActions } from "lib/objects/barter-store"
 import { Ammo } from "lib/objects/data/ammo/ammo.types"
 
 import DeleteInput from "components/DeleteInput"
@@ -19,10 +20,13 @@ type AmmoRowProps = PressableProps & {
 export default function AmmoRow({ ammo, isSelected, onPress }: AmmoRowProps) {
   const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
 
+  const barterActions = useBarterActions()
+
   const onPressDel = () => {
+    barterActions.selectCategory("ammo")
     router.push({
-      pathname: routes.modal.updateObjects,
-      params: { squadId, charId, initCategory: "ammo" }
+      pathname: routes.modal.barter,
+      params: { squadId, charId }
     })
   }
 
