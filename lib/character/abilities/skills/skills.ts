@@ -121,6 +121,11 @@ export default skillsMap
 export const skillsArray = Object.values(skillsMap)
 
 export const defaultSkillsValues = skillsArray.reduce(
+  (acc, { id }) => ({ ...acc, [id]: 1 }),
+  {} as Record<SkillId, number>
+)
+
+export const defaultNullSkillsValues = skillsArray.reduce(
   (acc, { id }) => ({ ...acc, [id]: 0 }),
   {} as Record<SkillId, number>
 )

@@ -92,4 +92,16 @@ const secAttrMap: Record<SecAttrId, SecAttr> = {
 
 export const secAttrArray = Object.values(secAttrMap)
 
+export const defaultSecAttr = {
+  critChance: 5,
+  meleeDamage: 5,
+  mentalStrength: 10,
+  range: 50,
+  healHpPerHour: 2,
+  maxPlace: 0,
+  normalCarryWeight: 0,
+  tempCarryWeight: 0,
+  maxCarryWeight: 0
+}
+
 export default secAttrMap

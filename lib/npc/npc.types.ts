@@ -1,3 +1,4 @@
+import { SkillId } from "lib/character/abilities/skills/skills.types"
 import { BeastAttack } from "lib/objects/data/weapons/weapons.types"
 
 export type NonHumanNpcTemplate = {
@@ -17,4 +18,5 @@ export type NonHumanNpcTemplate = {
     radsResist: number
   }
   attacks: BeastAttack[]
+  skills: Partial<Record<SkillId, number>>
 }

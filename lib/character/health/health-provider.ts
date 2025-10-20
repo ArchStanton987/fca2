@@ -7,6 +7,7 @@ import {
 import { useMultiSub } from "lib/shared/db/useSub"
 
 import { usePlayablesBaseSpecial } from "../abilities/base-special-provider"
+import { usePlayablesCharInfo } from "../info/info-provider"
 import { usePlayablesExp } from "../progress/exp-provider"
 import Health, { DbHealth } from "./Health"
 
@@ -20,10 +21,18 @@ export const getHealthOptions = (charId: string) =>
 export function useSubPlayablesHealth(ids: string[]) {
   const special = usePlayablesBaseSpecial(ids)
   const exp = usePlayablesExp(ids)
+  const info = usePlayablesCharInfo(ids)
+
   useMultiSub(
     ids.map(id => ({
       path: getHealthOptions(id).queryKey.join("/"),
-      cb: (payload: DbHealth) => new Health(payload, special[id], exp[id])
+      cb: (payload: DbHealth) =>
+        new Health({
+          health: payload,
+          baseSPECIAL: special[id],
+          exp: exp[id],
+          templateId: info[id].templateId
+        })
     }))
   )
 }

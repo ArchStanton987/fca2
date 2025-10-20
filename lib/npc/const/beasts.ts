@@ -20,7 +20,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
     attacks: [
       { name: "Griffe", skill: 70, apCost: 3, damage: "1d6" },
       { name: "Mords", skill: 75, apCost: 4, damage: "1d6+2", effects: ["poisonRadRatVenom"] }
-    ]
+    ],
+    skills: { stealth: 40, physical: 40 }
   },
   radRat: {
     templateId: "radRat",
@@ -53,7 +54,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         damage: "1d4+2",
         modifiers: [{ operation: "add", id: "rads", value: 5 }]
       }
-    ]
+    ],
+    skills: { stealth: 50, physical: 25 }
   },
   standardMolerat: {
     templateId: "standardMolerat",
@@ -74,7 +76,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
     attacks: [
       { name: "Griffe", skill: 80, apCost: 3, damage: "1d6" },
       { name: "Mords", skill: 75, apCost: 4, damage: "1d6+3", effects: ["poisonLightBeast"] }
-    ]
+    ],
+    skills: { stealth: 35, physical: 45 }
   },
   powerfulMolerat: {
     templateId: "powerfulMolerat",
@@ -95,7 +98,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
     attacks: [
       { name: "Griffe", skill: 90, apCost: 3, damage: "1d10+3" },
       { name: "Mords", skill: 90, apCost: 4, damage: "1d10", effects: ["poisonMedBeast"] }
-    ]
+    ],
+    skills: { stealth: 30, physical: 50 }
   },
   standardPigrat: {
     templateId: "standardPigrat",
@@ -116,7 +120,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
     attacks: [
       { name: "Griffe", skill: 75, apCost: 3, damage: "2d4" },
       { name: "Mords", skill: 75, apCost: 4, damage: "2d4", effects: ["poisonLightBeast"] }
-    ]
+    ],
+    skills: { stealth: 30, physical: 50 }
   },
   powerfulPigrat: {
     templateId: "powerfulPigrat",
@@ -137,7 +142,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
     attacks: [
       { name: "Griffe", skill: 90, apCost: 3, damage: "2d6+2" },
       { name: "Mords", skill: 75, apCost: 6, damage: "2d6+4", effects: ["poisonMedBeast"] }
-    ]
+    ],
+    skills: { stealth: 25, physical: 65 }
   },
   radRoach: {
     templateId: "radRoach",
@@ -163,7 +169,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         damage: "1d6+2",
         effects: ["poisonLightBeast"]
       }
-    ]
+    ],
+    skills: { stealth: 75, physical: 20 }
   },
   giantAnt: {
     templateId: "giantAnt",
@@ -181,7 +188,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       poisResist: 100,
       radsResist: 60
     },
-    attacks: [{ name: "Mandibles", skill: 65, apCost: 3, damage: "1d6+5" }]
+    attacks: [{ name: "Mandibles", skill: 65, apCost: 3, damage: "1d6+5" }],
+    skills: { stealth: 20, physical: 40 }
   },
   fireAnt: {
     templateId: "fireAnt",
@@ -207,7 +215,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         apCost: 6,
         damage: "3d6+3"
       }
-    ]
+    ],
+    skills: { stealth: 20, physical: 45 }
   },
   mantis: {
     templateId: "mantis",
@@ -234,7 +243,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         effects: ["poisonLightBeast"]
       },
       { name: "Griffe", skill: 75, apCost: 4, damage: "2d6+2" }
-    ]
+    ],
+    skills: { stealth: 20, physical: 40 }
   },
   mutantFly: {
     templateId: "mutantFly",
@@ -255,7 +265,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
     attacks: [
       { name: "Stinger", skill: 75, apCost: 5, damage: "1d6+3", effects: ["poisonMedBeast"] },
       { name: "Mords", skill: 60, apCost: 4, damage: "1d6+5" }
-    ]
+    ],
+    skills: { stealth: 20, physical: 35 }
   },
   brahmin: {
     templateId: "brahmin",
@@ -276,7 +287,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
     attacks: [
       { name: "Horn Charge", skill: 75, apCost: 3, damage: "4d6+3" },
       { name: "Trample", skill: 65, apCost: 6, damage: "4d6+10" }
-    ]
+    ],
+    skills: { stealth: 5, physical: 75 }
   },
   floater: {
     templateId: "floater",
@@ -302,7 +314,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         damage: "2d6+8",
         modifiers: [{ operation: "add", id: "rads", value: 10 }]
       }
-    ]
+    ],
+    skills: { stealth: 25, physical: 80 }
   },
   centaur: {
     templateId: "centaur",
@@ -335,7 +348,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         damage: "3d6+5",
         modifiers: [{ operation: "add", id: "rads", value: 15 }]
       }
-    ]
+    ],
+    skills: { stealth: 25, physical: 80 }
   },
   radScorpion: {
     templateId: "radScorpion",
@@ -362,7 +376,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         effects: ["poisonRadScorpionLightVenom"]
       },
       { name: "Claw", skill: 60, apCost: 3, damage: "1d6" }
-    ]
+    ],
+    skills: { stealth: 30, physical: 55 }
   },
   giantRadScorpion: {
     templateId: "giantRadScorpion",
@@ -389,7 +404,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         effects: ["poisonRadScorpionMedVenom"]
       },
       { name: "Pince", skill: 75, apCost: 3, damage: "1d10" }
-    ]
+    ],
+    skills: { stealth: 20, physical: 90 }
   },
   grayWolf: {
     templateId: "grayWolf",
@@ -410,7 +426,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
     attacks: [
       { name: "Mords", skill: 80, apCost: 4, damage: "3d6" },
       { name: "Griffe", skill: 70, apCost: 3, damage: "1d6+3" }
-    ]
+    ],
+    skills: { stealth: 75, physical: 80 }
   },
   furiousWolf: {
     templateId: "furiousWolf",
@@ -436,7 +453,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         apCost: 3,
         damage: "1d10+5"
       }
-    ]
+    ],
+    skills: { stealth: 75, physical: 95 }
   },
   wildDog: {
     templateId: "wildDog",
@@ -461,7 +479,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         apCost: 3,
         damage: "2d6"
       }
-    ]
+    ],
+    skills: { stealth: 50, physical: 70 }
   },
   babyDeathclaw: {
     templateId: "babyDeathclaw",
@@ -479,7 +498,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       poisResist: 80,
       radsResist: 60
     },
-    attacks: [{ name: "Griffe", skill: 70, apCost: 4, damage: "4d6" }]
+    attacks: [{ name: "Griffe", skill: 70, apCost: 4, damage: "4d6" }],
+    skills: { stealth: 30, physical: 95 }
   },
   adultDeathclaw: {
     templateId: "adultDeathclaw",
@@ -497,7 +517,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       poisResist: 80,
       radsResist: 60
     },
-    attacks: [{ name: "Griffe", skill: 90, apCost: 5, damage: "5d6+5" }]
+    attacks: [{ name: "Griffe", skill: 90, apCost: 5, damage: "5d6+5" }],
+    skills: { stealth: 15, physical: 110 }
   },
   alphaFemaleDeathclaw: {
     templateId: "alphaFemaleDeathclaw",
@@ -515,7 +536,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       poisResist: 80,
       radsResist: 60
     },
-    attacks: [{ name: "Griffe", skill: 110, apCost: 5, damage: "4d10+5" }]
+    attacks: [{ name: "Griffe", skill: 110, apCost: 5, damage: "4d10+5" }],
+    skills: { stealth: 5, physical: 125 }
   },
 
   babySpitter: {
@@ -542,7 +564,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         damage: "1d6+3",
         effects: ["poisonLightBeast"]
       }
-    ]
+    ],
+    skills: { stealth: 40, physical: 40 }
   },
   adultSpitter: {
     templateId: "adultSpitter",
@@ -568,7 +591,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         damage: "2d6+3",
         effects: ["poisonLightBeast"]
       }
-    ]
+    ],
+    skills: { stealth: 30, physical: 65 }
   },
   gecko: {
     templateId: "gecko",
@@ -599,7 +623,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         apCost: 4,
         damage: "2d6+3"
       }
-    ]
+    ],
+    skills: { stealth: 50, physical: 60 }
   },
   fireGecko: {
     templateId: "fireGecko",
@@ -630,7 +655,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         apCost: 6,
         damage: "3d6+10"
       }
-    ]
+    ],
+    skills: { stealth: 50, physical: 60 }
   },
   goldenGecko: {
     templateId: "goldenGecko",
@@ -661,7 +687,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         apCost: 5,
         damage: "2D6+12"
       }
-    ]
+    ],
+    skills: { stealth: 50, physical: 70 }
   },
   yaoGuai: {
     templateId: "yaoGuai",
@@ -686,7 +713,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         apCost: 4,
         damage: "6d6+10"
       }
-    ]
+    ],
+    skills: { stealth: 20, physical: 120 }
   },
   mirelurk: {
     templateId: "mirelurk",
@@ -712,7 +740,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         damage: "2d10",
         modifiers: [{ operation: "add", id: "rads", value: 5 }]
       }
-    ]
+    ],
+    skills: { stealth: 30, physical: 40 }
   },
   mirelurking: {
     templateId: "mirelurking",
@@ -745,7 +774,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         damage: "3D10",
         modifiers: [{ operation: "add", id: "rads", value: 10 }]
       }
-    ]
+    ],
+    skills: { stealth: 20, physical: 60 }
   },
   weakFeralGhoul: {
     templateId: "weakFeralGhoul",
@@ -778,7 +808,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         damage: "3D6",
         modifiers: [{ operation: "add", id: "rads", value: 7 }]
       }
-    ]
+    ],
+    skills: { stealth: 10, physical: 55 }
   },
   furiousFeralGhoul: {
     templateId: "furiousFeralGhoul",
@@ -811,7 +842,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         damage: "3D6+3",
         modifiers: [{ operation: "add", id: "rads", value: 7 }]
       }
-    ]
+    ],
+    skills: { stealth: 5, physical: 70 }
   },
   glowingFeralGhoul: {
     templateId: "glowingFeralGhoul",
@@ -844,7 +876,8 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         damage: "3D6+3",
         modifiers: [{ operation: "add", id: "rads", value: 10 }]
       }
-    ]
+    ],
+    skills: { stealth: 1, physical: 70 }
   }
 }
 

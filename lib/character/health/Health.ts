@@ -1,9 +1,11 @@
 import { getRandomArbitrary } from "lib/common/utils/dice-calc"
+import { critters } from "lib/npc/const/npc-templates"
 
 import Abilities from "../abilities/Abilities"
 import { Special } from "../abilities/special/special.types"
 import Effect from "../effects/Effect"
 import { EffectId } from "../effects/effects.types"
+import { TemplateId } from "../info/CharInfo"
 import { getLevelAndThresholds } from "../status/status-calc"
 import { LimbId, healthStates, radStates } from "./health.const"
 
@@ -158,9 +160,19 @@ export default class Health {
   limbs: LimbsHp
   rads: number
 
-  static getMaxHp(baseSpecial: Special, exp: number) {
-    const baseMaxHP = baseSpecial.endurance * 2 + 15 + baseSpecial.strength
-    const gainMaxHPPerLvl = Math.ceil(baseSpecial.endurance / 2) + 3
+  static getMaxHp({
+    baseSPECIAL,
+    exp,
+    templateId
+  }: {
+    baseSPECIAL?: Special
+    exp: number
+    templateId: TemplateId
+  }) {
+    if (templateId in critters) return critters[templateId].hp
+    if (!baseSPECIAL) throw new Error("Template id not found, or missing special")
+    const baseMaxHP = baseSPECIAL.endurance * 2 + 15 + baseSPECIAL.strength
+    const gainMaxHPPerLvl = Math.ceil(baseSPECIAL.endurance / 2) + 3
     const { level } = getLevelAndThresholds(exp)
     const levelGained = level - 1
     const result = levelGained * gainMaxHPPerLvl + baseMaxHP
@@ -187,8 +199,18 @@ export default class Health {
     return radStates.find(radState => rads > radState.threshold)
   }
 
-  constructor(health: DbHealth, baseSPECIAL: Special, exp: number) {
-    this.maxHp = Health.getMaxHp(baseSPECIAL, exp)
+  constructor({
+    health,
+    baseSPECIAL,
+    exp,
+    templateId
+  }: {
+    health: DbHealth
+    baseSPECIAL?: Special
+    exp: number
+    templateId: TemplateId
+  }) {
+    this.maxHp = Health.getMaxHp({ baseSPECIAL, exp, templateId })
     this.currHp = health.currHp
     this.missingHp = this.maxHp - this.currHp
     this.limbs = health.limbs

@@ -24,7 +24,8 @@ const robots: Record<string, NonHumanNpcTemplate> = {
         apCost: 4,
         damage: "2d6+4"
       }
-    ]
+    ],
+    skills: { stealth: 10, physical: 60, barter: 50, speech: 30, manipulation: 60, aid: 40 }
   },
   mrGutsy: {
     templateId: "mrGutsy",
@@ -55,7 +56,8 @@ const robots: Record<string, NonHumanNpcTemplate> = {
         apCost: 6,
         damage: "4d6+10"
       }
-    ]
+    ],
+    skills: { stealth: 10, physical: 60, barter: 50, speech: 30, manipulation: 60, aid: 40 }
   },
   sentinelRobotMkII: {
     templateId: "sentinelRobotMkII",
@@ -86,7 +88,8 @@ const robots: Record<string, NonHumanNpcTemplate> = {
         apCost: 6,
         damage: "5d6+15"
       }
-    ]
+    ],
+    skills: { stealth: 10, physical: 90 }
   },
   enclaveEyebot: {
     templateId: "enclaveEyebot",
@@ -104,7 +107,8 @@ const robots: Record<string, NonHumanNpcTemplate> = {
       poisResist: 100,
       radsResist: 100
     },
-    attacks: [] // Pas d'attaques spécifiées dans le document
+    attacks: [], // Pas d'attaques spécifiées dans le document
+    skills: { physical: 10 }
   },
   robotBrain: {
     templateId: "robotBrain",
@@ -135,7 +139,8 @@ const robots: Record<string, NonHumanNpcTemplate> = {
         apCost: 4,
         damage: "2d6+2"
       }
-    ]
+    ],
+    skills: { stealth: 10, physical: 80, barter: 50, speech: 50, manipulation: 40, aid: 20 }
   },
   robotBrainLeader: {
     templateId: "robotBrainLeader",
@@ -172,7 +177,8 @@ const robots: Record<string, NonHumanNpcTemplate> = {
         apCost: 4,
         damage: "2d6+2"
       }
-    ]
+    ],
+    skills: { stealth: 10, physical: 90, barter: 50, speech: 50, manipulation: 40, aid: 20 }
   },
   cyberdog: {
     templateId: "cyberdog",
@@ -203,7 +209,8 @@ const robots: Record<string, NonHumanNpcTemplate> = {
         apCost: 5,
         damage: "3d6+1"
       }
-    ]
+    ],
+    skills: { stealth: 10, physical: 65 }
   },
   militaryCyberdog: {
     templateId: "militaryCyberdog",
@@ -234,7 +241,8 @@ const robots: Record<string, NonHumanNpcTemplate> = {
         apCost: 5,
         damage: "3d6+5"
       }
-    ]
+    ],
+    skills: { stealth: 10, physical: 75 }
   }
 }
 
