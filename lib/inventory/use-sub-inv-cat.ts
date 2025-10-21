@@ -86,7 +86,17 @@ const selector = (items: ItemRecord, cat: ItemCategory, { isEquipped, isGrouped 
   )
 }
 
-export function useWeapons(charId: string, isEquipped?: boolean, isGrouped?: boolean) {
+export function useItems<TData = Record<string, Item>>(
+  charId: string,
+  select?: (data: Record<string, Item>) => TData
+) {
+  return useSuspenseQuery({ ...getItemsOptions(charId), select })
+}
+
+export function useWeapons(
+  charId: string,
+  { isEquipped, isGrouped }: { isEquipped?: boolean; isGrouped?: boolean }
+) {
   const query = getItemsOptions(charId)
   return useSuspenseQuery({
     ...query,
@@ -98,7 +108,7 @@ export function useWeapons(charId: string, isEquipped?: boolean, isGrouped?: boo
 }
 export function useCombatWeapons(charId: string): Weapon[] {
   const templateId = useCharInfo(charId, state => state.templateId).data
-  const equipedWeapons = useWeapons(charId, true).data
+  const equipedWeapons = useWeapons(charId, { isEquipped: true }).data
   const hasEquipedWeapons = Object.keys(equipedWeapons).length === 0
   if (hasEquipedWeapons) return Object.values(equipedWeapons)
   const unarmed = Weapon.getUnarmed()

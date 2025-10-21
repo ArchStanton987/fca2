@@ -15,7 +15,7 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import colors from "styles/colors"
 
-import styles from "../../KnowledgesScreen/KnowledgeRow.styles"
+import styles from "../../../../lib/character/abilities/knowledges/ui/KnowledgeRow.styles"
 
 export function ListFooter() {
   return <Spacer y={10} />

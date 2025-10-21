@@ -13,6 +13,7 @@ export type ItemCategory = "weapons" | "clothings" | "consumables" | "misc"
 
 export interface ItemInterface {
   id: string
+  dbKey: string
   category: ItemCategory
   isEquipped: boolean
 }

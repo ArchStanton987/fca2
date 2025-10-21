@@ -6,6 +6,10 @@ import {
   KnowledgeId,
   KnowledgeLevelValue
 } from "lib/character/abilities/knowledges/knowledge-types"
+import KnowledgeRow, {
+  ListFooter,
+  ListHeader
+} from "lib/character/abilities/knowledges/ui/KnowledgeRow"
 
 import ModalCta from "components/ModalCta/ModalCta"
 import Section from "components/Section"
@@ -14,10 +18,6 @@ import Txt from "components/Txt"
 import ModalBody from "components/wrappers/ModalBody"
 import { useCharacter } from "contexts/CharacterContext"
 import { useGetUseCases } from "providers/UseCasesProvider"
-import KnowledgeRow, {
-  ListFooter,
-  ListHeader
-} from "screens/MainTabs/KnowledgesScreen/KnowledgeRow"
 
 type Params = {
   charId: string

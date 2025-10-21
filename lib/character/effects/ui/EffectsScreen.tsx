@@ -1,9 +1,7 @@
-import React, { memo, useState } from "react"
+import React, { useState } from "react"
 import { View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
-
-import { Effect } from "lib/character/effects/effects.types"
 
 import DrawerPage from "components/DrawerPage"
 import List from "components/List"
@@ -14,10 +12,13 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import PlusIcon from "components/icons/PlusIcon"
 import routes from "constants/routes"
-import { useCharacter } from "contexts/CharacterContext"
+import { useCollectiblesData } from "providers/AdditionalElementsProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
-import EffectRow from "screens/MainTabs/EffectsScreen/EffectRow"
 import layout from "styles/layout"
+
+import Effect from "../Effect"
+import { useCharEffects } from "../effects-provider"
+import EffectRow from "./EffectRow"
 
 const title: ComposedTitleProps = [
   { title: "effet", containerStyle: { flex: 1 } },
@@ -43,12 +44,14 @@ const title: ComposedTitleProps = [
   }
 ]
 
-function EffectsScreen() {
+export default function EffectsScreen() {
   const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
   const useCases = useGetUseCases()
-  const { effects } = useCharacter()
+  const allEffects = useCollectiblesData().effects
 
   const [selectedId, setSelectedId] = useState<Effect["id"] | null>(null)
+
+  const { data: effects } = useCharEffects(charId)
 
   const onPressAdd = () =>
     router.push({
@@ -59,28 +62,23 @@ function EffectsScreen() {
   const onPressDelete = (effect: Effect) => {
     if (!effect.dbKey) return
     setSelectedId(null)
-    useCases.effects.remove(charId, effect)
+    useCases.character.removeEffect({ charId, dbKey: effect.dbKey })
   }
-
-  const selectedEffect = effects.find(effect => effect.id === selectedId)
 
   return (
     <DrawerPage>
       <ScrollSection style={{ flex: 1 }} title={title}>
         <List
-          data={effects}
+          data={Object.values(effects)}
           keyExtractor={item => item.dbKey || item.id}
-          renderItem={({ item }) => {
-            const isSelected = item.id === selectedId
-            return (
-              <EffectRow
-                isSelected={isSelected}
-                effect={item}
-                onPress={() => setSelectedId(item.id)}
-                onPressDelete={() => onPressDelete(item)}
-              />
-            )
-          }}
+          renderItem={({ item }) => (
+            <EffectRow
+              isSelected={item.id === selectedId}
+              effect={item}
+              onPress={() => setSelectedId(item.id)}
+              onPressDelete={() => onPressDelete(item)}
+            />
+          )}
         />
       </ScrollSection>
 
@@ -88,7 +86,7 @@ function EffectsScreen() {
 
       <View style={{ width: 180 }}>
         <ScrollSection title="description" style={{ flex: 1 }}>
-          <Txt>{!!selectedEffect && selectedEffect.data.description}</Txt>
+          <Txt>{selectedId ? allEffects[selectedId].description : null}</Txt>
         </ScrollSection>
 
         <Spacer y={layout.globalPadding} />
@@ -102,5 +100,3 @@ function EffectsScreen() {
     </DrawerPage>
   )
 }
-
-export default memo(EffectsScreen)

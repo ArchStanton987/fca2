@@ -53,6 +53,15 @@ export function useSpecial(charId: string) {
 export function useSecAttr(charId: string) {
   return useAbilities(charId, abilities => abilities.secAttr)
 }
+export function useTraits(charId: string) {
+  return useAbilities(charId, abilities => abilities.traits)
+}
+export function usePerks(charId: string) {
+  return useAbilities(charId, abilities => abilities.perks)
+}
+export function useKnowledges(charId: string) {
+  return useAbilities(charId, abilities => abilities.knowledges)
+}
 export function useCurrSecAttr(charId: string) {
   return useAbilities(charId, abilities => abilities.secAttr.curr)
 }
