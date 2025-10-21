@@ -102,26 +102,15 @@ export default class Abilities {
         poisResist: critters[templateId].resistances.poisResist,
         radsResist: critters[templateId].resistances.radsResist
       }
-      secAttr.curr = {
-        ...defaultSecAttr,
-        actionPoints: critters[templateId].actionPoints,
-        mentalStrength: critters[templateId].mentalStrength,
-        critChance: critters[templateId].critChance,
-        armorClass: critters[templateId].armorClass,
-        poisResist: critters[templateId].resistances.poisResist,
-        radsResist: critters[templateId].resistances.radsResist
-      }
-      secAttrArray.forEach(({ id }) => {
-        secAttr.mod[id] = secAttr.curr[id] - secAttr.base[id]
-      })
-    } else {
-      secAttrArray.forEach(({ id, calc }) => {
-        secAttr.base[id] = getModAttribute(innateSymptoms, id, calc(this.special.base))
-        const currWithInnate = getModAttribute(innateSymptoms, id, calc(this.special.curr))
-        secAttr.curr[id] = getModAttribute(currSymptoms, id, currWithInnate)
-        secAttr.mod[id] = secAttr.curr[id] - secAttr.base[id]
-      })
     }
+    secAttrArray.forEach(({ id, calc }) => {
+      if (!isCritter) {
+        secAttr.base[id] = getModAttribute(innateSymptoms, id, calc(this.special.base))
+      }
+      const currWithInnate = getModAttribute(innateSymptoms, id, calc(this.special.curr))
+      secAttr.curr[id] = getModAttribute(currSymptoms, id, currWithInnate)
+      secAttr.mod[id] = secAttr.curr[id] - secAttr.base[id]
+    })
     this.secAttr = secAttr
 
     const skills = { base: {}, up: {}, mod: {}, curr: {} } as {
@@ -134,19 +123,17 @@ export default class Abilities {
     if (isCritter) {
       const critterSkills = critters[templateId].skills
       skills.base = { ...defaultSkillsValues, ...critterSkills }
-      skills.up = { ...defaultNullSkillsValues }
-      skills.mod = { ...defaultNullSkillsValues }
-      skills.curr = { ...defaultSkillsValues, ...critterSkills }
-    } else {
-      Object.values(skillsMap).forEach(({ id, calc }) => {
-        skills.base[id] = getModAttribute(innateSymptoms, id, calc(this.special.base))
-        skills.up[id] = initUpSkills[id]
-        const currWithInnate = getModAttribute(innateSymptoms, id, calc(this.special.curr))
-        const calcCurr = getModAttribute(currSymptoms, id, currWithInnate)
-        skills.curr[id] = Math.max(calcCurr + skills.up[id], 1)
-        skills.mod[id] = skills.curr[id] - skills.base[id] - skills.up[id]
-      })
     }
+    Object.values(skillsMap).forEach(({ id, calc }) => {
+      if (!isCritter) {
+        skills.base[id] = getModAttribute(innateSymptoms, id, calc(this.special.base))
+      }
+      skills.up[id] = initUpSkills[id]
+      const currWithInnate = getModAttribute(innateSymptoms, id, calc(this.special.curr))
+      const calcCurr = getModAttribute(currSymptoms, id, currWithInnate)
+      skills.curr[id] = Math.max(calcCurr + skills.up[id], 1)
+      skills.mod[id] = skills.curr[id] - skills.base[id] - skills.up[id]
+    })
     this.skills = skills
 
     this.knowledges = payload.knowledges ?? {}
