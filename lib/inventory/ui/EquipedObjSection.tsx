@@ -1,10 +1,7 @@
-import { View } from "react-native"
+import { StyleSheet, View } from "react-native"
 
-import { useLocalSearchParams } from "expo-router"
-
-import { useAbilities } from "lib/character/abilities/abilities-provider"
+import { useCurrSecAttr } from "lib/character/abilities/abilities-provider"
 import { useCarry, useClothings, useWeapons } from "lib/inventory/use-sub-inv-cat"
-import { observer } from "mobx-react-lite"
 
 import List from "components/List"
 import Section from "components/Section"
@@ -14,7 +11,13 @@ import Txt from "components/Txt"
 import layout from "styles/layout"
 
 import { getPlaceColor, getWeightColor } from "./EquipedObjSection.utils"
-import styles from "./RecapScreen.styles"
+
+const styles = StyleSheet.create({
+  equObjRow: {
+    flexDirection: "row",
+    justifyContent: "space-between"
+  }
+})
 
 function WeaponsListHeader() {
   return (
@@ -33,19 +36,18 @@ function ClothingsListHeader() {
   )
 }
 
-function EquipedObjSection() {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
-  const { secAttr } = useAbilities()
-  const { normalCarryWeight, tempCarryWeight, maxCarryWeight, maxPlace } = secAttr.curr
-  const equipedWeapons = useWeapons(charId, true)
-  const equipedClothings = useClothings(charId, true)
-  const { weight, place } = useCarry(charId).data
+export default function EquipedObjSection({ charId }: { charId: string }) {
+  const { data: currSecAttr } = useCurrSecAttr(charId)
+  const { normalCarryWeight, tempCarryWeight, maxCarryWeight, maxPlace } = currSecAttr
+  const { data: equipedWeapons } = useWeapons(charId, true)
+  const { data: equipedClothings } = useClothings(charId, true)
+  const { weight, place } = useCarry(charId)
 
   return (
     <View style={{ flex: 1 }}>
       <Section title="charge">
         <View style={styles.equObjRow}>
-          <Txt style={{ color: getWeightColor(weight, secAttr.curr) }}>POIDS: {weight}</Txt>
+          <Txt style={{ color: getWeightColor(weight, currSecAttr) }}>POIDS: {weight}</Txt>
           <Txt>{`(${normalCarryWeight}/${tempCarryWeight}/${maxCarryWeight})`}</Txt>
         </View>
         <Spacer y={10} />
@@ -85,5 +87,3 @@ function EquipedObjSection() {
     </View>
   )
 }
-
-export default observer(EquipedObjSection)

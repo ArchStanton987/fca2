@@ -1,17 +1,23 @@
 import React from "react"
-import { ActivityIndicator, View } from "react-native"
+import { ActivityIndicator, StyleSheet, View } from "react-native"
 
+import { useCurrSkills } from "lib/character/abilities/abilities-provider"
 import skillsMap from "lib/character/abilities/skills/skills"
 
 import List from "components/List"
 import ScrollSection from "components/Section/ScrollSection"
 import Txt from "components/Txt"
-import { useCharacter } from "contexts/CharacterContext"
 import colors from "styles/colors"
 
-import styles from "./RecapScreen.styles"
-
 const skillsArray = Object.values(skillsMap)
+
+const styles = StyleSheet.create({
+  skillRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 5
+  }
+})
 
 function EmptyComponent() {
   return (
@@ -21,9 +27,8 @@ function EmptyComponent() {
   )
 }
 
-export default function SkillsSection() {
-  const character = useCharacter()
-  const currSkills = character.skills.curr
+export default function SkillsSection({ charId }: { charId: string }) {
+  const { data: currSkills } = useCurrSkills(charId)
   return (
     <ScrollSection style={{ width: 160 }} title="compétences">
       <List

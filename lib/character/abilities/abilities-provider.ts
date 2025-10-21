@@ -47,6 +47,21 @@ export function usePlayablesAbilities(ids: string[]) {
 export function useAbilities<TData = Abilities>(id: string, select?: (data: Abilities) => TData) {
   return useSuspenseQuery({ ...getDbAbilitiesOptions(id), select })
 }
+export function useSpecial(charId: string) {
+  return useAbilities(charId, abilities => abilities.special)
+}
+export function useSecAttr(charId: string) {
+  return useAbilities(charId, abilities => abilities.secAttr)
+}
+export function useCurrSecAttr(charId: string) {
+  return useAbilities(charId, abilities => abilities.secAttr.curr)
+}
+export function useSkills(charId: string) {
+  return useAbilities(charId, abilities => abilities.skills)
+}
+export function useCurrSkills(charId: string) {
+  return useAbilities(charId, abilities => abilities.skills.curr)
+}
 
 export function getTraits(store: QueryClient, charId: string) {
   const ab = store.getQueryData(getDbAbilitiesOptions(charId).queryKey)

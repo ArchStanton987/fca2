@@ -1,11 +1,11 @@
 import { useLocalSearchParams } from "expo-router"
 
 import { useAbilities } from "lib/character/abilities/abilities-provider"
+import { getPlaceColor } from "lib/inventory/ui/EquipedObjSection.utils"
 import { useCarry } from "lib/inventory/use-sub-inv-cat"
 
 import HeaderElement from "components/Header/HeaderElement"
 import Txt from "components/Txt"
-import { getPlaceColor } from "screens/MainTabs/RecapScreen/EquipedObjSection.utils"
 
 export default function HeaderPlace() {
   const { charId } = useLocalSearchParams<{ charId: string }>()

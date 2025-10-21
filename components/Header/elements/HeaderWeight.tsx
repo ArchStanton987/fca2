@@ -1,11 +1,11 @@
 import { useAbilities } from "lib/character/abilities/abilities-provider"
 import { useCharInfo } from "lib/character/info/info-provider"
+import { getWeightColor } from "lib/inventory/ui/EquipedObjSection.utils"
 import { useCarry } from "lib/inventory/use-sub-inv-cat"
 
 import HeaderElement from "components/Header/HeaderElement"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { getWeightColor } from "screens/MainTabs/RecapScreen/EquipedObjSection.utils"
 
 export default function HeaderWeight() {
   const { secAttr } = useAbilities()
