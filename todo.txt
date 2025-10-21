@@ -1,3 +1,6 @@
+pb dbKey (push lors création) pour collectibles
+
+
 créer 2 combats récap différents (1 avec contexte combat)
 MAJ dépendances
 use Guard
