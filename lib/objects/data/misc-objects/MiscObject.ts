@@ -13,9 +13,12 @@ export default class MiscObject implements ItemInterface {
     symptoms: Object.values(payload.symptoms ?? {})
   })
 
-  constructor(payload: DbMiscObject, allMiscObjects: Record<string, MiscObjectData>) {
+  constructor(
+    payload: DbMiscObject & { key: string },
+    allMiscObjects: Record<string, MiscObjectData>
+  ) {
     this.id = payload.id
-    this.dbKey = payload.dbKey
+    this.dbKey = payload.key
     this.category = payload.category
     this.isEquipped = payload.isEquipped
     this.data = { ...allMiscObjects[this.id], ...MiscObject.dbToData(payload.data ?? {}) }

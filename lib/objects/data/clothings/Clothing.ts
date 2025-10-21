@@ -16,9 +16,9 @@ export default class Clothing implements ItemInterface {
     symptoms: Object.values(payload.symptoms ?? {})
   })
 
-  constructor(payload: DbClothing, allClothings: Record<string, ClothingData>) {
+  constructor(payload: DbClothing & { key: string }, allClothings: Record<string, ClothingData>) {
     this.id = payload.id
-    this.dbKey = payload.dbKey
+    this.dbKey = payload.key
     this.category = payload.category
     this.isEquipped = payload.isEquipped
     this.data = { ...allClothings[this.id], ...Clothing.dbToData(payload.data ?? {}) }

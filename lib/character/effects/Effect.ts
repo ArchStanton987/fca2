@@ -22,11 +22,12 @@ export default class Effect {
   }
 
   constructor(
-    payload: DbEffect,
+    payload: DbEffect & { key?: string },
     allEffects: Record<string, EffectData> = effectsMap,
     currDate?: Date
   ) {
     this.id = payload.id
+    this.dbKey = payload.key
     this.data = allEffects[payload.id]
     this.type = allEffects[payload.id].type
 

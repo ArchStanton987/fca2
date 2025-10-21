@@ -22,9 +22,12 @@ export default class Consumable implements ItemInterface {
     modifiers: Object.values(payload.modifiers ?? {})
   })
 
-  constructor(payload: DbConsumable, allClothings: Record<string, ConsumableData>) {
+  constructor(
+    payload: DbConsumable & { key: string },
+    allClothings: Record<string, ConsumableData>
+  ) {
     this.id = payload.id
-    this.dbKey = payload.dbKey
+    this.dbKey = payload.key
     this.category = payload.category
     this.isEquipped = payload.isEquipped
     this.data = { ...allClothings[this.id], ...Consumable.dbToData(payload.data ?? {}) }

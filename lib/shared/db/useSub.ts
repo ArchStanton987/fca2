@@ -48,7 +48,7 @@ export function useSubCollection<I, T = I>(path: string, cb?: (dbCollectible: I)
       ? subEvent<I>("onChildAdded", path, ({ key, value }) => {
           queryClient.setQueryData(queryKey, (prev: Record<string, T>) => ({
             ...prev,
-            [key]: cb ? cb(value) : value
+            [key]: cb ? cb({ ...value, key }) : { ...value, key }
           }))
         })
       : fakeSub()
@@ -57,7 +57,7 @@ export function useSubCollection<I, T = I>(path: string, cb?: (dbCollectible: I)
       ? subEvent<I>("onChildChanged", path, ({ key, value }) => {
           queryClient.setQueryData(queryKey, (prev: Record<string, T>) => ({
             ...prev,
-            [key]: cb ? cb(value) : value
+            [key]: cb ? cb({ ...value, key }) : { ...value, key }
           }))
         })
       : fakeSub()
@@ -103,7 +103,7 @@ export function useSubMultiCollections<I, T = I>(paramsArray: UseSubParams<I, T>
         const { cb } = memoParams[i]
         queryClient.setQueryData(queryKey, (prev: Record<string, T>) => ({
           ...prev,
-          [key]: cb ? cb(value) : value
+          [key]: cb ? cb({ ...value, key }) : { ...value, key }
         }))
       })
     )
@@ -113,7 +113,7 @@ export function useSubMultiCollections<I, T = I>(paramsArray: UseSubParams<I, T>
         const { cb } = memoParams[i]
         queryClient.setQueryData(queryKey, (prev: Record<string, T>) => ({
           ...prev,
-          [key]: cb ? cb(value) : value
+          [key]: cb ? cb({ ...value, key }) : { ...value, key }
         }))
       })
     )

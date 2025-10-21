@@ -22,7 +22,7 @@ import { AdditionalElContextType, useCollectiblesData } from "providers/Addition
 import { filterUnique } from "utils/array-utils"
 
 const itemFactory = (
-  item: DbItem,
+  item: DbItem & { key: string },
   { weapons, clothings, consumables, miscObjects }: AdditionalElContextType
 ) => {
   switch (item.category) {
@@ -56,7 +56,10 @@ const getCapsOptions = (charId: string) => getInvOptions<"caps", number>(charId,
 export function useMultiSubItems(ids: string[]) {
   const collectiblesData = useCollectiblesData()
   const options = ids.map(id => getItemsOptions(id))
-  const cb = useCallback((db: DbItem) => itemFactory(db, collectiblesData), [collectiblesData])
+  const cb = useCallback(
+    (db: DbItem & { key: string }) => itemFactory(db, collectiblesData),
+    [collectiblesData]
+  )
   useSubMultiCollections(options.map(o => ({ path: o.queryKey.join("/"), cb })))
 }
 
