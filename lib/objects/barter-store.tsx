@@ -1,10 +1,7 @@
-/* eslint-disable import/prefer-default-export */
-import { ReactNode, createContext, useContext, useState } from "react"
-
 import { Item, useAmmo, useCaps, useItemCount } from "lib/inventory/use-sub-inv-cat"
 import ammoMap from "lib/objects/data/ammo/ammo"
 import { AmmoType } from "lib/objects/data/ammo/ammo.types"
-import { StoreApi, createStore, useStore } from "zustand"
+import { create } from "zustand"
 
 import { AdditionalElContextType } from "providers/AdditionalElementsProvider"
 import { isKeyOf } from "utils/ts-utils"
@@ -96,75 +93,51 @@ type BarterStore = {
   }
 }
 
-export const createBarterStore = (initCategory: InventoryCategory) =>
-  createStore<BarterStore>()((set, get, store) => ({
-    category: initCategory,
-    amount: 5,
-    selectedItem: null,
-    searchInput: "",
-    barter: {
-      weapons: {},
-      clothings: {},
-      consumables: {},
-      miscObjects: {},
-      ammo: {},
-      caps: 0
+export const useBarterStore = create<BarterStore>()((set, get, store) => ({
+  category: "weapons",
+  amount: 5,
+  selectedItem: null,
+  searchInput: "",
+  barter: {
+    weapons: {},
+    clothings: {},
+    consumables: {},
+    miscObjects: {},
+    ammo: {},
+    caps: 0
+  },
+  actions: {
+    selectCategory: cat =>
+      set(() => {
+        if (cat === "caps") {
+          get().actions.selectItem("caps")
+        }
+        return { category: cat }
+      }),
+    selectAmount: amount => set(() => ({ amount })),
+    selectItem: id => set(() => ({ selectedItem: id })),
+    setInput: value => set(() => ({ searchInput: value })),
+    onPressMod: (type, inInv) => {
+      const itemId = get().selectedItem
+      if (!itemId) return
+      const cat = get().category
+      const isCaps = cat === "caps"
+      const amount = type === "minus" ? -get().amount : get().amount
+      const prevValue = isCaps ? get().barter.caps : get().barter[cat][itemId]
+      const newValue = Math.max(prevValue + amount + inInv, 0)
+      set(state => {
+        if (isCaps) {
+          return { ...state, barter: { ...state.barter, caps: newValue } }
+        }
+        return {
+          ...state,
+          barter: { ...state.barter, [cat]: { ...state.barter[cat], [itemId]: newValue } }
+        }
+      })
     },
-    actions: {
-      selectCategory: cat =>
-        set(() => {
-          if (cat === "caps") {
-            get().actions.selectItem("caps")
-          }
-          return { category: cat }
-        }),
-      selectAmount: amount => set(() => ({ amount })),
-      selectItem: id => set(() => ({ selectedItem: id })),
-      setInput: value => set(() => ({ searchInput: value })),
-      onPressMod: (type, inInv) => {
-        const itemId = get().selectedItem
-        if (!itemId) return
-        const cat = get().category
-        const isCaps = cat === "caps"
-        const amount = type === "minus" ? -get().amount : get().amount
-        const prevValue = isCaps ? get().barter.caps : get().barter[cat][itemId]
-        const newValue = Math.max(prevValue + amount + inInv, 0)
-        set(state => {
-          if (isCaps) {
-            return { ...state, barter: { ...state.barter, caps: newValue } }
-          }
-          return {
-            ...state,
-            barter: { ...state.barter, [cat]: { ...state.barter[cat], [itemId]: newValue } }
-          }
-        })
-      },
-      reset: () => store.setState(store.getInitialState())
-    }
-  }))
-
-const BarterContext = createContext<StoreApi<BarterStore>>({} as StoreApi<BarterStore>)
-
-export function BarterStoreProvider({
-  children,
-  initCategory
-}: {
-  children: ReactNode
-  initCategory?: InventoryCategory
-}) {
-  const category = initCategory ?? "weapons"
-  const [barterStore] = useState(() => createBarterStore(category))
-
-  return <BarterContext.Provider value={barterStore}>{children}</BarterContext.Provider>
-}
-
-export function useBarterStore<T>(selector: (state: BarterStore) => T): T {
-  const store = useContext(BarterContext)
-  if (!store) {
-    throw new Error("useBarterStore must be used within its provider")
+    reset: () => store.setState(store.getInitialState())
   }
-  return useStore(store, selector)
-}
+}))
 
 export const useBarterActions = () => useBarterStore(state => state.actions)
 

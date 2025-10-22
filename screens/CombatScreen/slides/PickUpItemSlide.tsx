@@ -3,7 +3,7 @@ import { useLocalSearchParams } from "expo-router"
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { useCombatState } from "lib/combat/use-cases/sub-combat"
 import { useBarterStock } from "lib/objects/barter-store"
-import UpdateObjects from "lib/objects/ui/barter/BarterSection"
+import BarterSection from "lib/objects/ui/barter/BarterSection"
 import Toast from "react-native-toast-message"
 
 import DrawerSlide from "components/Slides/DrawerSlide"
@@ -51,7 +51,7 @@ export default function PickUpItemSlide({ slideIndex }: SlideProps) {
 
   return (
     <DrawerSlide>
-      <UpdateObjects onPressCancel={onPressCancel} onPressNext={onPressNext} />
+      <BarterSection onPressCancel={onPressCancel} onPressNext={onPressNext} />
     </DrawerSlide>
   )
 }
