@@ -93,7 +93,7 @@ type BarterStore = {
   }
 }
 
-export const useBarterStore = create<BarterStore>()((set, get, store) => ({
+const useBarterStore = create<BarterStore>()((set, get, store) => ({
   category: "weapons",
   amount: 5,
   selectedItem: null,

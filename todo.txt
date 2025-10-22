@@ -1,4 +1,5 @@
 fix health update with new hp system
+check F4 system
 
 créer 2 combats récap différents (1 avec contexte combat)
 MAJ dépendances
