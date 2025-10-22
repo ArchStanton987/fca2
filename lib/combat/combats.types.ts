@@ -1,5 +1,5 @@
 import { EffectId } from "lib/character/effects/effects.types"
-import { LimbId } from "lib/character/health/Health"
+import { LimbId } from "lib/character/health/health.const"
 import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 
 import { ActionTypeId } from "./const/actions"

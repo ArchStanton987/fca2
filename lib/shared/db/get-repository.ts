@@ -3,7 +3,6 @@ import CombatStatusRtdbRepository from "lib/character/combat-status/CombatStatus
 import AdditionalEffectsRtdbRepository from "lib/character/effects/AdditionalEffectsRtdbRepository"
 import EffectsRtdbRepository from "lib/character/effects/EffectsRtdbRepository"
 import HealthRtdbRepository from "lib/character/health/HealthRtdbRepository"
-import StatusRtdbRepository from "lib/character/status/StatusRtdbRepository"
 import ActionRtdbRepository from "lib/combat/ActionRtdbRepository"
 import CombatHistoryRtdbRepository from "lib/combat/CombatHistoryRtdbRepository"
 import CombatInfoRtdbRepository from "lib/combat/CombatInfoRtdbRepository"
@@ -29,7 +28,6 @@ const repositoryMap = {
     combatStateRepository: new CombatStateRtdbRepository(),
     actionRepository: new ActionRtdbRepository(),
     playableRepository: new PlayableRtdbRepository(),
-    statusRepository: new StatusRtdbRepository(),
     healthRepository: new HealthRtdbRepository(),
     combatStatusRepository: new CombatStatusRtdbRepository(),
     effectsRepository: new EffectsRtdbRepository(),

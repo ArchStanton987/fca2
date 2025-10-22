@@ -1,5 +1,4 @@
-pb dbKey (push lors création) pour collectibles
-
+fix health update with new hp system
 
 créer 2 combats récap différents (1 avec contexte combat)
 MAJ dépendances
