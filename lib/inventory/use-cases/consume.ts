@@ -1,7 +1,6 @@
 import addEffect from "lib/character/effects/use-cases/add-effect"
-import { DbHealth } from "lib/character/health/Health"
 import { getHealth } from "lib/character/health/health-provider"
-import updateHp from "lib/character/health/use-cases/update-hp"
+import updateHealth from "lib/character/health/use-cases/update-health"
 import updateRads from "lib/character/health/use-cases/update-rads"
 import { applyMod } from "lib/common/utils/char-calc"
 import { UseCasesConfig } from "lib/get-use-case.types"
@@ -33,15 +32,15 @@ export default function consume(config: UseCasesConfig) {
     // apply modifiers related to consumable
     if (modifiers) {
       const health = getHealth(store, charId)
-      const updates: Partial<DbHealth> = {}
       modifiers.forEach(mod => {
-        const calcValue = applyMod(health[mod.id], mod)
-        updates[mod.id] = calcValue
         if (mod.id === "currHp") {
-          promises.push(updateHp(config)({ charId, newHpValue: calcValue }))
+          const currHp = applyMod(0, mod)
+          const payload = { rads: 0, limbs: {}, currHp }
+          promises.push(updateHealth(config)({ charId, payload }))
         }
         if (mod.id === "rads") {
-          promises.push(updateRads(config)({ charId, newRadsValue: calcValue }))
+          const newRadsValue = applyMod(health[mod.id], mod)
+          promises.push(updateRads(config)({ charId, newRadsValue }))
         }
       })
     }

@@ -6,7 +6,7 @@ export type UpdateHpParams = {
   newHpValue: number
 }
 
-export default function updateHp({ db }: UseCasesConfig) {
+export default function updateCurrHp({ db }: UseCasesConfig) {
   const healthRepo = repositoryMap[db].healthRepository
 
   return ({ charId, newHpValue }: UpdateHpParams) =>

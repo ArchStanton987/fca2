@@ -1,5 +1,74 @@
-import UpdateHealthConfirmationModal from "screens/MainTabs/modals/UpdateHealthConfirmationModal/UpdateHealthConfirmationModal"
+import { View } from "react-native"
 
-export default function UpdateHealthConfirmation() {
-  return <UpdateHealthConfirmationModal />
+import { router, useLocalSearchParams } from "expo-router"
+
+import { limbsMap } from "lib/character/health/Health"
+import { LimbId } from "lib/character/health/health.const"
+import {
+  useUpdateHealthActions,
+  useUpdateHealthCurrHp,
+  useUpdateHealthLimbs,
+  useUpdateHealthRads
+} from "lib/character/health/update-health-store"
+
+import List from "components/List"
+import ModalCta from "components/ModalCta/ModalCta"
+import ScrollableSection from "components/ScrollableSection"
+import Spacer from "components/Spacer"
+import Txt from "components/Txt"
+import ModalBody from "components/wrappers/ModalBody"
+import { useGetUseCases } from "providers/UseCasesProvider"
+
+function ListElement({ label, count }: { label: string; count: number }) {
+  return (
+    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+      <Txt>{label}</Txt>
+      <Txt>{count}</Txt>
+    </View>
+  )
+}
+
+export default function UpdateHealthConfirmationModal() {
+  const { charId } = useLocalSearchParams<{ charId: string }>()
+
+  const useCases = useGetUseCases()
+
+  const actions = useUpdateHealthActions()
+  const rads = useUpdateHealthRads()
+  const currHp = useUpdateHealthCurrHp()
+  const limbs = useUpdateHealthLimbs()
+
+  const limbsEntries = Object.entries(limbs)
+    .map(([limbId, count]) => ({ id: limbId as LimbId, count }))
+    .filter(entry => entry.count !== 0)
+
+  const onPressConfirm = async () => {
+    const payload = { rads, currHp, limbs }
+    await useCases.character.updateHealth({ charId, payload })
+    actions.reset()
+    router.dismiss(2)
+  }
+
+  return (
+    <ModalBody>
+      <Spacer y={30} />
+      <Txt style={{ textAlign: "center" }}>
+        Vous êtes sur le point d&apos;effectuer les modifications suivantes :
+      </Txt>
+      <Spacer y={30} />
+      <ScrollableSection title="SANTE" style={{ flex: 1, width: 300, alignSelf: "center" }}>
+        {rads !== 0 ? <ListElement label="RADS" count={rads} /> : null}
+        {currHp !== 0 ? <ListElement label="PV" count={currHp} /> : null}
+        <List
+          data={limbsEntries}
+          keyExtractor={l => l.id}
+          renderItem={({ item }) => (
+            <ListElement label={limbsMap[item.id].label} count={item.count} />
+          )}
+        />
+      </ScrollableSection>
+      <Spacer y={15} />
+      <ModalCta onPressConfirm={onPressConfirm} />
+    </ModalBody>
+  )
 }

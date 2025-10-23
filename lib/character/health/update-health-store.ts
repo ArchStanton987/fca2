@@ -3,7 +3,7 @@ import { create } from "zustand"
 import { DbHealth } from "./Health"
 import { LimbId } from "./health.const"
 
-type HealthStore = {
+export type UpdateHealthStore = {
   category: keyof DbHealth
   amount: number
   rads: number
@@ -19,7 +19,7 @@ type HealthStore = {
   }
 }
 
-export const useUpdateHealthStore = create<HealthStore>()((set, _, store) => ({
+export const useUpdateHealthStore = create<UpdateHealthStore>()((set, _, store) => ({
   category: "currHp",
   amount: 5,
   rads: 0,
@@ -74,5 +74,6 @@ export const useUpdateHealthAmount = () => useUpdateHealthStore(state => state.a
 export const useUpdateHealthSelectedLimb = () => useUpdateHealthStore(state => state.selectedLimb)
 export const useUpdateHealthRads = () => useUpdateHealthStore(state => state.rads)
 export const useUpdateHealthCurrHp = () => useUpdateHealthStore(state => state.currHp)
+export const useUpdateHealthLimbs = () => useUpdateHealthStore(state => state.limbs)
 export const useUpdateHealthLimb = (id: LimbId) =>
   useUpdateHealthStore(state => state.limbs[id] ?? 0)

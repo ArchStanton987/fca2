@@ -4,11 +4,7 @@ import { getExpiringEffects, getFollowingEffects } from "lib/character/effects/e
 import addEffect from "lib/character/effects/use-cases/add-effect"
 import removeEffect from "lib/character/effects/use-cases/remove-effect"
 import Health from "lib/character/health/Health"
-import { getHealth } from "lib/character/health/health-provider"
-import updateHp from "lib/character/health/use-cases/update-hp"
-import updateLimbsHp from "lib/character/health/use-cases/update-limbs-hp"
-import { getExp } from "lib/character/progress/exp-provider"
-import { getLevelAndThresholds } from "lib/character/status/status-calc"
+import updateHealth from "lib/character/health/use-cases/update-health"
 import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
@@ -56,14 +52,8 @@ export default function updateDate(config: UseCasesConfig) {
       }
 
       if (hpDiff !== 0) {
-        const health = getHealth(store, charId)
-        const exp = getExp(store, charId)
-        const { level } = getLevelAndThresholds(exp)
-        const newLimbsHp = health.getNewLimbsHpFromHpDiff(hpDiff, level)
-        promises.push(
-          updateHp(config)({ charId, newHpValue: health.currHp + hpDiff }),
-          updateLimbsHp(config)({ charId, newLimbsHp })
-        )
+        const payload = { rads: 0, limbs: {}, currHp: hpDiff }
+        promises.push(updateHealth(config)({ charId, payload }))
       }
     })
     promises.push(squadRepo.setChild({ id: squadId, childKey: "datetime" }, newDate.toJSON()))

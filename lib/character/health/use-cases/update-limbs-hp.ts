@@ -1,7 +1,7 @@
 import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
-import { LimbId } from "../healthMap"
+import { LimbId } from "../health.const"
 
 export type UpdateLimbsHpParams = {
   charId: string

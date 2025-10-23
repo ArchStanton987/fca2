@@ -7,7 +7,8 @@ import { DbEffectData } from "./character/effects/effects.types"
 import subAdditionalEffects from "./character/effects/sub-additional-effects"
 import addEffect, { AddEffectParams } from "./character/effects/use-cases/add-effect"
 import removeEffect, { RemoveEffectParams } from "./character/effects/use-cases/remove-effect"
-import updateHp, { UpdateHpParams } from "./character/health/use-cases/update-hp"
+import updateCurrHp, { UpdateHpParams } from "./character/health/use-cases/update-curr-hp"
+import updateHealth, { UpdateHealthParams } from "./character/health/use-cases/update-health"
 import updateLimbsHp, { UpdateLimbsHpParams } from "./character/health/use-cases/update-limbs-hp"
 import updateExp, { UpdateExpParams } from "./character/progress/use-cases/update-exp"
 import adminEndFight, { AdminEndFightParams } from "./combat/use-cases/admin-end-fight"
@@ -110,9 +111,10 @@ export default function getUseCases(config: UseCasesConfig) {
       updateExp: (params: UpdateExpParams) => updateExp(config)(params),
       addEffect: (params: AddEffectParams) => addEffect(config)(params),
       removeEffect: (params: RemoveEffectParams) => removeEffect(config)(params),
-      updateHp: (params: UpdateHpParams) => updateHp(config)(params),
+      updateHp: (params: UpdateHpParams) => updateCurrHp(config)(params),
       updateLimbsHp: (params: UpdateLimbsHpParams) => updateLimbsHp(config)(params),
-      toggleEquip: (params: ToggleEquipParams) => toggleEquip(config)(params)
+      toggleEquip: (params: ToggleEquipParams) => toggleEquip(config)(params),
+      updateHealth: (params: UpdateHealthParams) => updateHealth(config)(params)
     },
     gm: {
       updateDatetime: (params: UpdateDateParams) => updateDate(config)(params)
