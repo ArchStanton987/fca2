@@ -1,7 +1,6 @@
 import { getRandomArbitrary } from "lib/common/utils/dice-calc"
 import { critters } from "lib/npc/const/npc-templates"
 
-import Abilities from "../abilities/Abilities"
 import { Special } from "../abilities/special/special.types"
 import Effect from "../effects/Effect"
 import { EffectId } from "../effects/effects.types"
@@ -22,7 +21,8 @@ type LimbData = {
   crippledEffectId: EffectId
   label: string
   short: string
-  maxValue: number
+  minHpPool: number
+  getMaxValue: (lvl: number) => number
   isVital: boolean
   aim: {
     aimMalus: number
@@ -36,120 +36,100 @@ export const limbsMap: Record<LimbId, LimbData> = {
     crippledEffectId: "crippledHead",
     label: "PV tête",
     short: "PVtê",
-    maxValue: 15,
+    minHpPool: 15,
+    getMaxValue: (lvl: number) => lvl + limbsMap.head.minHpPool,
     isVital: true,
-    aim: {
-      aimMalus: 30,
-      critBonus: 30
-    }
+    aim: { aimMalus: 30, critBonus: 30 }
   },
   leftTorso: {
     id: "leftTorso",
     crippledEffectId: "crippledLeftTorso",
     label: "PV torse gauche",
     short: "PVto",
-    maxValue: 25,
+    minHpPool: 25,
+    getMaxValue: (lvl: number) => lvl + limbsMap.leftTorso.minHpPool,
     isVital: true,
-    aim: {
-      aimMalus: 0,
-      critBonus: 0
-    }
+    aim: { aimMalus: 0, critBonus: 0 }
   },
   rightTorso: {
     id: "rightTorso",
     crippledEffectId: "crippledRightTorso",
     label: "PV torse droit",
     short: "PVto",
-    maxValue: 30,
+    minHpPool: 30,
+    getMaxValue: (lvl: number) => lvl + limbsMap.rightTorso.minHpPool,
     isVital: true,
-    aim: {
-      aimMalus: 0,
-      critBonus: 0
-    }
+    aim: { aimMalus: 0, critBonus: 0 }
   },
   leftArm: {
     id: "leftArm",
     crippledEffectId: "crippledLeftArm",
     label: "PV bras gauche",
     short: "PVBrG",
-    maxValue: 20,
+    minHpPool: 20,
+    getMaxValue: (lvl: number) => lvl + limbsMap.leftArm.minHpPool,
     isVital: false,
-    aim: {
-      aimMalus: 10,
-      critBonus: 10
-    }
+    aim: { aimMalus: 10, critBonus: 10 }
   },
   rightArm: {
     id: "rightArm",
     crippledEffectId: "crippledRightArm",
     label: "PV bras droit",
     short: "PVBrD",
-    maxValue: 20,
+    minHpPool: 20,
+    getMaxValue: (lvl: number) => lvl + limbsMap.rightArm.minHpPool,
     isVital: false,
-    aim: {
-      aimMalus: 10,
-      critBonus: 10
-    }
+    aim: { aimMalus: 10, critBonus: 10 }
   },
   leftLeg: {
     id: "leftLeg",
     crippledEffectId: "crippledLeftLeg",
     label: "PV jambe gauche",
     short: "PVJaG",
-    maxValue: 20,
+    minHpPool: 20,
+    getMaxValue: (lvl: number) => lvl + limbsMap.leftLeg.minHpPool,
     isVital: false,
-    aim: {
-      aimMalus: 10,
-      critBonus: 10
-    }
+    aim: { aimMalus: 10, critBonus: 10 }
   },
   rightLeg: {
     id: "rightLeg",
     crippledEffectId: "crippledRightLeg",
     label: "PV jambe droite",
     short: "PVJaD",
-    maxValue: 20,
+    minHpPool: 20,
+    getMaxValue: (lvl: number) => lvl + limbsMap.rightLeg.minHpPool,
     isVital: false,
-    aim: {
-      aimMalus: 10,
-      critBonus: 10
-    }
+    aim: { aimMalus: 10, critBonus: 10 }
   },
   groin: {
     id: "groin",
     crippledEffectId: "crippledGroin",
     label: "PV entrejambe",
     short: "PVEnJ",
-    maxValue: 15,
+    minHpPool: 15,
+    getMaxValue: (lvl: number) => lvl + limbsMap.groin.minHpPool,
     isVital: false,
-    aim: {
-      aimMalus: 30,
-      critBonus: 30
-    }
+    aim: { aimMalus: 30, critBonus: 30 }
   },
   body: {
     id: "body",
     crippledEffectId: "crippledBody",
     label: "Corps",
     short: "Corps",
-    maxValue: 30,
+    minHpPool: 30,
+    getMaxValue: (lvl: number) => lvl + limbsMap.body.minHpPool,
     isVital: true,
-    aim: {
-      aimMalus: 10,
-      critBonus: 10
-    }
+    aim: { aimMalus: 10, critBonus: 10 }
   },
   tail: {
     id: "tail",
     crippledEffectId: "crippledTail",
     label: "Queue",
     short: "Queue",
-    maxValue: 20,
+    minHpPool: 20,
+    getMaxValue: (lvl: number) => lvl + limbsMap.tail.minHpPool,
     isVital: false,
-    aim: {
-      aimMalus: 10,
-      critBonus: 10
-    }
+    aim: { aimMalus: 10, critBonus: 10 }
   }
 }
 
@@ -251,38 +231,18 @@ export default class Health {
     return { ...this.hpEffects, ...this.crippledEffects, ...this.radsEffects }
   }
 
-  getNewHpOnTimePass(currDate: Date, newDate: Date, secAttr: Abilities["secAttr"]) {
-    const { healHpPerHour, poisResist } = secAttr.curr
-    const hpDiff = Health.getHpDiffOnTimePass(currDate, newDate, healHpPerHour)
-    if (hpDiff === 0) return 0
-    const isHealing = hpDiff > 0
-    if (isHealing) {
-      const healedHp = Math.min(this.missingHp, hpDiff)
-      return this.currHp + healedHp
-    }
-
-    const rawDamage = Math.abs(hpDiff)
-    const poisonDamageMultiplier = 1 - poisResist / 100
-    const totalDamage = poisonDamageMultiplier * rawDamage
-    return this.currHp - totalDamage
-  }
-
-  getNewLimbsOnTimePass(currDate: Date, newDate: Date, secAttr: Abilities["secAttr"]) {
-    const { healHpPerHour, poisResist } = secAttr.curr
-    const hpDiff = Health.getHpDiffOnTimePass(currDate, newDate, healHpPerHour)
-
+  getNewLimbsHpFromHpDiff(hpDiff: number, charLevel: number) {
     if (hpDiff === 0) return this.limbs
 
     const isHealing = hpDiff > 0
 
     const newLimbsHp = {} as Record<LimbId, number>
 
-    // if hpDiff is positive, character is healing
     if (isHealing) {
       const healedHp = Math.min(this.missingHp, hpDiff)
       for (let i = 0; i < healedHp; i += 1) {
         const healableLimbs = Object.entries(this.limbs).filter(
-          ([id, value]) => value < limbsMap[id as LimbId].maxValue
+          ([id, value]) => value < limbsMap[id as LimbId].getMaxValue(charLevel)
         )
         const randomIndex = getRandomArbitrary(0, healableLimbs.length)
         const limbIdToHeal = healableLimbs[randomIndex][0]
@@ -291,12 +251,8 @@ export default class Health {
       return newLimbsHp
     }
 
-    // if hpDiff is negative, character is poisoned
-    const baseDamageHp = Math.abs(hpDiff)
-    const poisonDamageMultiplier = 1 - poisResist / 100
-    // damage to be taken with poison resistance
-    const rawDamage = poisonDamageMultiplier * baseDamageHp
-    for (let i = 0; i < rawDamage; i += 1) {
+    const damage = Math.abs(hpDiff)
+    for (let i = 0; i < damage; i += 1) {
       const damageableLimbs = Object.entries(this.limbs).filter(([, value]) => value > 0)
       const randomIndex = getRandomArbitrary(0, damageableLimbs.length)
       const limbIdToDamage = damageableLimbs[randomIndex][0]

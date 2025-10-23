@@ -76,3 +76,8 @@ export function getTraits(store: QueryClient, charId: string) {
   const ab = store.getQueryData(getDbAbilitiesOptions(charId).queryKey)
   return ab?.traits ?? {}
 }
+export function getSecAttr(store: QueryClient, charId: string) {
+  const ab = store.getQueryData(getDbAbilitiesOptions(charId).queryKey)
+  if (!ab?.secAttr) throw new Error(`Could not find sec attr for id : ${charId}`)
+  return ab.secAttr
+}

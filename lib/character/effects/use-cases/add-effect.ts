@@ -11,6 +11,7 @@ import { EffectId } from "../effects.types"
 export type AddEffectParams = {
   effectId: EffectId
   charId: string
+  startDate?: Date
   lengthInMs?: number
 }
 
@@ -18,14 +19,14 @@ export default function addEffect({ db, collectiblesData, store }: UseCasesConfi
   const effectsRepo = repositoryMap[db].effectsRepository
   const allEffects = collectiblesData.effects
 
-  return ({ effectId, charId, lengthInMs }: AddEffectParams) => {
+  return ({ effectId, charId, startDate, lengthInMs }: AddEffectParams) => {
     const effectData = allEffects[effectId]
 
     const charInfo = getCharInfo(store, charId)
     const currentCharEffects = getEffects(store, charId)
-    const startDate = getDatetime(store, charInfo.squadId)
+    const refDate = startDate ?? getDatetime(store, charInfo.squadId)
     const traits = getTraits(store, charId)
-    const dbEffect = EffectsMappers.toDb(traits, effectId, effectData, startDate, lengthInMs)
+    const dbEffect = EffectsMappers.toDb(traits, effectId, effectData, refDate, lengthInMs)
     if (effectId in currentCharEffects) {
       const existingEffect = currentCharEffects[effectId]
       return effectsRepo.patch({ charId, dbKey: existingEffect.dbKey }, dbEffect)

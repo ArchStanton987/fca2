@@ -10,6 +10,7 @@ import { usePlayablesBaseSpecial } from "../abilities/base-special-provider"
 import { usePlayablesCharInfo } from "../info/info-provider"
 import { usePlayablesExp } from "../progress/exp-provider"
 import Health, { DbHealth } from "./Health"
+import { LimbId } from "./health.const"
 
 export const getHealthOptions = (charId: string) =>
   queryOptions({
@@ -61,6 +62,15 @@ export function usePlayablesHealthEffects(ids: string[]) {
 
 export function useHealth<TData = Health>(id: string, select?: (data: Health) => TData) {
   return useSuspenseQuery({ ...getHealthOptions(id), select })
+}
+export function useRads(id: string) {
+  return useHealth(id, health => health.rads)
+}
+export function useCurrHp(id: string) {
+  return useHealth(id, health => health.currHp)
+}
+export function useLimbHp(charId: string, limbId: LimbId) {
+  return useHealth(charId, health => health.limbs[limbId])
 }
 
 export function getHealth(store: QueryClient, charId: string) {

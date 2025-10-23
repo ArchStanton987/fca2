@@ -9,7 +9,6 @@ import ProgressionBar from "components/ProgressionBar/ProgressionBar"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import routes from "constants/routes"
-import { UpdateHealthModalParams } from "screens/MainTabs/modals/UpdateHealthModal/UpdateHealthModal.params"
 import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
 
@@ -21,8 +20,7 @@ export default function HeaderHp() {
 
   const onPress = () => {
     const pathname = routes.modal.updateHealth
-    const params: UpdateHealthModalParams = { charId, squadId, initElement: "rightTorsoHp" }
-    router.push({ pathname, params })
+    router.push({ pathname, params: { charId, squadId } })
   }
 
   const getColor = () => {

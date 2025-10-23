@@ -53,3 +53,8 @@ export function getDatetime(store: QueryClient, squadId: string) {
   if (!squads[squadId]) throw new Error(`Squad with id : ${squadId} could not be found.`)
   return squads[squadId].datetime
 }
+export function getSquadPlayables(store: QueryClient, squadId: string) {
+  const squads = store.getQueryData(getSquadsOptions().queryKey) ?? {}
+  if (!squads[squadId]) throw new Error(`Squad with id : ${squadId} could not be found.`)
+  return { ...squads[squadId].members, ...squads[squadId].npcs }
+}

@@ -1,4 +1,9 @@
-import { queryOptions, useSuspenseQueries, useSuspenseQuery } from "@tanstack/react-query"
+import {
+  QueryClient,
+  queryOptions,
+  useSuspenseQueries,
+  useSuspenseQuery
+} from "@tanstack/react-query"
 import { useMultiSub } from "lib/shared/db/useSub"
 
 export const getExpOptions = (charId: string) =>
@@ -22,4 +27,10 @@ export function usePlayablesExp(ids: string[]) {
 
 export function useExp(id: string) {
   return useSuspenseQuery(getExpOptions(id))
+}
+
+export function getExp(store: QueryClient, id: string) {
+  const exp = store.getQueryData(getExpOptions(id).queryKey)
+  if (exp === undefined) throw new Error(`Could not find exp for char : ${id}`)
+  return exp
 }
