@@ -1,3 +1,5 @@
+import { ReactNode } from "react"
+
 import { QueryClient, queryOptions, useSuspenseQuery } from "@tanstack/react-query"
 import { useSub } from "lib/shared/db/useSub"
 
@@ -52,6 +54,14 @@ export function useSubCombat(combatId: string) {
   useSub(path, (data: DbCombatInfo) => new Combat({ info: data, history, combatId }))
 }
 
+export function SubCombat({ children, combatId }: { children: ReactNode; combatId: string }) {
+  useSubCombatState(combatId)
+  useSubCombatHistory(combatId)
+  useSubCombat(combatId)
+
+  return children
+}
+
 export function useCombat<TData = Combat>(combatId: string, select?: (data: Combat) => TData) {
   return useSuspenseQuery({ ...getCombatOptions(combatId), select })
 }
@@ -64,4 +74,9 @@ export function getCombat(store: QueryClient, combatId: string) {
   const combat = store.getQueryData(getCombatOptions(combatId).queryKey)
   if (!combat) throw new Error(`Could not find combat with id : ${combatId}`)
   return combat
+}
+export function getContenders(store: QueryClient, combatId: string) {
+  const combat = store.getQueryData(getCombatOptions(combatId).queryKey)
+  if (!combat) throw new Error(`Could not find combat with id : ${combatId}`)
+  return combat.contendersIds
 }

@@ -1,26 +1,32 @@
 import { ThenableReference } from "firebase/database"
-import Character from "lib/character/Character"
+import { getSecAttr } from "lib/character/abilities/abilities-provider"
+import { getCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { DbCombatStatus } from "lib/character/combat-status/combat-status.types"
 import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
+import { getContenders } from "./sub-combat"
+
 export type AdminEndFightParams = {
-  shouldDeleteNpcs?: boolean
   combatId: string
-  contenders: Record<string, Character>
 }
 
-export default function adminEndFight({ db }: UseCasesConfig) {
+export default function adminEndFight({ db, store }: UseCasesConfig) {
   const combatStatusRepo = repositoryMap[db].combatStatusRepository
   const playableRepo = repositoryMap[db].playableRepository
 
-  return ({ combatId, contenders }: AdminEndFightParams) => {
+  return ({ combatId }: AdminEndFightParams) => {
     const promises: (Promise<void> | ThenableReference)[] = []
-    Object.entries(contenders).forEach(([charId, { abilities, combatStatus }]) => {
+
+    const contenders = getContenders(store, combatId)
+
+    Object.keys(contenders).forEach(charId => {
+      const combatStatus = getCombatStatus(store, charId)
       // reset character ap, currFightId, combatStatus
       if (combatId === combatStatus.combatId) {
+        const secAttr = getSecAttr(store, charId)
         const defaultCombatStatus: DbCombatStatus = {
-          currAp: abilities.secAttr.curr.actionPoints
+          currAp: secAttr.curr.actionPoints
         }
         promises.push(combatStatusRepo.set({ charId }, defaultCombatStatus))
       }

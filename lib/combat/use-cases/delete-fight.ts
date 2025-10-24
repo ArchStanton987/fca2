@@ -1,21 +1,25 @@
-import { Playable } from "lib/character/Playable"
+import { getSecAttr } from "lib/character/abilities/abilities-provider"
+import { getPlayableCombatHistory } from "lib/character/combat-history/combat-history-provider"
+import { getCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { DbCombatStatus } from "lib/character/combat-status/combat-status.types"
 import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
+import { getContenders } from "./sub-combat"
+
 export type DeleteFightParams = {
   gameId: string
   combatId: string
-  contenders: Record<string, Playable>
 }
 
-export default function deleteFight({ db }: UseCasesConfig) {
+export default function deleteFight(config: UseCasesConfig) {
+  const { db, store } = config
   const combatRepo = repositoryMap[db].combatRepository
   const combatStatusRepo = repositoryMap[db].combatStatusRepository
   const playableRepo = repositoryMap[db].playableRepository
   const squadRepo = repositoryMap[db].squadRepository
 
-  return ({ gameId, combatId, contenders }: DeleteFightParams) => {
+  return ({ gameId, combatId }: DeleteFightParams) => {
     const promises: Promise<void>[] = []
 
     // delete combat entry
@@ -23,17 +27,20 @@ export default function deleteFight({ db }: UseCasesConfig) {
     // @ts-ignore
     promises.push(squadRepo.patchChild({ id: gameId, childKey: "combats" }, { [combatId]: null }))
 
-    Object.entries(contenders).forEach(([charId, { abilities, combats, combatStatus }]) => {
+    const contenders = getContenders(store, combatId)
+
+    Object.keys(contenders).forEach(charId => {
       // remove fight ID in characters combat archive
-      if (combats[combatId]) {
-        const newCombats = { ...combats }
-        delete newCombats[combatId]
-        promises.push(playableRepo.patch({ id: charId }, { combats: newCombats }))
+      const combatHistory = getPlayableCombatHistory(store, charId)
+      if (combatHistory[combatId]) {
+        const { [combatId]: removed, ...combats } = combatHistory
+        promises.push(playableRepo.setChild({ id: charId, childKey: "combats" }, combats))
       }
 
       // reset character ap, currFightId, combatStatus IF current combat is the one being deleted
+      const combatStatus = getCombatStatus(store, charId)
+      const secAttr = getSecAttr(store, charId)
       if (combatStatus.combatId === combatId) {
-        const { secAttr } = abilities
         const defaultCombatStatus: DbCombatStatus = { currAp: secAttr.curr.actionPoints }
         promises.push(combatStatusRepo.set({ charId }, defaultCombatStatus))
       }

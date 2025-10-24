@@ -1,10 +1,10 @@
-import { useMemo } from "react"
+import { Suspense } from "react"
 import { TouchableOpacity } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import { usePlayables } from "lib/character/playables-provider"
-import { useSubCombatInfo } from "lib/combat/use-cases/sub-combat"
+import { useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
+import { SubCombat, useCombat, useContenders } from "lib/combat/use-cases/sub-combat"
 import Toast from "react-native-toast-message"
 
 import DrawerPage from "components/DrawerPage"
@@ -17,37 +17,18 @@ import LoadingScreen from "screens/LoadingScreen"
 import layout from "styles/layout"
 import { getDDMMYYYY, getHHMM } from "utils/date"
 
-export default function AdminCombatScreen() {
-  const useCases = useGetUseCases()
+function Screen() {
   const { combatId, squadId } = useLocalSearchParams<{ combatId: string; squadId: string }>()
+  const useCases = useGetUseCases()
 
-  const combatInfoReq = useSubCombatInfo(combatId)
-  const contendersIds = useMemo(
-    () => Object.keys(combatInfoReq.data?.contenders ?? []),
-    [combatInfoReq.data?.contenders]
-  )
-
-  const playables = usePlayables()
-  const contenders = Object.fromEntries(contendersIds.map(id => [id, playables[id]]))
-
-  const isPending = [combatInfoReq].some(r => r.isPending)
-  if (!combatId) {
-    return (
-      <DrawerPage>
-        <Section style={{ flex: 1 }} title="informations">
-          <Txt>Aucun combat sélectionné</Txt>
-        </Section>
-      </DrawerPage>
-    )
-  }
-  if (isPending || !combatInfoReq.data) return <LoadingScreen />
-  if (!combatInfoReq.data) return <LoadingScreen />
-
-  const isFightActive = Object.values(contenders).some(c => c.combatStatus.combatId === combatId)
+  const { data: contendersIds } = useContenders(combatId)
+  const combatStatuses = useCombatStatuses(contendersIds)
+  const isFightActive = Object.values(combatStatuses).some(c => c.combatId === combatId)
+  const { data: combat } = useCombat(combatId)
 
   const deleteCombat = async () => {
     try {
-      await useCases.combat.delete({ gameId: squadId, combatId, contenders })
+      await useCases.combat.delete({ gameId: squadId, combatId })
       Toast.show({ type: "custom", text1: "Le combat a été supprimé" })
       router.setParams({ combatId: "" })
     } catch (error) {
@@ -57,7 +38,7 @@ export default function AdminCombatScreen() {
 
   const adminEndFight = async () => {
     try {
-      await useCases.combat.adminEndFight({ combatId, contenders })
+      await useCases.combat.adminEndFight({ combatId })
       Toast.show({ type: "custom", text1: "Le combat a été clôturé" })
     } catch (error) {
       Toast.show({ type: "error", text1: "Erreur lors de la clôture du combat" })
@@ -66,15 +47,14 @@ export default function AdminCombatScreen() {
 
   const startFight = async () => {
     try {
-      await useCases.combat.startFight({ combatId, contenders })
+      await useCases.combat.startFight({ combatId })
       Toast.show({ type: "custom", text1: "Le combat a été démarré" })
     } catch (error) {
       Toast.show({ type: "error", text1: "Erreur lors du démarrage du combat" })
     }
   }
 
-  const { title, description, location } = combatInfoReq.data
-  const date = new Date(combatInfoReq.data.date)
+  const { title, description, location, date } = combat
   const d = getDDMMYYYY(date)
   const h = getHHMM(date)
 
@@ -109,5 +89,16 @@ export default function AdminCombatScreen() {
         </TouchableOpacity>
       </ScrollSection>
     </DrawerPage>
+  )
+}
+
+export default function CombatAdminScreen() {
+  const { combatId } = useLocalSearchParams<{ combatId: string }>()
+  return (
+    <SubCombat combatId={combatId}>
+      <Suspense fallback={<LoadingScreen />}>
+        <Screen />
+      </Suspense>
+    </SubCombat>
   )
 }

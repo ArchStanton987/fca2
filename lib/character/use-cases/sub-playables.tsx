@@ -4,6 +4,7 @@ import { useMultiSubAmmo, useMultiSubCaps, useMultiSubItems } from "lib/inventor
 
 import { useSubPlayablesAbilities } from "../abilities/abilities-provider"
 import { useSubPlayablesBaseSpecial } from "../abilities/base-special-provider"
+import { useSubPlayablesCombatHistory } from "../combat-history/combat-history-provider"
 import { useSubPlayablesCombatStatus } from "../combat-status/combat-status-provider"
 import { useSubPlayablesEffects } from "../effects/effects-provider"
 import { useSubPlayablesHealth } from "../health/health-provider"
@@ -32,6 +33,7 @@ export default function SubPlayables({
   useSubPlayablesAbilities(playablesIds)
   useSubPlayablesEffects(playablesIds, datetime)
   useSubPlayablesCombatStatus(playablesIds)
+  useSubPlayablesCombatHistory(playablesIds)
 
   return children
 }
