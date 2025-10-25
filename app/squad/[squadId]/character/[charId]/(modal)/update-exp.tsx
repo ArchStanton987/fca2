@@ -1,8 +1,9 @@
 import React, { useState } from "react"
-import { TouchableOpacity, View } from "react-native"
+import { StyleSheet, TouchableOpacity, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useExp } from "lib/character/progress/exp-provider"
 import { useProgress } from "lib/character/progress/progress-provider"
 
 import AmountSelector from "components/AmountSelector"
@@ -16,37 +17,55 @@ import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import ModalBody from "components/wrappers/ModalBody"
 import { useGetUseCases } from "providers/UseCasesProvider"
-import { UpdateStatusModalParams } from "screens/MainTabs/modals/UpdateStatusModal/UpdateStatusModal.params"
-import {
-  UpdatableStatusElement,
-  UpdateStatusState
-} from "screens/MainTabs/modals/UpdateStatusModal/UpdateStatusModal.types"
-import { SearchParams, fromLocalParams } from "screens/ScreenParams"
+import colors from "styles/colors"
 
-import styles from "./UpdateStatusModal.styles"
-
-const defaultState = { exp: { count: 0, initValue: 0 } }
+const styles = StyleSheet.create({
+  row: {
+    flexDirection: "row",
+    flex: 1
+  },
+  statusSection: {
+    width: 160
+  },
+  listSection: {
+    flex: 1
+  },
+  addSection: {
+    width: 280
+  },
+  iconsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center"
+  },
+  listItemContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingLeft: 5,
+    paddingVertical: 7
+  },
+  listItemContainerSelected: {
+    backgroundColor: colors.terColor
+  },
+  listItem: {}
+})
 
 export default function UpdateStatusModal() {
+  const { charId } = useLocalSearchParams<{ charId: string }>()
   const useCases = useGetUseCases()
-  const localParams = useLocalSearchParams() as SearchParams<UpdateStatusModalParams>
-  const { initCategory, charId } = fromLocalParams(localParams)
 
-  const progress = useProgress(charId)
+  const { data: exp } = useExp(charId)
 
-  const [updateState, setUpdateState] = useState<UpdateStatusState>(defaultState)
-  const [selectedItem, setSelectedItem] = useState<UpdatableStatusElement | null>(initCategory)
+  const [expMod, setExpMod] = useState(0)
   const [selectedAmount, setSelectedAmount] = useState<number>(1)
 
-  const currentValue = selectedItem ? progress.exp : 0
-  const currCount = selectedItem ? updateState[selectedItem].count : 0
-  const newValue = currentValue + currCount
+  const newValue = exp + expMod
 
   const onPressIcon = (type: "plus" | "minus") => {
-    if (!selectedItem) return
-    const { count, initValue } = updateState[selectedItem]
-    const val = type === "plus" ? count + selectedAmount : count - selectedAmount
-    setUpdateState(prev => ({ ...prev, [selectedItem]: { count: val, initValue } }))
+    const amount = type === "plus" ? selectedAmount : -selectedAmount
+    let newMod = exp + amount
+    if (exp + amount < 0) newMod = -exp
+    setExpMod(newMod)
   }
 
   const onPressConfirm = async () => {
@@ -60,11 +79,7 @@ export default function UpdateStatusModal() {
         <ScrollableSection title="STATUT" style={styles.statusSection}>
           <TouchableOpacity
             key="exp"
-            style={[
-              styles.listItemContainer,
-              selectedItem === "exp" && styles.listItemContainerSelected
-            ]}
-            onPress={() => setSelectedItem("exp")}
+            style={[styles.listItemContainer, styles.listItemContainerSelected]}
           >
             <Txt style={styles.listItem}>EXP</Txt>
             <Spacer y={5} />
@@ -72,22 +87,20 @@ export default function UpdateStatusModal() {
         </ScrollableSection>
         <Spacer x={15} />
         <ViewSection title="TOTAL" style={styles.listSection}>
-          {!!selectedItem && typeof currentValue === "number" && (
-            <>
-              <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <Txt>actuel : </Txt>
-                <Txt>{currentValue}</Txt>
-              </View>
-              <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <Txt>{currCount > 0 ? "à ajouter" : "à retirer"}</Txt>
-                <Txt>{currCount}</Txt>
-              </View>
-              <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <Txt>Prévisionnel</Txt>
-                <Txt>{newValue}</Txt>
-              </View>
-            </>
-          )}
+          <>
+            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+              <Txt>actuel : </Txt>
+              <Txt>{exp}</Txt>
+            </View>
+            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+              <Txt>{expMod > 0 ? "à ajouter" : "à retirer"}</Txt>
+              <Txt>{expMod}</Txt>
+            </View>
+            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+              <Txt>Prévisionnel</Txt>
+              <Txt>{newValue}</Txt>
+            </View>
+          </>
         </ViewSection>
         <Spacer x={15} />
         <ViewSection title="MODIFIER" style={styles.addSection}>

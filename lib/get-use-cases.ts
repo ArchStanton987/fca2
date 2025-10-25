@@ -1,4 +1,3 @@
-import getAbilitiesUseCases from "./character/abilities/abilities-use-cases"
 import updateCombatStatus, {
   UpdateCombatStatusParams
 } from "./character/combat-status/use-cases/update-combat-status"
@@ -69,7 +68,6 @@ export default function getUseCases(config: UseCasesConfig) {
       unload: (data: UnloadWeaponParams) => unloadWeapon(config)(data),
       useWeapon: (data: UseWeaponParams) => useWeapon(config)(data)
     },
-    abilities: getAbilitiesUseCases(config),
     additional: {
       subAdditionalClothings: (params: AdditionalClothingsParams = {}) =>
         subAdditionalClothings(config)(params),

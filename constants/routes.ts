@@ -41,7 +41,7 @@ const routes = {
     updateSkillsConfirmation: `${modal}/update-skills-confirmation`,
     updateHealth: `${modal}/update-health`,
     updateHealthConfirmation: `${modal}/update-health-confirmation`,
-    updateStatus: `${modal}/update-status`,
+    updateExp: `${modal}/update-exp`,
     barter: `${modal}/barter`,
     barterConfirmation: `${modal}/barter-confirmation`,
     updateKnowledges: `${modal}/update-knowledges`,

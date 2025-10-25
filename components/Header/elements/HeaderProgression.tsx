@@ -11,7 +11,6 @@ import ProgressionBar from "components/ProgressionBar/ProgressionBar"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import routes from "constants/routes"
-import { UpdateStatusModalParams } from "screens/MainTabs/modals/UpdateStatusModal/UpdateStatusModal.params"
 import { SearchParams } from "screens/ScreenParams"
 
 export default function HeaderProgression() {
@@ -21,9 +20,8 @@ export default function HeaderProgression() {
   const { level, prev, next } = getLevelAndThresholds(exp.data)
 
   const onPress = () => {
-    const pathname = routes.modal.updateStatus
-    const params: UpdateStatusModalParams = { charId, squadId, initCategory: "exp" }
-    router.push({ pathname, params })
+    const pathname = routes.modal.updateExp
+    router.push({ pathname, params: { squadId, charId } })
   }
 
   return (
