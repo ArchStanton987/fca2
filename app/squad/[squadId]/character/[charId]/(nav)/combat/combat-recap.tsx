@@ -1,5 +1,6 @@
 import { useLocalSearchParams } from "expo-router"
 
+import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import ActionIndicator from "lib/combat/ui/ActionIndicator"
 import RoundIndicator from "lib/combat/ui/RoundIndicator"
 import { CombatWeaponIndicator } from "lib/combat/ui/WeaponIndicator"
@@ -10,12 +11,11 @@ import Row from "components/Row"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
 import HealthFigure from "components/draws/HealthFigure/HealthFigure"
-import { useCombatStatus } from "providers/CombatStatusProvider"
 import layout from "styles/layout"
 
 export default function InCombatRecapPage() {
   const { charId } = useLocalSearchParams<{ charId: string }>()
-  const { combatId } = useCombatStatus()
+  const { data: combatId } = useCombatStatus(charId, cs => cs.combatId)
   const hasCombat = combatId !== ""
   return (
     <DrawerPage style={{ flexDirection: "column" }}>
@@ -37,7 +37,7 @@ export default function InCombatRecapPage() {
           style={{ width: 160 }}
           contentContainerStyle={{ justifyContent: "center", flex: 1 }}
         >
-          <HealthFigure />
+          <HealthFigure charId={charId} />
         </Section>
       </Row>
     </DrawerPage>

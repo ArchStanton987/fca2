@@ -1,7 +1,12 @@
 import { ReactNode } from "react"
 
-import { QueryClient, queryOptions, useSuspenseQuery } from "@tanstack/react-query"
-import { useSub } from "lib/shared/db/useSub"
+import {
+  QueryClient,
+  queryOptions,
+  useSuspenseQueries,
+  useSuspenseQuery
+} from "@tanstack/react-query"
+import { useMultiSub, useSub } from "lib/shared/db/useSub"
 
 import Combat from "../Combat"
 import CombatState from "../CombatState"
@@ -41,17 +46,49 @@ export function useCombatState<TData = CombatState>(
   return useSuspenseQuery({ ...combatStateOptions(combatId), select })
 }
 
-export function useSubCombatHistory(combatId: string) {
+function useSubCombatHistory(combatId: string) {
   const options = combatHistoryOptions(combatId)
   const path = options.queryKey.join("/")
   useSub(path)
 }
+function useSubCombatsHistories(combatsIds: string[]) {
+  useMultiSub(combatsIds.map(id => ({ path: combatHistoryOptions(id).queryKey.join("/") })))
+}
+function useCombatsHistories(combatsIds: string[]) {
+  return useSuspenseQueries({
+    queries: combatsIds.map(id => combatHistoryOptions(id)),
+    combine: results => Object.fromEntries(combatsIds.map((id, i) => [id, results[i]]))
+  })
+}
 
-export function useSubCombat(combatId: string) {
+function useSubCombat(combatId: string) {
   const options = getCombatOptions(combatId)
   const path = options.queryKey.join("/")
   const history = useSuspenseQuery(combatHistoryOptions(combatId))
   useSub(path, (data: DbCombatInfo) => new Combat({ info: data, history, combatId }))
+}
+export function SubCombats({
+  children,
+  combatsIds
+}: {
+  children: ReactNode
+  combatsIds: string[]
+}) {
+  useSubCombatsHistories(combatsIds)
+  const histories = useCombatsHistories(combatsIds)
+  useMultiSub(
+    combatsIds.map((id, i) => ({
+      path: getCombatOptions(id).queryKey.join("/"),
+      cb: (data: DbCombatInfo) => new Combat({ info: data, history: histories[i], combatId: id })
+    }))
+  )
+  return children
+}
+export function useCombats(combatsIds: string[]) {
+  return useSuspenseQueries({
+    queries: combatsIds.map(id => getCombatOptions(id)),
+    combine: results => Object.fromEntries(combatsIds.map((id, i) => [id, results[i]]))
+  })
 }
 
 export function SubCombat({ children, combatId }: { children: ReactNode; combatId: string }) {

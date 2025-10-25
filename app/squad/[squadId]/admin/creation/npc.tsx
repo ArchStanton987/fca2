@@ -3,13 +3,11 @@ import { View } from "react-native"
 
 import { useLocalSearchParams } from "expo-router"
 
-import { DbCombatStatus } from "lib/character/combat-status/combat-status.types"
-import { DbCharInfo } from "lib/character/info/CharInfo"
+import { BackgroundId, DbCharInfo } from "lib/character/info/CharInfo"
 import { species } from "lib/character/playable.const"
-import { BackgroundId, DbStatus } from "lib/character/status/status.types"
+import { getExpForLevel } from "lib/character/status/status-calc"
 import enemyTemplates, { critters } from "lib/npc/const/npc-templates"
 import { generateDbHuman } from "lib/npc/utils/npc-generation"
-import { useSquad } from "lib/squad/use-cases/sub-squad"
 import Toast from "react-native-toast-message"
 
 import Col from "components/Col"
@@ -43,7 +41,6 @@ type NpcForm = {
 export default function NpcCreation() {
   const { squadId } = useLocalSearchParams<{ squadId: string }>()
   const useCases = useGetUseCases()
-  const { data: squad } = useSquad(squadId)
 
   const defaultForm: NpcForm = {
     speciesId: "human",
@@ -80,26 +77,13 @@ export default function NpcCreation() {
   }
 
   const submit = async () => {
-    let payload
     const { level, ...rest } = form
-    const finalLevel = Number.isNaN(parseInt(level, 10)) ? 1 : parseInt(level, 10)
     const isCritter = form.templateId in critters
-    const meta: DbCharInfo = { isNpc: true, isCritter, ...rest }
-    if (form.speciesId === "human") {
-      payload = { ...generateDbHuman(finalLevel, form.templateId), meta }
-    } else {
-      const status: DbStatus = {
-        background: form.background,
-        exp: 1,
-        level: 1,
-        ...limbsDefault,
-        rads: 0
-      }
-      const combatStatus: DbCombatStatus = { currAp: 0 }
-      payload = { meta, status, combatStatus }
-    }
+    const info: DbCharInfo = { isNpc: true, isCritter, ...rest }
+    const exp = getExpForLevel(parseInt(level, 10))
+    const payload = { ...generateDbHuman(exp, form.templateId), info }
     try {
-      await useCases.npc.create({ npc: payload, squad })
+      await useCases.npc.create({ npc: payload, squadId })
       Toast.show({ type: "custom", text1: "Le PNJ a été créé" })
       setForm(defaultForm)
     } catch (err) {

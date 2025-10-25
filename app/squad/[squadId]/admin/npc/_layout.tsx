@@ -1,19 +1,25 @@
 import { View } from "react-native"
 
-import { Slot } from "expo-router"
+import { Slot, useLocalSearchParams } from "expo-router"
+
+import { useCharsNameInfo } from "lib/character/info/info-provider"
+import { useSquadNpcs } from "lib/squad/use-cases/sub-squad"
 
 import AdminDrawer from "components/Drawer/AdminDrawer"
 import Spacer from "components/Spacer"
-import { useAdmin } from "contexts/AdminContext"
 import styles from "styles/DrawerLayout.styles"
 import layout from "styles/layout"
 
-export default function EnemiesLayout() {
-  const { npcs } = useAdmin()
+export default function NpcsLayout() {
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
 
-  const navElements = Object.entries(npcs ?? {}).map(([id, entry]) => ({
-    path: id,
-    label: entry.meta.firstname
+  const { data: npcs } = useSquadNpcs(squadId)
+
+  const names = useCharsNameInfo(Object.keys(npcs))
+
+  const navElements = names.map(entry => ({
+    path: entry.id,
+    label: entry.fullname
   }))
 
   return (

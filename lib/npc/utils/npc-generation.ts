@@ -1,4 +1,4 @@
-import { DbChar } from "lib/character/Character"
+import { DbPlayable } from "lib/character/Playable"
 import {
   KnowledgeId,
   KnowledgeLevelValue
@@ -8,12 +8,12 @@ import { SkillId } from "lib/character/abilities/skills/skills.types"
 import { getUpSkillCost } from "lib/character/abilities/skills/utils/skills-utils"
 import { Special } from "lib/character/abilities/special/special.types"
 import { TraitId } from "lib/character/abilities/traits/traits.types"
-import { limbsDefault } from "lib/character/health/healthMap"
+import Health, { DbHealth } from "lib/character/health/Health"
+import { TemplateId } from "lib/character/info/CharInfo"
 import { getInitSkillsPoints, getSkillPointsPerLevel } from "lib/character/progress/progress-utils"
-import { getExpForLevel } from "lib/character/status/status-calc"
-import { BackgroundId, DbStatus } from "lib/character/status/status.types"
+import { getLevelAndThresholds } from "lib/character/status/status-calc"
 import { getRandomArbitrary } from "lib/common/utils/dice-calc"
-import { DbEquipedObjects, DbInventory } from "lib/objects/data/objects.types"
+import { DbInventory } from "lib/objects/data/objects.types"
 import { getRandomWeightedIndex } from "lib/shared/utils/math-utils"
 
 import humanTemplates from "../const/human-templates"
@@ -127,45 +127,35 @@ export const getUpSkillsScores = (
 //   }
 //   return equipedObjects
 // }
-export const getEquipedObjects = (): DbEquipedObjects =>
-  ({ weapons: {}, clothings: {} } as DbEquipedObjects)
 
-export const getStatus = (level: number, special: Special, background?: BackgroundId): DbStatus => {
-  // const currAp = secAttrMap.actionPoints.calc(special)
-  const exp = getExpForLevel(level)
-  const rads = 0
+export const getHealth = (exp: number, baseSPECIAL: Special, templateId: TemplateId): DbHealth => {
+  const { level } = getLevelAndThresholds(exp)
   return {
-    background: background ?? "other",
-    // currAp,
-    exp,
-    level,
-    rads,
-    ...limbsDefault
+    rads: 0,
+    currHp: Health.getMaxHp({ baseSPECIAL, exp, templateId }),
+    limbs: Health.initLimbs(templateId, level)
   }
 }
 
-export const generateDbHuman = (
-  level: number,
-  template: keyof typeof humanTemplates
-): Omit<DbChar, "meta"> => {
+export const generateDbHuman = (exp: number, template: TemplateId): Omit<DbPlayable, "info"> => {
   const baseSPECIAL = getSpecialFromTemplate(template)
   const traits = getTraitsFromTemplate(template)
+  const { level } = getLevelAndThresholds(exp)
   const tagSkills = getTagSkillsFromTemplate(level, template)
   const upSkills = getUpSkillsScores(level, tagSkills, baseSPECIAL, traits)
   // const equipedObj = getEquipedObjects(level, tagSkills, humanTemplates[template])
-  const equipedObj = getEquipedObjects()
-  const status = getStatus(level, baseSPECIAL)
+  const health = getHealth(exp, baseSPECIAL, template)
   const combatStatus = { currAp: 0 }
   return {
     abilities: {
       baseSPECIAL,
       upSkills,
-      traits,
+      traits: Object.fromEntries(traits.map(t => [t, t])),
       knowledges: {} as Record<KnowledgeId, KnowledgeLevelValue>
     },
+    exp,
     combatStatus,
     inventory: {} as DbInventory,
-    equipedObj,
-    status
+    health
   }
 }

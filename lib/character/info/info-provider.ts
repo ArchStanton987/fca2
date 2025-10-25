@@ -39,6 +39,12 @@ export function usePlayablesCharInfo(ids: string[]) {
 export function useCharInfo<TData = CharInfo>(id: string, select?: (data: CharInfo) => TData) {
   return useSuspenseQuery(getCharInfoOptions(id, select))
 }
+export function useCharsNameInfo(ids: string[]) {
+  return useSuspenseQueries({
+    queries: ids.map(id => getCharInfoOptions(id)),
+    combine: results => ids.map((id, i) => ({ id, fullname: results[i].data.fullname }))
+  })
+}
 
 export function getCharInfo(store: QueryClient, charId: string) {
   const info = store.getQueryData(getCharInfoOptions(charId).queryKey)

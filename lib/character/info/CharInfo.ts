@@ -3,7 +3,6 @@ import humanTemplates from "lib/npc/const/human-templates"
 import robots from "lib/npc/const/robots"
 
 import { SpeciesId } from "../playable.const"
-import { BackgroundId } from "../status/status.types"
 
 export type PlayingCharacterSpecies = "human" | "ghoul" | "mutie" | "half-mutie" | "deathclaw"
 export type CritterSpecies = "robot" | "beast"
@@ -13,6 +12,7 @@ export type TemplateId =
   | keyof typeof humanTemplates
   | keyof typeof robots
   | keyof typeof beasts
+export type BackgroundId = "jackal" | "vaultDweller" | "raider" | "fiend" | "other"
 
 export type DbCharInfo = {
   speciesId: SpeciesId

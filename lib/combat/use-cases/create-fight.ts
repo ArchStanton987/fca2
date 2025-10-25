@@ -1,4 +1,3 @@
-import Playable from "lib/character/Playable"
 import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
@@ -10,7 +9,7 @@ export type CreateFightParams = {
   location?: string
   title: string
   description?: string
-  contenders: Record<string, Playable>
+  contenders: string[]
   isStartingNow: boolean
 }
 
@@ -22,7 +21,7 @@ export default function createFight(config: UseCasesConfig) {
   return async ({ isStartingNow, contenders, ...rest }: CreateFightParams) => {
     const info = {
       ...rest,
-      contenders: Object.fromEntries(Object.keys(contenders).map(c => [c, c]))
+      contenders: Object.fromEntries(contenders.map(c => [c, c]))
     }
     const payload = {
       info,
@@ -37,7 +36,7 @@ export default function createFight(config: UseCasesConfig) {
     squadRepo.patchChild({ id: rest.gameId, childKey: "combats" }, { [combatId]: combatId })
 
     if (isStartingNow) {
-      await startFight(config)({ combatId, contenders })
+      await startFight(config)({ combatId })
     }
     return combatId
   }

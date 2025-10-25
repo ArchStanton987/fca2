@@ -1,73 +1,39 @@
 import { ReactNode, createContext, useContext, useState } from "react"
 
-import Playable from "lib/character/Playable"
-import Action from "lib/combat/Action"
+import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { DamageEntry } from "lib/combat/combats.types"
 import { GMDamageFormState, createDmgStore } from "lib/combat/gm-damage-store"
+import { useCombatState } from "lib/combat/use-cases/sub-combat"
 import { getRealDamage } from "lib/combat/utils/combat-utils"
+import { useItems } from "lib/inventory/use-sub-inv-cat"
 import { StoreApi, useStore } from "zustand"
-
-import { useCombatState } from "./CombatStateProvider"
-import { useContenders } from "./ContendersProvider"
 
 const GmDamageContext = createContext<StoreApi<GMDamageFormState>>(
   {} as StoreApi<GMDamageFormState>
 )
 
-const getInitDamageEntry = (action: Action | undefined, contenders: Record<string, Playable>) => {
-  let initEntry: DamageEntry = {
-    charId: "",
+export const useGetInitDamageEntry = (combatId: string): DamageEntry => {
+  const { data: action } = useCombatState(combatId, cs => cs.action)
+  const targetId = action.targetId || ""
+  const { data: items } = useItems(targetId)
+  const dmgEntry = {
+    damageLocalization: action.aimZone || action.damageLocalization || "rightTorso",
+    rawDamage: action.rawDamage || 0,
+    damageType: action.damageType || "physical"
+  }
+
+  return {
+    charId: targetId,
     entryType: "hp",
-    localization: "rightTorsoHp",
-    damage: 1
+    localization: action.damageLocalization || "rightTorso",
+    damage: getRealDamage(items, dmgEntry)
   }
-  if (action) {
-    const { rawDamage, damageLocalization, targetId, damageType, aimZone } = action
-    const loc = aimZone || damageLocalization
-    if (targetId && targetId in contenders && loc && rawDamage && damageType) {
-      const newDmgEntry = { rawDamage, damageLocalization: loc, damageType }
-      const realDamage = Math.round(getRealDamage(contenders[targetId], newDmgEntry))
-      initEntry = {
-        charId: targetId,
-        entryType: "hp",
-        localization: loc,
-        damage: realDamage
-      }
-    }
-  }
-  return initEntry
 }
-// const getInitRadsEntry = (
-//   action: Action | undefined,
-//   contenders: Record<string, { char: Playable }>
-// ) => {
-//   let initEntry: DamageEntry = {
-//     charId: "",
-//     entryType: "rads",
-//     amount: 10
-//   }
-//   if (action) {
-//     const { actorId = "", targetId, itemDbKey } = action
-//     const actor = contenders[actorId]?.char
-//     if (!actor) return initEntry
-//     let item = null
-//     if (actor instanceof Character) {
-//       const wpn = actor.equipedObjects.weapons.find(w => w.dbKey === itemDbKey)
-//       if (!wpn) return initEntry
-//       const amount = wpn.
-//     }
-//   }
-// }
 
-export function DamageFormProvider({ children }: { children: ReactNode }) {
-  const contenders = useContenders()
-  const { action } = useCombatState()
-
-  const [store] = useState(() => {
-    const initEntry = getInitDamageEntry(action, contenders)
-    return createDmgStore({ 0: initEntry })
-  })
-
+export function DamageFormProvider({ children, charId }: { children: ReactNode; charId: string }) {
+  const { data: combatId } = useCombatId(charId)
+  const initEntry = useGetInitDamageEntry(combatId)
+  const [store] = useState(() => createDmgStore({ 0: initEntry }))
   return <GmDamageContext.Provider value={store}>{children}</GmDamageContext.Provider>
 }
 

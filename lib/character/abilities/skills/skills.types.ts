@@ -1,4 +1,4 @@
-import { BodyPart } from "lib/objects/data/clothings/clothings.types"
+import { BodyPart } from "lib/objects/data/clothings/armor.types"
 
 import { Special } from "../special/special.types"
 

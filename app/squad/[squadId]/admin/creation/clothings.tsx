@@ -7,12 +7,8 @@ import { skillsArray } from "lib/character/abilities/skills/skills"
 import { specialArray } from "lib/character/abilities/special/special"
 import { ChangeableAttribute, DbSymptoms, Operation } from "lib/character/effects/symptoms.type"
 import { combatModsArray } from "lib/combat/combat-mods"
-import {
-  BodyPart,
-  ClothingId,
-  ClothingType,
-  DbBodyParts
-} from "lib/objects/data/clothings/clothings.types"
+import { BodyPart, DbBodyParts } from "lib/objects/data/clothings/armor.types"
+import { ClothingId, ClothingType } from "lib/objects/data/clothings/clothings.types"
 import Toast from "react-native-toast-message"
 
 import Col from "components/Col"

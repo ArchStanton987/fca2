@@ -1,7 +1,5 @@
 import { DbSymptoms, Symptom } from "../../../character/effects/symptoms.type"
-
-export type BodyPart = "head" | "torso" | "arms" | "groin" | "legs"
-export type DbBodyParts = Record<BodyPart, BodyPart>
+import { BodyPart, DbBodyParts } from "./armor.types"
 
 export type ClothingType = "light" | "medium" | "heavy" | "carry"
 

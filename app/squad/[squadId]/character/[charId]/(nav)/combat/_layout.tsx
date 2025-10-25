@@ -5,12 +5,7 @@ import { Stack, useLocalSearchParams } from "expo-router"
 import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { useCharInfo } from "lib/character/info/info-provider"
 import SubPlayables from "lib/character/use-cases/sub-playables"
-import {
-  useCombat,
-  useSubCombat,
-  useSubCombatHistory,
-  useSubCombatState
-} from "lib/combat/use-cases/sub-combat"
+import { SubCombat, useCombat } from "lib/combat/use-cases/sub-combat"
 import { useDatetime } from "lib/squad/use-cases/sub-squad"
 
 import Drawer from "components/Drawer/Drawer"
@@ -46,40 +41,38 @@ export default function CombatLayout() {
   const datetime = useDatetime(squadId)
   const navElements = getNav(isGameMaster.data, isInCombat)
 
-  useSubCombatState(combatId.data)
-  useSubCombatHistory(combatId.data)
-  useSubCombat(combatId.data)
-
   return (
     <SubPlayables playablesIds={contenders} datetime={datetime.data}>
-      <ActionFormProvider>
-        <View style={styles.drawerLayout}>
-          <Drawer sectionId="combat" navElements={navElements} />
-          <Spacer x={layout.globalPadding} />
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              contentStyle: { backgroundColor: colors.primColor, padding: 0 }
-            }}
-          >
-            <Stack.Protected guard={!isInCombat}>
-              <Stack.Screen name="recap" />
-            </Stack.Protected>
-            <Stack.Protected guard={isInCombat}>
-              <Stack.Screen name="combat-recap" />
-            </Stack.Protected>
-            <Stack.Protected guard={!isGameMaster.data}>
-              <Stack.Screen name="action" />
-            </Stack.Protected>
-            <Stack.Protected guard={isGameMaster.data}>
-              <Stack.Screen name="action-order" />
-              <Stack.Screen name="gm-action" />
-              <Stack.Screen name="gm-difficulty" />
-              <Stack.Screen name="gm-damage" />
-            </Stack.Protected>
-          </Stack>
-        </View>
-      </ActionFormProvider>
+      <SubCombat combatId={combatId.data}>
+        <ActionFormProvider>
+          <View style={styles.drawerLayout}>
+            <Drawer sectionId="combat" navElements={navElements} />
+            <Spacer x={layout.globalPadding} />
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                contentStyle: { backgroundColor: colors.primColor, padding: 0 }
+              }}
+            >
+              <Stack.Protected guard={!isInCombat}>
+                <Stack.Screen name="recap" />
+              </Stack.Protected>
+              <Stack.Protected guard={isInCombat}>
+                <Stack.Screen name="combat-recap" />
+              </Stack.Protected>
+              <Stack.Protected guard={!isGameMaster.data}>
+                <Stack.Screen name="action" />
+              </Stack.Protected>
+              <Stack.Protected guard={isGameMaster.data}>
+                <Stack.Screen name="action-order" />
+                <Stack.Screen name="gm-action" />
+                <Stack.Screen name="gm-difficulty" />
+                <Stack.Screen name="gm-damage" />
+              </Stack.Protected>
+            </Stack>
+          </View>
+        </ActionFormProvider>
+      </SubCombat>
     </SubPlayables>
   )
 }

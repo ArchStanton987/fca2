@@ -1,4 +1,6 @@
-import { useAbilities } from "lib/character/abilities/abilities-provider"
+import { useLocalSearchParams } from "expo-router"
+
+import { useSecAttr } from "lib/character/abilities/abilities-provider"
 import secAttrMap from "lib/character/abilities/sec-attr/sec-attr"
 import { SecAttrId } from "lib/character/abilities/sec-attr/sec-attr-types"
 
@@ -10,9 +12,10 @@ export type HeaderSecAttrProps<T extends SecAttrId> = {
 }
 
 export default function HeaderSecAttr<T extends SecAttrId>({ secAttrId }: HeaderSecAttrProps<T>) {
-  const abilities = useAbilities()
+  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const { data: secAttr } = useSecAttr(charId)
   const label = secAttrMap[secAttrId].short
-  const value = abilities.secAttr.curr[secAttrId]
+  const value = secAttr.curr[secAttrId]
 
   return (
     <HeaderElement>

@@ -77,7 +77,11 @@ const groupById = (items: Item[]) =>
     })
   )
 
-const selector = (items: ItemRecord, cat: ItemCategory, { isEquipped, isGrouped }: Options) => {
+const selector = <C extends ItemCategory>(
+  items: ItemRecord,
+  cat: C,
+  { isEquipped, isGrouped }: Options
+) => {
   if (isGrouped) {
     return Object.fromEntries(groupById(Object.values(items)).map(e => [e.id, e]))
   }

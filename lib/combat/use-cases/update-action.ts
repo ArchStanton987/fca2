@@ -12,7 +12,7 @@ export default function updateAction({ db }: UseCasesConfig) {
   const actionRepo = repositoryMap[db].actionRepository
 
   return ({ combatId, payload }: UpdateActionParams) => {
-    const updatedAction = JSON.parse(JSON.stringify(payload)) // sanitize payload, removes undefined
+    const updatedAction = JSON.parse(JSON.stringify(payload)) // sanitizes payload, removes undefined
 
     return actionRepo.patch({ combatId }, updatedAction)
   }

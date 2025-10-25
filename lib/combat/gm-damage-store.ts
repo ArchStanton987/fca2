@@ -31,7 +31,7 @@ const defaultEntries = {
   hp: {
     charId: "",
     entryType: "hp" as const,
-    localization: "rightTorsoHp" as const,
+    localization: "rightTorso" as const,
     damage: 1
   },
   rads: { charId: "", entryType: "rads" as const, amount: 10 },

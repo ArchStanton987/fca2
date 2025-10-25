@@ -1,14 +1,13 @@
 import { StyleSheet } from "react-native"
 
-import { CombatStatus } from "lib/character/combat-status/combat-status.types"
+import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 
 import Txt from "components/Txt"
 import colors from "styles/colors"
 
 type TextProps = {
   children: React.ReactNode
-  combatStatus: CombatStatus["combatStatus"]
-  hasFinishedRound?: boolean
+  charId: string
 }
 
 const styles = StyleSheet.create({
@@ -23,10 +22,15 @@ const styles = StyleSheet.create({
   }
 })
 
-export default function CombatOrderText({ children, combatStatus, hasFinishedRound }: TextProps) {
-  const isWaiting = combatStatus === "wait"
-  const isDead = combatStatus === "dead"
-  const isInactive = combatStatus === "inactive"
+export default function CombatOrderText({ charId, children }: TextProps) {
+  const cs = useCombatStatus(charId, data => ({
+    currAp: data.currAp,
+    combatStatus: data.combatStatus
+  }))
+  const isWaiting = cs.data.combatStatus === "wait"
+  const isDead = cs.data.combatStatus === "dead"
+  const isInactive = cs.data.combatStatus === "inactive"
+  const hasFinishedRound = cs.data.currAp === 0
   return (
     <Txt
       style={[

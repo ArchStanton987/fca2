@@ -3,8 +3,8 @@ import { TouchableOpacity } from "react-native"
 import { router, useLocalSearchParams } from "expo-router"
 
 import { useSetCurrCharId } from "lib/character/character-store"
-import { useCharCombatStatus } from "lib/character/combat-status/use-cases/sub-combat-status"
-import { useSquad } from "lib/squad/use-cases/sub-squad"
+import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
+import { useCharInfo } from "lib/character/info/info-provider"
 
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
@@ -18,12 +18,10 @@ export default function EnemyScreen() {
   const useCases = useGetUseCases()
   const { npcId, squadId } = useLocalSearchParams<{ npcId: string; squadId: string }>()
 
-  const { data: squad } = useSquad(squadId)
-  const { npcs } = useAdmin()
-  const currNpc = npcs[npcId]
-  const npcCombatStatusReq = useCharCombatStatus(npcId)
-
   const setChar = useSetCurrCharId()
+
+  const { data: combatStatus } = useCombatStatus(npcId)
+  const { data: charInfo } = useCharInfo(npcId)
 
   const play = () => {
     setChar(npcId)
@@ -34,23 +32,11 @@ export default function EnemyScreen() {
   }
 
   const deleteNpc = () => {
-    if (!npcCombatStatusReq.data) return
-    const npcCombatStatus = npcCombatStatusReq.data
-    useCases.npc.delete({ squad, npcId, npcCombatStatus })
+    useCases.npc.delete({ squadId, npcId })
   }
 
-  if (!npcs[npcId] || !npcCombatStatusReq.data) {
-    return (
-      <DrawerPage>
-        <Section style={{ flex: 1 }} title="informations">
-          <Txt>Aucun PNJ sélectionné</Txt>
-        </Section>
-      </DrawerPage>
-    )
-  }
-
-  const isFighting = !!npcCombatStatusReq?.data?.combatId
-  const { firstname, description, templateId } = currNpc.meta
+  const isFighting = !!combatStatus.combatId
+  const { firstname, description, templateId } = charInfo
 
   return (
     <DrawerPage>

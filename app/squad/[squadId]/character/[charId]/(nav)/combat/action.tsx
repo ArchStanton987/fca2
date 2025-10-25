@@ -3,10 +3,12 @@ import { ReactNode } from "react"
 import { Redirect, useLocalSearchParams } from "expo-router"
 
 import {
+  useCombatId,
   useCombatStatus,
   useCombatStatuses
 } from "lib/character/combat-status/combat-status-provider"
 import { useCharInfo } from "lib/character/info/info-provider"
+import { useCombat, useCombatState } from "lib/combat/use-cases/sub-combat"
 import {
   getDefaultPlayingId,
   getInitiativePrompts,
@@ -16,8 +18,6 @@ import {
 import List from "components/List"
 import routes from "constants/routes"
 import { useActionActorId, useActionSubtype, useActionType } from "providers/ActionFormProvider"
-import { useCombat } from "providers/CombatProvider"
-import { useCombatState } from "providers/CombatStateProvider"
 import { SlidesProvider } from "providers/SlidesProvider"
 import ActionUnavailableScreen from "screens/CombatScreen/ActionUnavailableScreen"
 import InitiativeScreen from "screens/CombatScreen/InitiativeScreen"
@@ -45,8 +45,9 @@ function SlideList() {
 function WithActionRedirections({ children }: { children: ReactNode }) {
   const { charId } = useLocalSearchParams<{ charId: string }>()
   const charInfo = useCharInfo(charId)
-  const { action, actorIdOverride } = useCombatState()
-  const combat = useCombat()
+  const { data: combatId } = useCombatId(charId)
+  const { data: combatState } = useCombatState(combatId)
+  const { data: combat } = useCombat(combatId)
   const contendersCombatStatus = useCombatStatuses(combat?.contendersIds ?? [])
   const { data: combatStatus } = useCombatStatus(charId)
 
@@ -56,10 +57,10 @@ function WithActionRedirections({ children }: { children: ReactNode }) {
 
   const defaultPlayingId = getDefaultPlayingId(contendersCombatStatus)
   const isDefaultPlayer = typeof defaultPlayingId === "string" && defaultPlayingId === charId
-  const isOverrideId = actorIdOverride === charId
+  const isOverrideId = combatState.actorIdOverride === charId
   const isPlaying = isOverrideId || isDefaultPlayer
 
-  const canReact = getPlayerCanReact(charInfo.data, combatStatus, action)
+  const canReact = getPlayerCanReact(charInfo.data, combatStatus, combatState.action)
   if (canReact) return <Redirect href={{ pathname: routes.combat.reaction }} />
 
   if (!isPlaying) return <ActionUnavailableScreen />

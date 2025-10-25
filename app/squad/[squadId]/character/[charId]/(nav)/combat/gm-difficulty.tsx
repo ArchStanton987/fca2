@@ -1,14 +1,15 @@
 import { useCallback, useState } from "react"
 import { StyleSheet, TouchableOpacity } from "react-native"
 
-import { Redirect, useLocalSearchParams } from "expo-router"
+import { useLocalSearchParams } from "expo-router"
 
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import Slider from "@react-native-community/slider"
-import { useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
+import { useCombatId, useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
 import { useCharInfo } from "lib/character/info/info-provider"
 import { ActionTypeId, withRollActionsTypes } from "lib/combat/const/actions"
 import difficultyArray from "lib/combat/const/difficulty"
+import { useCombatState, useContenders } from "lib/combat/use-cases/sub-combat"
 import { getDefaultPlayingId } from "lib/combat/utils/combat-utils"
 
 import DrawerPage from "components/DrawerPage"
@@ -16,10 +17,6 @@ import Row from "components/Row"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import routes from "constants/routes"
-import { useCombat } from "providers/CombatProvider"
-import { useCombatState } from "providers/CombatStateProvider"
-import { useContenders } from "providers/ContendersProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import DeleteButton from "screens/CombatScreen/slides/DeleteButton"
 import NextButton from "screens/CombatScreen/slides/NextButton"
@@ -39,25 +36,23 @@ const styles = StyleSheet.create({
 })
 
 export default function GMActionsScreen() {
-  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
-  const { data: isNpc } = useCharInfo(charId, state => ({ isNpc: state.isNpc }))
+  const { charId } = useLocalSearchParams<{ charId: string; squadId: string }>()
   const useCases = useGetUseCases()
-  const combat = useCombat()
-  const contenders = useContenders()
-  const combatStatuses = useCombatStatuses(combat?.contendersIds ?? [])
-  const { action, actorIdOverride } = useCombatState()
+  const { data: combatId } = useCombatId(charId)
+  const { data: contenders } = useContenders(combatId)
+  const combatStatuses = useCombatStatuses(contenders)
+  const { data: cs } = useCombatState(combatId)
 
   const [hasRoll, setHasRoll] = useState(false)
   const [difficulty, setDifficulty] = useState(0)
 
   const submit = () => {
-    if (!combat) return
-    const prevRoll = action.roll
+    const prevRoll = cs.action.roll
     const roll = hasRoll ? { ...prevRoll, difficulty } : false
     if (roll === false) {
-      useCases.combat.updateAction({ combatId: combat.id, payload: { roll } })
+      useCases.combat.updateAction({ combatId, payload: { roll } })
     } else {
-      useCases.combat.setDifficulty({ combatId: combat.id, roll })
+      useCases.combat.setDifficulty({ combatId, roll })
     }
     setDifficulty(0)
   }
@@ -67,27 +62,17 @@ export default function GMActionsScreen() {
   }, [])
 
   const resetDifficulty = () => {
-    if (!combat) return
     setDifficulty(0)
-    useCases.combat.resetDifficulty({ combatId: combat.id })
+    useCases.combat.resetDifficulty({ combatId })
   }
 
-  if (!isNpc)
-    return <Redirect href={{ pathname: routes.combat.index, params: { charId, squadId } }} />
-  if (combat === null)
-    return (
-      <DrawerPage>
-        <Txt>Impossible de récupérer le combat en cours</Txt>
-      </DrawerPage>
-    )
-
   const defaultPlayingId = getDefaultPlayingId(combatStatuses)
-  const playingId = actorIdOverride || defaultPlayingId
-  if (!playingId) return <Txt>Impossible de récupérer le joueur</Txt>
-  const currPlayer = contenders[playingId]
+  const playingId = cs.actorIdOverride || defaultPlayingId || ""
 
-  const actionHasDifficulty = withRollActionsTypes.includes(action?.actionType as ActionTypeId)
-  const isDifficultySet = action?.roll === false || action?.roll?.difficulty !== undefined
+  const { data: firstname } = useCharInfo(playingId, info => info.firstname)
+
+  const actionHasDifficulty = withRollActionsTypes.includes(cs.action?.actionType as ActionTypeId)
+  const isDifficultySet = cs.action?.roll === false || cs.action?.roll?.difficulty !== undefined
 
   if (!actionHasDifficulty)
     return (
@@ -154,9 +139,9 @@ export default function GMActionsScreen() {
         <Spacer x={layout.globalPadding} />
 
         <Section title="action" style={{ width: 100 }}>
-          <Txt>{currPlayer.meta.firstname}</Txt>
-          <Txt>{action?.actionType}</Txt>
-          <Txt>{action?.actionSubtype}</Txt>
+          <Txt>{firstname}</Txt>
+          <Txt>{cs.action?.actionType}</Txt>
+          <Txt>{cs.action?.actionSubtype}</Txt>
         </Section>
 
         <Spacer x={layout.globalPadding} />

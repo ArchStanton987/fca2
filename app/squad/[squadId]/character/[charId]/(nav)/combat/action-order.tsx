@@ -2,8 +2,9 @@ import { StyleSheet } from "react-native"
 
 import { Redirect, useLocalSearchParams } from "expo-router"
 
-import { useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
+import { useCombatId, useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
 import { useCharInfo } from "lib/character/info/info-provider"
+import { useCombat, useCombatState, useContenders } from "lib/combat/use-cases/sub-combat"
 import { getDefaultPlayingId, getPlayingOrder } from "lib/combat/utils/combat-utils"
 
 import Col from "components/Col"
@@ -14,8 +15,6 @@ import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import routes from "constants/routes"
-import { useCombat } from "providers/CombatProvider"
-import { useCombatState } from "providers/CombatStateProvider"
 import OrderRow, { OrderRowHeader } from "screens/GMActionOrder/OrderRow"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -62,9 +61,11 @@ const styles = StyleSheet.create({
 
 export default function GMCombatScreen() {
   const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
-  const combat = useCombat()
-  const { actorIdOverride } = useCombatState()
-  const contendersCombatStatus = useCombatStatuses(combat?.contendersIds ?? [])
+  const { data: combatId } = useCombatId(charId)
+  const { data: combat } = useCombat(combatId)
+  const { data: actorIdOverride } = useCombatState(combatId, cs => cs.actorIdOverride)
+  const { data: contendersIds } = useContenders(combatId)
+  const contendersCombatStatus = useCombatStatuses(contendersIds ?? [])
   const charInfo = useCharInfo(charId, state => ({ isNpc: state.isNpc }))
 
   if (!charInfo.data.isNpc)

@@ -1,6 +1,9 @@
 import { StyleSheet } from "react-native"
 
-import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
+import { useCombatId } from "lib/character/combat-status/combat-status-provider"
+import { useCombatState } from "lib/combat/use-cases/sub-combat"
+import { getRealDamage } from "lib/combat/utils/combat-utils"
+import { useItems } from "lib/inventory/use-sub-inv-cat"
 
 import Col from "components/Col"
 import DrawerPage from "components/DrawerPage"
@@ -30,13 +33,21 @@ const styles = StyleSheet.create({
   }
 })
 
-type GMDamageScreenProps = {
-  rawDamage?: number
-  realDamage?: number
-  damageType?: DamageTypeId
-}
+export default function GMDamageForm({ charId }: { charId: string }) {
+  const { data: combatId } = useCombatId(charId)
+  const combatState = useCombatState(combatId, cs => ({
+    rawDamage: cs.action.rawDamage || 0,
+    damageType: cs.action.damageType || "physical",
+    targetId: cs.action.targetId || "",
+    damageLocalization: cs.action.aimZone || cs.action.damageLocalization || "rightTorso"
+  }))
+  const { data: targetItems } = useItems(combatState.data.targetId)
+  const realDamage = getRealDamage(targetItems, {
+    damageType: combatState.data.damageType,
+    rawDamage: combatState.data.rawDamage,
+    damageLocalization: combatState.data.damageLocalization
+  })
 
-export default function GMDamageForm({ rawDamage, realDamage, damageType }: GMDamageScreenProps) {
   const actions = useDamageFormActions()
   return (
     <DrawerPage>
@@ -44,17 +55,17 @@ export default function GMDamageForm({ rawDamage, realDamage, damageType }: GMDa
         <Row>
           <Col style={{ flex: 1 }}>
             <Txt>Dég. bruts : </Txt>
-            <TxtInput readOnly editable={false} value={rawDamage?.toString() ?? ""} />
+            <TxtInput readOnly editable={false} value={combatState.data.rawDamage.toString()} />
           </Col>
           <Spacer x={layout.globalPadding} />
           <Col style={{ flex: 1 }}>
             <Txt>Dég. réels :</Txt>
-            <TxtInput readOnly editable={false} value={realDamage?.toString() ?? ""} />
+            <TxtInput readOnly editable={false} value={realDamage?.toString()} />
           </Col>
           <Spacer x={layout.globalPadding} />
           <Col style={{ flex: 1 }}>
             <Txt>Type :</Txt>
-            <TxtInput readOnly editable={false} value={damageType} />
+            <TxtInput readOnly editable={false} value={combatState.data.damageType} />
           </Col>
         </Row>
 

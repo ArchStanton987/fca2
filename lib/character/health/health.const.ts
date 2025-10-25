@@ -16,6 +16,27 @@ export type LimbId =
   | "body"
   | "tail"
 
+const torso: LimbId[] = ["leftTorso", "rightTorso"]
+const legs: LimbId[] = ["leftLeg", "rightLeg"]
+const arms: LimbId[] = ["leftArm", "rightArm"]
+
+export type LimbsTemplateId =
+  | "small"
+  | "smallTailed"
+  | "medium"
+  | "mediumTailed"
+  | "large"
+  | "largeTailed"
+
+export const limbsTemplates: Record<LimbsTemplateId, LimbId[]> = {
+  small: ["head", "body"],
+  smallTailed: ["head", "body", "tail"],
+  medium: ["head", "body", ...arms, ...legs],
+  mediumTailed: ["head", "body", ...arms, ...legs, "tail"],
+  large: ["head", "groin", ...torso, ...legs, ...arms],
+  largeTailed: ["head", "groin", "tail", ...torso, ...arms, ...legs]
+}
+
 export const healthStates: Record<string, { id: EffectId; min: number }> = {
   vanished: { id: "vanished", min: -25 },
   dead: { id: "dead", min: -5 },
@@ -32,20 +53,3 @@ export const radStates: { id: EffectId; threshold: number; color: string }[] = [
   { id: "radLvl2", threshold: 100, color: colors.yellow },
   { id: "radLvl1", threshold: 50, color: colors.yellow }
 ]
-
-export const limbsTemplates: Record<string, LimbId[]> = {
-  humanoid: [
-    "head",
-    "leftTorso",
-    "rightTorso",
-    "leftArm",
-    "rightArm",
-    "leftLeg",
-    "rightLeg",
-    "groin"
-  ],
-  smallCritter: ["head", "body"],
-  smallTailedCritter: ["head", "body", "tail"]
-}
-
-export type LimbsTemplateId = keyof typeof limbsTemplates

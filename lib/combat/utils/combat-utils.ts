@@ -5,10 +5,11 @@ import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-level
 import skillsMap from "lib/character/abilities/skills/skills"
 import { Skill, SkillId } from "lib/character/abilities/skills/skills.types"
 import { CombatStatus } from "lib/character/combat-status/combat-status.types"
-import { LimbId, limbsMap } from "lib/character/health/Health"
+import { limbsMap } from "lib/character/health/Health"
+import { LimbId } from "lib/character/health/health.const"
 import CharInfo from "lib/character/info/CharInfo"
 import { withDodgeSpecies } from "lib/character/playable.const"
-import Clothing from "lib/objects/data/clothings/Clothing"
+import { Item } from "lib/inventory/use-sub-inv-cat"
 import { BodyPart, ClothingData } from "lib/objects/data/clothings/clothings.types"
 import Consumable from "lib/objects/data/consumables/Consumable"
 import Weapon from "lib/objects/data/weapons/Weapon"
@@ -201,14 +202,14 @@ type DamageEntry = {
 }
 
 export const getRealDamage = (
-  targetEquipedClothings: Record<string, Clothing>,
+  targetEquipedClothings: Record<string, Item>,
   damage: DamageEntry
 ) => {
   const { rawDamage, damageLocalization, damageType } = damage
   let realDamage = rawDamage
-  const relatedClothings = Object.values(targetEquipedClothings).filter(c =>
-    c.data.protects.includes(bodyPartMatch[damageLocalization])
-  )
+  const relatedClothings = Object.values(targetEquipedClothings)
+    .filter(c => c.category === "clothings")
+    .filter(c => c.isEquipped && c.data.protects.includes(bodyPartMatch[damageLocalization]))
 
   const threshold = relatedClothings.reduce((acc, curr) => acc + curr.data.threshold, 0)
   if (rawDamage < threshold) {
@@ -222,7 +223,7 @@ export const getRealDamage = (
     const m = (100 - v) / 100
     realDamage *= m
   })
-  return realDamage
+  return Math.round(realDamage)
 }
 
 // export const getItemFromId = (inv: Inventory, itemDbKey?: string) => {

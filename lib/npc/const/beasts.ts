@@ -21,6 +21,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       { name: "Griffe", skill: 70, apCost: 3, damage: "1d6" },
       { name: "Mords", skill: 75, apCost: 4, damage: "1d6+2", effects: ["poisonRadRatVenom"] }
     ],
+    limbsTemplate: "smallTailed",
     skills: { stealth: 40, physical: 40 }
   },
   radRat: {
@@ -55,6 +56,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         modifiers: [{ operation: "add", id: "rads", value: 5 }]
       }
     ],
+    limbsTemplate: "smallTailed",
     skills: { stealth: 50, physical: 25 }
   },
   standardMolerat: {
@@ -77,6 +79,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       { name: "Griffe", skill: 80, apCost: 3, damage: "1d6" },
       { name: "Mords", skill: 75, apCost: 4, damage: "1d6+3", effects: ["poisonLightBeast"] }
     ],
+    limbsTemplate: "small",
     skills: { stealth: 35, physical: 45 }
   },
   powerfulMolerat: {
@@ -99,6 +102,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       { name: "Griffe", skill: 90, apCost: 3, damage: "1d10+3" },
       { name: "Mords", skill: 90, apCost: 4, damage: "1d10", effects: ["poisonMedBeast"] }
     ],
+    limbsTemplate: "medium",
     skills: { stealth: 30, physical: 50 }
   },
   standardPigrat: {
@@ -121,6 +125,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       { name: "Griffe", skill: 75, apCost: 3, damage: "2d4" },
       { name: "Mords", skill: 75, apCost: 4, damage: "2d4", effects: ["poisonLightBeast"] }
     ],
+    limbsTemplate: "medium",
     skills: { stealth: 30, physical: 50 }
   },
   powerfulPigrat: {
@@ -143,6 +148,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       { name: "Griffe", skill: 90, apCost: 3, damage: "2d6+2" },
       { name: "Mords", skill: 75, apCost: 6, damage: "2d6+4", effects: ["poisonMedBeast"] }
     ],
+    limbsTemplate: "medium",
     skills: { stealth: 25, physical: 65 }
   },
   radRoach: {
@@ -170,6 +176,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         effects: ["poisonLightBeast"]
       }
     ],
+    limbsTemplate: "small",
     skills: { stealth: 75, physical: 20 }
   },
   giantAnt: {
@@ -189,6 +196,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       radsResist: 60
     },
     attacks: [{ name: "Mandibles", skill: 65, apCost: 3, damage: "1d6+5" }],
+    limbsTemplate: "medium",
     skills: { stealth: 20, physical: 40 }
   },
   fireAnt: {
@@ -216,6 +224,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         damage: "3d6+3"
       }
     ],
+    limbsTemplate: "medium",
     skills: { stealth: 20, physical: 45 }
   },
   mantis: {
@@ -244,6 +253,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       },
       { name: "Griffe", skill: 75, apCost: 4, damage: "2d6+2" }
     ],
+    limbsTemplate: "small",
     skills: { stealth: 20, physical: 40 }
   },
   mutantFly: {
@@ -266,6 +276,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       { name: "Stinger", skill: 75, apCost: 5, damage: "1d6+3", effects: ["poisonMedBeast"] },
       { name: "Mords", skill: 60, apCost: 4, damage: "1d6+5" }
     ],
+    limbsTemplate: "small",
     skills: { stealth: 20, physical: 35 }
   },
   brahmin: {
@@ -288,6 +299,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       { name: "Horn Charge", skill: 75, apCost: 3, damage: "4d6+3" },
       { name: "Trample", skill: 65, apCost: 6, damage: "4d6+10" }
     ],
+    limbsTemplate: "large",
     skills: { stealth: 5, physical: 75 }
   },
   floater: {
@@ -315,6 +327,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         modifiers: [{ operation: "add", id: "rads", value: 10 }]
       }
     ],
+    limbsTemplate: "medium",
     skills: { stealth: 25, physical: 80 }
   },
   centaur: {
@@ -349,6 +362,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         modifiers: [{ operation: "add", id: "rads", value: 15 }]
       }
     ],
+    limbsTemplate: "large",
     skills: { stealth: 25, physical: 80 }
   },
   radScorpion: {
@@ -377,6 +391,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       },
       { name: "Claw", skill: 60, apCost: 3, damage: "1d6" }
     ],
+    limbsTemplate: "mediumTailed",
     skills: { stealth: 30, physical: 55 }
   },
   giantRadScorpion: {
@@ -405,6 +420,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       },
       { name: "Pince", skill: 75, apCost: 3, damage: "1d10" }
     ],
+    limbsTemplate: "largeTailed",
     skills: { stealth: 20, physical: 90 }
   },
   grayWolf: {
@@ -427,6 +443,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       { name: "Mords", skill: 80, apCost: 4, damage: "3d6" },
       { name: "Griffe", skill: 70, apCost: 3, damage: "1d6+3" }
     ],
+    limbsTemplate: "medium",
     skills: { stealth: 75, physical: 80 }
   },
   furiousWolf: {
@@ -454,6 +471,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         damage: "1d10+5"
       }
     ],
+    limbsTemplate: "medium",
     skills: { stealth: 75, physical: 95 }
   },
   wildDog: {
@@ -480,6 +498,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         damage: "2d6"
       }
     ],
+    limbsTemplate: "medium",
     skills: { stealth: 50, physical: 70 }
   },
   babyDeathclaw: {
@@ -499,6 +518,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       radsResist: 60
     },
     attacks: [{ name: "Griffe", skill: 70, apCost: 4, damage: "4d6" }],
+    limbsTemplate: "mediumTailed",
     skills: { stealth: 30, physical: 95 }
   },
   adultDeathclaw: {
@@ -518,6 +538,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       radsResist: 60
     },
     attacks: [{ name: "Griffe", skill: 90, apCost: 5, damage: "5d6+5" }],
+    limbsTemplate: "largeTailed",
     skills: { stealth: 15, physical: 110 }
   },
   alphaFemaleDeathclaw: {
@@ -537,6 +558,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       radsResist: 60
     },
     attacks: [{ name: "Griffe", skill: 110, apCost: 5, damage: "4d10+5" }],
+    limbsTemplate: "largeTailed",
     skills: { stealth: 5, physical: 125 }
   },
 
@@ -565,6 +587,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         effects: ["poisonLightBeast"]
       }
     ],
+    limbsTemplate: "smallTailed",
     skills: { stealth: 40, physical: 40 }
   },
   adultSpitter: {
@@ -592,6 +615,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         effects: ["poisonLightBeast"]
       }
     ],
+    limbsTemplate: "mediumTailed",
     skills: { stealth: 30, physical: 65 }
   },
   gecko: {
@@ -624,6 +648,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         damage: "2d6+3"
       }
     ],
+    limbsTemplate: "medium",
     skills: { stealth: 50, physical: 60 }
   },
   fireGecko: {
@@ -656,6 +681,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         damage: "3d6+10"
       }
     ],
+    limbsTemplate: "medium",
     skills: { stealth: 50, physical: 60 }
   },
   goldenGecko: {
@@ -688,6 +714,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         damage: "2D6+12"
       }
     ],
+    limbsTemplate: "large",
     skills: { stealth: 50, physical: 70 }
   },
   yaoGuai: {
@@ -714,6 +741,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         damage: "6d6+10"
       }
     ],
+    limbsTemplate: "large",
     skills: { stealth: 20, physical: 120 }
   },
   mirelurk: {
@@ -741,6 +769,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         modifiers: [{ operation: "add", id: "rads", value: 5 }]
       }
     ],
+    limbsTemplate: "medium",
     skills: { stealth: 30, physical: 40 }
   },
   mirelurking: {
@@ -775,6 +804,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         modifiers: [{ operation: "add", id: "rads", value: 10 }]
       }
     ],
+    limbsTemplate: "large",
     skills: { stealth: 20, physical: 60 }
   },
   weakFeralGhoul: {
@@ -809,6 +839,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         modifiers: [{ operation: "add", id: "rads", value: 7 }]
       }
     ],
+    limbsTemplate: "medium",
     skills: { stealth: 10, physical: 55 }
   },
   furiousFeralGhoul: {
@@ -843,6 +874,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         modifiers: [{ operation: "add", id: "rads", value: 7 }]
       }
     ],
+    limbsTemplate: "medium",
     skills: { stealth: 5, physical: 70 }
   },
   glowingFeralGhoul: {
@@ -877,6 +909,7 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
         modifiers: [{ operation: "add", id: "rads", value: 10 }]
       }
     ],
+    limbsTemplate: "medium",
     skills: { stealth: 1, physical: 70 }
   }
 }

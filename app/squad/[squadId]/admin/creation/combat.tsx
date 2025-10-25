@@ -1,10 +1,9 @@
 import { useState } from "react"
-import { ScrollView, View } from "react-native"
+import { ScrollView, TouchableOpacityProps, View } from "react-native"
 
 import { useLocalSearchParams } from "expo-router"
 
-import Character from "lib/character/Character"
-import { usePlayables } from "lib/character/playables-provider"
+import { useCharInfo } from "lib/character/info/info-provider"
 import { useDatetime, useSquadMembers, useSquadNpcs } from "lib/squad/use-cases/sub-squad"
 import Toast from "react-native-toast-message"
 
@@ -39,26 +38,46 @@ const defaultForm: Form = {
   npcs: {}
 }
 
+function SelectableChar({
+  charId,
+  isSelected,
+  ...rest
+}: {
+  charId: string
+  isSelected: boolean
+} & TouchableOpacityProps) {
+  const { data: name } = useCharInfo(charId, info => info.fullname)
+  return <SelectorButton isSelected={isSelected} label={name} {...rest} />
+}
+
+function NpcListElement({
+  isSelected,
+  charId,
+  onPress
+}: {
+  isSelected: boolean
+  charId: string
+  onPress: () => void
+}) {
+  const { data: name } = useCharInfo(charId, info => info.fullname)
+  return (
+    <Txt
+      style={isSelected && { backgroundColor: colors.terColor, color: colors.secColor }}
+      onPress={onPress}
+    >
+      {name}
+    </Txt>
+  )
+}
+
 export default function CombatCreation() {
   const { squadId } = useLocalSearchParams<{ squadId: string }>()
   const useCases = useGetUseCases()
-  const { data: members } = useSquadMembers(squadId)
+  const { data: players } = useSquadMembers(squadId)
   const { data: npcs } = useSquadNpcs(squadId)
   const { data: datetime } = useDatetime(squadId)
 
-  const allPlayable = usePlayables()
-
-  const squadPlayers: Record<string, string> = {}
-  Object.keys(members ?? {}).forEach(id => {
-    squadPlayers[id] = id
-  })
-
-  const npcList = Object.keys(npcs ?? {}).map(id => ({
-    id,
-    fullname: allPlayable[id].info.fullname
-  }))
-
-  const [form, setForm] = useState<Form>({ ...defaultForm, players: squadPlayers })
+  const [form, setForm] = useState<Form>({ ...defaultForm, players })
   const [isStartingNow, setIsStartingNow] = useState(true)
 
   const handleSetForm = (key: keyof Form, value: string) => {
@@ -74,14 +93,7 @@ export default function CombatCreation() {
       })
       return
     }
-    let currMaxAp = 0
-    const curr = type === "players" ? characters[id] : npcs[id]
-    if (curr instanceof Character) {
-      currMaxAp = curr.secAttr.curr.actionPoints
-    } else {
-      currMaxAp = curr.data.actionPoints
-    }
-    setForm(prev => ({ ...prev, [type]: { ...prev[type], [id]: { currMaxAp } } }))
+    setForm(prev => ({ ...prev, [type]: { ...prev[type], [id]: id } }))
   }
 
   const submit = async () => {
@@ -94,20 +106,12 @@ export default function CombatCreation() {
       return
     }
 
-    const contendersIds = Object.keys({ ...form.players, ...form.npcs })
-    const contenders = Object.fromEntries(
-      contendersIds.map(id => {
-        const playable = allPlayable[id]
-        if (!playable) throw new Error(`Playable with id ${id} not found`)
-        return [id, playable]
-      })
-    )
-
+    const contenders = Object.keys({ ...form.players, ...form.npcs })
     const payload = { ...form, date: datetime.toJSON(), isStartingNow, gameId: squadId, contenders }
     try {
       await useCases.combat.create(payload)
       Toast.show({ type: "custom", text1: "Le combat a été créé" })
-      setForm({ ...defaultForm, players: squadPlayers })
+      setForm({ ...defaultForm, players })
     } catch (err) {
       Toast.show({ type: "error", text1: "Erreur lors de la création du combat" })
     }
@@ -152,14 +156,14 @@ export default function CombatCreation() {
         <ScrollView horizontal>
           <List
             horizontal
-            data={Object.keys(squadPlayers)}
+            data={Object.keys(players)}
             keyExtractor={item => item}
             separator={<Spacer x={layout.globalPadding} />}
             renderItem={({ item }) => (
-              <SelectorButton
+              <SelectableChar
                 onPress={() => toggleChar("players", item)}
-                isSelected={item in form.players}
-                label={item}
+                isSelected={item in form.npcs}
+                charId={item}
               />
             )}
           />
@@ -175,10 +179,10 @@ export default function CombatCreation() {
           keyExtractor={item => item}
           separator={<Spacer x={layout.globalPadding} />}
           renderItem={({ item }) => (
-            <SelectorButton
+            <SelectableChar
               onPress={() => toggleChar("npcs", item)}
               isSelected={item in form.npcs}
-              label={allPlayable[item].info.fullname}
+              charId={item}
             />
           )}
         />
@@ -191,18 +195,17 @@ export default function CombatCreation() {
       <View style={{ width: 160 }}>
         <ScrollSection style={{ flex: 1 }} title="PNJs">
           <List
-            data={npcList}
-            keyExtractor={item => item.id}
+            data={Object.keys(npcs)}
+            keyExtractor={e => e}
             separator={<Spacer y={10} />}
             renderItem={({ item }) => {
-              const isSelected = Object.keys(form.npcs).some(e => e === item.id)
+              const isSelected = Object.keys(form.npcs).some(e => e === item)
               return (
-                <Txt
-                  style={isSelected && { backgroundColor: colors.terColor, color: colors.secColor }}
-                  onPress={() => toggleChar("npcs", item.id)}
-                >
-                  {item.fullname}
-                </Txt>
+                <NpcListElement
+                  charId={item}
+                  isSelected={isSelected}
+                  onPress={() => toggleChar("npcs", item)}
+                />
               )
             }}
           />

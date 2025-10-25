@@ -10,7 +10,7 @@ type CaretProps = {
 export default function Caret({ isVisible, direction }: CaretProps) {
   return (
     <AntDesign
-      name={direction === "up" ? "caretup" : "caretdown"}
+      name={direction === "up" ? "caret-up" : "caret-down"}
       size={6}
       color={isVisible ? colors.secColor : "transparent"}
     />

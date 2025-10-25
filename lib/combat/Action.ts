@@ -1,4 +1,4 @@
-import { LimbId } from "lib/character/health/Health"
+import { LimbId } from "lib/character/health/health.const"
 import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 
 import { DamageEntries, DbAction, ReactionRoll, Roll } from "./combats.types"

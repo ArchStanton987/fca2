@@ -1,3 +1,5 @@
+import { useLocalSearchParams } from "expo-router"
+
 import { NoCombatWeaponIndicator } from "lib/combat/ui/WeaponIndicator"
 import ApVisualizer from "lib/combat/ui/action-points/ApVisualizer"
 
@@ -9,6 +11,7 @@ import HealthFigure from "components/draws/HealthFigure/HealthFigure"
 import layout from "styles/layout"
 
 export default function CombatRecapPage() {
+  const { charId } = useLocalSearchParams<{ charId: string }>()
   return (
     <DrawerPage style={{ flexDirection: "column" }}>
       <ApVisualizer />
@@ -22,7 +25,7 @@ export default function CombatRecapPage() {
           style={{ width: 160 }}
           contentContainerStyle={{ justifyContent: "center", flex: 1 }}
         >
-          <HealthFigure />
+          <HealthFigure charId={charId} />
         </Section>
       </Row>
     </DrawerPage>

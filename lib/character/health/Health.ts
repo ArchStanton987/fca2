@@ -6,7 +6,7 @@ import Effect from "../effects/Effect"
 import { EffectId } from "../effects/effects.types"
 import { TemplateId } from "../info/CharInfo"
 import { getLevelAndThresholds } from "../status/status-calc"
-import { LimbId, healthStates, radStates } from "./health.const"
+import { LimbId, LimbsTemplateId, healthStates, limbsTemplates, radStates } from "./health.const"
 
 type LimbsHp = Partial<Record<LimbId, number>>
 
@@ -27,6 +27,22 @@ type LimbData = {
   aim: {
     aimMalus: number
     critBonus: number
+  }
+}
+
+export const healthMap: Record<
+  Exclude<keyof DbHealth, "limbs">,
+  { id: string; label: string; short: string }
+> = {
+  currHp: {
+    id: "currHp",
+    label: "Points de vie",
+    short: "PV"
+  },
+  rads: {
+    id: "rads",
+    label: "Points de vie",
+    short: "PV"
   }
 }
 
@@ -177,6 +193,18 @@ export default class Health {
 
   static getRadEffectId(rads: number) {
     return radStates.find(radState => rads > radState.threshold)
+  }
+
+  static initLimbs(templateId: TemplateId, level: number): Partial<Record<LimbId, number>> {
+    let limbsTemplate: LimbsTemplateId = "large"
+    if (templateId in critters) {
+      limbsTemplate = critters[templateId].limbsTemplate
+    }
+    const limbs: Partial<Record<LimbId, number>> = {}
+    limbsTemplates[limbsTemplate].forEach(limbId => {
+      limbs[limbId] = limbsMap[limbId].getMaxValue(level)
+    })
+    return limbs
   }
 
   constructor({

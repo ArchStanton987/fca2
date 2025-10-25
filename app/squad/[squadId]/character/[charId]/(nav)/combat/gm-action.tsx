@@ -1,12 +1,13 @@
 import { ReactNode } from "react"
 
-import { useCharInfo } from "lib/character/use-cases/sub-playables"
+import { useLocalSearchParams } from "expo-router"
+
+import { useCombatId, useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
+import { useContenders } from "lib/combat/use-cases/sub-combat"
 import { getInitiativePrompts } from "lib/combat/utils/combat-utils"
 
 import List from "components/List"
 import { useActionActorId, useActionSubtype, useActionType } from "providers/ActionFormProvider"
-import { useCombat } from "providers/CombatProvider"
-import { useCombatStatuses } from "providers/CombatStatusesProvider"
 import { SlidesProvider } from "providers/SlidesProvider"
 import InitiativeScreen from "screens/CombatScreen/InitiativeScreen"
 import WaitInitiativeScreen from "screens/CombatScreen/WaitInitiativeScreen"
@@ -32,11 +33,12 @@ function SlideList() {
 }
 
 function WithActionRedirections({ children }: { children: ReactNode }) {
-  const { charId } = useCharInfo()
-  const combat = useCombat()
-  const combatStatuses = useCombatStatuses()
+  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const { data: combatId } = useCombatId(charId)
+  const { data: contendersIds } = useContenders(combatId)
+  const combatStatuses = useCombatStatuses(contendersIds)
 
-  if (!combat?.id) return <SlideError error={slideErrors.noCombatError} />
+  if (!combatId) return <SlideError error={slideErrors.noCombatError} />
 
   const prompts = getInitiativePrompts(charId, combatStatuses)
   if (prompts.playerShouldRollInitiative) return <InitiativeScreen />

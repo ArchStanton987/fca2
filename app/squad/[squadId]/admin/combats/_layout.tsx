@@ -3,29 +3,20 @@ import { View } from "react-native"
 
 import { Slot, useLocalSearchParams } from "expo-router"
 
-import { useSubGameCombatsInfo } from "lib/combat/use-cases/sub-combat"
+import { SubCombats, useCombats } from "lib/combat/use-cases/sub-combat"
 import { useSquadCombats } from "lib/squad/use-cases/sub-squad"
 
 import AdminDrawer from "components/Drawer/AdminDrawer"
 import Spacer from "components/Spacer"
-import Txt from "components/Txt"
-import LoadingScreen from "screens/LoadingScreen"
 import styles from "styles/DrawerLayout.styles"
 import layout from "styles/layout"
 
-export default function CombatsLayout() {
-  const { squadId } = useLocalSearchParams<{ squadId: string }>()
-  const { data: combats } = useSquadCombats(squadId)
+function Layout({ combatsIds }: { combatsIds: string[] }) {
+  const combats = useCombats(combatsIds)
 
-  const combatsIds = useMemo(() => Object.keys(combats ?? {}), [combats])
-  const combatsReq = useSubGameCombatsInfo(combatsIds)
-
-  if (combatsReq.isPending) return <LoadingScreen />
-  if (combatsReq.isError) return <Txt>Erreur lors de la récupération des combats</Txt>
-
-  const navElements = Object.entries(combatsReq.data).map(([id, c]) => ({
+  const navElements = Object.entries(combats).map(([id, c]) => ({
     path: id,
-    label: c?.title ?? id
+    label: c.data.title
   }))
 
   return (
@@ -34,5 +25,16 @@ export default function CombatsLayout() {
       <Spacer x={layout.globalPadding} />
       <Slot />
     </View>
+  )
+}
+
+export default function CombatLayout() {
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const { data: combats } = useSquadCombats(squadId)
+  const combatsIds = useMemo(() => Object.keys(combats ?? {}), [combats])
+  return (
+    <SubCombats combatsIds={combatsIds}>
+      <Layout combatsIds={combatsIds} />
+    </SubCombats>
   )
 }

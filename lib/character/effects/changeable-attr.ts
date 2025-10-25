@@ -4,7 +4,7 @@ import knowledgesMap from "../abilities/knowledges/knowledges"
 import secAttrMap from "../abilities/sec-attr/sec-attr"
 import skillsMap from "../abilities/skills/skills"
 import specialMap from "../abilities/special/special"
-import healthMap from "../health/healthMap"
+import { healthMap } from "../health/Health"
 import { ChangeableAttribute } from "./symptoms.type"
 
 export const changeableAttributesMap: Record<ChangeableAttribute, Record<"short", string>> = {

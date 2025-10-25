@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { View } from "react-native"
 
-import { DbMiscObjectData } from "lib/objects/data/misc-objects/misc-objects-types"
+import { DbMiscObjectData, MiscObjectId } from "lib/objects/data/misc-objects/misc-objects-types"
 import Toast from "react-native-toast-message"
 
 import Col from "components/Col"
@@ -20,9 +20,17 @@ import layout from "styles/layout"
 type ReplaceNumberWithString<T> = {
   [K in keyof T]: T[K] extends number ? string : T[K]
 }
-type MiscObjState = ReplaceNumberWithString<DbMiscObjectData>
+type MiscObjState = ReplaceNumberWithString<DbMiscObjectData & { id: string }>
 
-const defaultForm = { id: "", label: "", description: "", value: "10", place: "1", weight: "0.5" }
+const defaultForm = {
+  id: "" as MiscObjectId,
+  label: "",
+  description: "",
+  value: "10",
+  place: "1",
+  weight: "0.5",
+  symptoms: {}
+}
 
 export default function MiscObjectsCreation() {
   const useCases = useGetUseCases()

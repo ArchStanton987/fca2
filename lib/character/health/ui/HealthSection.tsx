@@ -17,7 +17,7 @@ export default function HealthSection({ charId }: { charId: string }) {
     <View style={{ width: 160 }}>
       <Section title="santé">
         <Spacer y={5} />
-        <HealthFigure />
+        <HealthFigure charId={charId} />
         <Spacer y={5} />
       </Section>
 

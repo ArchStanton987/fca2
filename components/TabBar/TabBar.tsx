@@ -47,7 +47,7 @@ export default function TabBar(props: BottomTabBarProps & { tabBarId: TabBarId }
       <Spacer x={layout.globalPadding} />
       <View style={styles.subContainer}>
         <List
-          data={routes}
+          data={routes as { key: string; name: string }[]}
           keyExtractor={item => item.key}
           separator={<View style={styles.horizLine} />}
           style={styles.listStyle}

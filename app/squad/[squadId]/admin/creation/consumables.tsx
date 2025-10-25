@@ -25,7 +25,7 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import TxtInput from "components/TxtInput"
 import PlusIcon from "components/icons/PlusIcon"
-import { useAdditionalElements } from "contexts/AdditionalElementsContext"
+import { useCollectiblesData } from "providers/AdditionalElementsProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -66,7 +66,7 @@ const operationCycle: Operation[] = ["add", "mult", "abs"]
 
 export default function ConsumablesCreation() {
   const useCases = useGetUseCases()
-  const additionalElements = useAdditionalElements()
+  const collectiblesData = useCollectiblesData()
   const [currDisplay, setCurrDisplay] = useState<Displays | null>(null)
   const [consumableForm, setConsumableForm] = useState<ConsumableFormType>(defaultForm)
   const [tags, setTags] = useState({} as DbTags)
@@ -335,7 +335,7 @@ export default function ConsumablesCreation() {
           ) : null}
           {currDisplay === "effects" ? (
             <List
-              data={Object.values(additionalElements.newEffects) ?? effectsArray}
+              data={Object.values(collectiblesData.effects) ?? effectsArray}
               keyExtractor={item => item.id}
               separator={<Spacer y={10} />}
               renderItem={({ item }) => (
