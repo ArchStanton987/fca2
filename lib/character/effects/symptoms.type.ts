@@ -6,7 +6,7 @@ import { SpecialId } from "../abilities/special/special.types"
 
 export type Operation = "add" | "mult" | "abs"
 
-type Modifiable = "currHp" | "rads"
+export type HealthModifiable = "currHp" | "rads"
 
 export type ChangeableAttribute =
   | SpecialId
@@ -15,7 +15,7 @@ export type ChangeableAttribute =
   | CombatModId
   | KnowledgeId
   // for modifiers
-  | Modifiable
+  | HealthModifiable
 
 // Symptom is temporary, Modifier is permanent
 export type Symptom = {
@@ -26,8 +26,8 @@ export type Symptom = {
 }
 export type DbSymptoms = Partial<Record<ChangeableAttribute, Symptom>>
 export type Modifier = {
-  id: Modifiable
+  id: HealthModifiable
   operation: Operation
   value: number
 }
-export type DbModifiers = Partial<Record<Modifiable, Modifier>>
+export type DbModifiers = Partial<Record<HealthModifiable, Modifier>>

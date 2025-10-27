@@ -1,7 +1,8 @@
 import { StyleSheet } from "react-native"
 
+import { useCharInfo } from "lib/character/info/info-provider"
+
 import TxtInput from "components/TxtInput"
-import { useContenders } from "providers/ContendersProvider"
 import { useDamageEntry, useDamageFormStore } from "providers/DamageFormProvider"
 
 type CharInputProps = {
@@ -16,8 +17,7 @@ export default function CharInput({ entryId }: CharInputProps) {
   const actions = useDamageFormStore(state => state.actions)
   const entry = useDamageEntry(entryId)
   const { charId } = entry
-  const contender = useContenders(charId)
-  const charName = contender?.meta?.firstname ?? ""
+  const { data: charName } = useCharInfo(charId, i => i.firstname)
 
   const setPannelAndSelectEntry = () => {
     actions.setPannel("chars")

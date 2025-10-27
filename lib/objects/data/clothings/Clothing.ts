@@ -1,6 +1,5 @@
-import { BodyPart } from "lib/character/health/health-types"
-
 import { DbClothing, ItemInterface } from "../objects.types"
+import { BodyPart } from "./armor.types"
 import { ClothingData, DbClothingData } from "./clothings.types"
 
 export default class Clothing implements ItemInterface {

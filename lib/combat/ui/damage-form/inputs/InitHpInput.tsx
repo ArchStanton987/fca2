@@ -1,7 +1,8 @@
 import { StyleSheet } from "react-native"
 
+import { useHealth } from "lib/character/health/health-provider"
+
 import TxtInput from "components/TxtInput"
-import { useContenders } from "providers/ContendersProvider"
 import { useDamageEntry } from "providers/DamageFormProvider"
 
 type InitHpInputProps = {
@@ -15,8 +16,7 @@ const styles = StyleSheet.create({
 export default function InitHpInput({ entryId }: InitHpInputProps) {
   const entry = useDamageEntry(entryId)
   const { charId } = entry
-  const contender = useContenders(charId)
-  const initHp = contender?.health?.hp ?? 0
+  const { data: currHp = 0 } = useHealth(charId, h => h.currHp)
 
-  return <TxtInput editable={false} style={styles.input} value={initHp.toString()} />
+  return <TxtInput editable={false} style={styles.input} value={currHp.toString()} />
 }

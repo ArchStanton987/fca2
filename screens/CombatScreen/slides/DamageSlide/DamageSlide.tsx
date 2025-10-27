@@ -1,9 +1,12 @@
 import { useState } from "react"
 import { StyleSheet } from "react-native"
 
-import Character from "lib/character/Character"
-import { getPlayerCanReact } from "lib/combat/utils/combat-utils"
-import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
+import { useLocalSearchParams } from "expo-router"
+
+import { useCombatId } from "lib/character/combat-status/combat-status-provider"
+import { useCombatState } from "lib/combat/use-cases/sub-combat"
+import { useGetPlayerCanReact } from "lib/combat/utils/combat-utils"
+import { useItem } from "lib/inventory/use-sub-inv-cat"
 
 import Col from "components/Col"
 import NumPad from "components/NumPad/NumPad"
@@ -12,30 +15,24 @@ import DrawerSlide from "components/Slides/DrawerSlide"
 import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { useCharacter } from "contexts/CharacterContext"
 import {
   useActionActorId,
   useActionApi,
+  useActionDamageType,
   useActionItemDbKey,
   useActionRawDamage,
-  useActionSubtype,
   useActionType
 } from "providers/ActionFormProvider"
-import { useCombat } from "providers/CombatProvider"
-import { useCombatState } from "providers/CombatStateProvider"
-import { useCombatStatuses } from "providers/CombatStatusesProvider"
-import { useContenders } from "providers/ContendersProvider"
-import { useInventories } from "providers/InventoriesProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
 
 import PlayButton from "../PlayButton"
-import SlideError, { slideErrors } from "../SlideError"
-import { WeaponInfo } from "../WeaponInfo"
+import WeaponInfo from "../WeaponInfo"
 import VisualizeReactionSlide from "../score-result/VisualizeReactionSlide"
 import AwaitReactionSlide from "../wait-slides/AwaitReactionSlide"
+import DamageRoll from "./DamageRoll"
 
 const styles = StyleSheet.create({
   score: {
@@ -53,25 +50,21 @@ const styles = StyleSheet.create({
 type DamageSlideProps = SlideProps & {}
 
 export default function DamageSlide({ slideIndex }: DamageSlideProps) {
+  const { charId } = useLocalSearchParams<{ charId: string }>()
   const useCases = useGetUseCases()
-  const combat = useCombat()
-  const { action } = useCombatState()
-  const contenders = useContenders()
-  const { charId } = useCharacter()
-  const combatStatuses = useCombatStatuses()
-  const formActorId = useActionActorId()
+
   const rawDamage = useActionRawDamage()
   const itemDbKey = useActionItemDbKey()
   const actionType = useActionType()
-  const actionSubtype = useActionSubtype()
+  const damageType = useActionDamageType()
 
   const { setForm, setRoll } = useActionApi()
 
+  const formActorId = useActionActorId()
   const actorId = formActorId === "" ? charId : formActorId
-  const actor = contenders[actorId]
-
-  const inv = useInventories(actorId)
-  const { clothingsRecord, consumablesRecord, miscObjectsRecord } = inv
+  const { data: combatId } = useCombatId(actorId)
+  const { data: action } = useCombatState(combatId, state => state.action)
+  const { data: item } = useItem(actorId, itemDbKey ?? "")
 
   const { scrollTo } = useScrollTo()
 
@@ -81,37 +74,6 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
 
   const [isReactionResultVisible, setIsReactionResultVisible] = useState(() => true)
 
-  const parsedScore = parseInt(rawDamage ?? "", 10)
-  const isValid = !Number.isNaN(parsedScore) && parsedScore >= 0 && parsedScore < 1000
-
-  if (!action) return <SlideError error={slideErrors.noCombatError} />
-  if (!itemDbKey) return <SlideError error={slideErrors.noItemError} />
-
-  let item
-  let damageRoll
-  let damageType: DamageTypeId = "physical"
-
-  if (actionType === "weapon" && actionSubtype !== "hit") {
-    const isHuman = actor instanceof Character
-    item = isHuman
-      ? inv.weaponsRecord[itemDbKey] ?? actor.unarmed
-      : actor.equipedObjectsRecord.weapons[itemDbKey]
-    damageType = item.data.damageType
-    if (actionSubtype === "basic" || actionSubtype === "aim") {
-      damageRoll = item.data.damageBasic
-    }
-    if (actionSubtype === "burst") {
-      damageRoll = item.data.damageBurst
-    }
-  } else {
-    item = clothingsRecord[itemDbKey] ??
-      consumablesRecord[itemDbKey] ??
-      miscObjectsRecord[itemDbKey] ?? { data: { weight: 0.5 } }
-    const weight = item?.data?.weight ?? 0.5
-    const roundedWeight = Math.round(weight)
-    damageRoll = `1D6+DM+${roundedWeight}`
-  }
-
   const resetField = () => {
     setForm({ rawDamage: "" })
   }
@@ -120,38 +82,37 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
     setRoll(e, "damage")
   }
 
+  const parsedScore = parseInt(rawDamage ?? "", 10)
+  const isValid = !Number.isNaN(parsedScore) && parsedScore >= 0 && parsedScore < 1000
+
   const submitDamages = async () => {
-    if (combat === null) return
     if (!isValid) throw new Error("invalid score")
+    if (!damageType) throw new Error("No damage type")
     const payload = { rawDamage: parsedScore, damageType }
-    await useCases.combat.updateAction({ combatId: combat.id, payload })
+    await useCases.combat.updateAction({ combatId, payload })
     scrollNext()
   }
   const submitNoDamages = async () => {
-    if (combat === null) return
     const payload = {
       ...action,
+      actorId,
       rawDamage: false as const,
       damageType: false as const,
       healthEntriesChange: false
     }
-    await useCases.combat.doCombatAction({ combat, action: payload, contenders, combatStatuses })
+    await useCases.combat.doCombatAction({ combatId, action: payload })
     scrollNext()
   }
 
   // AWAIT REACTION (loading)
-  let opponentCanReact = false
-  const opponent = action.targetId ? contenders[action?.targetId] : null
-  if (opponent && action?.targetId) {
-    const combatStatus = combatStatuses[action?.targetId]
-    opponentCanReact = getPlayerCanReact(opponent, combatStatus, action)
-  }
-  if (opponentCanReact && action.reactionRoll === undefined) return <AwaitReactionSlide />
+  const isWaitingForReaction = useGetPlayerCanReact(action.targetId || "")
+  if (isWaitingForReaction) return <AwaitReactionSlide />
 
   // SEE REACTION
   if (!!action.reactionRoll && isReactionResultVisible)
     return (
       <VisualizeReactionSlide
+        charId={charId}
         dismiss={() => setIsReactionResultVisible(false)}
         skipDamage={() => submitNoDamages()}
       />
@@ -168,12 +129,12 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
 
       <Col style={{ flex: 1 }}>
         <Section title="jet dégâts" contentContainerStyle={styles.scoreContainer}>
-          <Txt style={{ fontSize: 36 }}>{damageRoll}</Txt>
+          <DamageRoll charId={actorId} />
         </Section>
         <Spacer y={layout.globalPadding} />
         <Section title={actionType === "weapon" ? "arme" : "objet"} style={{ flex: 1 }}>
           {actionType === "weapon" ? (
-            <WeaponInfo selectedWeapon={itemDbKey} />
+            <WeaponInfo selectedWeapon={itemDbKey ?? ""} />
           ) : (
             <>
               <Txt>{item?.data?.label}</Txt>

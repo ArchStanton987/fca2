@@ -2,8 +2,11 @@ import { useState } from "react"
 import { Pressable, StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native"
 
 import { Image } from "expo-image"
-import Character from "lib/character/Character"
+import { useAbilities } from "lib/character/abilities/abilities-provider"
 import secAttrMap from "lib/character/abilities/sec-attr/sec-attr"
+import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
+import { useAmmo, useCombatWeapons, useItem } from "lib/inventory/use-sub-inv-cat"
+import Weapon from "lib/objects/data/weapons/Weapon"
 import {
   getCanBasicUseFirearm,
   getCanLoad,
@@ -11,7 +14,6 @@ import {
   getCanUnload,
   getHasStrengthMalus
 } from "lib/objects/data/weapons/weapons-utils"
-import { Weapon } from "lib/objects/data/weapons/weapons.types"
 
 import unarmedImg from "assets/images/unarmed.png"
 import Row from "components/Row"
@@ -19,19 +21,14 @@ import Section from "components/Section"
 import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { useCharacter } from "contexts/CharacterContext"
-import { useInventory } from "contexts/InventoryContext"
 import { useActionApi } from "providers/ActionFormProvider"
-import { useCombatStatus } from "providers/CombatStatusProvider"
-import { useContenders } from "providers/ContendersProvider"
-import { useInventories } from "providers/PlayableInventoriesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import AmmoIndicator from "screens/CombatScreen/AmmoIndicator"
 import PlayButton from "screens/CombatScreen/slides/PlayButton"
 import colors from "styles/colors"
 import layout from "styles/layout"
 
-type WeaponInfoUiProps = { weapon: Weapon; isHuman: boolean; hasMalus: boolean }
+type WeaponInfoUiProps = { charId: string; weaponKey: Weapon["dbKey"] }
 
 const styles = StyleSheet.create({
   attr: {
@@ -74,11 +71,12 @@ function WeaponAction({
   )
 }
 
-function WeaponActions({ weapon }: { weapon: Weapon }) {
+function WeaponActions({ weaponKey, charId }: { weaponKey: string; charId: string }) {
   const useCases = useGetUseCases()
-  const character = useCharacter()
-  const maxAp = character.secAttr.curr.actionPoints
-  const { currAp } = useCombatStatus()
+  const { data: maxAp } = useAbilities(charId, a => a.secAttr.curr.actionPoints)
+  const { data: currAp } = useCombatStatus(charId, cs => cs.currAp)
+  const { data: weapon } = useItem(charId, weaponKey)
+  const { data: ammo } = useAmmo(charId)
 
   const [selectedAction, setSelectedAction] = useState("")
 
@@ -86,10 +84,12 @@ function WeaponActions({ weapon }: { weapon: Weapon }) {
     setSelectedAction(prev => (prev === id ? "" : id))
   }
 
+  if (weapon.category !== "weapons") throw new Error("Item is not a weapon")
+
   const canShoot = getCanBasicUseFirearm(weapon)
-  const canShootBurst = getCanShootBurst(weapon, currAp, maxAp)
-  const canLoad = getCanLoad(weapon, currAp)
-  const canUnload = getCanUnload(weapon, currAp)
+  const canShootBurst = getCanShootBurst(weapon, { currAp, maxAp })
+  const canLoad = getCanLoad(weapon, { currAp }, ammo)
+  const canUnload = getCanUnload(weapon, { currAp })
 
   return (
     <ScrollSection title="actions" style={{ flex: 1 }}>
@@ -98,7 +98,7 @@ function WeaponActions({ weapon }: { weapon: Weapon }) {
           title="TIRER"
           select={select}
           isSelected={selectedAction === "TIRER"}
-          doAction={() => useCases.weapons.use(character, weapon, "basic")}
+          doAction={() => useCases.weapons.useWeapon({ charId, weapon, actionId: "basic" })}
         />
       ) : null}
       {canShootBurst ? (
@@ -106,7 +106,7 @@ function WeaponActions({ weapon }: { weapon: Weapon }) {
           title="TIRER (rafale)"
           isSelected={selectedAction === "TIRER (rafale)"}
           select={select}
-          doAction={() => useCases.weapons.use(character, weapon, "burst")}
+          doAction={() => useCases.weapons.useWeapon({ charId, weapon, actionId: "burst" })}
         />
       ) : null}
       {canLoad ? (
@@ -114,7 +114,7 @@ function WeaponActions({ weapon }: { weapon: Weapon }) {
           title="RECHARGER"
           isSelected={selectedAction === "RECHARGER"}
           select={select}
-          doAction={() => useCases.weapons.load(character, weapon)}
+          doAction={() => useCases.weapons.load({ charId, weapon })}
         />
       ) : null}
       {canUnload ? (
@@ -122,14 +122,18 @@ function WeaponActions({ weapon }: { weapon: Weapon }) {
           title="DECHARGER"
           isSelected={selectedAction === "DECHARGER"}
           select={select}
-          doAction={() => useCases.weapons.unload(character, weapon)}
+          doAction={() => useCases.weapons.unload({ charId, weapon })}
         />
       ) : null}
     </ScrollSection>
   )
 }
 
-function WeaponInfoUi({ weapon, isHuman, hasMalus }: WeaponInfoUiProps) {
+function WeaponInfoUi({ charId, weaponKey }: WeaponInfoUiProps) {
+  const { data: abilities } = useAbilities(charId)
+  const { data: weapon } = useItem(charId, weaponKey)
+  const hasMalus = getHasStrengthMalus(weapon, abilities.special.curr)
+  if (weapon.category !== "weapons") throw new Error("Item is not a weapon")
   return (
     <>
       <Row style={{ alignItems: "center", justifyContent: "center" }}>
@@ -139,13 +143,13 @@ function WeaponInfoUi({ weapon, isHuman, hasMalus }: WeaponInfoUiProps) {
           contentFit="contain"
         />
         <Spacer x={15} />
-        <AmmoIndicator weapon={weapon} />
+        <AmmoIndicator charId={charId} weaponKey={weaponKey} />
       </Row>
 
       <Spacer y={10} />
 
       <View style={{ alignSelf: "center" }}>
-        {!isHuman ? <Txt>{weapon.data.label}</Txt> : null}
+        <Txt>{weapon.data.label}</Txt>
         <Row>
           <Txt style={styles.attr}>DEG</Txt>
           <Spacer x={10} />
@@ -161,7 +165,7 @@ function WeaponInfoUi({ weapon, isHuman, hasMalus }: WeaponInfoUiProps) {
         <Row>
           <Txt style={[styles.attr, hasMalus && styles.malus]}>COMP</Txt>
           <Spacer x={10} />
-          <Txt style={hasMalus && styles.malus}>{weapon.skill}</Txt>
+          <Txt style={hasMalus && styles.malus}>{weapon.getSkillScore(abilities)}</Txt>
         </Row>
         {weapon.data.range && (
           <Row>
@@ -179,20 +183,17 @@ function WeaponInfoUi({ weapon, isHuman, hasMalus }: WeaponInfoUiProps) {
 }
 
 export function NoCombatWeaponIndicator({
+  charId,
   style,
   contentContainerStyle,
   withActions
 }: {
+  charId: string
   withActions: boolean
   style?: StyleProp<ViewStyle>
   contentContainerStyle?: StyleProp<ViewStyle>
 }) {
-  const character = useCharacter()
-  const { equipedObjects, unarmed } = character
-  const weapons = equipedObjects.weapons.length > 0 ? equipedObjects.weapons : [unarmed]
-
-  const inv = useInventory()
-
+  const weapons = useCombatWeapons(charId)
   const [selectedWeapon, setSelectedWeapon] = useState(() => weapons[0].dbKey)
 
   const weaponIndex = weapons.findIndex(w => w.dbKey === selectedWeapon)
@@ -205,23 +206,11 @@ export function NoCombatWeaponIndicator({
     setSelectedWeapon(dbKey)
   }
 
-  let weapon = character.unarmed
-  const isHuman = character instanceof Character
-  if (selectedWeapon) {
-    weapon = isHuman
-      ? inv.weaponsRecord[selectedWeapon] ?? character.unarmed
-      : character.equipedObjectsRecord.weapons[selectedWeapon]
-  }
-
-  if (!weapon) return null
-
-  const hasMalus = getHasStrengthMalus(weapon, character.special.curr)
-
   return (
     <>
       {withActions ? (
         <>
-          <WeaponActions weapon={weapon} />
+          <WeaponActions charId={charId} weaponKey={selectedWeapon} />
           <Spacer x={layout.globalPadding} />
         </>
       ) : null}
@@ -232,7 +221,7 @@ export function NoCombatWeaponIndicator({
         contentContainerStyle={[{ justifyContent: "center", flex: 1 }, contentContainerStyle]}
       >
         <Pressable key={selectedWeapon} onPress={toggleWeapon} disabled={weapons.length < 2}>
-          <WeaponInfoUi weapon={weapon} hasMalus={hasMalus} isHuman={isHuman} />
+          <WeaponInfoUi charId={charId} weaponKey={selectedWeapon} />
         </Pressable>
       </Section>
     </>
@@ -250,12 +239,7 @@ export function CombatWeaponIndicator({
 }) {
   const { setForm } = useActionApi()
 
-  const character = useContenders(contenderId)
-  const { equipedObjects, unarmed } = character
-  const weapons = equipedObjects.weapons.length > 0 ? equipedObjects.weapons : [unarmed]
-
-  const inv = useInventories(contenderId)
-
+  const weapons = useCombatWeapons(contenderId)
   const [selectedWeapon, setSelectedWeapon] = useState(() => weapons[0].dbKey)
 
   const weaponIndex = weapons.findIndex(w => w.dbKey === selectedWeapon)
@@ -269,18 +253,6 @@ export function CombatWeaponIndicator({
     setForm({ itemDbKey: dbKey, apCost: 0, actionSubtype: undefined })
   }
 
-  let weapon = character.unarmed
-  const isHuman = character instanceof Character
-  if (selectedWeapon) {
-    weapon = isHuman
-      ? inv.weaponsRecord[selectedWeapon] ?? character.unarmed
-      : character.equipedObjectsRecord.weapons[selectedWeapon]
-  }
-
-  if (!weapon) return null
-
-  const hasMalus = getHasStrengthMalus(weapon, character.special.curr)
-
   return (
     <Section
       title={weapons.length > 1 ? `arme ${wepaonDisplayIndex} / ${weapons.length}` : "arme"}
@@ -288,7 +260,7 @@ export function CombatWeaponIndicator({
       contentContainerStyle={[{ justifyContent: "center", flex: 1 }, contentContainerStyle]}
     >
       <Pressable key={selectedWeapon} onPress={toggleWeapon} disabled={weapons.length < 2}>
-        <WeaponInfoUi weapon={weapon} hasMalus={hasMalus} isHuman={isHuman} />
+        <WeaponInfoUi charId={contenderId} weaponKey={selectedWeapon} />
       </Pressable>
     </Section>
   )

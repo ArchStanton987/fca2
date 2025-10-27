@@ -1,9 +1,12 @@
 import { StyleSheet } from "react-native"
 
+import { useCombatId } from "lib/character/combat-status/combat-status-provider"
+
 import Section from "components/Section"
 import Txt from "components/Txt"
-import { useCombat } from "providers/CombatProvider"
 import colors from "styles/colors"
+
+import { useCombat } from "../use-cases/sub-combat"
 
 const styles = StyleSheet.create({
   centeredSection: {
@@ -18,11 +21,12 @@ const styles = StyleSheet.create({
   }
 })
 
-export default function RoundIndicator() {
-  const combat = useCombat()
+export default function RoundIndicator({ charId }: { charId: string }) {
+  const { data: combatId } = useCombatId(charId)
+  const { data: roundId } = useCombat(combatId, data => data.currRoundId ?? 1)
   return (
     <Section contentContainerStyle={styles.centeredSection} title="ROUND" style={{ flex: 1 }}>
-      <Txt style={styles.combatStep}>{combat?.currRoundId ?? 1}</Txt>
+      <Txt style={styles.combatStep}>{roundId}</Txt>
     </Section>
   )
 }

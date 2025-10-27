@@ -21,7 +21,6 @@ export const useGetInitDamageEntry = (combatId: string): DamageEntry => {
     rawDamage: action.rawDamage || 0,
     damageType: action.damageType || "physical"
   }
-
   return {
     charId: targetId,
     entryType: "hp",

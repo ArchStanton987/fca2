@@ -1,3 +1,4 @@
+import { useCombatState } from "lib/combat/use-cases/sub-combat"
 import { getRollFinalScore } from "lib/combat/utils/combat-utils"
 
 import Col from "components/Col"
@@ -6,7 +7,6 @@ import Section from "components/Section"
 import DrawerSlide from "components/Slides/DrawerSlide"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { useCombatState } from "providers/CombatStateProvider"
 import layout from "styles/layout"
 
 import NextButton from "../NextButton"
@@ -15,13 +15,15 @@ import ActionOutcome from "./ActionOutcome"
 import styles from "./ScoreResultSlide.styles"
 
 export default function VisualizeReactionSlide({
+  charId,
   dismiss,
   skipDamage
 }: {
+  charId: string
   dismiss: () => void
   skipDamage: () => void
 }) {
-  const { action } = useCombatState()
+  const { data: action } = useCombatState(charId, state => state.action)
 
   if (!action?.roll || !action?.reactionRoll)
     return <SlideError error={slideErrors.noDiceRollError} />

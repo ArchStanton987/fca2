@@ -8,7 +8,8 @@ export default class MiscObjectsMappers {
       description: payload.description,
       value: payload.value,
       place: payload.place,
-      weight: payload.weight
+      weight: payload.weight,
+      symptoms: Object.values(payload.symptoms)
     }
   }
 }

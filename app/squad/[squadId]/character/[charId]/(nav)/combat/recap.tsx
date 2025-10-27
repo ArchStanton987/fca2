@@ -14,11 +14,11 @@ export default function CombatRecapPage() {
   const { charId } = useLocalSearchParams<{ charId: string }>()
   return (
     <DrawerPage style={{ flexDirection: "column" }}>
-      <ApVisualizer />
+      <ApVisualizer charId={charId} />
       <Spacer y={layout.globalPadding} />
       <Row style={{ flex: 1 }}>
         <Spacer x={layout.globalPadding} />
-        <NoCombatWeaponIndicator withActions />
+        <NoCombatWeaponIndicator charId={charId} withActions />
         <Spacer x={layout.globalPadding} />
         <Section
           title="santé"

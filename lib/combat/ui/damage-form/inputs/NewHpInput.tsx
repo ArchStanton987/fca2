@@ -1,7 +1,8 @@
 import { StyleSheet } from "react-native"
 
+import { useHealth } from "lib/character/health/health-provider"
+
 import TxtInput from "components/TxtInput"
-import { useContenders } from "providers/ContendersProvider"
 import { useDamageEntry, useDamageFormStore } from "providers/DamageFormProvider"
 
 type NewHpInputProps = {
@@ -16,8 +17,7 @@ export default function NewHpInput({ entryId }: NewHpInputProps) {
   const actions = useDamageFormStore(state => state.actions)
   const entry = useDamageEntry(entryId)
   const { charId, damage = 0 } = entry
-  const contender = useContenders(charId)
-  const currHp = contender?.health?.hp ?? 0
+  const { data: currHp = 0 } = useHealth(charId, h => h.currHp)
   const newHp = currHp - damage
 
   const setPannelAndSelectEntry = () => {

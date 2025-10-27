@@ -39,7 +39,7 @@ function ClothingsListHeader() {
 export default function EquipedObjSection({ charId }: { charId: string }) {
   const { data: currSecAttr } = useCurrSecAttr(charId)
   const { normalCarryWeight, tempCarryWeight, maxCarryWeight, maxPlace } = currSecAttr
-  const { data: equipedWeapons } = useWeapons(charId, true)
+  const { data: equipedWeapons } = useWeapons(charId, { isEquipped: true })
   const { data: equipedClothings } = useClothings(charId, true)
   const { weight, place } = useCarry(charId)
 

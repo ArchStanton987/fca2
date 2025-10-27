@@ -9,8 +9,14 @@ import { getModAttribute } from "lib/common/utils/char-calc"
 
 import { AmmoSet } from "../ammo/ammo.types"
 import { DbWeapon, ItemInterface } from "../objects.types"
-import { MALUS_PER_MISSING_STRENGTH } from "./weapons-const"
-import { DbWeaponData, WeaponData, WeaponId, WeaponTagId } from "./weapons.types"
+import {
+  HIT_WITH_AP_COST,
+  LOAD_AP_COST,
+  MALUS_PER_MISSING_STRENGTH,
+  THROW_AP_COST,
+  UNLOAD_AP_COST
+} from "./weapons-const"
+import { DbWeaponData, WeaponActionId, WeaponData, WeaponId, WeaponTagId } from "./weapons.types"
 
 export default class Weapon implements ItemInterface {
   id: WeaponId
@@ -93,17 +99,30 @@ export default class Weapon implements ItemInterface {
     return baseScore + knowledgesBonus + charTraitSkillModifier - strengthMalus
   }
 
-  getApCost(traits: Abilities["traits"]) {
-    let { basicApCost, specialApCost } = this.data
+  getApCost(
+    traits: Abilities["traits"],
+    secAttr: Abilities["secAttr"],
+    actionType: WeaponActionId
+  ) {
+    const apCosts = {
+      basic: this.data.basicApCost,
+      aim: this.data.specialApCost,
+      burst: secAttr.base.actionPoints,
+      reload: LOAD_AP_COST,
+      unload: UNLOAD_AP_COST,
+      throw: THROW_AP_COST,
+      hit: HIT_WITH_AP_COST
+    }
     if (traits.mrFast) {
       const { BASIC_AP_COST_MOD, SPECIAL_AP_COST_VALUE } = traitsMap.mrFast.consts
-      specialApCost = SPECIAL_AP_COST_VALUE
-      basicApCost = basicApCost !== null ? basicApCost + BASIC_AP_COST_MOD : null
+      apCosts.basic =
+        typeof apCosts.basic === "number" ? apCosts.basic + BASIC_AP_COST_MOD : apCosts.basic
+      apCosts.aim = SPECIAL_AP_COST_VALUE
     }
-    return { basicApCost, specialApCost }
+    return apCosts[actionType]
   }
 
-  getAmmoCount(ammo: AmmoSet) {
+  getAmmoCount(ammo: Partial<AmmoSet>) {
     return this.data.ammoType ? ammo[this.data.ammoType] : null
   }
 

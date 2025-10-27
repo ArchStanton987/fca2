@@ -5,13 +5,13 @@ import {
 import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-levels"
 import { Special } from "lib/character/abilities/special/special.types"
 import { TraitId } from "lib/character/abilities/traits/traits.types"
-import { BackgroundId } from "lib/character/status/status.types"
 
 import knowledgesMap from "../abilities/knowledges/knowledges"
 import {
   BACKGROUND_INIT_AVAILABLE_KNOWLEDGES_CATEGORIES,
   RACE_INIT_KNOWLEDGES
 } from "../abilities/knowledges/knowledges-const"
+import { BackgroundId } from "../info/CharInfo"
 import { SpeciesId } from "../playable.const"
 
 export const getHpGainPerLevel = (special: Special) => {

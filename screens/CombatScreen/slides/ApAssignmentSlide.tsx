@@ -1,11 +1,11 @@
 import { StyleSheet } from "react-native"
 
-import { getItemFromId, getItemWithSkillFromId } from "lib/combat/utils/combat-utils"
-import { Clothing } from "lib/objects/data/clothings/clothings.types"
-import { Consumable } from "lib/objects/data/consumables/consumables.types"
-import { isConsumableItem } from "lib/objects/data/consumables/consumables.utils"
-import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
-import { Weapon } from "lib/objects/data/weapons/weapons.types"
+import { useLocalSearchParams } from "expo-router"
+
+import { useAbilities } from "lib/character/abilities/abilities-provider"
+import { useCombatId, useCombatStatus } from "lib/character/combat-status/combat-status-provider"
+import { useCombatState } from "lib/combat/use-cases/sub-combat"
+import { useItem } from "lib/inventory/use-sub-inv-cat"
 import Toast from "react-native-toast-message"
 
 import CheckBox from "components/CheckBox/CheckBox"
@@ -19,7 +19,6 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
-import { useCharacter } from "contexts/CharacterContext"
 import {
   useActionActorId,
   useActionApCost,
@@ -28,18 +27,12 @@ import {
   useActionSubtype,
   useActionType
 } from "providers/ActionFormProvider"
-import { useCombat } from "providers/CombatProvider"
-import { useCombatState } from "providers/CombatStateProvider"
-import { useCombatStatuses } from "providers/CombatStatusesProvider"
-import { useContenders } from "providers/ContendersProvider"
-import { useInventories } from "providers/InventoriesProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
 
 import NextButton from "./NextButton"
-import SlideError, { slideErrors } from "./SlideError"
 
 const styles = StyleSheet.create({
   checkboxContainer: {
@@ -53,24 +46,24 @@ const styles = StyleSheet.create({
 })
 
 export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
+  const { charId } = useLocalSearchParams<{ charId: string }>()
   const useCases = useGetUseCases()
-  const combatStatuses = useCombatStatuses()
-  const { charId } = useCharacter()
-  const combat = useCombat()
-  const { action } = useCombatState()
-  const contenders = useContenders()
   const formActorId = useActionActorId()
+
+  const { data: combatId } = useCombatId(formActorId)
+  const { data: action } = useCombatState(combatId, s => s.action)
+
   const apCost = useActionApCost()
   const actionType = useActionType()
   const actionSubtype = useActionSubtype()
   const itemDbKey = useActionItemDbKey()
-  const actorId = formActorId === "" ? charId : formActorId
-  const actor = contenders[actorId]
-  const inventory = useInventories(actorId)
-  const { setForm, reset } = useActionApi()
 
-  const { currAp } = combatStatuses[actorId]
-  const maxAp = actor.secAttr.curr.actionPoints
+  const actorId = formActorId === "" ? charId : formActorId
+  const { data: item } = useItem(actorId, itemDbKey ?? "")
+  const { data: currAp } = useCombatStatus(actorId, s => s.currAp)
+  const { data: maxAp } = useAbilities(actorId, a => a.secAttr.curr.actionPoints)
+
+  const { setForm, reset } = useActionApi()
 
   const { scrollTo } = useScrollTo()
 
@@ -95,18 +88,10 @@ export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
     setForm({ apCost: newApCost })
   }
 
-  const handleSubmit = async (item?: Consumable | Weapon | Clothing | MiscObject) => {
-    if (!combat) return
-
+  const handleSubmit = async () => {
     const payload = { ...action, apCost }
     try {
-      await useCases.combat.doCombatAction({
-        contenders,
-        combatStatuses,
-        combat,
-        action: payload,
-        item
-      })
+      await useCases.combat.doCombatAction({ combatId, action: payload, item })
       Toast.show({ type: "custom", text1: "Action réalisée" })
       reset()
     } catch (error) {
@@ -115,8 +100,7 @@ export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
   }
 
   const onPressNext = async () => {
-    if (!combat) return
-    await useCases.combat.updateAction({ combatId: combat.id, payload: { apCost } })
+    await useCases.combat.updateAction({ combatId, payload: { apCost } })
 
     switch (actionType) {
       case "other": {
@@ -128,8 +112,7 @@ export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
           scrollNext()
           break
         }
-        const item = getItemFromId(inventory, itemDbKey)
-        handleSubmit(item)
+        handleSubmit()
         break
       }
       case "movement":
@@ -137,8 +120,7 @@ export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
         return
       case "item": {
         // checks if requires further action (throw, pickup & use when object has challenge label)
-        const item = getItemWithSkillFromId(itemDbKey, inventory)
-        const isConsumable = isConsumableItem(item)
+        const isConsumable = item.category === "consumables"
         const hasChallenge = isConsumable && item.data.challengeLabel !== null
         const hasFurtherAction =
           actionSubtype === "throw" ||
@@ -148,7 +130,7 @@ export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
           scrollNext()
           break
         }
-        handleSubmit(item)
+        handleSubmit()
         break
       }
       default:
@@ -163,8 +145,6 @@ export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
     apArr.push({ id: i.toString(), isChecked, isPreview })
   }
 
-  if (!combat) return <SlideError error={slideErrors.noCombatError} />
-
   return (
     <DrawerSlide>
       <Col style={{ flex: 1 }}>
@@ -173,13 +153,13 @@ export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
             data={apArr}
             horizontal
             style={styles.checkboxContainer}
-            keyExtractor={item => item.id}
-            renderItem={({ item }) => (
+            keyExtractor={e => e.id}
+            renderItem={props => (
               <CheckBox
-                color={item.isPreview ? colors.yellow : colors.secColor}
+                color={props.item.isPreview ? colors.yellow : colors.secColor}
                 size={30}
-                isChecked={item.isChecked}
-                onPress={() => setApCost(parseInt(item.id, 10))}
+                isChecked={props.item.isChecked}
+                onPress={() => setApCost(parseInt(props.item.id, 10))}
               />
             )}
           />

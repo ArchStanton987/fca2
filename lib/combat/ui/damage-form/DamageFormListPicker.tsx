@@ -1,19 +1,25 @@
+import { useLocalSearchParams } from "expo-router"
+
+import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { calculatedEffects } from "lib/character/effects/effects-utils"
-import { limbsMap } from "lib/character/health/healthMap"
+import { limbsMap } from "lib/character/health/Health"
+import { limbsTemplates } from "lib/character/health/health.const"
+import { useCharInfo, usePlayablesCharInfo } from "lib/character/info/info-provider"
+import { useContenders } from "lib/combat/use-cases/sub-combat"
+import { critters } from "lib/npc/const/npc-templates"
 
 import List from "components/List"
 import Selectable from "components/Selectable"
 import Txt from "components/Txt"
-import useCreatedElements from "hooks/context/useCreatedElements"
-import { useContenders } from "providers/ContendersProvider"
+import { useCollectiblesData } from "providers/AdditionalElementsProvider"
 import { useDamageFormStore } from "providers/DamageFormProvider"
 
 function CharList() {
-  const contenders = useContenders()
-  const charList = Object.values(contenders).map(c => ({
-    id: c.charId,
-    name: c.fullname
-  }))
+  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const { data: combatId } = useCombatId(charId)
+  const { data: contenders } = useContenders(combatId)
+  const chars = usePlayablesCharInfo(contenders)
+  const charList = Object.entries(chars).map(([id, value]) => ({ id, label: value.fullname }))
   const actions = useDamageFormStore(state => state.actions)
   return (
     <List
@@ -21,7 +27,7 @@ function CharList() {
       keyExtractor={e => e.id}
       renderItem={({ item }) => (
         <Selectable isSelected={false} onPress={() => actions.setEntry("charId", item.id)}>
-          <Txt>{item.name}</Txt>
+          <Txt>{item.label}</Txt>
         </Selectable>
       )}
     />
@@ -30,13 +36,20 @@ function CharList() {
 
 function LimbsList() {
   const actions = useDamageFormStore(state => state.actions)
+  const selectedChar = useDamageFormStore(state => {
+    if (!state.selectedEntry) return ""
+    return state.entries[state.selectedEntry].charId
+  })
+  const { data: templateId } = useCharInfo(selectedChar, i => i.templateId)
+  const limbsTemplateId = templateId in critters ? critters[templateId].limbsTemplate : "large"
+  const limbsTemplate = limbsTemplates[limbsTemplateId]
   return (
     <List
-      data={Object.values(limbsMap)}
-      keyExtractor={e => e.id}
+      data={limbsTemplate}
+      keyExtractor={e => e}
       renderItem={({ item }) => (
-        <Selectable isSelected={false} onPress={() => actions.setEntry("localization", item.id)}>
-          <Txt>{item.label}</Txt>
+        <Selectable isSelected={false} onPress={() => actions.setEntry("localization", item)}>
+          <Txt>{limbsMap[item].label}</Txt>
         </Selectable>
       )}
     />
@@ -44,8 +57,8 @@ function LimbsList() {
 }
 
 function EffectsList() {
-  const { newEffects } = useCreatedElements()
-  const effects = Object.values(newEffects).filter(e => !calculatedEffects.includes(e.type))
+  const { effects: allEffects } = useCollectiblesData()
+  const effects = Object.values(allEffects).filter(e => !calculatedEffects.includes(e.type))
   const actions = useDamageFormStore(state => state.actions)
   return (
     <List

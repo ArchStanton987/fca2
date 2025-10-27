@@ -80,7 +80,7 @@ export default function doCombatAction(config: UseCasesConfig) {
         if (actionSubtype !== "pickUp") {
           if (!item) throw new Error("Item is required for item action")
         }
-        promises.push(itemAction(config)({ action, contenders, combat, item }))
+        promises.push(itemAction(config)({ action, item }))
         break
 
       default:
@@ -91,9 +91,7 @@ export default function doCombatAction(config: UseCasesConfig) {
     if (action?.healthChangeEntries) {
       const damageEntries = action.healthChangeEntries
 
-      promises.push(
-        applyDamageEntries(config)({ roundId, contenders, combatStatuses, damageEntries })
-      )
+      promises.push(applyDamageEntries(config)({ roundId, damageEntries }))
     }
 
     // save action in combat
@@ -101,7 +99,7 @@ export default function doCombatAction(config: UseCasesConfig) {
 
     // handle char status reset & new round creation
     if (isEndingRound) {
-      promises.push(setNewRound(config)({ contenders, combatStatuses, combat }))
+      promises.push(setNewRound(config)({ combatId }))
     } else {
       // set actor action points
       const newAp = combatStatus.currAp - apCost

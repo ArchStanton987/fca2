@@ -1,26 +1,31 @@
-import Playable from "lib/character/Playable"
-import { CombatStatus } from "lib/character/combat-status/combat-status.types"
-import { getHealthState } from "lib/character/health/health-utils"
+import { getSecAttr } from "lib/character/abilities/abilities-provider"
+import { getCombatStatus } from "lib/character/combat-status/combat-status-provider"
+import Health from "lib/character/health/Health"
+import { getHealth } from "lib/character/health/health-provider"
+import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
-import Combat, { defaultAction } from "../Combat"
+import { defaultAction } from "../Combat"
+import { getCombat } from "./sub-combat"
 
 export type SetNewRoundParams = {
-  contenders: Record<string, Playable>
-  combatStatuses: Record<string, CombatStatus>
-  combat: Combat
+  combatId: string
 }
 
-export default function setNewRound(dbType: keyof typeof repositoryMap = "rtdb") {
-  const combatStatusRepo = repositoryMap[dbType].combatStatusRepository
-  const combatHistoryRepo = repositoryMap[dbType].combatHistoryRepository
+export default function setNewRound(config: UseCasesConfig) {
+  const { db, store } = config
+  const combatStatusRepo = repositoryMap[db].combatStatusRepository
+  const combatHistoryRepo = repositoryMap[db].combatHistoryRepository
 
-  return async ({ contenders, combatStatuses, combat }: SetNewRoundParams) => {
+  return async ({ combatId }: SetNewRoundParams) => {
     const promises = []
+    const combat = getCombat(store, combatId)
     const nextRoundId = combat.currRoundId + 1
-    Object.entries(contenders).forEach(([charId, contender]) => {
-      const { secAttr, health } = contender
-      const combatStatus = combatStatuses[charId]
+    const contenders = combat.contendersIds
+    Object.keys(contenders).forEach(charId => {
+      const health = getHealth(store, charId)
+      const secAttr = getSecAttr(store, charId)
+      const combatStatus = getCombatStatus(store, charId)
       // reset AP for all contenders who are not dead
       if (combatStatus.combatStatus !== "dead") {
         const maxAp = secAttr.curr.actionPoints
@@ -33,7 +38,8 @@ export default function setNewRound(dbType: keyof typeof repositoryMap = "rtdb")
         const isStillInactive = Object.values(inactiveRecord).some(
           r => nextRoundId >= r.roundStart && nextRoundId <= r.roundEnd
         )
-        const isUnconscious = getHealthState(health.hp, health.maxHp) === "woundedUnconscious"
+        const isUnconscious =
+          Health.getHealthEffectId(health.currHp, health.maxHp) === "woundedUnconscious"
         if (isStillInactive || isUnconscious) return
         promises.push(combatStatusRepo.patch({ charId }, { combatStatus: "active" }))
       }

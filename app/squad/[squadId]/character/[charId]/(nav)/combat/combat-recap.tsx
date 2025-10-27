@@ -19,14 +19,14 @@ export default function InCombatRecapPage() {
   const hasCombat = combatId !== ""
   return (
     <DrawerPage style={{ flexDirection: "column" }}>
-      <ApVisualizer />
+      <ApVisualizer charId={charId} />
       <Spacer y={layout.globalPadding} />
       <Row style={{ flex: 1 }}>
         {hasCombat ? (
           <>
-            <RoundIndicator />
+            <RoundIndicator charId={charId} />
             <Spacer x={layout.globalPadding} />
-            <ActionIndicator />
+            <ActionIndicator charId={charId} />
           </>
         ) : null}
         <Spacer x={layout.globalPadding} />

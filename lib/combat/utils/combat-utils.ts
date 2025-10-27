@@ -4,13 +4,15 @@ import { getKnowledgesBonus } from "lib/character/abilities/knowledges/knowledge
 import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-levels"
 import skillsMap from "lib/character/abilities/skills/skills"
 import { Skill, SkillId } from "lib/character/abilities/skills/skills.types"
+import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { CombatStatus } from "lib/character/combat-status/combat-status.types"
 import { limbsMap } from "lib/character/health/Health"
 import { LimbId } from "lib/character/health/health.const"
-import CharInfo from "lib/character/info/CharInfo"
+import { useCharInfo } from "lib/character/info/info-provider"
 import { withDodgeSpecies } from "lib/character/playable.const"
 import { Item } from "lib/inventory/use-sub-inv-cat"
-import { BodyPart, ClothingData } from "lib/objects/data/clothings/clothings.types"
+import { BodyPart } from "lib/objects/data/clothings/armor.types"
+import { ClothingData } from "lib/objects/data/clothings/clothings.types"
 import Consumable from "lib/objects/data/consumables/Consumable"
 import Weapon from "lib/objects/data/weapons/Weapon"
 import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
@@ -22,6 +24,7 @@ import Combat from "../Combat"
 import { Roll } from "../combats.types"
 import actions from "../const/actions"
 import { DEFAULT_INITIATIVE, DODGE_AP_COST, PARRY_AP_COST } from "../const/combat-const"
+import { useCombatState } from "../use-cases/sub-combat"
 
 export const getPlayingOrder = (combatStatuses: Record<string, CombatStatus>) => {
   // sort contenders by initiative and current ap, then combat status inactive, then dead
@@ -280,25 +283,21 @@ export const getRollFinalScore = (roll: Roll) => {
   return sumAbilities - dice + bonus - targetArmorClass - difficulty
 }
 
-export const getPlayerCanReact = (info: CharInfo, combatStatus: CombatStatus, action: Action) => {
-  if (!action) return false
-
-  if (!withDodgeSpecies.includes(info.speciesId)) return false
-
-  const playerIsTarget = action.targetId === info.charId
-  if (!playerIsTarget) return false
-
-  const { currAp } = combatStatus
-  const reactionActionsApCost = [DODGE_AP_COST, PARRY_AP_COST]
-  const hasEnoughAp = reactionActionsApCost.some(cost => currAp >= cost)
-  if (!hasEnoughAp) return false
-
-  const isActive = combatStatus.combatStatus === "active" || combatStatus.combatStatus === "wait"
-  if (!isActive) return false
-
-  const { damageLocalization, reactionRoll } = action
-  if (!!damageLocalization && reactionRoll === undefined) return true
-  return false
+export const useGetPlayerCanReact = (charId: string) => {
+  const { data: canDodge } = useCharInfo(charId, i => withDodgeSpecies.includes(i.speciesId))
+  const { data: combatStatus } = useCombatStatus(charId, s => ({
+    combatId: s.combatId,
+    hasEnoughAp: [DODGE_AP_COST, PARRY_AP_COST].some(cost => s.currAp >= cost),
+    isActive: s.combatStatus === "active" || s.combatStatus === "wait"
+  }))
+  const { data: combatState } = useCombatState(combatStatus.combatId, state => ({
+    isTarget: state.action.targetId === charId,
+    isAwaitingReaction: !!state.action.damageLocalization && state.action.reactionRoll === undefined
+  }))
+  if (!canDodge) return false
+  if (!combatState.isTarget || !combatState.isAwaitingReaction) return false
+  if (!combatStatus.isActive || !combatStatus.hasEnoughAp) return false
+  return true
 }
 
 export const getReactionAbilities = (

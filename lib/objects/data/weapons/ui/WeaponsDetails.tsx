@@ -1,16 +1,20 @@
 import React from "react"
+import { TouchableOpacity } from "react-native"
 
+import { useLocalSearchParams } from "expo-router"
+
+import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
+import { useAmmo } from "lib/inventory/use-sub-inv-cat"
 import ammoMap from "lib/objects/data/ammo/ammo"
 import { getCanLoad, getCanUnload } from "lib/objects/data/weapons/weapons-utils"
-import { Weapon, damageTypeMap } from "lib/objects/data/weapons/weapons.types"
+import { damageTypeMap } from "lib/objects/data/weapons/weapons.types"
 
 import List from "components/List"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import RevertColorsPressable from "components/wrappers/RevertColorsPressable/RevertColorsPressable"
-import { useCharacter } from "contexts/CharacterContext"
-import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
+
+import Weapon from "../Weapon"
 
 const getWeaponDetails = ({ data }: Weapon) => [
   { label: "PA", value: `${data.basicApCost || "-"} / ${data.specialApCost || "-"}` },
@@ -26,22 +30,23 @@ const getWeaponDetails = ({ data }: Weapon) => [
 ]
 
 export default function WeaponsDetails({ charWeapon }: { charWeapon: Weapon | null }) {
+  const { charId } = useLocalSearchParams<{ charId: string }>()
   const useCases = useGetUseCases()
-  const char = useCharacter()
   const weaponDetails = charWeapon ? getWeaponDetails(charWeapon) : []
-  const { currAp } = useCombatStatus()
+  const { data: currAp } = useCombatStatus(charId, s => s.currAp)
+  const { data: ammo } = useAmmo(charId)
 
   const reload = () => {
     if (!charWeapon) return
-    useCases.weapons.load(char, charWeapon)
+    useCases.weapons.load({ charId, weapon: charWeapon })
   }
   const unload = () => {
     if (!charWeapon) return
-    useCases.weapons.unload(char, charWeapon)
+    useCases.weapons.unload({ charId, weapon: charWeapon })
   }
 
-  const canLoad = charWeapon ? getCanLoad(charWeapon, currAp) : false
-  const canUnload = charWeapon ? getCanUnload(charWeapon, currAp) : false
+  const canLoad = charWeapon ? getCanLoad(charWeapon, { currAp }, ammo) : false
+  const canUnload = charWeapon ? getCanUnload(charWeapon, { currAp }) : false
 
   return (
     <>
@@ -56,15 +61,15 @@ export default function WeaponsDetails({ charWeapon }: { charWeapon: Weapon | nu
       />
       <Spacer y={20} />
       {canLoad ? (
-        <RevertColorsPressable onPress={() => reload()}>
+        <TouchableOpacity onPress={() => reload()}>
           <Txt>RECHARGER</Txt>
-        </RevertColorsPressable>
+        </TouchableOpacity>
       ) : null}
       <Spacer y={20} />
       {canUnload ? (
-        <RevertColorsPressable onPress={() => unload()}>
+        <TouchableOpacity onPress={() => unload()}>
           <Txt>DECHARGER</Txt>
-        </RevertColorsPressable>
+        </TouchableOpacity>
       ) : null}
       <Spacer y={20} />
     </>

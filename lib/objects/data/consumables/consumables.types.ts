@@ -1,8 +1,7 @@
 import { KnowledgeId } from "lib/character/abilities/knowledges/knowledge-types"
 import { SkillId } from "lib/character/abilities/skills/skills.types"
 import { EffectId } from "lib/character/effects/effects.types"
-import { Modifier } from "lib/character/effects/symptoms.type"
-import { HealthStatusId } from "lib/character/health/health-types"
+import { HealthModifiable, Modifier } from "lib/character/effects/symptoms.type"
 
 export type ConsumableType = "heal" | "kit" | "drugs"
 
@@ -39,7 +38,7 @@ export type DbConsumableData = {
   maxUsage: number
   knowledges?: Record<KnowledgeId, KnowledgeId>
   skillId?: SkillId
-  modifiers?: Record<HealthStatusId, Modifier>
+  modifiers?: Record<HealthModifiable, Modifier>
 }
 
 // export type Consumable = {

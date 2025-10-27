@@ -1,6 +1,7 @@
-import Character from "lib/character/Character"
+import { useAbilities, useSecAttr, useTraits } from "lib/character/abilities/abilities-provider"
+import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
+import { useAmmo, useCombatWeapons, useItem } from "lib/inventory/use-sub-inv-cat"
 import {
-  getApCost,
   getAvailableWeaponActions,
   getWeaponActionLabel
 } from "lib/objects/data/weapons/weapons-utils"
@@ -9,38 +10,32 @@ import List from "components/List"
 import ListItemSelectable from "components/ListItemSelectable"
 import ScrollSection from "components/Section/ScrollSection"
 import Txt from "components/Txt"
-import { useCharacter } from "contexts/CharacterContext"
-import { useInventory } from "contexts/InventoryContext"
 import {
   useActionActorId,
   useActionApi,
   useActionItemDbKey,
   useActionSubtype
 } from "providers/ActionFormProvider"
-import { useCombatStatuses } from "providers/CombatStatusesProvider"
-import { useContenders } from "providers/ContendersProvider"
 
-export default function WeaponActions() {
-  const { charId } = useCharacter()
+export default function WeaponActions({ charId }: { charId: string }) {
   const formActorId = useActionActorId()
   const itemDbKey = useActionItemDbKey()
   const actionSubtype = useActionSubtype()
   const actorId = formActorId === "" ? charId : formActorId
-  const { currAp } = useCombatStatuses(actorId)
-  const contender = useContenders(actorId)
+  const { data: currAp } = useCombatStatus(actorId, s => s.currAp)
+  const { data: maxAp } = useAbilities(actorId, a => a.secAttr.curr.actionPoints)
+  const { data: traits } = useTraits(actorId)
+  const { data: secAttr } = useSecAttr(actorId)
+  const { data: ammo } = useAmmo(actorId)
   const { setActionSubtype } = useActionApi()
-  const inv = useInventory()
-  let weapon = contender.unarmed
-  const isHuman = contender instanceof Character
-  if (itemDbKey) {
-    weapon = isHuman
-      ? inv.weaponsRecord[itemDbKey] ?? contender.unarmed
-      : contender.equipedObjectsRecord.weapons[itemDbKey]
-  }
 
-  if (!weapon) return null
+  const { data: actionWeapon } = useItem(actorId, itemDbKey ?? "")
+  const weapons = useCombatWeapons(actorId)
+  const weapon = actionWeapon ?? weapons[0]
 
-  const actions = getAvailableWeaponActions(weapon, currAp, contender.secAttr.curr.actionPoints)
+  if (weapon.category !== "weapons") return null
+
+  const actions = getAvailableWeaponActions(weapon, { currAp, maxAp }, ammo)
 
   return (
     <ScrollSection style={{ flex: 1 }} title="action - pa">
@@ -48,12 +43,15 @@ export default function WeaponActions() {
         data={actions}
         keyExtractor={item => item}
         renderItem={({ item }) => {
-          const apCost = getApCost(weapon, contender, item)
+          const apCost = weapon.getApCost(traits, secAttr, item)
           return (
             <ListItemSelectable
               isSelected={actionSubtype === item}
               style={{ flexDirection: "row", justifyContent: "space-between" }}
-              onPress={() => setActionSubtype(item, apCost)}
+              onPress={() => {
+                if (apCost === null) return
+                setActionSubtype(item, apCost)
+              }}
             >
               <Txt>{getWeaponActionLabel(weapon, item)}</Txt>
               <Txt>{apCost}</Txt>
