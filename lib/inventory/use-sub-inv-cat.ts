@@ -77,7 +77,7 @@ const groupById = (items: Item[]) =>
     })
   )
 
-const selector = <C extends ItemCategory>(
+export const itemSelector = <C extends ItemCategory>(
   items: ItemRecord,
   cat: C,
   { isEquipped, isGrouped }: Options
@@ -108,7 +108,7 @@ export function useWeapons(
   return useSuspenseQuery({
     ...query,
     select: useCallback(
-      (items: ItemRecord) => selector(items, "weapons", { isEquipped, isGrouped }),
+      (items: ItemRecord) => itemSelector(items, "weapons", { isEquipped, isGrouped }),
       [isEquipped, isGrouped]
     )
   })
@@ -130,7 +130,7 @@ export function useClothings(charId: string, isEquipped?: boolean, isGrouped?: b
   return useSuspenseQuery({
     ...query,
     select: useCallback(
-      (items: ItemRecord) => selector(items, "clothings", { isEquipped, isGrouped }),
+      (items: ItemRecord) => itemSelector(items, "clothings", { isEquipped, isGrouped }),
       [isEquipped, isGrouped]
     )
   })
@@ -140,7 +140,7 @@ export function useConsumables(charId: string, isEquipped?: boolean, isGrouped?:
   return useSuspenseQuery({
     ...query,
     select: useCallback(
-      (items: ItemRecord) => selector(items, "consumables", { isEquipped, isGrouped }),
+      (items: ItemRecord) => itemSelector(items, "consumables", { isEquipped, isGrouped }),
       [isEquipped, isGrouped]
     )
   })
@@ -150,7 +150,7 @@ export function useMiscObjects(charId: string, isEquipped?: boolean, isGrouped?:
   return useSuspenseQuery({
     ...query,
     select: useCallback(
-      (items: ItemRecord) => selector(items, "misc", { isEquipped, isGrouped }),
+      (items: ItemRecord) => itemSelector(items, "misc", { isEquipped, isGrouped }),
       [isEquipped, isGrouped]
     )
   })

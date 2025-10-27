@@ -1,9 +1,8 @@
 import { useState } from "react"
-import { View } from "react-native"
+import { TouchableOpacity, View } from "react-native"
 
 import { useLocalSearchParams } from "expo-router"
 
-import { usePlayables } from "lib/character/playables-provider"
 import { useDatetime } from "lib/squad/use-cases/sub-squad"
 import Toast from "react-native-toast-message"
 
@@ -15,7 +14,6 @@ import Txt from "components/Txt"
 import ViewSection from "components/ViewSection"
 import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
-import RevertColorsPressable from "components/wrappers/RevertColorsPressable/RevertColorsPressable"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import { getDDMMYYYY, getHHMM } from "utils/date"
@@ -30,7 +28,6 @@ export default function DatetimeSelectionScreen() {
   const { squadId } = useLocalSearchParams<{ squadId: string }>()
   const useCases = useGetUseCases()
   const { data: datetime } = useDatetime(squadId)
-  const characters = usePlayables()
 
   const [newDate, setNewDate] = useState<Date>(() => datetime)
   const [selectedTimespan, setSelectedTimespan] = useState<Timespan>("MIN")
@@ -61,7 +58,7 @@ export default function DatetimeSelectionScreen() {
   const onPressSave = async () => {
     if (!newDate) return
     try {
-      const payload = { characters, squadId, currDate: datetime, newDate }
+      const payload = { squadId, newDate }
       await useCases.gm.updateDatetime(payload)
       Toast.show({
         type: "custom",
@@ -83,23 +80,16 @@ export default function DatetimeSelectionScreen() {
             </Txt>
             <Spacer fullspace />
             <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
-              <RevertColorsPressable
-                onPress={onPressReset}
-                initAnimColor={colors.primColor}
-                endAnimColor={colors.secColor}
-                style={styles.cta}
-              >
+              <TouchableOpacity onPress={onPressReset} style={styles.cta}>
                 <Txt>REINITIALISER</Txt>
-              </RevertColorsPressable>
-              <RevertColorsPressable
+              </TouchableOpacity>
+              <TouchableOpacity
                 disabled={newDate === null}
                 onPress={onPressSave}
                 style={[styles.cta, { backgroundColor: colors.secColor }]}
-                initAnimColor={colors.secColor}
-                endAnimColor={colors.primColor}
               >
                 <Txt style={{ color: colors.primColor }}>ENREGISTRER</Txt>
-              </RevertColorsPressable>
+              </TouchableOpacity>
             </View>
             <Spacer y={30} />
           </ViewSection>

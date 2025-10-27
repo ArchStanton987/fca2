@@ -1,6 +1,9 @@
 import { StyleSheet } from "react-native"
 
-import { Consumable } from "lib/objects/data/consumables/consumables.types"
+import { useCombatId } from "lib/character/combat-status/combat-status-provider"
+import { useCombatState } from "lib/combat/use-cases/sub-combat"
+import { useItem } from "lib/inventory/use-sub-inv-cat"
+import Consumable from "lib/objects/data/consumables/Consumable"
 import Toast from "react-native-toast-message"
 
 import Col from "components/Col"
@@ -12,11 +15,6 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import HealthFigure from "components/draws/HealthFigure/HealthFigure"
 import { useActionActorId, useActionApi, useActionItemDbKey } from "providers/ActionFormProvider"
-import { useCombat } from "providers/CombatProvider"
-import { useCombatState } from "providers/CombatStateProvider"
-import { useCombatStatuses } from "providers/CombatStatusesProvider"
-import { useContenders } from "providers/ContendersProvider"
-import { useInventories } from "providers/InventoriesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
 
@@ -36,19 +34,18 @@ const styles = StyleSheet.create({
 
 export default function ChallengeSlide() {
   const useCases = useGetUseCases()
-  const combatStatuses = useCombatStatuses()
   const itemDbKey = useActionItemDbKey()
   const actorId = useActionActorId()
+
   const { reset } = useActionApi()
-  const { consumablesRecord } = useInventories(actorId)
-  const combat = useCombat()
-  const contenders = useContenders()
-  const { action } = useCombatState()
+  const { data: combatId } = useCombatId(actorId)
+  const { data: action } = useCombatState(combatId)
+  const { data: consumable } = useItem(actorId, itemDbKey ?? "")
 
   const submit = async (item: Consumable) => {
-    if (!combat) throw new Error("no combat")
     try {
-      await useCases.combat.doCombatAction({ action, contenders, combatStatuses, combat, item })
+      const payload = { ...action, actorId }
+      await useCases.combat.doCombatAction({ action: payload, combatId, item })
       Toast.show({ type: "custom", text1: "Action réalisée" })
       reset()
     } catch (err) {
@@ -56,29 +53,27 @@ export default function ChallengeSlide() {
     }
   }
 
-  if (!itemDbKey) return <SlideError error={slideErrors.noItemError} />
-  const isConsumable = itemDbKey in consumablesRecord
-  if (!isConsumable) return <SlideError error={slideErrors.noConsumableError} />
-  const item = consumablesRecord[itemDbKey]
+  if (consumable.category !== "consumables")
+    return <SlideError error={slideErrors.noConsumableError} />
 
   return (
     <DrawerSlide>
       <ScrollSection style={{ flex: 1 }}>
         <Row style={{ justifyContent: "space-between" }}>
           <Txt style={styles.title}>
-            {item.data.label} : {item.data.challengeLabel}
+            {consumable.data.label} : {consumable.data.challengeLabel}
           </Txt>
           <Row style={{ alignItems: "baseline" }}>
             <Txt>Restant : </Txt>
             <Txt style={styles.title}>
-              {item.remainingUse} / {item.data.maxUsage}
+              {consumable.remainingUse} / {consumable.data.maxUsage}
             </Txt>
           </Row>
         </Row>
         <Spacer y={15} />
         <Txt>Description :</Txt>
         <Spacer y={5} />
-        <Txt>{item.data.description}</Txt>
+        <Txt>{consumable.data.description}</Txt>
         <Spacer y={30} />
         <Txt>
           Une fois l&apos;action résolue en accord avec le MJ, vous pouvez valider votre action (en
@@ -90,7 +85,7 @@ export default function ChallengeSlide() {
 
       <Col style={{ width: 180 }}>
         <Section style={{ flex: 1 }} contentContainerStyle={{ justifyContent: "center", flex: 1 }}>
-          <HealthFigure />
+          <HealthFigure charId={actorId} />
         </Section>
 
         <Spacer y={layout.globalPadding} />
@@ -99,7 +94,7 @@ export default function ChallengeSlide() {
           title="valider"
           contentContainerStyle={{ justifyContent: "center", alignItems: "center" }}
         >
-          <PlayButton onPress={() => submit(item)} />
+          <PlayButton onPress={() => submit(consumable)} />
         </Section>
       </Col>
     </DrawerSlide>

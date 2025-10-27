@@ -1,25 +1,23 @@
 import { TouchableHighlight } from "react-native"
 
+import { useCombatId } from "lib/character/combat-status/combat-status-provider"
+import { useCombatState } from "lib/combat/use-cases/sub-combat"
+
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { useCharacter } from "contexts/CharacterContext"
-import { useCombat } from "providers/CombatProvider"
-import { useCombatState } from "providers/CombatStateProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
 
-export default function WaitScreen() {
+export default function WaitScreen({ charId }: { charId: string }) {
   const useCases = useGetUseCases()
-  const combat = useCombat()
-  const character = useCharacter()
-  const combatState = useCombatState()
+  const { data: combatId } = useCombatId(charId)
+  const { data: combatState } = useCombatState(combatId)
 
   const onPressEnd = () => {
-    if (!combat) return
-    useCases.combat.endWait({ combatState, combatId: combat.id, actor: character })
+    useCases.combat.endWait({ combatId, combatState, charId })
   }
 
   return (

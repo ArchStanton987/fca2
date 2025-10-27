@@ -1,10 +1,11 @@
 import { TouchableOpacity, View } from "react-native"
 
+import { useLocalSearchParams } from "expo-router"
+
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import actions from "lib/combat/const/actions"
-import WeaponIndicator from "lib/combat/ui/WeaponIndicator"
-import { getActivePlayersWithAp } from "lib/combat/utils/combat-utils"
-import Toast from "react-native-toast-message"
+import { CombatWeaponIndicator } from "lib/combat/ui/WeaponIndicator"
+import { useCombatWeapons } from "lib/inventory/use-sub-inv-cat"
 
 import List from "components/List"
 import ListItemSelectable from "components/ListItemSelectable"
@@ -14,62 +15,33 @@ import ScrollSection from "components/Section/ScrollSection"
 import DrawerSlide from "components/Slides/DrawerSlide"
 import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
-import { useCharacter } from "contexts/CharacterContext"
 import {
   useActionActorId,
   useActionApi,
-  useActionItemDbKey,
-  useActionSubtype,
   useActionType,
   useIsCombinedAction
 } from "providers/ActionFormProvider"
-import { useCombat } from "providers/CombatProvider"
-import { useCombatStatuses } from "providers/CombatStatusesProvider"
-import { useContenders } from "providers/ContendersProvider"
-import { useScrollTo } from "providers/SlidesProvider"
-import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
 
-import NextButton from "../NextButton"
-import PlayButton from "../PlayButton"
+import ActionTypeNextButton from "./ActionTypeNextButton"
 import ActionInfo from "./info/ActionInfo"
 import ApInfo from "./info/ApInfo"
 import SubActionList from "./sub-action/SubActionList"
 
 const actionTypes = Object.values(actions).map(a => ({ id: a.id, label: a.label }))
 
-const toastMessages = {
-  wait: "OK ! On attends le bon moment !",
-  prepare: "OK ! On se prépare !"
-} as const
-
 export default function ActionTypeSlide({ slideIndex }: SlideProps) {
-  const useCases = useGetUseCases()
-  const { charId, meta } = useCharacter()
-  const { isNpc } = meta
-  const contenders = useContenders()
-  const combatStatuses = useCombatStatuses()
-  const combat = useCombat()
+  const { charId } = useLocalSearchParams<{ charId: string }>()
 
   const formActorId = useActionActorId()
   const actionType = useActionType()
-  const actionSubtype = useActionSubtype()
   const isCombinedAction = useIsCombinedAction()
-  const itemDbKey = useActionItemDbKey()
 
-  const { setForm, setActionType, setActorId, reset } = useActionApi()
+  const { setForm, setActionType, setActorId } = useActionApi()
 
   const actorId = formActorId === "" ? charId : formActorId
-  const actor = contenders[actorId]
-  const combatStatus = combatStatuses[actorId]
-  const { equipedObjects, unarmed } = actor
-  const weapons = equipedObjects.weapons.length > 0 ? equipedObjects.weapons : [unarmed]
-
-  const activePlayersWithAp = getActivePlayersWithAp(combatStatuses)
-  const isLastPlayer = activePlayersWithAp.length === 1
-
-  const { scrollTo } = useScrollTo()
+  const weapons = useCombatWeapons(actorId)
 
   const onPressActionType = (id: keyof typeof actions) => {
     if (formActorId === "") {
@@ -82,37 +54,8 @@ export default function ActionTypeSlide({ slideIndex }: SlideProps) {
     setActionType({ actionType: id })
   }
 
-  const submit = async () => {
-    if (!combat) throw new Error("No combat found")
-    const payload = { actionSubtype, actionType, itemDbKey, actorId, isCombinedAction }
-    if (actionType === "wait" || actionType === "prepare") {
-      try {
-        const action = { ...payload, apCost: actionType === "prepare" ? combatStatus.currAp : 0 }
-        await useCases.combat.doCombatAction({ combat, contenders, combatStatuses, action })
-        Toast.show({ type: "custom", text1: toastMessages[actionType] })
-        reset()
-      } catch (error) {
-        Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement de l'action" })
-      }
-      return
-    }
-    await useCases.combat.updateAction({ combatId: combat.id, payload })
-    scrollTo(slideIndex + 1)
-  }
-
   const isPause = actionType === "wait"
   const isPrepare = actionType === "prepare"
-
-  const getCanGoNext = () => {
-    const defaultRes = !!actionType && !!actionSubtype
-    if (actionType === "item") {
-      if (actionSubtype === "pickUp") return defaultRes
-      return defaultRes && !!itemDbKey
-    }
-    return defaultRes
-  }
-
-  const canGoNext = getCanGoNext()
 
   const canCombineAction = actionType !== "wait" && actionType !== "prepare"
 
@@ -153,20 +96,16 @@ export default function ActionTypeSlide({ slideIndex }: SlideProps) {
       </View>
       <Spacer x={layout.globalPadding} />
 
-      <SubActionList />
+      <SubActionList charId={actorId} />
 
       <Spacer x={layout.globalPadding} />
 
       <View style={{ width: 175 }}>
         {actionType === "weapon" ? (
-          <WeaponIndicator
-            style={{ flex: 1 }}
-            withActions={false}
-            contenderId={isNpc ? actorId : charId}
-          />
+          <CombatWeaponIndicator style={{ flex: 1 }} contenderId={actorId} />
         ) : (
           <ScrollSection style={{ flex: 1 }} title="info">
-            <ActionInfo />
+            <ActionInfo charId={actorId} />
           </ScrollSection>
         )}
 
@@ -183,11 +122,7 @@ export default function ActionTypeSlide({ slideIndex }: SlideProps) {
 
           <Section title={isPause || isPrepare ? "valider" : "suivant"} style={{ flex: 1 }}>
             <Row style={{ justifyContent: "center" }}>
-              {isPrepare || isPause ? (
-                <PlayButton onPress={() => submit()} disabled={isPause && isLastPlayer} />
-              ) : (
-                <NextButton disabled={!canGoNext} onPress={() => submit()} />
-              )}
+              <ActionTypeNextButton charId={charId} slideIndex={slideIndex} />
             </Row>
           </Section>
         </Row>

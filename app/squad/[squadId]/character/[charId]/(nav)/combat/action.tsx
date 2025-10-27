@@ -2,17 +2,12 @@ import { ReactNode } from "react"
 
 import { Redirect, useLocalSearchParams } from "expo-router"
 
-import {
-  useCombatId,
-  useCombatStatus,
-  useCombatStatuses
-} from "lib/character/combat-status/combat-status-provider"
-import { useCharInfo } from "lib/character/info/info-provider"
+import { useCombatId, useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
 import { useCombat, useCombatState } from "lib/combat/use-cases/sub-combat"
 import {
   getDefaultPlayingId,
   getInitiativePrompts,
-  getPlayerCanReact
+  useGetPlayerCanReact
 } from "lib/combat/utils/combat-utils"
 
 import List from "components/List"
@@ -44,12 +39,12 @@ function SlideList() {
 
 function WithActionRedirections({ children }: { children: ReactNode }) {
   const { charId } = useLocalSearchParams<{ charId: string }>()
-  const charInfo = useCharInfo(charId)
   const { data: combatId } = useCombatId(charId)
   const { data: combatState } = useCombatState(combatId)
   const { data: combat } = useCombat(combatId)
   const contendersCombatStatus = useCombatStatuses(combat?.contendersIds ?? [])
-  const { data: combatStatus } = useCombatStatus(charId)
+
+  const canReact = useGetPlayerCanReact(charId)
 
   const prompts = getInitiativePrompts(charId, contendersCombatStatus)
   if (prompts.playerShouldRollInitiative) return <InitiativeScreen />
@@ -60,10 +55,9 @@ function WithActionRedirections({ children }: { children: ReactNode }) {
   const isOverrideId = combatState.actorIdOverride === charId
   const isPlaying = isOverrideId || isDefaultPlayer
 
-  const canReact = getPlayerCanReact(charInfo.data, combatStatus, combatState.action)
   if (canReact) return <Redirect href={{ pathname: routes.combat.reaction }} />
 
-  if (!isPlaying) return <ActionUnavailableScreen />
+  if (!isPlaying) return <ActionUnavailableScreen charId={charId} />
 
   return children
 }

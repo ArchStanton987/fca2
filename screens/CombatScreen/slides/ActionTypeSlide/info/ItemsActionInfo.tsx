@@ -1,57 +1,44 @@
 import { StyleSheet, View } from "react-native"
 
-import Playable from "lib/character/Playable"
-import Inventory from "lib/objects/Inventory"
+import { Item, itemSelector, useItems } from "lib/inventory/use-sub-inv-cat"
 
 import List from "components/List"
 import ListItemSelectable from "components/ListItemSelectable"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { useCharacter } from "contexts/CharacterContext"
-import { useInventory } from "contexts/InventoryContext"
-import {
-  useActionActorId,
-  useActionApi,
-  useActionItemDbKey,
-  useActionSubtype
-} from "providers/ActionFormProvider"
-import { useContenders } from "providers/ContendersProvider"
+import { useActionApi, useActionItemDbKey, useActionSubtype } from "providers/ActionFormProvider"
 import colors from "styles/colors"
 
-const getItemList = (
-  actionSubtype: string,
-  char: Playable,
-  inventory: Inventory
-): { title: string; data: any[] }[] => {
+const getItemList = (actionSubtype: string, i: Record<string, Item>) => {
   switch (actionSubtype) {
     case "drop":
       return [
-        { title: "Armes", data: char.equipedObjects.weapons },
-        { title: "Equipements", data: char.equipedObjects.clothings }
+        { title: "Armes", data: itemSelector(i, "weapons", { isEquipped: true }) },
+        { title: "Equipements", data: itemSelector(i, "clothings", { isEquipped: true }) }
       ]
     case "equip":
       return [
-        { title: "Armes", data: inventory.weapons.filter(w => !w.isEquiped) },
-        { title: "Equipements", data: inventory.clothings.filter(c => !c.isEquiped) }
+        { title: "Armes", data: itemSelector(i, "weapons", { isEquipped: false }) },
+        { title: "Equipements", data: itemSelector(i, "clothings", { isEquipped: false }) }
       ]
     case "unequip":
       return [
-        { title: "armes", data: char.equipedObjects.weapons },
-        { title: "équipements", data: char.equipedObjects.clothings }
+        { title: "armes", data: itemSelector(i, "weapons", { isEquipped: true }) },
+        { title: "équipements", data: itemSelector(i, "clothings", { isEquipped: true }) }
       ]
     case "use":
-      return [{ title: "consommables", data: inventory.groupedConsumables }]
+      return [{ title: "consommables", data: itemSelector(i, "consumables", { isGrouped: true }) }]
     case "throw":
       return [
-        { title: "armes", data: inventory.weapons },
-        { title: "équipements", data: inventory.clothings },
-        { title: "consommables", data: inventory.groupedConsumables },
-        { title: "divers", data: inventory.groupedMiscObjects }
+        { title: "armes", data: itemSelector(i, "weapons", {}) },
+        { title: "équipements", data: itemSelector(i, "clothings", {}) },
+        { title: "consommables", data: itemSelector(i, "consumables", { isGrouped: true }) },
+        { title: "divers", data: itemSelector(i, "misc", {}) }
       ]
     case "pickUp":
-      return [{ title: "ajouter", data: [] }]
+      return [{ title: "ajouter", data: {} as Record<string, Item> }]
     default:
-      return []
+      return [{ title: "", data: {} as Record<string, Item> }]
   }
 }
 
@@ -63,28 +50,23 @@ const styles = StyleSheet.create({
   }
 })
 
-export default function ItemsActionInfo() {
-  const inventory = useInventory()
-  const { charId } = useCharacter()
-
+export default function ItemsActionInfo({ actorId }: { actorId: string }) {
   const { setForm } = useActionApi()
-  const formActorId = useActionActorId()
   const actionSubtype = useActionSubtype()
   const itemDbKey = useActionItemDbKey()
-
-  const actorId = formActorId === "" ? charId : formActorId
-  const contender = useContenders(actorId)
 
   const onPressItem = (dbKey: string) => {
     setForm({ itemDbKey: dbKey })
   }
 
-  const itemLists = getItemList(actionSubtype, contender, inventory)
+  const { data: items } = useItems(actorId)
+
+  const lists = getItemList(actionSubtype, items)
 
   return (
     <View>
       <List
-        data={itemLists}
+        data={lists}
         keyExtractor={el => el.title}
         renderItem={el => (
           <>
@@ -92,7 +74,7 @@ export default function ItemsActionInfo() {
             <Txt style={styles.sectionTitle}>{el.item.title.toUpperCase()}</Txt>
             <Spacer y={10} />
             <List
-              data={el.item.data}
+              data={Object.values(el.item.data)}
               keyExtractor={item => item.dbKey}
               renderItem={({ item }) => (
                 <ListItemSelectable

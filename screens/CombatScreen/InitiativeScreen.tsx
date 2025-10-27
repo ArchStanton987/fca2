@@ -1,10 +1,14 @@
 import { useCallback, useState } from "react"
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from "react-native"
 
-import { useFocusEffect } from "expo-router"
+import { useFocusEffect, useLocalSearchParams } from "expo-router"
 
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
+import { useAbilities } from "lib/character/abilities/abilities-provider"
 import skillsMap from "lib/character/abilities/skills/skills"
+import { useCombatId, useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
+import { useCharInfo } from "lib/character/info/info-provider"
+import { useContenders } from "lib/combat/use-cases/sub-combat"
 import { getRandomArbitrary } from "lib/common/utils/dice-calc"
 import Toast from "react-native-toast-message"
 
@@ -14,9 +18,6 @@ import useNumPad from "components/NumPad/useNumPad"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { useCharacter } from "contexts/CharacterContext"
-import { useCombat } from "providers/CombatProvider"
-import { useCombatStatuses } from "providers/CombatStatusesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -49,14 +50,15 @@ const styles = StyleSheet.create({
 })
 
 export default function InitiativeScreen() {
+  const { charId } = useLocalSearchParams<{ charId: string }>()
+
   const useCases = useGetUseCases()
 
-  const combat = useCombat()
-  const combatStatuses = useCombatStatuses()
-  const character = useCharacter()
-  const { isNpc } = character.meta
-  const { skills, charId } = character
-  const { perceptionSkill } = skills.curr
+  const { data: combatId } = useCombatId(charId)
+  const { data: contendersIds } = useContenders(combatId)
+  const combatStatuses = useCombatStatuses(contendersIds)
+  const { data: isNpc } = useCharInfo(charId, i => i.isNpc)
+  const { data: perceptionSkill } = useAbilities(charId, a => a.skills.curr.perceptionSkill)
 
   const { scoreStr, onPressKeypad, setScore } = useNumPad()
   const [isLoading, setIsLoading] = useState(false)
@@ -65,7 +67,7 @@ export default function InitiativeScreen() {
   const finalScoreStr = Number.isNaN(finalScore) ? "" : finalScore.toString()
 
   const onPressConfirm = async () => {
-    if (Number.isNaN(finalScore) || combat === null) return
+    if (Number.isNaN(finalScore)) return
     const isScoreUnique = Object.values(combatStatuses).every(c => c.initiative !== finalScore)
     if (!isScoreUnique) {
       Toast.show({
@@ -97,13 +99,6 @@ export default function InitiativeScreen() {
   )
 
   const isValid = scoreStr.length > 0 && !isLoading
-
-  if (combat === null)
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Txt>Impossible de récupérer le combat en cours</Txt>
-      </View>
-    )
 
   return (
     <DrawerPage>

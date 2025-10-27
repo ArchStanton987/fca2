@@ -1,23 +1,19 @@
+import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import actions from "lib/combat/const/actions"
 
 import List from "components/List"
 import ListItemSelectable from "components/ListItemSelectable"
 import ScrollSection from "components/Section/ScrollSection"
 import Txt from "components/Txt"
-import { useCharacter } from "contexts/CharacterContext"
-import { useActionActorId, useActionApi, useActionSubtype } from "providers/ActionFormProvider"
-import { useCombatStatuses } from "providers/CombatStatusesProvider"
+import { useActionApi, useActionSubtype } from "providers/ActionFormProvider"
 
 // const title = [{ title: "action", containerStyle: { flex: 1 } }, { title: "pa" }]
 const title = "pa"
 
-export default function PrepareActions() {
+export default function PrepareActions({ charId }: { charId: string }) {
   const actionSubtype = useActionSubtype()
-  const formActorId = useActionActorId()
-  const { charId } = useCharacter()
   const { setActionSubtype } = useActionApi()
-  const actorId = formActorId === "" ? charId : formActorId
-  const { currAp } = useCombatStatuses(actorId)
+  const { data: currAp } = useCombatStatus(charId, s => s.currAp)
   return (
     <ScrollSection style={{ flex: 1 }} title={title}>
       <List

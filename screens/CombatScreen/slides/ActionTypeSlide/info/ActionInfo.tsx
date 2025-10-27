@@ -1,8 +1,7 @@
 import actions from "lib/combat/const/actions"
-import WeaponIndicator from "lib/combat/ui/WeaponIndicator"
+import { CombatWeaponIndicator } from "lib/combat/ui/WeaponIndicator"
 
 import Txt from "components/Txt"
-import { useCharacter } from "contexts/CharacterContext"
 import {
   useActionActorId,
   useActionItemDbKey,
@@ -14,13 +13,12 @@ import { isKeyOf } from "utils/ts-utils"
 import ItemsActionInfo from "./ItemsActionInfo"
 import MovementInfo from "./MovementInfo"
 
-export default function ActionInfo() {
+export default function ActionInfo({ charId }: { charId: string }) {
   const formActorId = useActionActorId()
   const itemDbKey = useActionItemDbKey()
   const actionType = useActionType()
   const actionSubtype = useActionSubtype()
 
-  const { charId } = useCharacter()
   const actorId = formActorId === "" ? charId : formActorId
 
   let description = ""
@@ -33,10 +31,10 @@ export default function ActionInfo() {
 
   if (description) return <Txt>{description}</Txt>
   if (actionType === "weapon" && itemDbKey) {
-    return <WeaponIndicator withActions={false} contenderId={actorId} />
+    return <CombatWeaponIndicator contenderId={actorId} />
   }
-  if (actionType === "movement") return <MovementInfo />
-  if (actionType === "item") return <ItemsActionInfo />
+  if (actionType === "movement") return <MovementInfo charId={actorId} />
+  if (actionType === "item") return <ItemsActionInfo actorId={actorId} />
   if (actionType === "wait") return <Txt>{actions.wait.description}</Txt>
   return null
 }

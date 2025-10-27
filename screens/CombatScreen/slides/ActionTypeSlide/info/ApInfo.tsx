@@ -1,18 +1,15 @@
-import Txt from "components/Txt"
-import { useCharacter } from "contexts/CharacterContext"
-import { useCombatStatuses } from "providers/CombatStatusesProvider"
-import { useContenders } from "providers/ContendersProvider"
+import { useAbilities } from "lib/character/abilities/abilities-provider"
+import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 
-export default function ApInfo({ contenderId }: { contenderId?: string }) {
-  const { charId } = useCharacter()
-  const actorId = contenderId ?? charId
-  const contender = useContenders(actorId)
-  const { currAp } = useCombatStatuses(actorId)
-  const { secAttr } = contender
+import Txt from "components/Txt"
+
+export default function ApInfo({ contenderId }: { contenderId: string }) {
+  const { data: currAp } = useCombatStatus(contenderId, s => s.currAp)
+  const { data: actionPoints } = useAbilities(contenderId, a => a.secAttr.curr.actionPoints)
 
   return (
     <Txt style={{ fontSize: 20 }}>
-      {currAp} / {secAttr.curr.actionPoints}
+      {currAp} / {actionPoints}
     </Txt>
   )
 }

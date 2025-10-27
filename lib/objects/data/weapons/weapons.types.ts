@@ -76,6 +76,8 @@ export type DbWeaponData = {
   knowledges: Partial<Record<KnowledgeId, KnowledgeId>>
   tags: Partial<Record<WeaponTagId, WeaponTagId>>
   isTwoHanded: boolean
+  effects?: EffectId[]
+  modifiers?: Modifier[]
 }
 
 export type WeaponData = {
@@ -101,20 +103,9 @@ export type WeaponData = {
   knowledges: KnowledgeId[]
   tags: WeaponTagId[]
   isTwoHanded: boolean
+  effects?: EffectId[]
+  modifiers?: Modifier[]
 }
-
-// export type Weapon = {
-//   id: WeaponId
-//   category: "weapon"
-//   dbKey: string
-//   skill: number
-//   isEquiped: boolean
-//   data: WeaponData
-//   ammo: number
-//   inMagazine?: number
-//   effects: EffectId[]
-//   modifiers: Modifier[]
-// }
 
 export type WeaponId =
   | "unarmed"

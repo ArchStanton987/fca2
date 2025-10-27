@@ -1,7 +1,11 @@
 import { StyleSheet, TouchableOpacity } from "react-native"
 
-import { LimbsHp } from "lib/character/health/health-types"
-import { limbsMap } from "lib/character/health/healthMap"
+import { useLocalSearchParams } from "expo-router"
+
+import { useCombatId } from "lib/character/combat-status/combat-status-provider"
+import { limbsMap } from "lib/character/health/Health"
+import { useHealth } from "lib/character/health/health-provider"
+import { LimbId } from "lib/character/health/health.const"
 
 import Col from "components/Col"
 import List from "components/List"
@@ -11,8 +15,12 @@ import DrawerSlide from "components/Slides/DrawerSlide"
 import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { useActionAimZone, useActionApi } from "providers/ActionFormProvider"
-import { useCombat } from "providers/CombatProvider"
+import {
+  useActionActorId,
+  useActionAimZone,
+  useActionApi,
+  useActionTargetId
+} from "providers/ActionFormProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
@@ -35,42 +43,47 @@ const styles = StyleSheet.create({
 })
 
 export default function AimSlide({ slideIndex }: SlideProps) {
+  const { charId } = useLocalSearchParams<{ charId: string }>()
   const useCases = useGetUseCases()
-  const combat = useCombat()
   const aimZone = useActionAimZone()
+  const targetId = useActionTargetId()
   const { setForm } = useActionApi()
 
   const { scrollTo } = useScrollTo()
+
+  const formActorId = useActionActorId()
+  const actorId = formActorId === "" ? charId : formActorId
+  const { data: combatId } = useCombatId(actorId)
 
   const scrollNext = () => {
     scrollTo(slideIndex + 1)
   }
 
-  const onPressPart = (id: keyof LimbsHp) => {
+  const onPressPart = (id: LimbId) => {
     setForm({ aimZone: id })
   }
 
   const onPressNext = async () => {
-    if (!combat || !aimZone) return
-    await useCases.combat.updateAction({ combatId: combat.id, payload: { aimZone } })
+    if (!aimZone) return
+    await useCases.combat.updateAction({ combatId, payload: { aimZone } })
     scrollNext()
   }
 
-  const limbsList = Object.values(limbsMap).map(e => e)
+  const { data: targetLimbs } = useHealth(targetId ?? "", h => h.limbs)
   return (
     <DrawerSlide>
       <ScrollSection title="que visez vous ?" style={{ flex: 1 }}>
         <List
-          data={limbsList}
-          keyExtractor={e => e.id}
+          data={Object.keys(targetLimbs) as LimbId[]}
+          keyExtractor={e => e}
           renderItem={({ item }) => {
-            const isSelected = aimZone === item.id
+            const isSelected = aimZone === item
             return (
               <TouchableOpacity
-                onPress={() => onPressPart(item.id)}
+                onPress={() => onPressPart(item)}
                 style={[styles.button, isSelected && styles.selected]}
               >
-                <Txt>{item.label}</Txt>
+                <Txt>{limbsMap[item].label}</Txt>
               </TouchableOpacity>
             )
           }}
@@ -83,8 +96,8 @@ export default function AimSlide({ slideIndex }: SlideProps) {
         <Section style={{ flex: 1 }} title="effets" contentContainerStyle={styles.centeredSection}>
           {aimZone ? (
             <>
-              <Txt>Malus de visée : {limbsMap[aimZone].aimMalus}</Txt>
-              <Txt>Bonus chance crit. : {limbsMap[aimZone].aimMalus}</Txt>
+              <Txt>Malus de visée : {limbsMap[aimZone].aim.aimMalus}</Txt>
+              <Txt>Bonus chance crit. : {limbsMap[aimZone].aim.critBonus}</Txt>
             </>
           ) : null}
         </Section>

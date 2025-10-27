@@ -2,42 +2,35 @@ import { TouchableHighlight } from "react-native"
 
 import { Redirect } from "expo-router"
 
-import { getPlayerCanReact } from "lib/combat/utils/combat-utils"
+import { useCombatId, useCombatStatus } from "lib/character/combat-status/combat-status-provider"
+import { useCombatState } from "lib/combat/use-cases/sub-combat"
+import { useGetPlayerCanReact } from "lib/combat/utils/combat-utils"
 
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import routes from "constants/routes"
-import { useCharacter } from "contexts/CharacterContext"
-import { useCombat } from "providers/CombatProvider"
-import { useCombatState } from "providers/CombatStateProvider"
-import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
 
-import SlideError, { slideErrors } from "./slides/SlideError"
-
-function WaitScreen() {
+function WaitScreen({ charId }: { charId: string }) {
   const useCases = useGetUseCases()
-  const combat = useCombat()
-  const character = useCharacter()
-  const combatState = useCombatState()
 
-  const combatStatus = useCombatStatus()
+  const { data: combatId } = useCombatId(charId)
+  const { data: combatState } = useCombatState(combatId)
 
-  const { action } = combatState
-  const roll = action?.roll
+  const roll = combatState.action?.roll
   const hasThrownDice = roll && typeof roll.dice === "number"
 
+  const canReact = useGetPlayerCanReact(charId)
+
   const onPressEnd = () => {
-    if (!combat || hasThrownDice) return
-    useCases.combat.endWait({ combatId: combat.id, combatState, actor: character })
+    if (hasThrownDice) return
+    useCases.combat.endWait({ combatId, combatState, charId })
   }
 
-  if (!combat) return <SlideError error={slideErrors.noCombatError} />
-  const canReact = getPlayerCanReact(character, combatStatus, action)
   if (canReact) return <Redirect href={{ pathname: routes.combat.reaction }} />
 
   return (
@@ -97,16 +90,19 @@ function NoAp() {
   )
 }
 
-export default function ActionUnavailableScreen() {
-  const { combatStatus, currAp } = useCombatStatus()
-  const combat = useCombat()
+export default function ActionUnavailableScreen({ charId }: { charId: string }) {
+  const { data: status } = useCombatStatus(charId, s => ({
+    combatId: s.combatId,
+    combatStatus: s.combatStatus,
+    currAp: s.currAp
+  }))
 
-  const isWaiting = combatStatus === "wait"
-  const isDead = combatStatus === "dead"
-  const isInactive = combatStatus === "inactive"
-  const hasNoAp = currAp <= 0
+  const isWaiting = status.combatStatus === "wait"
+  const isDead = status.combatStatus === "dead"
+  const isInactive = status.combatStatus === "inactive"
+  const hasNoAp = status.currAp <= 0
 
-  if (!combat || combat.id === "") {
+  if (status.combatId === "")
     return (
       <DrawerPage>
         <Section
@@ -117,7 +113,6 @@ export default function ActionUnavailableScreen() {
         </Section>
       </DrawerPage>
     )
-  }
 
   return (
     <DrawerPage>
@@ -125,7 +120,7 @@ export default function ActionUnavailableScreen() {
         style={{ flex: 1 }}
         contentContainerStyle={{ flexGrow: 1, justifyContent: "center", alignItems: "center" }}
       >
-        {isWaiting ? <WaitScreen /> : null}
+        {isWaiting ? <WaitScreen charId={charId} /> : null}
         {isInactive ? <InactiveScreen /> : null}
         {isDead ? <DeadScreen /> : null}
         {hasNoAp ? <NoAp /> : null}

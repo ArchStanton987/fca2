@@ -1,59 +1,6 @@
-/* eslint-disable import/prefer-default-export */
+import { DbWeapon } from "../objects.types"
 import Weapon from "./Weapon"
 import { BeastAttack, DbWeaponData, WeaponData, WeaponId } from "./weapons.types"
-
-// export const dbToWeapon = (
-//   [dbKey, dbWeapon]: [string, DbWeapon],
-//   charData: Playable,
-//   dbAmmo: DbInventory["ammo"]
-// ): Weapon => {
-//   const { id } = dbWeapon
-//   const weaponSkill = weaponsMap[id].skillId
-//   const weaponKnowledges = weaponsMap[id].knowledges
-//   const { ammoType, minStrength, isTwoHanded } = weaponsMap[id]
-//   const inMagazine = ammoType !== null ? dbWeapon.inMagazine || 0 : undefined
-//   let ammo = 0
-//   if (ammoType && dbAmmo) {
-//     ammo = dbAmmo[ammoType] ?? 0
-//   }
-//   const { innateSymptoms, skills, dbAbilities, dbEquipedObjects, special } = charData
-//   const currSpecial = special.curr
-//   const currSkills = skills.curr
-//   const { knowledges, traits } = dbAbilities
-//   const knowledgesBonus = weaponKnowledges.reduce((acc, curr: KnowledgeId) => {
-//     const knowledgeLevel = knowledges[curr]
-//     const knowledgeBonus = knowledgeLevels.find(el => el.id === knowledgeLevel)?.bonus || 0
-//     const innateBonus = getModAttribute(innateSymptoms, curr)
-//     return acc + knowledgeBonus + innateBonus
-//   }, 0)
-//   let charTraitSKillModifier = 0
-//   if (traits?.includes("lateralized")) {
-//     const { TWO_HANDED_WEAPONS_MOD, ONE_HANDED_WEAPONS_MOD } = traitsMap.lateralized.consts
-//     charTraitSKillModifier = isTwoHanded ? TWO_HANDED_WEAPONS_MOD : ONE_HANDED_WEAPONS_MOD
-//   }
-//   const strengthMalus = Math.max(0, minStrength - currSpecial.strength) * MALUS_PER_MISSING_STRENGTH
-//   const skill = currSkills[weaponSkill] + knowledgesBonus + charTraitSKillModifier - strengthMalus
-//   let { basicApCost, specialApCost } = weaponsMap[id]
-//   if (traits?.includes("mrFast")) {
-//     const { BASIC_AP_COST_MOD, SPECIAL_AP_COST_VALUE } = traitsMap.mrFast.consts
-//     specialApCost = SPECIAL_AP_COST_VALUE
-//     basicApCost = basicApCost !== null ? basicApCost + BASIC_AP_COST_MOD : null
-//   }
-//   const isEquiped = dbEquipedObjects?.weapons?.[dbKey] !== undefined
-//   const data = { ...weaponsMap[id], basicApCost, specialApCost }
-//   return {
-//     inMagazine,
-//     data,
-//     dbKey,
-//     id,
-//     skill,
-//     isEquiped,
-//     ammo,
-//     category: "weapon",
-//     effects: [],
-//     modifiers: []
-//   }
-// }
 
 export default class WeaponMappers {
   static dbWeaponDataToDomain(payload: DbWeaponData): WeaponData {
@@ -79,47 +26,37 @@ export default class WeaponMappers {
       skillId: payload.skillId,
       knowledges: Object.values(payload.knowledges),
       tags: Object.values(payload.tags),
-      isTwoHanded: payload.isTwoHanded
+      isTwoHanded: payload.isTwoHanded,
+      effects: payload.effects,
+      modifiers: payload.modifiers
     }
   }
 }
 
 export const attackToWeapon = (attack: BeastAttack): Weapon => {
-  const { name, skill, apCost, damage, effects, modifiers } = attack
-  return {
+  const { name, apCost, damage, effects, modifiers } = attack
+
+  const dbWeapon: DbWeapon = {
     id: name as WeaponId,
-    dbKey: name,
-    // category: "weapon",
     category: "weapons",
-    skill,
-    isEquiped: true,
+    isEquipped: true,
     data: {
       id: name as WeaponId,
       label: name,
       img: "",
       damageType: "physical",
       damageBasic: damage,
-      damageBurst: null,
-      ammoType: null,
-      range: null,
-      magazine: null,
-      ammoPerShot: null,
-      ammoPerBurst: null,
       basicApCost: apCost,
-      specialApCost: null,
       minStrength: 0,
       place: 0,
       weight: 0,
       value: 0,
       frequency: 0,
       skillId: "unarmed",
-      knowledges: [],
-      tags: [],
-      isTwoHanded: false
-    },
-    ammo: 0,
-    inMagazine: undefined,
-    effects: effects || [],
-    modifiers: modifiers || []
+      isTwoHanded: false,
+      effects,
+      modifiers
+    }
   }
+  return new Weapon({ ...dbWeapon, key: name }, {})
 }
