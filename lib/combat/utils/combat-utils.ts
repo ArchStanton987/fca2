@@ -11,17 +11,14 @@ import { limbsMap } from "lib/character/health/Health"
 import { LimbId } from "lib/character/health/health.const"
 import { useCharInfo } from "lib/character/info/info-provider"
 import { withDodgeSpecies } from "lib/character/playable.const"
-import { Item } from "lib/inventory/use-sub-inv-cat"
+import { Item, useCombatWeapons } from "lib/inventory/use-sub-inv-cat"
 import { BodyPart } from "lib/objects/data/clothings/armor.types"
 import { ClothingData } from "lib/objects/data/clothings/clothings.types"
-import Consumable from "lib/objects/data/consumables/Consumable"
-import Weapon from "lib/objects/data/weapons/Weapon"
 import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 
 import { isKeyOf } from "utils/ts-utils"
 
 import Action from "../Action"
-import Combat from "../Combat"
 import { Roll } from "../combats.types"
 import actions from "../const/actions"
 import { DEFAULT_INITIATIVE, DODGE_AP_COST, PARRY_AP_COST } from "../const/combat-const"
@@ -114,10 +111,12 @@ export const getSkillIdFromAction = <T extends keyof typeof actions>({
     case "movement":
       return skillsMap.physical
     case "item":
+      if (item?.category !== "consumables") throw new Error("Item is not a consumable")
       if (actionSubtype === "use" && item?.data?.skillId) return skillsMap[item.data.skillId]
       if (actionSubtype === "throw") return skillsMap.throw
       return null
     case "weapon":
+      if (item?.category !== "weapons") throw new Error("Item is not a weapon")
       if (actionSubtype === "throw") return skillsMap.throw
       if (actionSubtype === "hit") return skillsMap.melee
       if (!item?.data?.skillId) throw new Error("No skill id found for given item")
@@ -140,12 +139,16 @@ const getKnowledgesFromAction = <T extends keyof typeof actions>({
 
   // ITEMS
   if (actionType === "item" && actionSubtype === "use" && item) {
+    if (item.category !== "consumables") throw new Error("Item is not a consumable")
     return item.data.knowledges ?? []
   }
 
   // WEAPON
   if (actionType === "weapon" && actionSubtype === "hit") return ["kBluntWeapons"]
-  if (actionType === "weapon" && item) return item.data.knowledges ?? []
+  if (actionType === "weapon" && item) {
+    if (item.category !== "weapons") throw new Error("Item is not a weapon")
+    return item.data.knowledges ?? []
+  }
 
   return []
 }
@@ -308,22 +311,25 @@ export const useGetPlayerCanReact = (charId: string) => {
   return true
 }
 
-export const getReactionAbilities = (
-  abilities: Abilities,
-  combatStatus: CombatStatus,
-  equipedWeapons: Record<string, Weapon>,
-  combat: Combat
-) => {
+export const useGetReactionAbilities = (charId: string) => {
+  const weapons = useCombatWeapons(charId)
+  const { data: combatId } = useCombatId(charId)
+  const { data: roundId } = useCombat(combatId, c => c.currRoundId)
+  const { data: status } = useCombatStatus(charId, s => ({
+    actionBonus: s.actionBonus ?? 0,
+    armorClassBonus: s.armorClassBonusRecord?.[roundId] ?? 0
+  }))
+  const { data: abilities } = useAbilities(charId, a => ({
+    skills: a.skills,
+    knowledges: a.knowledges,
+    secAttr: a.secAttr
+  }))
+
   const { skills, knowledges, secAttr } = abilities
-  const roundId = combat.currRoundId
-
-  const armorClassBonus = combatStatus.armorClassBonusRecord?.[roundId] ?? 0
-
-  const actionBonus = combatStatus.actionBonus ?? 0
 
   const dodgeKBonus = knowledgeLevels.find(el => el.id === knowledges.kDodge)?.bonus ?? 0
 
-  const defaultWeapon = Object.values(equipedWeapons)[0] ?? Weapon.getUnarmed()
+  const defaultWeapon = weapons[0]
   const weaponSkillId = defaultWeapon.data.skillId
   const parryKBonus = knowledgeLevels.find(el => el.id === knowledges.kParry)?.bonus ?? 0
   const parrySkillId = getParrySkill(weaponSkillId)
@@ -331,22 +337,22 @@ export const getReactionAbilities = (
   return {
     armorClass: {
       curr: secAttr.curr.armorClass,
-      bonus: armorClassBonus,
-      total: secAttr.curr.armorClass + armorClassBonus
+      bonus: status.armorClassBonus,
+      total: secAttr.curr.armorClass + status.armorClassBonus
     },
     dodge: {
       skillId: "physical" as const,
       curr: skills.curr.physical,
       knowledgeBonus: dodgeKBonus,
-      bonus: actionBonus,
-      total: skills.curr.physical + dodgeKBonus + actionBonus
+      bonus: status.actionBonus,
+      total: skills.curr.physical + dodgeKBonus + status.actionBonus
     },
     parry: {
       skillId: parrySkillId,
       curr: skills.curr[parrySkillId],
       knowledgeBonus: parryKBonus,
-      bonus: actionBonus,
-      total: skills.curr[parrySkillId] + parryKBonus + actionBonus
+      bonus: status.actionBonus,
+      total: skills.curr[parrySkillId] + parryKBonus + status.actionBonus
     }
   }
 }

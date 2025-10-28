@@ -1,5 +1,11 @@
 import { StyleSheet, TouchableOpacity } from "react-native"
 
+import { useLocalSearchParams } from "expo-router"
+
+import { useCombatId, useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
+import { useCharInfo, usePlayablesCharInfo } from "lib/character/info/info-provider"
+import { useContenders } from "lib/combat/use-cases/sub-combat"
+
 import Col from "components/Col"
 import List from "components/List"
 import Section from "components/Section"
@@ -8,11 +14,7 @@ import DrawerSlide from "components/Slides/DrawerSlide"
 import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { useCharacter } from "contexts/CharacterContext"
 import { useActionActorId, useActionApi, useActionTargetId } from "providers/ActionFormProvider"
-import { useCombat } from "providers/CombatProvider"
-import { useCombatStatuses } from "providers/CombatStatusesProvider"
-import { useContenders } from "providers/ContendersProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
@@ -35,29 +37,28 @@ const styles = StyleSheet.create({
 })
 
 export default function PickTargetSlide({ slideIndex }: SlideProps) {
+  const { charId } = useLocalSearchParams<{ charId: string }>()
   const { scrollTo } = useScrollTo()
 
   const useCases = useGetUseCases()
-  const combat = useCombat()
-  const character = useCharacter()
-  const contenders = useContenders()
   const targetId = useActionTargetId()
   const formActorId = useActionActorId()
-  const actorId = formActorId === "" ? character.charId : formActorId
-  const actor = contenders[actorId]
-  const { isEnemy } = actor.meta
+  const actorId = formActorId === "" ? charId : formActorId
+
+  const { data: combatId } = useCombatId(actorId)
+  const { data: contendersIds } = useContenders(combatId)
+  const { data: isEnemy } = useCharInfo(charId, i => i.isEnemy)
+  const combatStatuses = useCombatStatuses(contendersIds)
+  const contendersInfo = usePlayablesCharInfo(contendersIds)
 
   const { setForm } = useActionApi()
-
-  const combatStatuses = useCombatStatuses()
 
   const onPressPlayer = (id: string) => {
     setForm({ targetId: id })
   }
 
   const submit = () => {
-    if (!combat) return
-    useCases.combat.updateAction({ combatId: combat.id, payload: { targetId } })
+    useCases.combat.updateAction({ combatId, payload: { targetId } })
     scrollTo(slideIndex + 1)
   }
 
@@ -69,8 +70,8 @@ export default function PickTargetSlide({ slideIndex }: SlideProps) {
     })
     .map(([id]) => ({
       id,
-      isEnemy: contenders[id].meta.isEnemy,
-      fullname: contenders[id].fullname
+      isEnemy: contendersInfo[id].isEnemy,
+      fullname: contendersInfo[id].fullname
     }))
 
   const hostiles = aliveContenders.filter(c => (isEnemy ? !c.isEnemy : c.isEnemy))

@@ -1,6 +1,7 @@
+import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
+
 import Selectable from "components/Selectable"
 import Txt from "components/Txt"
-import { useCombatStatuses } from "providers/CombatStatusesProvider"
 import charCombatStatusStyles from "styles/char-combat-status.styles"
 
 export default function SelectActorButton({
@@ -14,13 +15,15 @@ export default function SelectActorButton({
   isSelected: boolean
   toggleSelect: (id: string) => void
 }) {
-  const combatStatuses = useCombatStatuses()
-  const { combatStatus = "active", currAp = 0 } = combatStatuses[charId]
+  const { data: status } = useCombatStatus(charId, s => ({
+    combatStatus: s.combatStatus,
+    currAp: s.currAp
+  }))
 
   let statusStyleId: keyof typeof charCombatStatusStyles = "active"
-  if (combatStatus === "dead") statusStyleId = "dead"
-  if (combatStatus === "wait") statusStyleId = "wait"
-  if (combatStatus === "inactive" || currAp === 0) statusStyleId = "done"
+  if (status.combatStatus === "dead") statusStyleId = "dead"
+  if (status.combatStatus === "wait") statusStyleId = "wait"
+  if (status.combatStatus === "inactive" || status.currAp === 0) statusStyleId = "done"
 
   return (
     <Selectable onPress={() => toggleSelect(charId)} isSelected={isSelected}>

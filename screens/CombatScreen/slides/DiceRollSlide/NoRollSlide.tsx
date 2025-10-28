@@ -1,46 +1,37 @@
 import { TouchableHighlight } from "react-native"
 
-import { getItemFromId } from "lib/combat/utils/combat-utils"
+import { useCombatId } from "lib/character/combat-status/combat-status-provider"
+import { useCombatState } from "lib/combat/use-cases/sub-combat"
+import { useItem } from "lib/inventory/use-sub-inv-cat"
 import Toast from "react-native-toast-message"
 
 import Section from "components/Section"
 import DrawerSlide from "components/Slides/DrawerSlide"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { useInventory } from "contexts/InventoryContext"
-import { useActionApi, useActionItemDbKey } from "providers/ActionFormProvider"
-import { useCombat } from "providers/CombatProvider"
-import { useCombatState } from "providers/CombatStateProvider"
-import { useCombatStatuses } from "providers/CombatStatusesProvider"
-import { useContenders } from "providers/ContendersProvider"
+import { useActionActorId, useActionApi, useActionItemDbKey } from "providers/ActionFormProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 
-import SlideError, { slideErrors } from "../SlideError"
-
 export default function NoRollSlide() {
   const useCases = useGetUseCases()
-  const inv = useInventory()
   const itemDbKey = useActionItemDbKey()
+  const actorId = useActionActorId()
   const { reset } = useActionApi()
-  const combatStatuses = useCombatStatuses()
-  const combat = useCombat()
-  const contenders = useContenders()
-  const { action } = useCombatState()
+
+  const { data: combatId } = useCombatId(actorId)
+  const { data: action } = useCombatState(combatId, s => s.action)
+  const { data: item } = useItem(actorId, itemDbKey ?? "")
 
   const submit = async () => {
-    if (!combat) throw new Error("No combat found")
     try {
-      const item = getItemFromId(inv, itemDbKey)
-      await useCases.combat.doCombatAction({ combat, contenders, combatStatuses, action, item })
+      await useCases.combat.doCombatAction({ combatId, action, item })
       Toast.show({ type: "custom", text1: "Action enregistrée !" })
       reset()
     } catch (err) {
       Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement de l'action. " })
     }
   }
-
-  if (!combat) return <SlideError error={slideErrors.noCombatError} />
 
   return (
     <DrawerSlide>

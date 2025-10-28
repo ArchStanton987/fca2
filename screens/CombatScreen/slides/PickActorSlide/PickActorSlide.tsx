@@ -1,3 +1,8 @@
+import { useLocalSearchParams } from "expo-router"
+
+import { useCombatId, useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
+import { usePlayablesCharInfo } from "lib/character/info/info-provider"
+import { useContenders } from "lib/combat/use-cases/sub-combat"
 import { getPlayingOrder } from "lib/combat/utils/combat-utils"
 
 import Col from "components/Col"
@@ -8,9 +13,6 @@ import DrawerSlide from "components/Slides/DrawerSlide"
 import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import { useActionActorId, useActionApi } from "providers/ActionFormProvider"
-import { useCombatStatus } from "providers/CombatStatusProvider"
-import { useCombatStatuses } from "providers/CombatStatusesProvider"
-import { useContenders } from "providers/ContendersProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
@@ -19,19 +21,22 @@ import NextButton from "../NextButton"
 import SelectActorButton from "./SelectActorButton"
 
 export default function PickActorSlide({ slideIndex }: SlideProps) {
+  const { charId } = useLocalSearchParams<{ charId: string }>()
   const useCases = useGetUseCases()
   const { scrollTo } = useScrollTo()
-  const combatStatuses = useCombatStatuses()
-  const contenders = useContenders()
-  const { combatId } = useCombatStatus()
+
+  const { data: combatId } = useCombatId(charId)
+  const { data: contendersIds } = useContenders(combatId)
+  const contendersInfo = usePlayablesCharInfo(contendersIds)
+  const combatStatuses = useCombatStatuses(contendersIds)
 
   const ordered = Object.values(getPlayingOrder(combatStatuses))
 
   const enemies: { charId: string; fullname: string }[] = []
   const players: { charId: string; fullname: string }[] = []
   ordered.forEach(({ id }) => {
-    const arr = contenders[id].meta.isEnemy ? enemies : players
-    arr.push({ charId: id, fullname: contenders[id].fullname })
+    const arr = contendersInfo[id].isEnemy ? enemies : players
+    arr.push({ charId: id, fullname: contendersInfo[id].fullname })
   })
 
   const { setActorId } = useActionApi()

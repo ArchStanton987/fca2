@@ -1,8 +1,10 @@
 import { StyleSheet } from "react-native"
 
-import { router } from "expo-router"
+import { router, useLocalSearchParams } from "expo-router"
 
-import { getReactionAbilities } from "lib/combat/utils/combat-utils"
+import { useAbilities } from "lib/character/abilities/abilities-provider"
+import { useCombatId, useCombatStatus } from "lib/character/combat-status/combat-status-provider"
+import { useGetReactionAbilities } from "lib/combat/utils/combat-utils"
 import { reactions, reactionsRecord } from "lib/reaction/reactions.const"
 
 import Col from "components/Col"
@@ -16,9 +18,6 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import HealthFigure from "components/draws/HealthFigure/HealthFigure"
 import routes from "constants/routes"
-import { useCharacter } from "contexts/CharacterContext"
-import { useCombat } from "providers/CombatProvider"
-import { useCombatStatus } from "providers/CombatStatusProvider"
 import { useReactionApi, useReactionForm } from "providers/ReactionProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
@@ -27,7 +26,6 @@ import layout from "styles/layout"
 
 import NextButton from "./NextButton"
 import PlayButton from "./PlayButton"
-import SlideError, { slideErrors } from "./SlideError"
 
 const styles = StyleSheet.create({
   score: {
@@ -50,15 +48,16 @@ const styles = StyleSheet.create({
 })
 
 export default function PickReactionSlide({ slideIndex }: SlideProps) {
+  const { charId } = useLocalSearchParams<{ charId: string }>()
   const useCases = useGetUseCases()
-  const combat = useCombat()
-  const char = useCharacter()
-  const { secAttr } = char
-  const combatStatus = useCombatStatus()
+  const { data: combatStatus } = useCombatStatus(charId)
 
   const form = useReactionForm()
   const { reaction } = form
   const { setReactionForm, reset } = useReactionApi()
+
+  const { data: combatId } = useCombatId(charId)
+  const { data: actionPoints } = useAbilities(charId, a => a.secAttr.curr.actionPoints)
 
   const { scrollTo } = useScrollTo()
 
@@ -66,9 +65,8 @@ export default function PickReactionSlide({ slideIndex }: SlideProps) {
     scrollTo(slideIndex + 1)
   }
 
-  if (!combat) return <SlideError error={slideErrors.noCombatError} />
+  const reactionAbilities = useGetReactionAbilities(charId)
 
-  const reactionAbilities = getReactionAbilities(char, combatStatus, combat)
   const { parry, dodge } = reactionAbilities
 
   const { apCost } = reactionsRecord[reaction]
@@ -79,10 +77,9 @@ export default function PickReactionSlide({ slideIndex }: SlideProps) {
   }
 
   const onPressNext = async () => {
-    if (!combat) throw new Error("could not find combat")
     if (leftAp < 0) throw new Error("No enough AP")
     if (reaction === "none") {
-      await useCases.combat.updateAction({ combatId: combat.id, payload: { reactionRoll: false } })
+      await useCases.combat.updateAction({ combatId, payload: { reactionRoll: false } })
       router.replace(routes.combat.action)
       reset()
       return
@@ -97,7 +94,7 @@ export default function PickReactionSlide({ slideIndex }: SlideProps) {
           <Section style={{ flex: 1 }} contentContainerStyle={{ alignItems: "center" }} title="PA">
             <Row>
               <Txt style={[styles.score, apCost > 0 && styles.prevScore]}>{leftAp}</Txt>
-              <Txt style={styles.score}> / {secAttr.curr.actionPoints}</Txt>
+              <Txt style={styles.score}> / {actionPoints}</Txt>
             </Row>
           </Section>
           <Spacer x={layout.globalPadding} />
@@ -162,7 +159,7 @@ export default function PickReactionSlide({ slideIndex }: SlideProps) {
 
       <Col style={{ width: 180 }}>
         <Section style={{ flex: 1 }} contentContainerStyle={{ justifyContent: "center", flex: 1 }}>
-          <HealthFigure />
+          <HealthFigure charId={charId} />
         </Section>
 
         <Spacer y={layout.globalPadding} />

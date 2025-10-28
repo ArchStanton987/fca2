@@ -1,8 +1,11 @@
-import { router } from "expo-router"
+import { router, useLocalSearchParams } from "expo-router"
 
+import { useAbilities, useSpecial } from "lib/character/abilities/abilities-provider"
 import skillsMap from "lib/character/abilities/skills/skills"
+import { useCombatId, useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { getCritFailureThreshold } from "lib/combat/const/crit"
-import { getReactionAbilities, getRollBonus } from "lib/combat/utils/combat-utils"
+import { useCombatState } from "lib/combat/use-cases/sub-combat"
+import { getRollBonus } from "lib/combat/utils/combat-utils"
 
 import Col from "components/Col"
 import Row from "components/Row"
@@ -11,12 +14,9 @@ import DrawerSlide from "components/Slides/DrawerSlide"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import routes from "constants/routes"
-import { useCharacter } from "contexts/CharacterContext"
-import { useCombat } from "providers/CombatProvider"
-import { useCombatState } from "providers/CombatStateProvider"
-import { useCombatStatuses } from "providers/CombatStatusesProvider"
 import { useReactionApi, useReactionForm } from "providers/ReactionProvider"
 import { useSetSliderIndex } from "providers/SlidesProvider"
+import ReactionRoll from "screens/CombatScreen/slides/DiceRollSlide/ReactionRollComponents"
 import layout from "styles/layout"
 
 import NextButton from "../NextButton"
@@ -25,12 +25,19 @@ import ActionOutcome from "./ActionOutcome"
 import styles from "./ScoreResultSlide.styles"
 
 export default function ReactionScoreResultSlide() {
-  const char = useCharacter()
-  const { secAttr, special } = char
-  const combatStatuses = useCombatStatuses()
+  const { charId } = useLocalSearchParams<{ charId: string }>()
+
+  const { data: special } = useSpecial(charId)
+  const { data: critChance } = useAbilities(charId, a => a.secAttr.curr.critChance)
+
+  const { skillId } = ReactionRoll.useGetReaction(charId)
+
+  const { data: combatId } = useCombatId(charId)
   const { diceRoll, reaction } = useReactionForm()
-  const combat = useCombat()
-  const { action } = useCombatState()
+  const { data: action } = useCombatState(combatId, s => s.action)
+  const opponentId = action?.reactionRoll ? action.reactionRoll.opponentId : ""
+  const { data: opponentCombatStatus } = useCombatStatus(opponentId)
+
   const diceScore = parseInt(diceRoll, 10)
   const { reset } = useReactionApi()
   const setSlideIndex = useSetSliderIndex()
@@ -38,7 +45,6 @@ export default function ReactionScoreResultSlide() {
   const roll = action?.roll
   const reactionRoll = action?.reactionRoll
 
-  if (!action?.actorId || !combat) return <SlideError error={slideErrors.noCombatError} />
   if (reaction === "none") return <SlideError error={slideErrors.noDiceRollError} />
   if (diceScore === 0 || !roll || !reactionRoll)
     return <SlideError error={slideErrors.noDiceRollError} />
@@ -46,15 +52,13 @@ export default function ReactionScoreResultSlide() {
   const { sumAbilities, dice, bonus, targetArmorClass, difficulty } = roll
   const actorFinalScore = sumAbilities - dice + bonus - targetArmorClass - difficulty
 
-  const { opponentSumAbilities, opponentDice, opponentId } = reactionRoll
-  const opponentBonus = getRollBonus(combatStatuses[opponentId], action)
+  const { opponentSumAbilities, opponentDice } = reactionRoll
+  const opponentBonus = getRollBonus(opponentCombatStatus, action)
   const opponentScore = opponentSumAbilities - opponentDice + opponentBonus
   const isCritFail = opponentDice >= getCritFailureThreshold(special.curr)
-  const isCrit = opponentDice < secAttr.curr.critChance
+  const isCrit = opponentDice < critChance
   const finalScore = opponentScore - actorFinalScore
   const isSuccess = finalScore >= 0
-
-  const { skillId } = getReactionAbilities(char, combatStatuses[opponentId], combat)[reaction]
 
   const submit = () => {
     setSlideIndex("reactionSlider", 0)

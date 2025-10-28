@@ -1,6 +1,6 @@
 import { TouchableOpacity, TouchableOpacityProps } from "react-native"
 
-import AntDesign from "@expo/vector-icons/AntDesign"
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6"
 
 import colors from "styles/colors"
 
@@ -11,8 +11,8 @@ type NextButtonProps = TouchableOpacityProps & {
 export default function PlayButton({ size, disabled, ...rest }: NextButtonProps) {
   return (
     <TouchableOpacity disabled={disabled} {...rest}>
-      <AntDesign
-        name="playcircleo"
+      <FontAwesome6
+        name="circle-play"
         size={size ?? 36}
         color={disabled ? colors.terColor : colors.secColor}
       />

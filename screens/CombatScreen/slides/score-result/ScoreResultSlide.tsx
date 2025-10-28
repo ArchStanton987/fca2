@@ -1,7 +1,12 @@
-import Character from "lib/character/Character"
-import { limbsMap } from "lib/character/health/healthMap"
+import { useLocalSearchParams } from "expo-router"
+
+import { useAbilities, useSpecial } from "lib/character/abilities/abilities-provider"
+import { useCombatId } from "lib/character/combat-status/combat-status-provider"
+import { limbsMap } from "lib/character/health/Health"
 import { getCritFailureThreshold } from "lib/combat/const/crit"
+import { useCombatState } from "lib/combat/use-cases/sub-combat"
 import { getActorSkillFromAction } from "lib/combat/utils/combat-utils"
+import { useItem } from "lib/inventory/use-sub-inv-cat"
 import Toast from "react-native-toast-message"
 
 import Col from "components/Col"
@@ -11,7 +16,6 @@ import DrawerSlide from "components/Slides/DrawerSlide"
 import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { useCharacter } from "contexts/CharacterContext"
 import {
   useActionActorId,
   useActionAimZone,
@@ -20,11 +24,6 @@ import {
   useActionSubtype,
   useActionType
 } from "providers/ActionFormProvider"
-import { useCombat } from "providers/CombatProvider"
-import { useCombatState } from "providers/CombatStateProvider"
-import { useCombatStatuses } from "providers/CombatStatusesProvider"
-import { useContenders } from "providers/ContendersProvider"
-import { useInventories } from "providers/InventoriesProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
@@ -36,23 +35,23 @@ import ActionOutcome from "./ActionOutcome"
 import styles from "./ScoreResultSlide.styles"
 
 export default function ScoreResultSlide({ slideIndex }: SlideProps) {
+  const { charId } = useLocalSearchParams<{ charId: string }>()
   const useCases = useGetUseCases()
-  const combat = useCombat()
-  const contenders = useContenders()
-  const combatStatuses = useCombatStatuses()
-  const { action } = useCombatState()
 
-  const character = useCharacter()
-  const formActorId = useActionActorId()
   const itemDbKey = useActionItemDbKey() ?? ""
   const actionType = useActionType()
   const actionSubtype = useActionSubtype()
   const aimZone = useActionAimZone()
-  const actorId = formActorId === "" ? character.charId : formActorId
-  const actor = contenders[actorId]
-  const inv = useInventories(actorId)
-  const { weaponsRecord = {}, consumablesRecord = {} } = inv
-  const { secAttr, special } = actor
+
+  const formActorId = useActionActorId()
+  const actorId = formActorId === "" ? charId : formActorId
+  const { data: combatId } = useCombatId(actorId)
+  const { data: action } = useCombatState(combatId, s => s.action)
+  const { data: abilities } = useAbilities(actorId)
+  const { data: critChance } = useAbilities(actorId, a => a.secAttr.curr.critChance)
+  const { data: item } = useItem(actorId, itemDbKey)
+  const { data: special } = useSpecial(actorId)
+
   const { reset } = useActionApi()
 
   const { scrollTo } = useScrollTo()
@@ -69,26 +68,15 @@ export default function ScoreResultSlide({ slideIndex }: SlideProps) {
     targetArmorClass = 0
   } = action.roll
 
-  let withAimCritChance = secAttr.curr.critChance
+  let withAimCritChance = critChance
   if (actionType === "weapon" && aimZone) {
-    withAimCritChance += limbsMap[aimZone].aimMalus
+    withAimCritChance += limbsMap[aimZone].aim.aimMalus
   }
 
-  let obj
-  if (actionType === "weapon") {
-    const isHuman = actor instanceof Character
-    if (itemDbKey) {
-      obj = isHuman
-        ? weaponsRecord[itemDbKey] ?? actor.unarmed
-        : actor.equipedObjectsRecord.weapons[itemDbKey]
-    }
-  } else {
-    obj = consumablesRecord[itemDbKey]
-  }
-  const o = { actionType, actionSubtype, item: obj }
-  const { skillLabel } = getActorSkillFromAction({ ...o }, actor)
+  const o = { actionType, actionSubtype, item }
+  const { skillLabel } = getActorSkillFromAction({ ...o }, abilities)
 
-  const isDefaultCritSuccess = dice !== 0 && dice <= secAttr.curr.critChance
+  const isDefaultCritSuccess = dice !== 0 && dice <= critChance
   const isCritFail = dice !== 0 && dice >= getCritFailureThreshold(special.curr)
   const score = sumAbilities - dice + bonus
   const finalScore = score - targetArmorClass - difficulty
@@ -97,7 +85,6 @@ export default function ScoreResultSlide({ slideIndex }: SlideProps) {
   const isCrit = isCritHit || isDefaultCritSuccess
 
   const submit = async () => {
-    if (!combat) return
     const withDamageSubtypes = ["throw", "basic", "aim", "burst", "hit"]
     const hasNextSlide = withDamageSubtypes.includes(actionSubtype) && isSuccess
     if (hasNextSlide) {
@@ -105,14 +92,7 @@ export default function ScoreResultSlide({ slideIndex }: SlideProps) {
       return
     }
     try {
-      const item = action.itemDbKey ? inv.allItems[action.itemDbKey] : undefined
-      await useCases.combat.doCombatAction({
-        combat,
-        contenders,
-        combatStatuses,
-        action,
-        item
-      })
+      await useCases.combat.doCombatAction({ combatId, action, item })
       Toast.show({ type: "custom", text1: "Action réalisée !" })
       reset()
     } catch (error) {
