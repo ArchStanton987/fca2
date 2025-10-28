@@ -1,11 +1,16 @@
-import Character from "lib/character/Character"
+import { useLocalSearchParams } from "expo-router"
+
+import { useAbilities } from "lib/character/abilities/abilities-provider"
+import { useCombatId, useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { REACTION_MIN_AP_COST } from "lib/combat/const/combat-const"
 import difficultyArray from "lib/combat/const/difficulty"
+import { useCombatState } from "lib/combat/use-cases/sub-combat"
 import {
   getActorSkillFromAction,
-  getContenderAc,
-  getRollBonus
+  getRollBonus,
+  useContenderAc
 } from "lib/combat/utils/combat-utils"
+import { useItem } from "lib/inventory/use-sub-inv-cat"
 
 import Col from "components/Col"
 import NumPad from "components/NumPad/NumPad"
@@ -14,7 +19,6 @@ import DrawerSlide from "components/Slides/DrawerSlide"
 import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { useCharacter } from "contexts/CharacterContext"
 import {
   useActionActorId,
   useActionApi,
@@ -24,11 +28,6 @@ import {
   useActionType,
   useActorDiceScore
 } from "providers/ActionFormProvider"
-import { useCombat } from "providers/CombatProvider"
-import { useCombatState } from "providers/CombatStateProvider"
-import { useCombatStatuses } from "providers/CombatStatusesProvider"
-import { useContenders } from "providers/ContendersProvider"
-import { useInventories } from "providers/InventoriesProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
@@ -40,6 +39,7 @@ import styles from "./DiceRollSlide.styles"
 import NoRollSlide from "./NoRollSlide"
 
 export default function DiceRollSlide({ slideIndex }: SlideProps) {
+  const { charId } = useLocalSearchParams<{ charId: string }>()
   const { scrollTo } = useScrollTo()
 
   const scrollNext = () => {
@@ -48,41 +48,26 @@ export default function DiceRollSlide({ slideIndex }: SlideProps) {
 
   const useCases = useGetUseCases()
 
-  const { charId } = useCharacter()
-  const combat = useCombat()
-  const { action } = useCombatState()
-  const contenders = useContenders()
-  const combatStatuses = useCombatStatuses()
-
   const formActorId = useActionActorId()
   const actorId = formActorId === "" ? charId : formActorId
+  const { data: combatId } = useCombatId(actorId)
+  const { data: action } = useCombatState(combatId, s => s.action)
   const actionType = useActionType()
   const actionSubtype = useActionSubtype()
   const targetId = useActionTargetId() ?? ""
   const itemDbKey = useActionItemDbKey() ?? ""
   const actorDiceScore = useActorDiceScore()
 
-  const actor = contenders[actorId]
-  const inventory = useInventories(actorId)
-  const combatStatus = combatStatuses[actorId]
-  const { weaponsRecord = {}, consumablesRecord = {} } = inventory
+  const { data: combatStatus } = useCombatStatus(actorId)
+  const { data: abilities } = useAbilities(actorId)
+  const { data: targetAp } = useCombatStatus(targetId, s => s.currAp)
+  const targetArmorClass = useContenderAc(targetId)
+  const { data: item } = useItem(actorId, itemDbKey)
 
   const { setRoll } = useActionApi()
 
-  let item
-  if (actionType === "weapon") {
-    const isHuman = actor instanceof Character
-    if (typeof itemDbKey === "string") {
-      item = isHuman
-        ? weaponsRecord[itemDbKey] ?? actor.unarmed
-        : actor.equipedObjectsRecord.weapons[itemDbKey]
-    }
-  } else {
-    item = consumablesRecord[itemDbKey]
-  }
-
   const o = { actionType, actionSubtype, item }
-  const { skillLabel, skillId, sumAbilities } = getActorSkillFromAction({ ...o, item }, actor)
+  const { skillLabel, skillId, sumAbilities } = getActorSkillFromAction({ ...o, item }, abilities)
 
   if (!action) return <SlideError error={slideErrors.noCombatError} />
   if (action.roll === false) return <NoRollSlide />
@@ -96,21 +81,14 @@ export default function DiceRollSlide({ slideIndex }: SlideProps) {
   const isValid = !Number.isNaN(dice) && dice > 0 && dice < 101
 
   const bonus = getRollBonus(combatStatus, action)
-  const targetArmorClass = getContenderAc(
-    combat?.currRoundId ?? 1,
-    contenders[targetId],
-    combatStatuses[targetId]
-  )
-
   const onPressConfirm = async () => {
-    if (combat === null || !isValid) return
+    if (!isValid) return
     let reactionRoll
     if (targetId) {
-      const targetAp = combatStatuses[targetId].currAp
       reactionRoll = targetAp >= REACTION_MIN_AP_COST ? undefined : (false as const)
     }
     const roll = { difficulty, sumAbilities, dice, bonus, targetArmorClass, skillId }
-    await useCases.combat.updateAction({ combatId: combat.id, payload: { roll, reactionRoll } })
+    await useCases.combat.updateAction({ combatId, payload: { roll, reactionRoll } })
     scrollNext()
   }
 

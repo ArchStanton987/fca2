@@ -1,10 +1,11 @@
 import Abilities from "lib/character/abilities/Abilities"
+import { useAbilities } from "lib/character/abilities/abilities-provider"
 import { KnowledgeId } from "lib/character/abilities/knowledges/knowledge-types"
 import { getKnowledgesBonus } from "lib/character/abilities/knowledges/knowledge-utils"
 import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-levels"
 import skillsMap from "lib/character/abilities/skills/skills"
 import { Skill, SkillId } from "lib/character/abilities/skills/skills.types"
-import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
+import { useCombatId, useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { CombatStatus } from "lib/character/combat-status/combat-status.types"
 import { limbsMap } from "lib/character/health/Health"
 import { LimbId } from "lib/character/health/health.const"
@@ -24,7 +25,7 @@ import Combat from "../Combat"
 import { Roll } from "../combats.types"
 import actions from "../const/actions"
 import { DEFAULT_INITIATIVE, DODGE_AP_COST, PARRY_AP_COST } from "../const/combat-const"
-import { useCombatState } from "../use-cases/sub-combat"
+import { useCombat, useCombatState } from "../use-cases/sub-combat"
 
 export const getPlayingOrder = (combatStatuses: Record<string, CombatStatus>) => {
   // sort contenders by initiative and current ap, then combat status inactive, then dead
@@ -101,7 +102,7 @@ export const getInitiativePrompts = (charId: string, contenders: Record<string, 
 interface ActionForm<T extends keyof typeof actions> {
   actionType: T | ""
   actionSubtype: keyof (typeof actions)[T]["subtypes"] | string
-  item?: Consumable | Weapon
+  item?: Item
 }
 
 export const getSkillIdFromAction = <T extends keyof typeof actions>({
@@ -266,6 +267,13 @@ export const getContenderAc = (
 ) => {
   const currAc = abilities.secAttr.curr.armorClass ?? 0
   const bonusAc = combatStatus?.armorClassBonusRecord?.[roundId] ?? 0
+  return currAc + bonusAc
+}
+export const useContenderAc = (charId: string) => {
+  const { data: combatId } = useCombatId(charId)
+  const { data: currAc } = useAbilities(charId, a => a.secAttr.curr.armorClass)
+  const { data: roundId } = useCombat(combatId, c => c.currRoundId)
+  const { data: bonusAc } = useCombatStatus(charId, s => s.armorClassBonusRecord?.[roundId] ?? 0)
   return currAc + bonusAc
 }
 

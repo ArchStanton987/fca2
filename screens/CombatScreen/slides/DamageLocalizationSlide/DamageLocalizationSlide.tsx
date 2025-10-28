@@ -1,7 +1,10 @@
 import { useState } from "react"
 import { ActivityIndicator, StyleSheet, View } from "react-native"
 
-import { limbsMap } from "lib/character/health/healthMap"
+import { useLocalSearchParams } from "expo-router"
+
+import { useCombatId } from "lib/character/combat-status/combat-status-provider"
+import { limbsMap } from "lib/character/health/Health"
 import { getBodyPart } from "lib/combat/utils/combat-utils"
 
 import NumPad from "components/NumPad/NumPad"
@@ -11,9 +14,7 @@ import DrawerSlide from "components/Slides/DrawerSlide"
 import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { useCharacter } from "contexts/CharacterContext"
 import { useActionActorId, useActionApi, useActionDamageLoc } from "providers/ActionFormProvider"
-import { useCombat } from "providers/CombatProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
@@ -37,10 +38,10 @@ const styles = StyleSheet.create({
 type DamageLocalizationSlideProps = SlideProps & {}
 
 export default function DamageLocalizationSlide({ slideIndex }: DamageLocalizationSlideProps) {
+  const { charId } = useLocalSearchParams<{ charId: string }>()
   const useCases = useGetUseCases()
-  const { charId } = useCharacter()
-  const combat = useCombat()
   const actorId = useActionActorId()
+  const { data: combatId } = useCombatId(actorId)
   const damageLocalization = useActionDamageLoc()
   const { setForm } = useActionApi()
   const { scoreStr, onPressKeypad } = useNumPad()
@@ -55,7 +56,6 @@ export default function DamageLocalizationSlide({ slideIndex }: DamageLocalizati
   }
 
   const submit = async () => {
-    if (combat === null) return
     if (!isScoreValid) throw new Error("invalid score")
     if (!damageLocalization) {
       setForm({ damageLocalization: getBodyPart(scoreStr) })
@@ -69,7 +69,7 @@ export default function DamageLocalizationSlide({ slideIndex }: DamageLocalizati
       return
     }
     const payload = { damageLocalization }
-    await useCases.combat.updateAction({ combatId: combat.id, payload })
+    await useCases.combat.updateAction({ combatId, payload })
     scrollTo(slideIndex + 1)
   }
 
