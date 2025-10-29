@@ -2,7 +2,7 @@ import React from "react"
 import { PressableProps, TouchableOpacity, View } from "react-native"
 
 import { changeableAttributesMap } from "lib/character/effects/changeable-attr"
-import { Consumable } from "lib/objects/data/consumables/consumables.types"
+import Consumable from "lib/objects/data/consumables/Consumable"
 
 import DeleteInput from "components/DeleteInput"
 import ListLabel from "components/ListLabel"
@@ -10,7 +10,7 @@ import Selectable from "components/Selectable"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import Caret from "components/icons/Caret"
-import useCreatedElements from "hooks/context/useCreatedElements"
+import { useCollectiblesData } from "providers/AdditionalElementsProvider"
 
 import styles from "./ConsumableRow.styles"
 
@@ -45,9 +45,9 @@ export default function ConsumableRow({
   onDelete,
   onPress
 }: ConsumableRowProps) {
-  const { newEffects } = useCreatedElements()
+  const { effects } = useCollectiblesData()
   const { label, effectId, challengeLabel, modifiers = [] } = charConsumable.data
-  const symptoms = effectId ? newEffects[effectId].symptoms : []
+  const symptoms = effectId ? effects[effectId].symptoms : []
   const visibleMods = [...symptoms, ...modifiers]
   const countAppend = count > 1 ? ` (${count})` : ""
   return (

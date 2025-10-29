@@ -2,7 +2,8 @@ import { View } from "react-native"
 
 import secAttrMap from "lib/character/abilities/sec-attr/sec-attr"
 import { changeableAttributesMap } from "lib/character/effects/changeable-attr"
-import { Clothing } from "lib/objects/data/clothings/clothings.types"
+import { useItem } from "lib/inventory/use-sub-inv-cat"
+import Clothing from "lib/objects/data/clothings/Clothing"
 
 import List from "components/List"
 import Spacer from "components/Spacer"
@@ -16,12 +17,23 @@ const getClothingDetails = ({ data }: Clothing) => [
   { label: "EFFETS", value: data.symptoms.filter(el => el.id !== "armorClass") }
 ]
 
-export default function ClothingDetails({ charClothing }: { charClothing: Clothing | null }) {
-  const clothingDetails = charClothing ? getClothingDetails(charClothing) : []
+export default function ClothingDetails({
+  itemKey,
+  charId
+}: {
+  charId: string
+  itemKey: string | null
+}) {
+  const { data: clothing } = useItem(charId, itemKey ?? "")
+
+  if (!clothing) return null
+  if (clothing.category !== "clothings") throw new Error("Item is not clothing")
+
+  const clothingDetails = clothing ? getClothingDetails(clothing) : []
   return (
     <List
       data={clothingDetails}
-      keyExtractor={item => item.label}
+      keyExtractor={e => e.label}
       renderItem={({ item }) => {
         if (Array.isArray(item.value)) {
           return (

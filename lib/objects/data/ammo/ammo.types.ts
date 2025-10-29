@@ -31,10 +31,4 @@ export type AmmoData = {
   weight: number
 }
 
-export type Ammo = {
-  id: AmmoType
-  amount: number
-  data: AmmoData
-}
-
 export type AmmoSet = Record<AmmoType, number>

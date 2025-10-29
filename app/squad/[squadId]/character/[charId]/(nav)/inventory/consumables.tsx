@@ -1,5 +1,104 @@
-import ConsumablesScreen from "screens/InventoryTabs/ConsumablesScreen/ConsumablesScreen"
+import React, { useMemo, useState } from "react"
+import { View } from "react-native"
 
-export default function ConsumablesPage() {
-  return <ConsumablesScreen />
+import { router, useLocalSearchParams } from "expo-router"
+
+import { useItems } from "lib/inventory/use-sub-inv-cat"
+import { useBarterActions } from "lib/objects/barter-store"
+import Consumable from "lib/objects/data/consumables/Consumable"
+import ConsumableDetails from "lib/objects/data/consumables/ui/ConsumableDetails"
+import ConsumableRow from "lib/objects/data/consumables/ui/ConsumableRow"
+
+import DrawerPage from "components/DrawerPage"
+import List from "components/List"
+import Section from "components/Section"
+import ScrollSection from "components/Section/ScrollSection"
+import { ComposedTitleProps } from "components/Section/Section.types"
+import Spacer from "components/Spacer"
+import PlusIcon from "components/icons/PlusIcon"
+import routes from "constants/routes"
+import { useGetUseCases } from "providers/UseCasesProvider"
+import layout from "styles/layout"
+
+const getTitle = (cb: (str: string) => void): ComposedTitleProps => [
+  { title: "produit", onPress: () => cb("label"), containerStyle: { flex: 1 } },
+  { title: "effets", onPress: () => {}, containerStyle: { width: 90 }, titlePosition: "right" },
+  { title: "", containerStyle: { width: 27 }, lineStyle: { minWidth: 0 }, spacerWidth: 0 }
+]
+
+export default function ConsumablesScreen() {
+  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const useCases = useGetUseCases()
+  const [selectedItem, setSelectedItem] = useState<string | null>(null)
+  const [isAscSort, setIsAscSort] = useState(true)
+
+  const barterActions = useBarterActions()
+
+  const { data: consumables } = useItems(charId, allItems =>
+    Object.values(allItems)
+      .filter(el => el.category === "consumables")
+      .map((c, _, currArr) => {
+        const itemsGroup = currArr.filter(i => i.id === c.id)
+        const count = itemsGroup.length
+        const dbKeys = itemsGroup.map(i => i.dbKey)
+        return { ...c, count, dbKeys }
+      })
+  )
+
+  const onPressAdd = () => {
+    barterActions.selectCategory("consumables")
+    router.push({
+      pathname: routes.modal.barter,
+      params: { squadId, charId }
+    })
+  }
+
+  const onDelete = (item: Consumable) => {
+    useCases.inventory.drop({ charId, item })
+    setSelectedItem(null)
+  }
+
+  const onPressHeader = () => setIsAscSort(prev => !prev)
+  const title = getTitle(onPressHeader)
+
+  const sortedConsumables = useMemo(() => {
+    const sortFn = (a: Consumable, b: Consumable) => {
+      if (isAscSort) return a.data.label.localeCompare(b.data.label)
+      return b.data.label.localeCompare(a.data.label)
+    }
+    const sorted = consumables.sort(sortFn)
+    return sorted
+  }, [consumables, isAscSort])
+
+  return (
+    <DrawerPage>
+      <ScrollSection style={{ flex: 1 }} title={title}>
+        <List
+          data={sortedConsumables}
+          keyExtractor={item => item.dbKey}
+          renderItem={({ item }) => (
+            <ConsumableRow
+              charConsumable={item}
+              isSelected={item.dbKey === selectedItem}
+              count={item.count}
+              onPress={() => setSelectedItem(item.dbKey)}
+              onDelete={() => onDelete(item)}
+            />
+          )}
+        />
+      </ScrollSection>
+      <Spacer x={layout.globalPadding} />
+      <View style={{ width: 180 }}>
+        <ScrollSection style={{ flex: 1 }} title="détails">
+          <ConsumableDetails charId={charId} dbKey={selectedItem} />
+        </ScrollSection>
+        <Spacer y={layout.globalPadding} />
+        <Section title="ajouter">
+          <View style={{ alignItems: "center" }}>
+            <PlusIcon onPress={onPressAdd} />
+          </View>
+        </Section>
+      </View>
+    </DrawerPage>
+  )
 }

@@ -1,7 +1,7 @@
 import React from "react"
 import { ScrollView } from "react-native"
 
-import { MiscObject } from "lib/objects/data/misc-objects/misc-objects-types"
+import MiscObject from "lib/objects/data/misc-objects/MiscObject"
 
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"

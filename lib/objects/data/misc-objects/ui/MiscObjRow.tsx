@@ -6,7 +6,7 @@ import { MiscObjectId } from "lib/objects/data/misc-objects/misc-objects-types"
 import DeleteInput from "components/DeleteInput"
 import ListLabel from "components/ListLabel"
 import Selectable from "components/Selectable"
-import useCreatedElements from "hooks/context/useCreatedElements"
+import { useCollectiblesData } from "providers/AdditionalElementsProvider"
 
 type MiscObjRowProps = PressableProps & {
   isSelected: boolean
@@ -23,8 +23,8 @@ export default function MiscObjRow({
   onPress,
   onPressDelete
 }: MiscObjRowProps) {
-  const { newMiscObjects } = useCreatedElements()
-  const { label } = newMiscObjects[objId]
+  const { miscObjects } = useCollectiblesData()
+  const { label } = miscObjects[objId]
   const countAppend = count > 1 ? ` (${count})` : ""
   return (
     <Selectable isSelected={isSelected} onPress={onPress}>

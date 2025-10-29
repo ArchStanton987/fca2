@@ -1,7 +1,7 @@
 import { PressableProps } from "react-native"
 
 import combatModsMap from "lib/combat/combat-mods"
-import { Clothing } from "lib/objects/data/clothings/clothings.types"
+import { useItem } from "lib/inventory/use-sub-inv-cat"
 import Toast from "react-native-toast-message"
 
 import DeleteInput from "components/DeleteInput"
@@ -10,20 +10,25 @@ import ListLabel from "components/ListLabel"
 import ListScoreLabel from "components/ListScoreLabel"
 import Selectable from "components/Selectable"
 import Spacer from "components/Spacer"
-import { useCharacter } from "contexts/CharacterContext"
+import { useCollectiblesData } from "providers/AdditionalElementsProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 
 type ClothingRowProps = PressableProps & {
-  clothing: Clothing
+  itemKey: string
+  charId: string
   isSelected: boolean
   onPress: () => void
 }
 
-export default function ClothingRow({ clothing, isSelected, onPress }: ClothingRowProps) {
+export default function ClothingRow({ itemKey, charId, isSelected, onPress }: ClothingRowProps) {
   const useCases = useGetUseCases()
 
-  const character = useCharacter()
-  const { isEquiped, data } = clothing
+  const { clothings } = useCollectiblesData()
+
+  const { data: item } = useItem(charId, itemKey)
+
+  if (item.category !== "clothings") throw new Error("Item is not clothing")
+
   const {
     label,
     physicalDamageResist,
@@ -31,11 +36,11 @@ export default function ClothingRow({ clothing, isSelected, onPress }: ClothingR
     fireDamageResist,
     plasmaDamageResist,
     malus
-  } = data
+  } = clothings[item.id]
 
   const handleEquip = async () => {
     try {
-      await useCases.equipedObjects.toggle(character, clothing)
+      await useCases.character.toggleEquip({ charId, itemDbKey: itemKey })
     } catch (err: any) {
       if (err?.message) {
         Toast.show({ type: "custom", text1: err.message })
@@ -50,7 +55,7 @@ export default function ClothingRow({ clothing, isSelected, onPress }: ClothingR
 
   return (
     <Selectable isSelected={isSelected} onPress={onPress}>
-      <EquipInput isChecked={isEquiped} isParentSelected={isSelected} onPress={handleEquip} />
+      <EquipInput isChecked={item.isEquipped} isParentSelected={isSelected} onPress={handleEquip} />
       <Spacer x={10} />
       <ListLabel label={label} />
       <Spacer x={5} />
@@ -66,7 +71,7 @@ export default function ClothingRow({ clothing, isSelected, onPress }: ClothingR
       <Spacer x={5} />
       <DeleteInput
         isSelected={isSelected}
-        onPress={() => useCases.inventory.drop(character.charId, clothing)}
+        onPress={() => useCases.inventory.drop({ charId, item })}
       />
     </Selectable>
   )
