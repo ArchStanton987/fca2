@@ -11,7 +11,6 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import PlusIcon from "components/icons/PlusIcon"
 import routes, { charRoute } from "constants/routes"
-import { UpdateKnowledgesModalParams } from "screens/MainTabs/modals/UpdateKnowledgesModal/UpdateKnowledgesModal.params"
 import { toLocalParams } from "screens/ScreenParams"
 
 import styles from "./Drawer.styles"
@@ -46,7 +45,7 @@ export default function Drawer({ sectionId, navElements }: DrawerProps) {
     if (isSkills) {
       router.push({ pathname: routes.modal.updateSkills, params: { charId, squadId } })
     } else {
-      const params: UpdateKnowledgesModalParams = {
+      const params = {
         charId,
         squadId,
         isFreeKnowledges: availableFreeKnowledgePoints > 0
