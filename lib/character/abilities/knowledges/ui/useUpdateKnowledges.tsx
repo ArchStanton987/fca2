@@ -9,7 +9,7 @@ import knowledgeLevels from "lib/character/abilities/knowledges/knowledges-level
 import { getAssignedRawKPoints } from "lib/character/progress/progress-utils"
 
 type Params = {
-  initKnowledgesRecord: Record<KnowledgeId, KnowledgeLevelValue>
+  initKnowledgesRecord: Partial<Record<KnowledgeId, KnowledgeLevelValue>>
   initAvailablePoints: number
 }
 
@@ -25,7 +25,7 @@ export default function useUpdateKnowledges(params: Params) {
 
   const onModKnowledge = (id: KnowledgeId, newLevel: KnowledgeLevel) => {
     // prevent from setting knowledge lower than actual current level
-    if (newLevel.id < initKnowledgesRecord[id]) return
+    if (initKnowledgesRecord[id] && newLevel.id < initKnowledgesRecord[id]) return
     // prevent from setting knowledge higher than available points
     const currLvlCost = knowledgeLevels.find(lvl => lvl.id === newKnowledges[id])?.cost ?? 0
     const updateCost = newLevel.cost - currLvlCost

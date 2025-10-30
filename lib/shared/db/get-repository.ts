@@ -1,4 +1,5 @@
 import PlayableRtdbRepository from "lib/character/PlayableRtdbRepository"
+import AbilitiesRtdbRepository from "lib/character/abilities/InventoryRtdbRepository"
 import CombatStatusRtdbRepository from "lib/character/combat-status/CombatStatusRtdbRepository"
 import AdditionalEffectsRtdbRepository from "lib/character/effects/AdditionalEffectsRtdbRepository"
 import EffectsRtdbRepository from "lib/character/effects/EffectsRtdbRepository"
@@ -35,7 +36,8 @@ const repositoryMap = {
     squadRepository: new SquadRtdbRepository(),
     //
     inventoryRepository: new InventoryRtdbRepository(),
-    itemsRepository: new ItemRtdbRepository()
+    itemsRepository: new ItemRtdbRepository(),
+    abilitiesRepository: new AbilitiesRtdbRepository()
   }
 }
 

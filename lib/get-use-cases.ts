@@ -1,3 +1,6 @@
+import updateKnowledges, {
+  UpdateKnowledgesParams
+} from "./character/abilities/knowledges/use-cases/update-knowledges"
 import updateCombatStatus, {
   UpdateCombatStatusParams
 } from "./character/combat-status/use-cases/update-combat-status"
@@ -112,7 +115,8 @@ export default function getUseCases(config: UseCasesConfig) {
       updateHp: (params: UpdateHpParams) => updateCurrHp(config)(params),
       updateLimbsHp: (params: UpdateLimbsHpParams) => updateLimbsHp(config)(params),
       toggleEquip: (params: ToggleEquipParams) => toggleEquip(config)(params),
-      updateHealth: (params: UpdateHealthParams) => updateHealth(config)(params)
+      updateHealth: (params: UpdateHealthParams) => updateHealth(config)(params),
+      updateKnowledges: (params: UpdateKnowledgesParams) => updateKnowledges(config)(params)
     },
     gm: {
       updateDatetime: (params: UpdateDateParams) => updateDate(config)(params)

@@ -1,4 +1,5 @@
 import { DbPlayable } from "lib/character/Playable"
+import { DbAbilities } from "lib/character/abilities/abilities.types"
 import { DbCombatStatus } from "lib/character/combat-status/combat-status.types"
 import { DbEffect } from "lib/character/effects/effects.types"
 import { DbHealth } from "lib/character/health/Health"
@@ -53,6 +54,7 @@ export type ItemsParams = CharParams & {
   dbKey?: string
   childKey?: keyof DbConsumable | keyof DbWeapon | keyof DbClothing | keyof DbMiscObject
 }
+export type AbilitiesParams = CharParams & { childKey: keyof DbAbilities }
 
 const rtdb = {
   getAdditionalClothings: ({ childKey }: AdditionalClothingsParams) =>
@@ -73,19 +75,14 @@ const rtdb = {
   getAction: ({ combatId, childKey }: ActionParams) =>
     `v3/combats/${combatId}/state/action/${childKey ?? ""}`,
 
+  getAbilities: ({ charId, childKey }: AbilitiesParams) =>
+    `v3/playables/${charId}/abilities/${childKey ?? ""}`,
+
   getInventory: ({ charId, childKey }: InventoryParams) =>
     `v3/playables/${charId}/inventory/${childKey ?? ""}`,
 
   getItems: ({ charId, dbKey, childKey }: ItemsParams) =>
     `v3/playables/${charId}/inventory/items/${dbKey}/${childKey ?? ""}`,
-
-  // getRound: ({ combatId, id, childKey }: RoundParams) =>
-  //   id ? `v3/combats/${combatId}/rounds/${id}/${childKey ?? ""}` : `v3/combats/${combatId}/rounds/`,
-
-  // getRoll: ({ combatId, roundId, id, childKey }: RollParams) =>
-  //   id
-  //     ? `v3/combats/${combatId}/rounds/${roundId}/${id}/roll/${childKey ?? ""}`
-  //     : `v3/combats/${combatId}/rounds/${roundId}/`,
 
   getPlayable: ({ id, childKey }: PlayableParams) =>
     id ? `v3/playables/${id}/${childKey ?? ""}` : `v3/playables/`,
