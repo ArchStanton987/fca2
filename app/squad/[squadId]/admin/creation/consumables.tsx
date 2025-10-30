@@ -137,7 +137,7 @@ export default function ConsumablesCreation() {
       modifiers: newModifiers
     }
     try {
-      await useCases.additional.addConsumable(JSON.parse(JSON.stringify(payload)))
+      await useCases.additional.addConsumable(payload)
       Toast.show({ type: "custom", text1: "L'objet a été ajouté" })
     } catch (err: any) {
       Toast.show({ type: "error", text1: "Erreur lors de la création de l'objet" })

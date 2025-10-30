@@ -38,7 +38,7 @@ export type DbConsumableData = {
   maxUsage: number
   knowledges?: Record<KnowledgeId, KnowledgeId>
   skillId?: SkillId
-  modifiers?: Record<HealthModifiable, Modifier>
+  modifiers?: Partial<Record<HealthModifiable, Modifier>>
 }
 
 // export type Consumable = {

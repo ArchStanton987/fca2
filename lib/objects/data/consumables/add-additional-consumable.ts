@@ -6,5 +6,8 @@ import { DbConsumableData } from "./consumables.types"
 export default function addAdditionalConsumable({ db }: UseCasesConfig) {
   const repository = repositoryMap[db].additionalConsumablesRepository
 
-  return (params: DbConsumableData) => repository.setChild({ childKey: params.id }, params)
+  return (params: DbConsumableData) => {
+    const payload = JSON.parse(JSON.stringify(params))
+    return repository.setChild({ childKey: params.id }, payload)
+  }
 }
