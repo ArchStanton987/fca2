@@ -1,4 +1,4 @@
-import { QueryClient, queryOptions, useSuspenseQuery } from "@tanstack/react-query"
+import { QueryClient, queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query"
 import Squad from "lib/character/Squad"
 import { useSubCollection } from "lib/shared/db/useSub"
 
@@ -16,7 +16,7 @@ export function useSubSquads() {
   const options = getSquadsOptions()
   const path = options.queryKey.join("/")
   useSubCollection(path, cb)
-  return useSuspenseQuery(options)
+  return useQuery(options)
 }
 
 export function useSquads<TData = Record<string, Squad>>(

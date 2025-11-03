@@ -4,7 +4,7 @@ import { router } from "expo-router"
 
 import WelcomeHeader from "lib/shared/ui/welcome/WelcomeHeader"
 import PickSquadCard from "lib/squad/ui/PickSquadCard"
-import { useSubSquads } from "lib/squad/use-cases/sub-squad"
+import { useSquads } from "lib/squad/use-cases/sub-squad"
 
 import List from "components/List"
 import Spacer from "components/Spacer"
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
 })
 
 export default function SquadSelection() {
-  const squadsReq = useSubSquads()
+  const { data: squads } = useSquads()
 
   const toSquad = (squadId: string) =>
     router.push({ pathname: routes.charSelection, params: { squadId } })
@@ -40,7 +40,7 @@ export default function SquadSelection() {
     <ScrollView style={styles.container}>
       <WelcomeHeader />
       <List
-        data={Object.keys(squadsReq.data)}
+        data={Object.keys(squads ?? {})}
         keyExtractor={id => id}
         separator={<Spacer y={20} />}
         renderItem={({ item }) => (
