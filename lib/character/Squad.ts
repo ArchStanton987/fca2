@@ -10,7 +10,7 @@ export default class Squad {
   constructor(payload: DbSquad) {
     this.datetime = new Date(payload.datetime)
     this.label = payload.label
-    this.members = Object.fromEntries(Object.keys(payload.members).map(i => [i, i]))
-    this.npcs = Object.fromEntries(Object.keys(payload.npc).map(i => [i, i]))
+    this.members = Object.fromEntries(Object.keys(payload.members ?? {}).map(i => [i, i]))
+    this.npcs = Object.fromEntries(Object.keys(payload.npc ?? {}).map(i => [i, i]))
   }
 }

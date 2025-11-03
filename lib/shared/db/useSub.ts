@@ -97,35 +97,44 @@ export function useSubMultiCollections<I, T = I>(paramsArray: UseSubParams<I, T>
 
   useEffect(() => {
     const paths: string[] = JSON.parse(pathsStr)
-    const childAddedUnsubscribers = paths.map((path, i) =>
-      subEvent<I>("onChildAdded", path, ({ key, value }) => {
-        const queryKey = path.split("/")
-        const { cb } = memoParams[i]
-        queryClient.setQueryData(queryKey, (prev: Record<string, T>) => ({
-          ...prev,
-          [key]: cb ? cb({ ...value, key }) : { ...value, key }
-        }))
-      })
-    )
-    const childChangedUnsubscribers = paths.map((path, i) =>
-      subEvent<I>("onChildChanged", path, ({ key, value }) => {
-        const queryKey = path.split("/")
-        const { cb } = memoParams[i]
-        queryClient.setQueryData(queryKey, (prev: Record<string, T>) => ({
-          ...prev,
-          [key]: cb ? cb({ ...value, key }) : { ...value, key }
-        }))
-      })
-    )
-    const childRemovedUnsubscribers = paths.map(path =>
-      subEvent<I>("onChildChanged", path, ({ key }) => {
-        const queryKey = path.split("/")
-        queryClient.setQueryData(queryKey, (prev: Record<string, T>) => {
-          const { [key]: removed, ...remainingData } = prev
-          return remainingData
-        })
-      })
-    )
+    const childAddedUnsubscribers = paths.map((path, i) => {
+      const queryKey = path.split("/")
+      const queryExists = queryClient.getQueryState(queryKey) !== undefined
+      return !queryExists
+        ? subEvent<I>("onChildAdded", path, ({ key, value }) => {
+            const { cb } = memoParams[i]
+            queryClient.setQueryData(queryKey, (prev: Record<string, T>) => ({
+              ...prev,
+              [key]: cb ? cb({ ...value, key }) : { ...value, key }
+            }))
+          })
+        : fakeSub()
+    })
+    const childChangedUnsubscribers = paths.map((path, i) => {
+      const queryKey = path.split("/")
+      const queryExists = queryClient.getQueryState(queryKey) !== undefined
+      return !queryExists
+        ? subEvent<I>("onChildChanged", path, ({ key, value }) => {
+            const { cb } = memoParams[i]
+            queryClient.setQueryData(queryKey, (prev: Record<string, T>) => ({
+              ...prev,
+              [key]: cb ? cb({ ...value, key }) : { ...value, key }
+            }))
+          })
+        : fakeSub()
+    })
+    const childRemovedUnsubscribers = paths.map(path => {
+      const queryKey = path.split("/")
+      const queryExists = queryClient.getQueryState(queryKey) !== undefined
+      return !queryExists
+        ? subEvent<I>("onChildChanged", path, ({ key }) => {
+            queryClient.setQueryData(queryKey, (prev: Record<string, T>) => {
+              const { [key]: removed, ...remainingData } = prev
+              return remainingData
+            })
+          })
+        : fakeSub()
+    })
 
     return () => {
       childAddedUnsubscribers.forEach(unsub => unsub())
@@ -141,10 +150,10 @@ export function useSub<Db, T = Db>(path: string, cb?: (snapshot: Db) => T) {
   const queryExists = queryClient.getQueryState(path.split("/")) !== undefined
 
   useEffect(() => {
+    const queryKey = path.split("/")
     const unsubscribe = !queryExists
       ? subscribeToPath<Db>(path, data => {
           const newData = cb?.(data) ?? data
-          const queryKey = path.split("/")
           queryClient.setQueryData(queryKey, newData)
         })
       : fakeSub()
@@ -165,13 +174,16 @@ export function useMultiSub<Db, T = Db>(paramsArray: UseSubParams<Db, T>[]) {
 
   useEffect(() => {
     const paths: string[] = JSON.parse(pathsStr)
-    const unsubscribers = paths.map((path, i) =>
-      subscribeToPath<Db>(path, data => {
-        const newData = memoParams[i]?.cb?.(data) ?? data
-        const queryKey = path.split("/")
-        queryClient.setQueryData(queryKey, newData)
-      })
-    )
+    const unsubscribers = paths.map((path, i) => {
+      const queryKey = path.split("/")
+      const queryExists = queryClient.getQueryState(queryKey) !== undefined
+      return !queryExists
+        ? subscribeToPath<Db>(path, data => {
+            const newData = memoParams[i]?.cb?.(data) ?? data
+            queryClient.setQueryData(queryKey, newData)
+          })
+        : fakeSub()
+    })
 
     return () => {
       unsubscribers.forEach(unsub => unsub())

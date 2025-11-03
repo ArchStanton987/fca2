@@ -9,7 +9,7 @@ export default class MiscObjectsMappers {
       value: payload.value,
       place: payload.place,
       weight: payload.weight,
-      symptoms: Object.values(payload.symptoms)
+      symptoms: Object.values(payload.symptoms ?? {})
     }
   }
 }
