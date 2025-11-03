@@ -1,6 +1,7 @@
 import {
   QueryClient,
   queryOptions,
+  useQueries,
   useSuspenseQueries,
   useSuspenseQuery
 } from "@tanstack/react-query"
@@ -27,6 +28,7 @@ export function useSubPlayablesCharInfo(ids: string[]) {
       cb: payload => new CharInfo(payload, ids[i])
     }))
   )
+  return useQueries({ queries })
 }
 
 export function usePlayablesCharInfo(ids: string[]) {

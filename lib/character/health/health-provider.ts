@@ -1,6 +1,7 @@
 import {
   QueryClient,
   queryOptions,
+  useQueries,
   useSuspenseQueries,
   useSuspenseQuery
 } from "@tanstack/react-query"
@@ -36,6 +37,7 @@ export function useSubPlayablesHealth(ids: string[]) {
         })
     }))
   )
+  return useQueries({ queries: ids.map(id => getHealthOptions(id)) })
 }
 
 export function usePlayablesHealth(ids: string[]) {

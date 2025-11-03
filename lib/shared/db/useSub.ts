@@ -39,7 +39,7 @@ const fakeSub = () => () => {}
 
 export function useSubCollection<I, T = I>(path: string, cb?: (dbCollectible: I) => T) {
   const queryClient = useQueryClient()
-  const queryExists = queryClient.getQueryState(path.split("/")) !== undefined
+  const queryExists = queryClient.getQueryState(path.split("/"))?.data !== undefined
 
   useEffect(() => {
     const queryKey = path.split("/")
@@ -91,7 +91,7 @@ export function useSubMultiCollections<I, T = I>(paramsArray: UseSubParams<I, T>
   const pathsStr = useMemo(() => {
     const validPaths = memoParams
       .map(p => p.path)
-      .filter(path => queryClient.getQueryState(path.split("/")) === undefined)
+      .filter(path => queryClient.getQueryState(path.split("/"))?.data === undefined)
     return JSON.stringify(validPaths)
   }, [memoParams, queryClient])
 
@@ -99,7 +99,7 @@ export function useSubMultiCollections<I, T = I>(paramsArray: UseSubParams<I, T>
     const paths: string[] = JSON.parse(pathsStr)
     const childAddedUnsubscribers = paths.map((path, i) => {
       const queryKey = path.split("/")
-      const queryExists = queryClient.getQueryState(queryKey) !== undefined
+      const queryExists = queryClient.getQueryState(queryKey)?.data !== undefined
       return !queryExists
         ? subEvent<I>("onChildAdded", path, ({ key, value }) => {
             const { cb } = memoParams[i]
@@ -112,7 +112,7 @@ export function useSubMultiCollections<I, T = I>(paramsArray: UseSubParams<I, T>
     })
     const childChangedUnsubscribers = paths.map((path, i) => {
       const queryKey = path.split("/")
-      const queryExists = queryClient.getQueryState(queryKey) !== undefined
+      const queryExists = queryClient.getQueryState(queryKey)?.data !== undefined
       return !queryExists
         ? subEvent<I>("onChildChanged", path, ({ key, value }) => {
             const { cb } = memoParams[i]
@@ -125,7 +125,7 @@ export function useSubMultiCollections<I, T = I>(paramsArray: UseSubParams<I, T>
     })
     const childRemovedUnsubscribers = paths.map(path => {
       const queryKey = path.split("/")
-      const queryExists = queryClient.getQueryState(queryKey) !== undefined
+      const queryExists = queryClient.getQueryState(queryKey)?.data !== undefined
       return !queryExists
         ? subEvent<I>("onChildChanged", path, ({ key }) => {
             queryClient.setQueryData(queryKey, (prev: Record<string, T>) => {
@@ -147,7 +147,7 @@ export function useSubMultiCollections<I, T = I>(paramsArray: UseSubParams<I, T>
 
 export function useSub<Db, T = Db>(path: string, cb?: (snapshot: Db) => T) {
   const queryClient = useQueryClient()
-  const queryExists = queryClient.getQueryState(path.split("/")) !== undefined
+  const queryExists = queryClient.getQueryState(path.split("/"))?.data !== undefined
 
   useEffect(() => {
     const queryKey = path.split("/")
@@ -168,7 +168,7 @@ export function useMultiSub<Db, T = Db>(paramsArray: UseSubParams<Db, T>[]) {
   const pathsStr = useMemo(() => {
     const validPaths = memoParams
       .map(p => p.path)
-      .filter(path => queryClient.getQueryState(path.split("/")) === undefined)
+      .filter(path => queryClient.getQueryState(path.split("/"))?.data === undefined)
     return JSON.stringify(validPaths)
   }, [memoParams, queryClient])
 
@@ -176,7 +176,7 @@ export function useMultiSub<Db, T = Db>(paramsArray: UseSubParams<Db, T>[]) {
     const paths: string[] = JSON.parse(pathsStr)
     const unsubscribers = paths.map((path, i) => {
       const queryKey = path.split("/")
-      const queryExists = queryClient.getQueryState(queryKey) !== undefined
+      const queryExists = queryClient.getQueryState(queryKey)?.data !== undefined
       return !queryExists
         ? subscribeToPath<Db>(path, data => {
             const newData = memoParams[i]?.cb?.(data) ?? data

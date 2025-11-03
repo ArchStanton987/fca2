@@ -1,6 +1,7 @@
 import {
   QueryClient,
   queryOptions,
+  useQueries,
   useSuspenseQueries,
   useSuspenseQuery
 } from "@tanstack/react-query"
@@ -16,6 +17,7 @@ export const getExpOptions = (charId: string) =>
 export function useSubPlayablesExp(ids: string[]) {
   const queries = ids.map(id => getExpOptions(id))
   useMultiSub(queries.map(q => ({ path: q.queryKey.join("/") })))
+  return useQueries({ queries })
 }
 
 export function usePlayablesExp(ids: string[]) {

@@ -75,7 +75,9 @@ export default function AdditionalElementsProvider({ children }: { children: Rea
         consumables: { ...consumablesMap, ...result[2].data },
         effects: { ...effectsMap, ...result[3].data },
         miscObjects: { ...miscObjectsMap, ...result[4].data }
-      }
+      },
+      statuses: result.map(r => r.status),
+      fetchstatuses: result.map(r => r.fetchStatus)
     })
   })
 
@@ -83,9 +85,6 @@ export default function AdditionalElementsProvider({ children }: { children: Rea
     const { weapons, clothings, consumables, miscObjects, effects } = queries.data
     return { weapons, clothings, consumables, miscObjects, effects }
   }, [queries.data])
-
-  if (queries.isPending) return <LoadingScreen />
-  if (queries.isError) return <Txt>Erreur lors de la récupération des objets créés</Txt>
 
   return <AdditionalElementsContext value={value}>{children}</AdditionalElementsContext>
 }

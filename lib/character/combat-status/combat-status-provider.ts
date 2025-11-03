@@ -1,6 +1,7 @@
 import {
   QueryClient,
   queryOptions,
+  useQueries,
   useSuspenseQueries,
   useSuspenseQuery
 } from "@tanstack/react-query"
@@ -21,6 +22,7 @@ export function useSubPlayablesCombatStatus(ids: string[]) {
   const options = ids.map(id => combatStatusOptions(id))
   const subs = options.map(o => ({ path: o.queryKey.join("/"), cb }))
   useMultiSub(subs)
+  return useQueries({ queries: ids.map(id => combatStatusOptions(id)) })
 }
 
 export function useCombatStatus<TData = CombatStatus>(

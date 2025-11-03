@@ -3,6 +3,7 @@ import { useCallback } from "react"
 import {
   QueryClient,
   queryOptions,
+  useQueries,
   useSuspenseQueries,
   useSuspenseQuery
 } from "@tanstack/react-query"
@@ -61,6 +62,7 @@ export function useMultiSubItems(ids: string[]) {
     [collectiblesData]
   )
   useSubMultiCollections(options.map(o => ({ path: o.queryKey.join("/"), cb })))
+  return useQueries({ queries: options })
 }
 
 type ItemRecord = Record<string, Item>
@@ -171,6 +173,7 @@ const ammoCb = (data: Partial<AmmoSet>) => ({ ...defaultAmmoSet, ...data })
 export function useMultiSubAmmo(ids: string[]) {
   const options = ids.map(id => getAmmoOptions(id))
   useMultiSub(options.map(o => ({ path: o.queryKey.join("/"), cb: ammoCb })))
+  return useQueries({ queries: options })
 }
 
 export function useAmmo<TData = AmmoSet>(id: string, select?: (data: AmmoSet) => TData) {
@@ -180,6 +183,7 @@ export function useAmmo<TData = AmmoSet>(id: string, select?: (data: AmmoSet) =>
 export function useMultiSubCaps(ids: string[]) {
   const options = ids.map(id => getCapsOptions(id))
   useMultiSub(options.map(o => ({ path: o.queryKey.join("/") })))
+  return useQueries({ queries: options })
 }
 
 export function useCaps(id: string) {

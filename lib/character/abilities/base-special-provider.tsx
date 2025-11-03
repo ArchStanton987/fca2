@@ -1,4 +1,4 @@
-import { queryOptions, useSuspenseQueries } from "@tanstack/react-query"
+import { queryOptions, useQueries, useSuspenseQueries } from "@tanstack/react-query"
 import { useMultiSub } from "lib/shared/db/useSub"
 
 import { Special } from "./special/special.types"
@@ -11,8 +11,9 @@ export const getBaseSpecialOptions = (charId: string) =>
   })
 
 export function useSubPlayablesBaseSpecial(ids: string[]) {
-  const paths = ids.map(id => ({ path: getBaseSpecialOptions(id).queryKey.join("/") }))
-  useMultiSub(paths)
+  const queries = ids.map(id => getBaseSpecialOptions(id))
+  useMultiSub(queries.map(q => ({ path: q.queryKey.join("/") })))
+  return useQueries({ queries })
 }
 
 export function usePlayablesBaseSpecial(ids: string[]) {

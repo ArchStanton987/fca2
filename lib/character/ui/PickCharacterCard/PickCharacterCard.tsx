@@ -6,6 +6,7 @@ import { getExpOptions } from "lib/character/progress/exp-provider"
 
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
+import colors from "styles/colors"
 
 type PickCharacterCardProps = TouchableOpacityProps & {
   charId: string
@@ -17,7 +18,10 @@ const styles = StyleSheet.create({
     padding: 20,
     maxWidth: 160,
     alignItems: "center",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    borderWidth: 2,
+    width: 150,
+    borderColor: colors.secColor
   }
 })
 

@@ -1,6 +1,7 @@
 import { StyleSheet, TouchableOpacity, TouchableOpacityProps } from "react-native"
 
 import Txt from "components/Txt"
+import colors from "styles/colors"
 import { getDDMMYYYY } from "utils/date"
 
 import { useSquad } from "../use-cases/sub-squad"
@@ -16,7 +17,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
     padding: 10,
-    marginHorizontal: 50
+    marginHorizontal: 50,
+    borderWidth: 2,
+    borderColor: colors.secColor
   },
   squadLabel: {
     textAlign: "center"

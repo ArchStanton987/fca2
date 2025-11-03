@@ -1,6 +1,7 @@
 import {
   QueryClient,
   queryOptions,
+  useQueries,
   useSuspenseQueries,
   useSuspenseQuery
 } from "@tanstack/react-query"
@@ -35,6 +36,7 @@ export function useSubPlayablesAbilities(ids: string[]) {
         })
     }))
   )
+  return useQueries({ queries: ids.map(id => getDbAbilitiesOptions(id)) })
 }
 
 export function usePlayablesAbilities(ids: string[]) {

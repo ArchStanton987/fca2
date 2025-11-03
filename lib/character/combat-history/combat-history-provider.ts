@@ -1,6 +1,7 @@
 import {
   QueryClient,
   queryOptions,
+  useQueries,
   useSuspenseQueries,
   useSuspenseQuery
 } from "@tanstack/react-query"
@@ -16,6 +17,7 @@ export const getCharCombatHistoryOptions = (charId: string) =>
 export function useSubPlayablesCombatHistory(ids: string[]) {
   const queries = ids.map(id => getCharCombatHistoryOptions(id))
   useMultiSub(queries.map(q => ({ path: q.queryKey.join("/") })))
+  return useQueries({ queries: ids.map(id => getCharCombatHistoryOptions(id)) })
 }
 
 export function usePlayablesCombatHistory(ids: string[]) {
