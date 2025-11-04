@@ -63,8 +63,8 @@ export default class Abilities {
     itemsSymptoms: Symptom[]
     templateId: TemplateId
   }) {
-    const traits = Object.keys(payload?.traits ?? {})
-    const perks = Object.keys(payload?.perks ?? {})
+    const traits = Object.values(payload?.traits ?? {})
+    const perks = Object.values(payload?.perks ?? {})
     const traitsSymptoms = traits.map(t => traitsMap[t as TraitId].symptoms)
     const perksSymptoms = perks.map(t => perksMap[t as PerkId].symptoms)
     const innateSymptoms = [...traitsSymptoms, ...perksSymptoms].flat()

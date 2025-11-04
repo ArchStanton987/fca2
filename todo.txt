@@ -1,3 +1,6 @@
+UPDATE DB : default value for combat history (& others)
+
+
 fix health update with new hp system
 check F4 system
 

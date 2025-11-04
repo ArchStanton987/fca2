@@ -67,5 +67,8 @@ export default (): ExpoConfig => ({
   },
   updates: {
     url: "https://u.expo.dev/56bb3475-f8d1-4161-a940-9b7e02dc5cf0"
+  },
+  experiments: {
+    typedRoutes: true
   }
 })
