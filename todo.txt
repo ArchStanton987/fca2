@@ -1,3 +1,4 @@
+fix combat provider (prim & sec providers)
 UPDATE DB : default value for combat history (& others)
 
 
