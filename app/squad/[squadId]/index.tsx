@@ -11,7 +11,6 @@ import { useSquadMembers } from "lib/squad/use-cases/sub-squad"
 
 import List from "components/List"
 import Spacer from "components/Spacer"
-import routes from "constants/routes"
 import LoadingScreen from "screens/LoadingScreen"
 
 function Screen() {
@@ -22,7 +21,10 @@ function Screen() {
 
   const toChar = (charId: string) => {
     setChar(charId)
-    router.push({ pathname: routes.main.index, params: { charId } })
+    router.push({
+      pathname: "/squad/[squadId]/character/[charId]/main/recap",
+      params: { charId, squadId }
+    })
   }
 
   const squadMembers = Object.keys(members)

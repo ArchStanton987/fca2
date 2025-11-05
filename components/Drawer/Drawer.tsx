@@ -1,4 +1,4 @@
-import { TouchableHighlight } from "react-native"
+import { TouchableOpacity } from "react-native"
 
 import { router, useLocalSearchParams, useSegments } from "expo-router"
 
@@ -72,19 +72,17 @@ export default function Drawer({ sectionId, navElements }: DrawerProps) {
           const hasBadge =
             (path === "skills" && canAddSkill) || (path === "knowledges" && canAddKnowledge)
           return (
-            <TouchableHighlight
+            <TouchableOpacity
               style={[styles.navButton, isSelected && styles.navButtonActive]}
               onPress={() => toTabs(path)}
               onLongPress={() => onLongPress(hasBadge, path)}
             >
-              <>
-                <Txt style={[styles.navButtonText, isSelected && styles.navButtonActiveText]}>
-                  {item.label}
-                </Txt>
-                <Spacer x={5} />
-                {hasBadge && <PlusIcon style={styles.badge} size={12} />}
-              </>
-            </TouchableHighlight>
+              <Txt style={[styles.navButtonText, isSelected && styles.navButtonActiveText]}>
+                {item.label}
+              </Txt>
+              <Spacer x={5} />
+              {hasBadge && <PlusIcon style={styles.badge} size={12} />}
+            </TouchableOpacity>
           )
         }}
       />

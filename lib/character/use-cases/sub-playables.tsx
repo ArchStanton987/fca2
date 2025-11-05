@@ -7,7 +7,7 @@ import LoadingScreen from "screens/LoadingScreen"
 
 import { useSubPlayablesAbilities } from "../abilities/abilities-provider"
 import { useSubPlayablesBaseSpecial } from "../abilities/base-special-provider"
-// import { useSubPlayablesCombatHistory } from "../combat-history/combat-history-provider"
+import { useSubPlayablesCombatHistory } from "../combat-history/combat-history-provider"
 import { useSubPlayablesCombatStatus } from "../combat-status/combat-status-provider"
 import { useSubPlayablesEffects } from "../effects/effects-provider"
 import { useSubPlayablesHealth } from "../health/health-provider"
@@ -34,7 +34,7 @@ function FirstProviders({
   const expReq = useSubPlayablesExp(ids)
   const effectsReq = useSubPlayablesEffects(ids, datetime)
   const csReq = useSubPlayablesCombatStatus(ids)
-  // const chReq = useSubPlayablesCombatHistory(ids)
+  const chReq = useSubPlayablesCombatHistory(ids)
 
   const data = [
     capsReq,
@@ -44,8 +44,8 @@ function FirstProviders({
     baseSpecialReq,
     expReq,
     effectsReq,
-    csReq
-    // chReq
+    csReq,
+    chReq
   ]
 
   const isLoading = data.some(d => d.some(q => q.isPending))
