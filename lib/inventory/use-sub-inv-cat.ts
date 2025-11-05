@@ -8,6 +8,7 @@ import {
   useSuspenseQuery
 } from "@tanstack/react-query"
 import { useCharInfo } from "lib/character/info/info-provider"
+import { round } from "lib/common/utils/number-utils"
 import { critters } from "lib/npc/const/npc-templates"
 import ammoMap, { defaultAmmoSet } from "lib/objects/data/ammo/ammo"
 import { AmmoSet, AmmoType } from "lib/objects/data/ammo/ammo.types"
@@ -190,7 +191,7 @@ export function useCaps(id: string) {
   return useSuspenseQuery(getCapsOptions(id))
 }
 
-const getItemsCarry = (items: Record<string, Item>) =>
+export const getItemsCarry = (items: Record<string, Item>) =>
   Object.values(items).reduce(
     (acc, curr) => {
       const placeToAdd = curr.isEquipped ? 0 : curr.data.place
@@ -200,7 +201,7 @@ const getItemsCarry = (items: Record<string, Item>) =>
     { place: 0, weight: 0 }
   )
 
-const getAmmoCarry = (ammo: AmmoSet) =>
+export const getAmmoCarry = (ammo: AmmoSet) =>
   Object.entries(ammo).reduce(
     (acc, [ammoType, qty]) => {
       const { place = 0, weight = 0 } = ammoMap[ammoType as AmmoType]
@@ -209,7 +210,7 @@ const getAmmoCarry = (ammo: AmmoSet) =>
     { place: 0, weight: 0 }
   )
 
-const getCapsCarry = (qty: number) => ({ weight: qty * 0.02, place: qty * 0.02 })
+export const getCapsCarry = (qty: number) => ({ weight: qty * 0.02, place: qty * 0.02 })
 
 export function useCarry(charId: string) {
   const itemsCarryOptions = queryOptions({ ...getItemsOptions(charId), select: getItemsCarry })
@@ -222,7 +223,7 @@ export function useCarry(charId: string) {
         (acc, { data }) => {
           if (!data) return acc
           const { place = 0, weight = 0 } = data
-          return { place: acc.place + place, weight: acc.weight + weight }
+          return { place: round(acc.place + place, 1), weight: round(acc.weight + weight, 1) }
         },
         { weight: 0, place: 0 }
       )
