@@ -8,7 +8,6 @@ import { useSquads } from "lib/squad/use-cases/sub-squad"
 
 import List from "components/List"
 import Spacer from "components/Spacer"
-import routes from "constants/routes"
 
 const styles = StyleSheet.create({
   container: {
@@ -28,19 +27,19 @@ const styles = StyleSheet.create({
 })
 
 export default function SquadSelection() {
-  const { data: squads } = useSquads()
+  const { data: squads } = useSquads(state => Object.keys(state))
 
   const toSquad = (squadId: string) =>
-    router.push({ pathname: routes.charSelection, params: { squadId } })
+    router.push({ pathname: "/squad/[squadId]", params: { squadId } })
 
   const toAdmin = (squadId: string) =>
-    router.push({ pathname: routes.admin.index, params: { squadId } })
+    router.push({ pathname: "/squad/[squadId]/admin/datetime", params: { squadId } })
 
   return (
     <ScrollView style={styles.container}>
       <WelcomeHeader />
       <List
-        data={Object.keys(squads ?? {})}
+        data={squads}
         keyExtractor={id => id}
         separator={<Spacer y={20} />}
         renderItem={({ item }) => (
