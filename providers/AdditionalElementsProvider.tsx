@@ -25,14 +25,9 @@ import {
   getCreatedMiscObjectsOptions,
   useSubCreatedMiscObjects
 } from "lib/objects/data/misc-objects/use-cases/get-all-misc-objects"
-import {
-  getCreatedWeaponOptions,
-  useSubCreatedWeapons
-} from "lib/objects/data/weapons/use-cases/get-all-weapons"
 import weaponsMap from "lib/objects/data/weapons/weapons"
 import { WeaponData } from "lib/objects/data/weapons/weapons.types"
 
-import Txt from "components/Txt"
 import LoadingScreen from "screens/LoadingScreen"
 
 export type AdditionalElContextType = {
@@ -52,7 +47,7 @@ const AdditionalElementsContext = createContext<AdditionalElContextType>({
 })
 
 export default function AdditionalElementsProvider({ children }: { children: React.ReactNode }) {
-  useSubCreatedWeapons()
+  // useSubCreatedWeapons()
   useSubCreatedClothings()
   useSubCreatedConsumables()
   useSubCreatedEffects()
@@ -60,7 +55,7 @@ export default function AdditionalElementsProvider({ children }: { children: Rea
 
   const queries = useQueries({
     queries: [
-      getCreatedWeaponOptions(),
+      // getCreatedWeaponOptions(),
       getCreatedClothingsOptions(),
       getCreatedConsumablesOptions(),
       getCreatedEffectsOptions(),
@@ -70,11 +65,11 @@ export default function AdditionalElementsProvider({ children }: { children: Rea
       isPending: result.some(r => r.isPending),
       isError: result.some(r => r.isError),
       data: {
-        weapons: { ...weaponsMap, ...result[0].data },
-        clothings: { ...clothingsMap, ...result[1].data },
-        consumables: { ...consumablesMap, ...result[2].data },
-        effects: { ...effectsMap, ...result[3].data },
-        miscObjects: { ...miscObjectsMap, ...result[4].data }
+        weapons: { ...weaponsMap },
+        clothings: { ...clothingsMap, ...result[0].data },
+        consumables: { ...consumablesMap, ...result[1].data },
+        effects: { ...effectsMap, ...result[2].data },
+        miscObjects: { ...miscObjectsMap, ...result[3].data }
       },
       statuses: result.map(r => r.status),
       fetchstatuses: result.map(r => r.fetchStatus)
@@ -85,6 +80,8 @@ export default function AdditionalElementsProvider({ children }: { children: Rea
     const { weapons, clothings, consumables, miscObjects, effects } = queries.data
     return { weapons, clothings, consumables, miscObjects, effects }
   }, [queries.data])
+
+  if (queries.isPending) return <LoadingScreen />
 
   return <AdditionalElementsContext value={value}>{children}</AdditionalElementsContext>
 }

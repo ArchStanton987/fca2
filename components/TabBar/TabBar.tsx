@@ -3,14 +3,11 @@ import { TouchableHighlight, TouchableOpacity, View } from "react-native"
 import { useLocalSearchParams, useRouter } from "expo-router"
 
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs"
-import { useSquadMembers } from "lib/squad/use-cases/sub-squad"
+import { useCharInfo } from "lib/character/info/info-provider"
 
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import List from "components/List"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { adminRoute, charRoute } from "constants/routes"
-import { SearchParams } from "screens/ScreenParams"
 import layout from "styles/layout"
 
 import styles from "./TabBar.styles"
@@ -21,22 +18,21 @@ export default function TabBar(props: BottomTabBarProps & { tabBarId: TabBarId }
   const { state, descriptors, tabBarId } = props
   const { routes } = state
   const router = useRouter()
-  const localParams = useLocalSearchParams() as SearchParams<DrawerParams>
-  const { charId, squadId } = localParams
-  const members = useSquadMembers(squadId)
-  const isNpc = charId && !(charId in members)
+  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const { data: isNpc } = useCharInfo(charId, info => info.isNpc)
 
   const onPressTab = (routeName: string) => {
-    if (tabBarId === "char") {
-      router.push({ pathname: `${charRoute}/${routeName}`, params: { charId, squadId } })
-      return
-    }
-    router.push({ pathname: `${adminRoute}/${routeName}`, params: { squadId } })
+    const isAdmin = tabBarId === "admin"
+    const pathname = isAdmin
+      ? `/squad/[squadId]/admin/${routeName}`
+      : `/squad/[squadId]/character/[charId]/${routeName}`
+    // @ts-ignore
+    router.push({ pathname, params: { squadId, charId } })
   }
 
   const toHome = () => {
     if (!isNpc) return router.push("/")
-    return router.push({ pathname: adminRoute, params: { squadId } })
+    return router.push({ pathname: "/squad/[squadId]/admin/datetime", params: { squadId } })
   }
 
   return (

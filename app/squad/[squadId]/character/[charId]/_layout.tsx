@@ -63,7 +63,7 @@ export default function CharStack() {
             <Stack.Screen name="(modal)/update-effects-confirmation" options={modalOptions} />
             <Stack.Screen name="(modal)/barter" options={modalOptions} />
             <Stack.Screen name="(modal)/barter-confirmation" options={modalOptions} />
-            <Stack.Screen name="(modal)/update-status" options={modalOptions} />
+            <Stack.Screen name="(modal)/update-exp" options={modalOptions} />
             <Stack.Screen name="(modal)/update-health" options={modalOptions} />
             <Stack.Screen name="(modal)/update-skills" options={modalOptions} />
             <Stack.Screen name="(modal)/update-skills-confirmation" options={modalOptions} />
