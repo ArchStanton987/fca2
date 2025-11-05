@@ -1,5 +1,5 @@
-fix combat provider (prim & sec providers)
-UPDATE DB : default value for combat history (& others)
+DB : problem when empty collection
+no reactivity
 
 
 fix health update with new hp system
