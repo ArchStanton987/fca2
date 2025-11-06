@@ -51,9 +51,9 @@ export default function UpdateHealthModal() {
           <UpdateHealthComponents.CategoryList />
         </ScrollableSection>
         <Spacer x={15} />
-        <ViewSection title="MODIFICATIONS" style={styles.listSection}>
+        <ScrollableSection title="MODIFICATIONS" style={styles.listSection}>
           <UpdateHealthComponents.ElementList />
-        </ViewSection>
+        </ScrollableSection>
         <Spacer x={15} />
         <ViewSection title="MODIFIER" style={styles.addSection}>
           <View style={{ flex: 1, justifyContent: "space-evenly" }}>

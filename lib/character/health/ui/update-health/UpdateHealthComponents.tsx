@@ -34,10 +34,10 @@ type ListItemProps = {
 function ListItem({ element, current, mod, prevision }: ListItemProps) {
   return (
     <Row style={styles.listItemContainer}>
-      <Txt style={[styles.listItem, styles.listItemLabel]}>{element}</Txt>
-      <Txt style={[styles.listItem, styles.listItemLabel]}>{current}</Txt>
-      <Txt style={[styles.listItem, styles.listItemLabel]}>{mod}</Txt>
-      <Txt style={[styles.listItem, styles.listItemLabel]}>{prevision}</Txt>
+      <Txt style={styles.listItemLabel}>{element}</Txt>
+      <Txt style={styles.listItemInfo}>{current}</Txt>
+      <Txt style={styles.listItemInfo}>{mod}</Txt>
+      <Txt style={styles.listItemInfo}>{prevision}</Txt>
     </Row>
   )
 }
@@ -73,9 +73,9 @@ function Limb({ limbId }: { limbId: LimbId }) {
       style={styles.listItemContainer}
     >
       <Txt style={styles.listItemLabel}>{limbsMap[limbId].label}</Txt>
-      <Txt style={styles.listItemLabel}>{currLimbHp}</Txt>
-      <Txt style={styles.listItemLabel}>{limbMod}</Txt>
-      <Txt style={styles.listItemLabel}>{limbsMap[limbId].label}</Txt>
+      <Txt style={styles.listItemInfo}>{currLimbHp}</Txt>
+      <Txt style={styles.listItemInfo}>{limbMod}</Txt>
+      <Txt style={styles.listItemInfo}>{currLimbHp ?? 0 + limbMod}</Txt>
     </Selectable>
   )
 }

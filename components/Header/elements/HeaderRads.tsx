@@ -3,8 +3,10 @@ import { TouchableOpacity } from "react-native"
 import { router, useLocalSearchParams } from "expo-router"
 
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
+import Health from "lib/character/health/Health"
 import { useHealth } from "lib/character/health/health-provider"
 import { radStates } from "lib/character/health/health.const"
+import { useUpdateHealthActions } from "lib/character/health/update-health-store"
 
 import { DrawerParams } from "components/Drawer/Drawer.params"
 import HeaderElement from "components/Header/HeaderElement"
@@ -14,17 +16,20 @@ import routes from "constants/routes"
 import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
 
+const getColor = (health: Health) => {
+  const radState = radStates.find(state => health.rads >= state.threshold)
+  if (!radState) return colors.secColor
+  return radState.color
+}
+
 export default function HeaderRads() {
   const { squadId, charId } = useLocalSearchParams() as SearchParams<DrawerParams>
   const { data: health } = useHealth(charId)
 
-  const getColor = () => {
-    const radState = radStates.find(state => health.rads >= state.threshold)
-    if (!radState) return colors.secColor
-    return radState.color
-  }
+  const healthActions = useUpdateHealthActions()
 
   const onPress = () => {
+    healthActions.selectCategory("rads")
     const pathname = routes.modal.updateHealth
     router.push({ pathname, params: { squadId, charId } })
   }
@@ -32,9 +37,9 @@ export default function HeaderRads() {
   return (
     <TouchableOpacity onPress={onPress}>
       <HeaderElement>
-        <FontAwesome5 name="radiation" size={12} color={getColor()} />
+        <FontAwesome5 name="radiation" size={12} color={getColor(health)} />
         <Spacer x={5} />
-        <Txt style={{ color: getColor(), fontSize: 12 }}>{health.rads}</Txt>
+        <Txt style={{ color: getColor(health), fontSize: 12 }}>{health.rads}</Txt>
       </HeaderElement>
     </TouchableOpacity>
   )

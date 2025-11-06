@@ -23,7 +23,7 @@ function ListElement({ label, count }: { label: string; count: number }) {
   return (
     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
       <Txt>{label}</Txt>
-      <Txt>{count}</Txt>
+      <Txt>{count > 0 ? `+ ${count}` : count}</Txt>
     </View>
   )
 }
@@ -44,7 +44,7 @@ export default function UpdateHealthConfirmationModal() {
 
   const onPressConfirm = async () => {
     const payload = { rads, currHp, limbs }
-    await useCases.character.updateHealth({ charId, payload })
+    await useCases.character.updateHealth({ charId, modPayload: payload })
     actions.reset()
     router.dismiss(2)
   }

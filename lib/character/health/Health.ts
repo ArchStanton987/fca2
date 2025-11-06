@@ -264,27 +264,33 @@ export default class Health {
 
     const isHealing = hpDiff > 0
 
-    const newLimbsHp = {} as Record<LimbId, number>
+    const newLimbsHp = { ...this.limbs }
 
     if (isHealing) {
       const healedHp = Math.min(this.missingHp, hpDiff)
       for (let i = 0; i < healedHp; i += 1) {
-        const healableLimbs = Object.entries(this.limbs).filter(
-          ([id, value]) => value < limbsMap[id as LimbId].getMaxValue(charLevel)
+        const healableLimbs = Object.entries(newLimbsHp).filter(
+          ([id, hp]) => hp + 1 <= limbsMap[id as LimbId].getMaxValue(charLevel)
         )
-        const randomIndex = getRandomArbitrary(0, healableLimbs.length)
-        const limbIdToHeal = healableLimbs[randomIndex][0]
-        newLimbsHp[limbIdToHeal as LimbId] += 1
+        if (healableLimbs.length > 0) {
+          const randomIndex = getRandomArbitrary(0, healableLimbs.length)
+          const limbIdToHeal = healableLimbs[randomIndex][0]
+          const previousValue = newLimbsHp[limbIdToHeal as LimbId] ?? 0
+          newLimbsHp[limbIdToHeal as LimbId] = previousValue + 1
+        }
       }
       return newLimbsHp
     }
 
     const damage = Math.abs(hpDiff)
     for (let i = 0; i < damage; i += 1) {
-      const damageableLimbs = Object.entries(this.limbs).filter(([, value]) => value > 0)
-      const randomIndex = getRandomArbitrary(0, damageableLimbs.length)
-      const limbIdToDamage = damageableLimbs[randomIndex][0]
-      newLimbsHp[limbIdToDamage as LimbId] -= 1
+      const damageableLimbs = Object.entries(newLimbsHp).filter(([, value]) => value - 1 >= 0)
+      if (damageableLimbs.length > 0) {
+        const randomIndex = getRandomArbitrary(0, damageableLimbs.length)
+        const limbIdToDamage = damageableLimbs[randomIndex][0]
+        const previousValue = newLimbsHp[limbIdToDamage as LimbId] ?? 0
+        newLimbsHp[limbIdToDamage as LimbId] = previousValue + 1
+      }
     }
     return newLimbsHp
   }
