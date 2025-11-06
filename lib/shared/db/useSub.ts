@@ -35,10 +35,9 @@ export function subEvent<DbItem>(
   return () => unsubscribe() // for React cleanup
 }
 
-const fakeSub = () => () => {}
-
 export function useSubCollection<I, T = I>(path: string, cb?: (dbCollectible: I) => T) {
   const queryClient = useQueryClient()
+  const dbRef = ref(database, path)
 
   useEffect(() => {
     const queryKey = path.split("/")
@@ -64,12 +63,19 @@ export function useSubCollection<I, T = I>(path: string, cb?: (dbCollectible: I)
       })
     })
 
+    const unsubOnValue = onValue(dbRef, snapshot => {
+      if (!snapshot.exists()) {
+        queryClient.setQueryData(queryKey, {})
+      }
+    })
+
     return () => {
       unsubOnChildAdded()
       unsubOnChildChanged()
       unsubOnChildRemoved()
+      unsubOnValue()
     }
-  }, [queryClient, path, cb])
+  }, [queryClient, path, cb, dbRef])
 }
 
 type UseSubParams<Db, T = Db> = {
@@ -118,11 +124,21 @@ export function useSubMultiCollections<I, T = I>(paramsArray: UseSubParams<I, T>
         })
       })
     })
+    const onChangeUnsubscribers = paths.map(path => {
+      const queryKey = path.split("/")
+      const dbRef = ref(database, path)
+      return onValue(dbRef, snapshot => {
+        if (!snapshot.exists()) {
+          queryClient.setQueryData(queryKey, {})
+        }
+      })
+    })
 
     return () => {
       childAddedUnsubscribers.forEach(unsub => unsub())
       childChangedUnsubscribers.forEach(unsub => unsub())
       childRemovedUnsubscribers.forEach(unsub => unsub())
+      onChangeUnsubscribers.forEach(unsub => unsub())
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryClient, pathsStr])
@@ -130,18 +146,15 @@ export function useSubMultiCollections<I, T = I>(paramsArray: UseSubParams<I, T>
 
 export function useSub<Db, T = Db>(path: string, cb?: (snapshot: Db) => T) {
   const queryClient = useQueryClient()
-  const queryExists = queryClient.getQueryState(path.split("/"))?.data !== undefined
 
   useEffect(() => {
     const queryKey = path.split("/")
-    const unsubscribe = !queryExists
-      ? subscribeToPath<Db>(path, data => {
-          const newData = cb?.(data) ?? data
-          queryClient.setQueryData(queryKey, newData)
-        })
-      : fakeSub()
+    const unsubscribe = subscribeToPath<Db>(path, data => {
+      const newData = cb?.(data) ?? data
+      queryClient.setQueryData(queryKey, newData)
+    })
     return () => unsubscribe()
-  }, [queryClient, path, cb, queryExists])
+  }, [queryClient, path, cb])
 }
 
 export function useMultiSub<Db, T = Db>(paramsArray: UseSubParams<Db, T>[]) {
@@ -159,13 +172,10 @@ export function useMultiSub<Db, T = Db>(paramsArray: UseSubParams<Db, T>[]) {
     const paths: string[] = JSON.parse(pathsStr)
     const unsubscribers = paths.map((path, i) => {
       const queryKey = path.split("/")
-      const queryExists = queryClient.getQueryState(queryKey)?.data !== undefined
-      return !queryExists
-        ? subscribeToPath<Db>(path, data => {
-            const newData = memoParams[i]?.cb?.(data) ?? data
-            queryClient.setQueryData(queryKey, newData)
-          })
-        : fakeSub()
+      return subscribeToPath<Db>(path, data => {
+        const newData = memoParams[i]?.cb?.(data) ?? data
+        queryClient.setQueryData(queryKey, newData)
+      })
     })
 
     return () => {
