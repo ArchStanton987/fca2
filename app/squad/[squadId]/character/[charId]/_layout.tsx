@@ -15,7 +15,7 @@ import colors from "styles/colors"
 import { getDDMMYYYY, getHHMM } from "utils/date"
 
 const modalOptions: NativeStackNavigationOptions = {
-  presentation: "modal",
+  presentation: Platform.OS !== "web" ? "modal" : "card",
   animation: "slide_from_bottom",
   contentStyle: {
     backgroundColor: colors.primColor,
