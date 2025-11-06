@@ -55,9 +55,9 @@ function Bar({ charId, limbId }: { charId: string; limbId: LimbId }) {
 
 export default function HealthFigure({ charId }: { charId: string }) {
   const { squadId } = useLocalSearchParams<{ squadId: string }>()
-  const limbs = useHealth(charId, data => data.limbs)
+  const { data: limbs } = useHealth(charId, data => data.limbs)
   const { head, leftTorso, rightTorso, leftArm, rightArm, leftLeg, rightLeg, groin, body, tail } =
-    limbs.data
+    limbs
 
   const onPressElement = (element: LimbId) => {
     const pathname = routes.modal.updateHealth

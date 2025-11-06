@@ -53,7 +53,7 @@ export const limbsMap: Record<LimbId, LimbData> = {
     label: "PV tête",
     short: "PVtê",
     minHpPool: 15,
-    getMaxValue: (lvl: number) => lvl + limbsMap.head.minHpPool,
+    getMaxValue: (lvl: number) => lvl - 1 + limbsMap.head.minHpPool,
     isVital: true,
     aim: { aimMalus: 30, critBonus: 30 }
   },
@@ -63,7 +63,7 @@ export const limbsMap: Record<LimbId, LimbData> = {
     label: "PV torse gauche",
     short: "PVto",
     minHpPool: 25,
-    getMaxValue: (lvl: number) => lvl + limbsMap.leftTorso.minHpPool,
+    getMaxValue: (lvl: number) => lvl - 1 + limbsMap.leftTorso.minHpPool,
     isVital: true,
     aim: { aimMalus: 0, critBonus: 0 }
   },
@@ -73,7 +73,7 @@ export const limbsMap: Record<LimbId, LimbData> = {
     label: "PV torse droit",
     short: "PVto",
     minHpPool: 30,
-    getMaxValue: (lvl: number) => lvl + limbsMap.rightTorso.minHpPool,
+    getMaxValue: (lvl: number) => lvl - 1 + limbsMap.rightTorso.minHpPool,
     isVital: true,
     aim: { aimMalus: 0, critBonus: 0 }
   },
@@ -83,7 +83,7 @@ export const limbsMap: Record<LimbId, LimbData> = {
     label: "PV bras gauche",
     short: "PVBrG",
     minHpPool: 20,
-    getMaxValue: (lvl: number) => lvl + limbsMap.leftArm.minHpPool,
+    getMaxValue: (lvl: number) => lvl - 1 + limbsMap.leftArm.minHpPool,
     isVital: false,
     aim: { aimMalus: 10, critBonus: 10 }
   },
@@ -93,7 +93,7 @@ export const limbsMap: Record<LimbId, LimbData> = {
     label: "PV bras droit",
     short: "PVBrD",
     minHpPool: 20,
-    getMaxValue: (lvl: number) => lvl + limbsMap.rightArm.minHpPool,
+    getMaxValue: (lvl: number) => lvl - 1 + limbsMap.rightArm.minHpPool,
     isVital: false,
     aim: { aimMalus: 10, critBonus: 10 }
   },
@@ -103,7 +103,7 @@ export const limbsMap: Record<LimbId, LimbData> = {
     label: "PV jambe gauche",
     short: "PVJaG",
     minHpPool: 20,
-    getMaxValue: (lvl: number) => lvl + limbsMap.leftLeg.minHpPool,
+    getMaxValue: (lvl: number) => lvl - 1 + limbsMap.leftLeg.minHpPool,
     isVital: false,
     aim: { aimMalus: 10, critBonus: 10 }
   },
@@ -113,7 +113,7 @@ export const limbsMap: Record<LimbId, LimbData> = {
     label: "PV jambe droite",
     short: "PVJaD",
     minHpPool: 20,
-    getMaxValue: (lvl: number) => lvl + limbsMap.rightLeg.minHpPool,
+    getMaxValue: (lvl: number) => lvl - 1 + limbsMap.rightLeg.minHpPool,
     isVital: false,
     aim: { aimMalus: 10, critBonus: 10 }
   },
@@ -123,7 +123,7 @@ export const limbsMap: Record<LimbId, LimbData> = {
     label: "PV entrejambe",
     short: "PVEnJ",
     minHpPool: 15,
-    getMaxValue: (lvl: number) => lvl + limbsMap.groin.minHpPool,
+    getMaxValue: (lvl: number) => lvl - 1 + limbsMap.groin.minHpPool,
     isVital: false,
     aim: { aimMalus: 30, critBonus: 30 }
   },
@@ -133,7 +133,7 @@ export const limbsMap: Record<LimbId, LimbData> = {
     label: "Corps",
     short: "Corps",
     minHpPool: 30,
-    getMaxValue: (lvl: number) => lvl + limbsMap.body.minHpPool,
+    getMaxValue: (lvl: number) => lvl - 1 + limbsMap.body.minHpPool,
     isVital: true,
     aim: { aimMalus: 10, critBonus: 10 }
   },
@@ -143,7 +143,7 @@ export const limbsMap: Record<LimbId, LimbData> = {
     label: "Queue",
     short: "Queue",
     minHpPool: 20,
-    getMaxValue: (lvl: number) => lvl + limbsMap.tail.minHpPool,
+    getMaxValue: (lvl: number) => lvl - 1 + limbsMap.tail.minHpPool,
     isVital: false,
     aim: { aimMalus: 10, critBonus: 10 }
   }
@@ -289,7 +289,7 @@ export default class Health {
         const randomIndex = getRandomArbitrary(0, damageableLimbs.length)
         const limbIdToDamage = damageableLimbs[randomIndex][0]
         const previousValue = newLimbsHp[limbIdToDamage as LimbId] ?? 0
-        newLimbsHp[limbIdToDamage as LimbId] = previousValue + 1
+        newLimbsHp[limbIdToDamage as LimbId] = previousValue - 1
       }
     }
     return newLimbsHp

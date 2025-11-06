@@ -35,7 +35,7 @@ export default function updateHealth(config: UseCasesConfig) {
       const exp = getExp(store, charId)
       const { level } = getLevelAndThresholds(exp)
       const newLimbsHp = health.getNewLimbsHpFromHpDiff(hpMod, level)
-      const newHpValue = currHp + hpMod
+      const newHpValue = Math.min(health.maxHp, currHp + hpMod)
       promises.push(
         updateLimbsHp(config)({ charId, newLimbsHp }),
         updateCurrHp(config)({ charId, newHpValue })
@@ -44,7 +44,7 @@ export default function updateHealth(config: UseCasesConfig) {
 
     if (Object.keys(limbsMod).length > 0) {
       const withLimbsMod = Object.values(limbsMod).reduce((acc, curr) => acc + curr, 0)
-      const newHpValue = currHp + withLimbsMod
+      const newHpValue = Math.min(health.maxHp, currHp + withLimbsMod)
       const newLimbsHp = Object.fromEntries(
         Object.entries(limbsMod).map(([id, limbHpMod]) => {
           const currValue = limbs[id as LimbId] ?? 0
