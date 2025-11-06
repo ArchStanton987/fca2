@@ -1,10 +1,10 @@
 import { Suspense, useState } from "react"
 import { Platform } from "react-native"
 
-import { Stack, useLocalSearchParams } from "expo-router"
+import { Stack, router, useLocalSearchParams } from "expo-router"
 
 import { NativeStackNavigationOptions } from "@react-navigation/native-stack"
-import { useCurrCharStore, useSetCurrCharId } from "lib/character/character-store"
+import { useCurrCharStore } from "lib/character/character-store"
 import SubPlayables from "lib/character/use-cases/sub-playables"
 import { useDatetime } from "lib/squad/use-cases/sub-squad"
 import Toast from "react-native-toast-message"
@@ -27,13 +27,12 @@ export default function CharStack() {
   const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
 
   const currCharId = useCurrCharStore(state => state.charId)
-  const setChar = useSetCurrCharId()
 
   const { data: datetime } = useDatetime(squadId)
   const [currDatetime, setCurrDatetime] = useState(() => datetime.toJSON())
 
-  if (charId && currCharId === null) {
-    setChar(charId)
+  if (currCharId !== null && currCharId !== charId) {
+    router.setParams({ charId: currCharId })
   }
 
   if (datetime.toJSON() !== currDatetime) {
@@ -47,10 +46,9 @@ export default function CharStack() {
     })
   }
 
-  if (!currCharId) return <LoadingScreen />
   return (
     <Suspense fallback={<LoadingScreen />}>
-      <SubPlayables playablesIds={[currCharId]} datetime={datetime}>
+      <SubPlayables playablesIds={[charId]} datetime={datetime}>
         <ReactionProvider>
           <Stack
             screenOptions={{

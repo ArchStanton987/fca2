@@ -2,7 +2,6 @@ import { View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import { useSetCurrCharId } from "lib/character/character-store"
 import { useSubPlayablesCharInfo } from "lib/character/info/info-provider"
 import { useSubPlayablesExp } from "lib/character/progress/exp-provider"
 import PickCharacterCard from "lib/character/ui/PickCharacterCard/PickCharacterCard"
@@ -17,10 +16,7 @@ function Screen() {
   const { squadId } = useLocalSearchParams<{ squadId: string }>()
   const { data: members } = useSquadMembers(squadId)
 
-  const setChar = useSetCurrCharId()
-
   const toChar = (charId: string) => {
-    setChar(charId)
     router.push({
       pathname: "/squad/[squadId]/character/[charId]/main/recap",
       params: { charId, squadId }
