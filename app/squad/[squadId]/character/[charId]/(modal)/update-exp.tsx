@@ -4,7 +4,6 @@ import { StyleSheet, TouchableOpacity, View } from "react-native"
 import { router, useLocalSearchParams } from "expo-router"
 
 import { useExp } from "lib/character/progress/exp-provider"
-import { useProgress } from "lib/character/progress/progress-provider"
 
 import AmountSelector from "components/AmountSelector"
 import List from "components/List"
@@ -50,7 +49,7 @@ const styles = StyleSheet.create({
   listItem: {}
 })
 
-export default function UpdateStatusModal() {
+export default function UpdateExpModal() {
   const { charId } = useLocalSearchParams<{ charId: string }>()
   const useCases = useGetUseCases()
 
@@ -63,9 +62,11 @@ export default function UpdateStatusModal() {
 
   const onPressIcon = (type: "plus" | "minus") => {
     const amount = type === "plus" ? selectedAmount : -selectedAmount
-    let newMod = exp + amount
-    if (exp + amount < 0) newMod = -exp
-    setExpMod(newMod)
+    setExpMod(prev => {
+      let newMod = amount + prev
+      if (exp + newMod < 0) newMod = -exp
+      return newMod
+    })
   }
 
   const onPressConfirm = async () => {
@@ -93,7 +94,7 @@ export default function UpdateStatusModal() {
               <Txt>{exp}</Txt>
             </View>
             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-              <Txt>{expMod > 0 ? "à ajouter" : "à retirer"}</Txt>
+              <Txt>{expMod >= 0 ? "à ajouter" : "à retirer"}</Txt>
               <Txt>{expMod}</Txt>
             </View>
             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
