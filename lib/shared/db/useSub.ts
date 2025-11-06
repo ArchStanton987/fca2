@@ -162,11 +162,9 @@ export function useMultiSub<Db, T = Db>(paramsArray: UseSubParams<Db, T>[]) {
 
   const memoParams = useMemo(() => paramsArray, [paramsArray])
   const pathsStr = useMemo(() => {
-    const validPaths = memoParams
-      .map(p => p.path)
-      .filter(path => queryClient.getQueryState(path.split("/"))?.data === undefined)
+    const validPaths = memoParams.map(p => p.path)
     return JSON.stringify(validPaths)
-  }, [memoParams, queryClient])
+  }, [memoParams])
 
   useEffect(() => {
     const paths: string[] = JSON.parse(pathsStr)
