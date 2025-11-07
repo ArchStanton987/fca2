@@ -60,16 +60,13 @@ export function ListHeader() {
 }
 
 type KnowledgeRowProps = {
-  knowledge: {
-    id: KnowledgeId
-    value: KnowledgeLevelValue | 0
-  }
+  id: KnowledgeId
+  value: KnowledgeLevelValue | 0
   isEditable: boolean
   onPress?: (id: KnowledgeId, level: KnowledgeLevel) => void
 }
 
-export default function KnowledgeRow({ knowledge, isEditable, onPress }: KnowledgeRowProps) {
-  const { id, value } = knowledge
+export default function KnowledgeRow({ id, value, isEditable, onPress }: KnowledgeRowProps) {
   return (
     <View style={styles.container}>
       <View style={styles.labelContainer}>

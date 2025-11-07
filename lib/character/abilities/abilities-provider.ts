@@ -13,6 +13,7 @@ import { usePlayablesHealthEffects } from "../health/health-provider"
 import { usePlayablesCharInfo } from "../info/info-provider"
 import Abilities from "./Abilities"
 import { DbAbilities } from "./abilities.types"
+import { KnowledgeId, KnowledgeLevelValue } from "./knowledges/knowledge-types"
 
 export const getDbAbilitiesOptions = (charId: string) =>
   queryOptions({
@@ -46,6 +47,11 @@ export function usePlayablesAbilities(ids: string[]) {
     combine: queries => Object.fromEntries(ids.map((id, i) => [id, queries[i].data]))
   })
 }
+
+export const sortKnowledges = (knowledges: Partial<Record<KnowledgeId, KnowledgeLevelValue>>) =>
+  Object.entries(knowledges)
+    .map(([id, value]) => ({ id, value }))
+    .sort((a, b) => a.value + b.value)
 
 export function useAbilities<TData = Abilities>(id: string, select?: (data: Abilities) => TData) {
   return useSuspenseQuery({ ...getDbAbilitiesOptions(id), select })
