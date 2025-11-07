@@ -13,6 +13,8 @@ import {
   useUpdateHealthRads,
   useUpdateHealthSelectedLimb
 } from "lib/character/health/update-health-store"
+import { useExp } from "lib/character/progress/exp-provider"
+import { getLevelAndThresholds } from "lib/character/status/status-calc"
 
 import AmountSelector from "components/AmountSelector"
 import List from "components/List"
@@ -102,6 +104,9 @@ function ElementList() {
 function HealthUpdateButtons() {
   const { charId } = useLocalSearchParams<{ charId: string }>()
 
+  const { data: exp } = useExp(charId)
+  const { level } = getLevelAndThresholds(exp)
+
   const actions = useUpdateHealthActions()
   const { data: health } = useHealth(charId)
   const category = useUpdateHealthCategory()
@@ -109,11 +114,15 @@ function HealthUpdateButtons() {
 
   const onPressIcon = (sign: "plus" | "minus") => {
     let init = 0
+    let catMaxHp = health.maxHp
     if (category === "rads") init = health.rads
     else if (category === "currHp") init = health.currHp
     else if (!selectedLimb) throw new Error("No limb selected")
-    else init = health.limbs[selectedLimb] ?? 0
-    actions.onPressMod(sign, init, health.maxHp)
+    else {
+      catMaxHp = limbsMap[selectedLimb].getMaxValue(level)
+      init = health.limbs[selectedLimb] ?? 0
+    }
+    actions.onPressMod(sign, init, catMaxHp)
   }
   return (
     <>

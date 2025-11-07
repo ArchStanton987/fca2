@@ -55,7 +55,8 @@ export const useUpdateHealthStore = create<UpdateHealthStore>()((set, _, store) 
           }
           default: {
             if (!selectedLimb) throw new Error("A limb must be selected first")
-            let newMod = state.limbs[selectedLimb] ?? 0 + quantity
+            const currMod = state.limbs[selectedLimb] ?? 0
+            let newMod = currMod + quantity
             // prevent new limb HP > max
             if (init + newMod > maxHp) newMod = maxHp - init
             // prevent new limb HP < 0
