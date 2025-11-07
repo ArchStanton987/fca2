@@ -1,6 +1,12 @@
 import { useCallback } from "react"
 
-import { QueryClient, queryOptions, useQueries, useSuspenseQuery } from "@tanstack/react-query"
+import {
+  QueryClient,
+  queryOptions,
+  useQueries,
+  useSuspenseQueries,
+  useSuspenseQuery
+} from "@tanstack/react-query"
 import { qkToPath, useSubMultiCollections } from "lib/shared/db/useSub"
 
 import { useCollectiblesData } from "providers/AdditionalElementsProvider"
@@ -25,6 +31,19 @@ export function useSubPlayablesEffects(ids: string[], datetime: Date) {
   )
   useSubMultiCollections(ids.map(id => ({ path: qkToPath(getEffectsOptions(id).queryKey), cb })))
   return useQueries({ queries: ids.map(id => getEffectsOptions(id)) })
+}
+
+export function usePlayablesEffectsSymptoms(ids: string[]) {
+  return useSuspenseQueries({
+    queries: ids.map(id => getEffectsOptions(id)),
+    combine: queries =>
+      Object.fromEntries(
+        ids.map((id, i) => [
+          id,
+          Object.values(queries[i].data).map(effect => effect.data.symptoms ?? [])
+        ])
+      )
+  })
 }
 
 export function useCharEffects<TData = Effects>(charId: string, select?: (data: Effects) => TData) {

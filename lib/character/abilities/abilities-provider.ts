@@ -8,6 +8,7 @@ import {
 import { usePlayablesItemSymptoms } from "lib/inventory/use-cases/get-item-symptoms"
 import { useMultiSub } from "lib/shared/db/useSub"
 
+import { usePlayablesEffectsSymptoms } from "../effects/effects-provider"
 import { usePlayablesHealthEffects } from "../health/health-provider"
 import { usePlayablesCharInfo } from "../info/info-provider"
 import Abilities from "./Abilities"
@@ -24,14 +25,14 @@ export function useSubPlayablesAbilities(ids: string[]) {
   const info = usePlayablesCharInfo(ids)
   const healthEffects = usePlayablesHealthEffects(ids)
   const itemsSymptoms = usePlayablesItemSymptoms(ids)
+  const effectsSymptoms = usePlayablesEffectsSymptoms(ids)
   useMultiSub(
     ids.map(id => ({
       path: getDbAbilitiesOptions(id).queryKey.join("/"),
       cb: (payload: DbAbilities) =>
         new Abilities({
           payload,
-          healthSymptoms: healthEffects[id],
-          itemsSymptoms: itemsSymptoms[id],
+          symptoms: [...healthEffects[id], ...itemsSymptoms[id], ...effectsSymptoms[id]].flat(),
           templateId: info[id].templateId
         })
     }))
