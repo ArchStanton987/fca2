@@ -5,7 +5,7 @@ import {
   useSuspenseQueries,
   useSuspenseQuery
 } from "@tanstack/react-query"
-import { useSubMultiCollections } from "lib/shared/db/useSub"
+import { qkToPath, useSubMultiCollections } from "lib/shared/db/useSub"
 
 export const getCharCombatHistoryOptions = (charId: string) =>
   queryOptions({
@@ -16,7 +16,7 @@ export const getCharCombatHistoryOptions = (charId: string) =>
 
 export function useSubPlayablesCombatHistory(ids: string[]) {
   const queries = ids.map(id => getCharCombatHistoryOptions(id))
-  useSubMultiCollections(queries.map(q => ({ path: q.queryKey.join("/") })))
+  useSubMultiCollections(queries.map(q => ({ path: qkToPath(q.queryKey) })))
   return useQueries({ queries: ids.map(id => getCharCombatHistoryOptions(id)) })
 }
 

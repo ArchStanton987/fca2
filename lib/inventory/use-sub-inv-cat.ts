@@ -18,7 +18,7 @@ import MiscObject from "lib/objects/data/misc-objects/MiscObject"
 import { DbInventory, DbItem, ItemCategory } from "lib/objects/data/objects.types"
 import Weapon from "lib/objects/data/weapons/Weapon"
 import { attackToWeapon } from "lib/objects/data/weapons/weapons.mappers"
-import { useMultiSub, useSubMultiCollections } from "lib/shared/db/useSub"
+import { qkToPath, useMultiSub, useSubMultiCollections } from "lib/shared/db/useSub"
 
 import { AdditionalElContextType, useCollectiblesData } from "providers/AdditionalElementsProvider"
 import { filterUnique } from "utils/array-utils"
@@ -62,7 +62,7 @@ export function useMultiSubItems(ids: string[]) {
     (db: DbItem & { key: string }) => itemFactory(db, collectiblesData),
     [collectiblesData]
   )
-  useSubMultiCollections(options.map(o => ({ path: o.queryKey.join("/"), cb })))
+  useSubMultiCollections(options.map(o => ({ path: qkToPath(o.queryKey), cb })))
   return useQueries({ queries: options })
 }
 

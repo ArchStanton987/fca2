@@ -5,6 +5,9 @@ import { useQueryClient } from "@tanstack/react-query"
 import database from "config/firebase-env"
 import { onChildAdded, onChildChanged, onChildRemoved, onValue, ref } from "firebase/database"
 
+export const qkToPath = (arr: string[]) => "/".concat(arr.join("/"))
+export const pathToQk = (p: string) => p.split("/").filter((_, i) => i !== 0)
+
 export function subscribeToPath<Db>(path: string, onData: (data: Db) => void): () => void {
   const dbRef = ref(database, path)
 
@@ -95,28 +98,29 @@ export function useSubMultiCollections<I, T = I>(paramsArray: UseSubParams<I, T>
   useEffect(() => {
     const paths: string[] = JSON.parse(pathsStr)
     const childAddedUnsubscribers = paths.map((path, i) => {
-      const queryKey = path.split("/")
+      const queryKey = pathToQk(path)
       return subEvent<I>("onChildAdded", path, ({ key, value }) => {
         const { cb } = memoParams[i]
-        const v = cb ? cb({ ...value, key }) : { ...value, key }
+        const newValue = cb ? cb({ ...value, key }) : { ...value, key }
         queryClient.setQueryData(queryKey, (prev: Record<string, T>) => ({
           ...prev,
-          [key]: v
+          [key]: newValue
         }))
       })
     })
     const childChangedUnsubscribers = paths.map((path, i) => {
-      const queryKey = path.split("/")
+      const queryKey = pathToQk(path)
       return subEvent<I>("onChildChanged", path, ({ key, value }) => {
         const { cb } = memoParams[i]
+        const newValue = cb ? cb({ ...value, key }) : { ...value, key }
         queryClient.setQueryData(queryKey, (prev: Record<string, T>) => ({
           ...prev,
-          [key]: cb ? cb({ ...value, key }) : { ...value, key }
+          [key]: newValue
         }))
       })
     })
     const childRemovedUnsubscribers = paths.map(path => {
-      const queryKey = path.split("/")
+      const queryKey = pathToQk(path)
       return subEvent<I>("onChildRemoved", path, ({ key }) => {
         queryClient.setQueryData(queryKey, (prev: Record<string, T>) => {
           const { [key]: removed, ...remainingData } = prev
@@ -125,7 +129,7 @@ export function useSubMultiCollections<I, T = I>(paramsArray: UseSubParams<I, T>
       })
     })
     const onChangeUnsubscribers = paths.map(path => {
-      const queryKey = path.split("/")
+      const queryKey = pathToQk(path)
       const dbRef = ref(database, path)
       return onValue(dbRef, snapshot => {
         if (!snapshot.exists()) {

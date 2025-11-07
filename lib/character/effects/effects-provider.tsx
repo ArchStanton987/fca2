@@ -1,7 +1,7 @@
 import { useCallback } from "react"
 
 import { QueryClient, queryOptions, useQueries, useSuspenseQuery } from "@tanstack/react-query"
-import { useSubMultiCollections } from "lib/shared/db/useSub"
+import { qkToPath, useSubMultiCollections } from "lib/shared/db/useSub"
 
 import { useCollectiblesData } from "providers/AdditionalElementsProvider"
 
@@ -23,7 +23,7 @@ export function useSubPlayablesEffects(ids: string[], datetime: Date) {
     (payload: DbEffect) => new Effect(payload, effects, datetime),
     [effects, datetime]
   )
-  useSubMultiCollections(ids.map(id => ({ path: getEffectsOptions(id).queryKey.join("/"), cb })))
+  useSubMultiCollections(ids.map(id => ({ path: qkToPath(getEffectsOptions(id).queryKey), cb })))
   return useQueries({ queries: ids.map(id => getEffectsOptions(id)) })
 }
 
