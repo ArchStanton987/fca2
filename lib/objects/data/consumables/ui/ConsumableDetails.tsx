@@ -1,10 +1,22 @@
-import { TouchableOpacity } from "react-native"
+import { StyleSheet, TouchableOpacity } from "react-native"
 
 import { useItem } from "lib/inventory/use-sub-inv-cat"
 
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useGetUseCases } from "providers/UseCasesProvider"
+import colors from "styles/colors"
+
+const styles = StyleSheet.create({
+  actionButton: {
+    padding: 8,
+    borderWidth: 2,
+    borderColor: colors.secColor,
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center"
+  }
+})
 
 export default function ConsumableDetails({
   dbKey,
@@ -33,7 +45,10 @@ export default function ConsumableDetails({
         </Txt>
       ) : null}
       <Spacer y={20} />
-      <TouchableOpacity onPress={() => useCases.inventory.consume({ charId, consumable })}>
+      <TouchableOpacity
+        style={styles.actionButton}
+        onPress={() => useCases.inventory.consume({ charId, consumable })}
+      >
         <Txt>CONSOMMER</Txt>
       </TouchableOpacity>
       <Spacer y={20} />

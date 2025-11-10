@@ -58,7 +58,7 @@ const getTitle = (cb: (str: WeaponSortableKey) => void): ComposedTitleProps => [
 
 export default function WeaponsScreen() {
   const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
-  const [selectedWeapon, setSelectedWeapon] = useState<Weapon | null>(null)
+  const [selectedWeapon, setSelectedWeapon] = useState<string | null>(null)
   const [sort, setSort] = useState<WeaponSort>({ type: "dbKey", isAsc: false })
 
   const { data: allWeapons } = useItems(charId, items =>
@@ -73,7 +73,7 @@ export default function WeaponsScreen() {
   const barterActions = useBarterActions()
 
   const toggleSelect = (weapon: Weapon) =>
-    setSelectedWeapon(prev => (prev?.dbKey === weapon.dbKey ? null : weapon))
+    setSelectedWeapon(prev => (prev === weapon.dbKey ? null : weapon.dbKey))
 
   const onPressAdd = () => {
     barterActions.selectCategory("weapons")
@@ -115,7 +115,7 @@ export default function WeaponsScreen() {
             <WeaponRow
               charId={charId}
               weapon={item}
-              isSelected={item.dbKey === selectedWeapon?.dbKey}
+              isSelected={item.dbKey === selectedWeapon}
               onPress={() => toggleSelect(item)}
             />
           )}
@@ -126,7 +126,7 @@ export default function WeaponsScreen() {
 
       <View style={{ width: 130 }}>
         <ScrollSection style={{ flex: 1 }} title="détails">
-          <WeaponsDetails charWeapon={selectedWeapon} />
+          <WeaponsDetails itemDbKey={selectedWeapon} />
         </ScrollSection>
 
         <Spacer y={layout.globalPadding} />
