@@ -18,6 +18,7 @@ import Spacer from "components/Spacer"
 import PlusIcon from "components/icons/PlusIcon"
 import routes from "constants/routes"
 import layout from "styles/layout"
+import { filterUnique } from "utils/array-utils"
 
 type ClothingSortableKey =
   | "dbKey"
@@ -55,9 +56,10 @@ export default function ClothingsScreen() {
   const [selectedCloth, setSelectedCloth] = useState<string | null>(null)
   const [sort, setSort] = useState<ClothingSort>({ type: "dbKey", isAsc: false })
 
-  const { data: clothings } = useItems(charId, i =>
+  const { data: allClothings } = useItems(charId, i =>
     Object.values(i).filter(item => item.category === "clothings")
   )
+  const clothings = filterUnique("id", allClothings)
 
   const barterActions = useBarterActions()
 

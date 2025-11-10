@@ -1,30 +1,36 @@
 import React from "react"
 import { PressableProps } from "react-native"
 
-import { MiscObjectId } from "lib/objects/data/misc-objects/misc-objects-types"
+import { useLocalSearchParams } from "expo-router"
+
+import { useItem, useItems } from "lib/inventory/use-sub-inv-cat"
 
 import DeleteInput from "components/DeleteInput"
 import ListLabel from "components/ListLabel"
 import Selectable from "components/Selectable"
-import { useCollectiblesData } from "providers/AdditionalElementsProvider"
 
 type MiscObjRowProps = PressableProps & {
   isSelected: boolean
-  objId: MiscObjectId
-  count: number
+  objDbKey: string
   onPress: () => void
   onPressDelete: () => void
 }
 
 export default function MiscObjRow({
   isSelected,
-  objId,
-  count,
+  objDbKey,
   onPress,
   onPressDelete
 }: MiscObjRowProps) {
-  const { miscObjects } = useCollectiblesData()
-  const { label } = miscObjects[objId]
+  const { charId } = useLocalSearchParams<{ charId: string }>()
+
+  const { data: item } = useItem(charId, objDbKey)
+  const { data: count } = useItems(
+    charId,
+    items => Object.values(items).filter(i => i.id === item.id).length
+  )
+
+  const { label } = item.data
   const countAppend = count > 1 ? ` (${count})` : ""
   return (
     <Selectable isSelected={isSelected} onPress={onPress}>

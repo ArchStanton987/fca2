@@ -1,7 +1,7 @@
 import { PressableProps } from "react-native"
 
 import combatModsMap from "lib/combat/combat-mods"
-import { useItem } from "lib/inventory/use-sub-inv-cat"
+import { useItem, useItems } from "lib/inventory/use-sub-inv-cat"
 import Toast from "react-native-toast-message"
 
 import DeleteInput from "components/DeleteInput"
@@ -26,17 +26,17 @@ export default function ClothingRow({ itemKey, charId, isSelected, onPress }: Cl
   const { clothings } = useCollectiblesData()
 
   const { data: item } = useItem(charId, itemKey)
+  const { data: count } = useItems(
+    charId,
+    items => Object.values(items).filter(i => i.id === item.id).length
+  )
 
   if (item.category !== "clothings") throw new Error("Item is not clothing")
 
-  const {
-    label,
-    physicalDamageResist,
-    laserDamageResist,
-    fireDamageResist,
-    plasmaDamageResist,
-    malus
-  } = clothings[item.id]
+  const { physicalDamageResist, laserDamageResist, fireDamageResist, plasmaDamageResist, malus } =
+    clothings[item.id]
+
+  const label = count > 1 ? `${clothings[item.id].label} (${count})` : clothings[item.id].label
 
   const handleEquip = async () => {
     try {

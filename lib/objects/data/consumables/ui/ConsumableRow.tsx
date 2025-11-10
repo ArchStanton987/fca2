@@ -1,7 +1,10 @@
 import React from "react"
 import { PressableProps, TouchableOpacity, View } from "react-native"
 
+import { useLocalSearchParams } from "expo-router"
+
 import { changeableAttributesMap } from "lib/character/effects/changeable-attr"
+import { useItems } from "lib/inventory/use-sub-inv-cat"
 import Consumable from "lib/objects/data/consumables/Consumable"
 
 import DeleteInput from "components/DeleteInput"
@@ -32,7 +35,6 @@ export function ListHeader({ onPress, isAsc }: { onPress: () => void; isAsc: boo
 
 type ConsumableRowProps = PressableProps & {
   charConsumable: Consumable
-  count: number
   isSelected: boolean
   onPress: () => void
   onDelete: (item: Consumable) => void
@@ -40,15 +42,21 @@ type ConsumableRowProps = PressableProps & {
 
 export default function ConsumableRow({
   charConsumable,
-  count,
   isSelected,
   onDelete,
   onPress
 }: ConsumableRowProps) {
+  const { charId } = useLocalSearchParams<{ charId: string }>()
   const { effects } = useCollectiblesData()
   const { label, effectId, challengeLabel, modifiers = [] } = charConsumable.data
   const symptoms = effectId ? effects[effectId].symptoms : []
   const visibleMods = [...symptoms, ...modifiers]
+
+  const { data: count } = useItems(
+    charId,
+    items => Object.values(items).filter(i => i.id === charConsumable.id).length
+  )
+
   const countAppend = count > 1 ? ` (${count})` : ""
   return (
     <Selectable isSelected={isSelected} onPress={onPress}>

@@ -19,6 +19,7 @@ import PlusIcon from "components/icons/PlusIcon"
 import routes from "constants/routes"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
+import { filterUnique } from "utils/array-utils"
 
 const getTitle = (cb: (str: string) => void): ComposedTitleProps => [
   { title: "produit", onPress: () => cb("label"), containerStyle: { flex: 1 } },
@@ -34,16 +35,10 @@ export default function ConsumablesScreen() {
 
   const barterActions = useBarterActions()
 
-  const { data: consumables } = useItems(charId, allItems =>
-    Object.values(allItems)
-      .filter(el => el.category === "consumables")
-      .map((c, _, currArr) => {
-        const itemsGroup = currArr.filter(i => i.id === c.id)
-        const count = itemsGroup.length
-        const dbKeys = itemsGroup.map(i => i.dbKey)
-        return { ...c, count, dbKeys }
-      })
+  const { data: allConsumables } = useItems(charId, allItems =>
+    Object.values(allItems).filter(el => el.category === "consumables")
   )
+  const consumables = filterUnique("id", allConsumables)
 
   const onPressAdd = () => {
     barterActions.selectCategory("consumables")
@@ -80,7 +75,6 @@ export default function ConsumablesScreen() {
             <ConsumableRow
               charConsumable={item}
               isSelected={item.dbKey === selectedItem}
-              count={item.count}
               onPress={() => setSelectedItem(item.dbKey)}
               onDelete={() => onDelete(item)}
             />

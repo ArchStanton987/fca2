@@ -2,7 +2,8 @@ import React from "react"
 import { PressableProps, View } from "react-native"
 
 import { useAbilities } from "lib/character/abilities/abilities-provider"
-import { useAmmo } from "lib/inventory/use-sub-inv-cat"
+import { Item } from "lib/inventory/item.mappers"
+import { useAmmo, useItems } from "lib/inventory/use-sub-inv-cat"
 import Toast from "react-native-toast-message"
 
 import DeleteInput from "components/DeleteInput"
@@ -23,14 +24,20 @@ type WeaponRowProps = PressableProps & {
   onPress: () => void
 }
 
+const getCount = (items: Record<string, Item>, weapon: Weapon) =>
+  Object.values(items).filter(i => i.id === weapon.id).length
+
 export default function WeaponRow({ charId, weapon, isSelected, onPress }: WeaponRowProps) {
   const useCases = useGetUseCases()
 
   const { data: abilities } = useAbilities(charId)
   const { data: ammo } = useAmmo(charId)
+  const { data: count } = useItems(charId, items => getCount(items, weapon))
 
   const { isEquipped, data } = weapon
-  const { label, damageBasic, damageBurst } = data
+  const { damageBasic, damageBurst } = data
+
+  const label = count > 1 ? `${data.label} (${count})` : data.label
 
   const handleEquip = async () => {
     try {

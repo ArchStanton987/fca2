@@ -21,6 +21,7 @@ import routes from "constants/routes"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import { SearchParams } from "screens/ScreenParams"
 import layout from "styles/layout"
+import { filterUnique } from "utils/array-utils"
 
 const getTitle = (cb: (str: string) => void): ComposedTitleProps => [
   { title: "objet", onPress: () => cb("label"), containerStyle: { flex: 1 } }
@@ -34,16 +35,10 @@ export default function MiscObjScreen() {
 
   const barterActions = useBarterActions()
 
-  const { data: miscObjects } = useItems(charId, allMisc =>
-    Object.values(allMisc)
-      .filter(el => el.category === "misc")
-      .map((c, _, currArr) => {
-        const itemsGroup = currArr.filter(i => i.id === c.id)
-        const count = itemsGroup.length
-        const dbKeys = itemsGroup.map(i => i.dbKey)
-        return { ...c, count, dbKeys }
-      })
+  const { data: allMiscObjects } = useItems(charId, allMisc =>
+    Object.values(allMisc).filter(el => el.category === "misc")
   )
+  const miscObjects = filterUnique("id", allMiscObjects)
 
   const onPressAdd = () => {
     barterActions.selectCategory("miscObjects")
@@ -73,8 +68,7 @@ export default function MiscObjScreen() {
           keyExtractor={item => item.id}
           renderItem={({ item }) => (
             <MiscObjRow
-              objId={item.data.id}
-              count={item.count}
+              objDbKey={item.dbKey}
               isSelected={item.id === selectedItem?.id}
               onPress={() => setSelectedItem(prev => (prev?.id === item.id ? null : item))}
               onPressDelete={() => useCases.inventory.drop({ charId, item })}

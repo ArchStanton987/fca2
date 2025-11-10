@@ -23,12 +23,14 @@ export default function addEffect({ db, collectiblesData, store }: UseCasesConfi
     const effectData = allEffects[effectId]
 
     const charInfo = getCharInfo(store, charId)
-    const currentCharEffects = getEffects(store, charId)
+    const charEffects = getEffects(store, charId)
+    const currentCharEffectsIds = Object.values(charEffects).map(e => e.id)
     const refDate = startDate ?? getDatetime(store, charInfo.squadId)
     const traits = getTraits(store, charId)
     const dbEffect = EffectsMappers.toDb(traits, effectId, effectData, refDate, lengthInMs)
-    if (effectId in currentCharEffects) {
-      const existingEffect = currentCharEffects[effectId]
+    if (currentCharEffectsIds.includes(effectId)) {
+      const existingEffect = Object.values(charEffects).find(e => e.id === effectId)
+      if (!existingEffect) throw new Error("Effect not found")
       return effectsRepo.patch({ charId, dbKey: existingEffect.dbKey }, dbEffect)
     }
     return effectsRepo.add({ charId }, dbEffect)
