@@ -9,7 +9,8 @@ import { ItemCategory } from "lib/objects/data/objects.types"
 import { WeaponId } from "lib/objects/data/weapons/weapons.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
-import { Item, getAmmo, getCaps, getItems } from "../use-sub-inv-cat"
+import { Item } from "../item.mappers"
+import { getAmmo, getCaps, getItems } from "../use-sub-inv-cat"
 import drop from "./drop"
 
 export type BarterParams = {
@@ -83,7 +84,7 @@ export default function barter(config: UseCasesConfig) {
 
         if (count < 0) {
           const inInvItems = getItems(store, charId)
-          const validItems = Object.entries(inInvItems).filter(([invId]) => invId === id)
+          const validItems = Object.entries(inInvItems).filter(([, e]) => e.id === id)
           validItems.forEach(([, obj]) => {
             promises.push(drop(config)({ charId, item: obj }))
           })

@@ -1,4 +1,5 @@
-import { Item, useAmmo, useCaps, useItemCount } from "lib/inventory/use-sub-inv-cat"
+import { Item } from "lib/inventory/item.mappers"
+import { useAmmo, useCaps, useItemCount } from "lib/inventory/use-sub-inv-cat"
 import ammoMap from "lib/objects/data/ammo/ammo"
 import { AmmoType } from "lib/objects/data/ammo/ammo.types"
 import { create } from "zustand"
@@ -123,8 +124,9 @@ const useBarterStore = create<BarterStore>()((set, get, store) => ({
       const cat = get().category
       const isCaps = cat === "caps"
       const amount = type === "minus" ? -get().amount : get().amount
-      const prevValue = isCaps ? get().barter.caps : get().barter[cat][itemId]
-      const newValue = Math.max(prevValue + amount + inInv, 0)
+      const currValue = isCaps ? get().barter.caps ?? 0 : get().barter[cat][itemId] ?? 0
+      let newValue = currValue + amount
+      if (newValue + inInv < 0) newValue = -inInv
       set(state => {
         if (isCaps) {
           return { ...state, barter: { ...state.barter, caps: newValue } }
@@ -145,24 +147,13 @@ export const useBarterCategory = () => useBarterStore(state => state.category)
 export const useBarterAmount = () => useBarterStore(state => state.amount)
 export const useBarterSelectedItem = () => useBarterStore(state => state.selectedItem)
 export const useBarterInput = () => useBarterStore(state => state.searchInput)
-export const useBarterStock = () =>
-  useBarterStore(state => ({
-    ammo: state.barter.ammo,
-    caps: state.barter.caps,
-    items: {
-      ...state.barter.weapons,
-      ...state.barter.clothings,
-      ...state.barter.consumables,
-      ...state.barter.miscObjects
-    }
-  }))
 export const useBarterItemCount = (id: string) =>
   useBarterStore(state => {
     const cat = state.category
     if (cat === "caps") {
-      return state.barter.caps
+      return state.barter.caps ?? 0
     }
-    return state.barter[cat][id]
+    return state.barter[cat][id] ?? 0
   })
 
 export const useBarterWeapons = () => useBarterStore(state => state.barter.weapons)

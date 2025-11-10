@@ -3,7 +3,7 @@ import { View } from "react-native"
 
 import { useLocalSearchParams } from "expo-router"
 
-import { Item } from "lib/inventory/use-sub-inv-cat"
+import { Item } from "lib/inventory/item.mappers"
 import {
   getCategoriesMap,
   useBarterActions,
@@ -61,12 +61,12 @@ function ListItemRow({ id, label }: ListItemRowProps) {
       style={styles.listItemContainer}
       onPress={() => actions.selectItem(id)}
     >
-      <Txt style={[styles.listItem, styles.listItemLabel]} numberOfLines={1}>
+      <Txt style={styles.listItemLabel} numberOfLines={1}>
         {label}
       </Txt>
-      <Txt style={[styles.listItem, styles.listItemInfo]}>{inInv}</Txt>
-      <Txt style={[styles.listItem, styles.listItemInfo]}>{mod}</Txt>
-      <Txt style={[styles.listItem, styles.listItemInfo]}>{final}</Txt>
+      <Txt style={styles.listItemInfo}>{inInv}</Txt>
+      <Txt style={styles.listItemInfo}>{mod}</Txt>
+      <Txt style={styles.listItemInfo}>{final}</Txt>
     </Selectable>
   )
 }
@@ -74,10 +74,10 @@ function ListItemRow({ id, label }: ListItemRowProps) {
 function ListItemHeader() {
   return (
     <Row style={styles.listItemContainer}>
-      <Txt style={[styles.listItem, styles.listItemLabel]}>Obj</Txt>
-      <Txt style={[styles.listItem, styles.listItemLabel]}>Inv</Txt>
-      <Txt style={[styles.listItem, styles.listItemLabel]}>Mod</Txt>
-      <Txt style={[styles.listItem, styles.listItemLabel]}>Prev</Txt>
+      <Txt style={styles.listItemLabel}>Obj</Txt>
+      <Txt style={styles.listItemInfo}>Inv</Txt>
+      <Txt style={styles.listItemInfo}>Mod</Txt>
+      <Txt style={styles.listItemInfo}>Prev</Txt>
     </Row>
   )
 }

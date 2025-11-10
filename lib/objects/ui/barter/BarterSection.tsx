@@ -77,10 +77,7 @@ export default function BarterSection({ onPressNext, onPressCancel }: BarterSect
                   onPress={() => actions.selectAmount(item)}
                 />
               )}
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-evenly"
-              }}
+              style={{ flexDirection: "row", justifyContent: "space-evenly" }}
             />
             <BarterComponents.ModButtons />
           </View>

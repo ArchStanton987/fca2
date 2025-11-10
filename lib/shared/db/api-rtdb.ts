@@ -82,7 +82,9 @@ const rtdb = {
     `v3/playables/${charId}/inventory/${childKey ?? ""}`,
 
   getItems: ({ charId, dbKey, childKey }: ItemsParams) =>
-    `v3/playables/${charId}/inventory/items/${dbKey}/${childKey ?? ""}`,
+    dbKey
+      ? `v3/playables/${charId}/inventory/items/${dbKey}/${childKey ?? ""}`
+      : `v3/playables/${charId}/inventory/items/`,
 
   getPlayable: ({ id, childKey }: PlayableParams) =>
     id ? `v3/playables/${id}/${childKey ?? ""}` : `v3/playables/`,

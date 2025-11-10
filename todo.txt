@@ -1,16 +1,7 @@
-DB : problem when empty collection
-no reactivity
 
 
-fix health update with new hp system
 check F4 system
 
-créer 2 combats récap différents (1 avec contexte combat)
-MAJ dépendances
-use Guard
-
-
-ajouter charId dans meta
 upgrade item selector (no category)
 amélio perf action
 
@@ -20,7 +11,6 @@ migrations:
 test chaque action / sous action
 test unarmed
 
-check mrFast AP COST
 update healthChangeEntries with modifiers and effects (beasts...)
 
 beasts special & skills

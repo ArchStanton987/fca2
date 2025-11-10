@@ -9,7 +9,6 @@ import {
   useBarterClothings,
   useBarterConsumables,
   useBarterMiscObjects,
-  useBarterStock,
   useBarterWeapons
 } from "lib/objects/barter-store"
 import ammoMap from "lib/objects/data/ammo/ammo"
@@ -41,7 +40,6 @@ export default function BarterConfirmationModal() {
   const useCases = useGetUseCases()
 
   const actions = useBarterActions()
-  const exchange = useBarterStock()
 
   const barterCaps = useBarterCaps()
   const barterAmmo = useBarterAmmos()
@@ -51,6 +49,16 @@ export default function BarterConfirmationModal() {
   const barterMiscObjects = useBarterMiscObjects()
 
   const onPressConfirm = async () => {
+    const exchange = {
+      items: {
+        ...barterWeapons,
+        ...barterClothings,
+        ...barterConsumables,
+        ...barterMiscObjects
+      },
+      ammo: barterAmmo,
+      caps: barterCaps
+    }
     await useCases.inventory.barter({ charId, ...exchange })
     actions.reset()
     router.dismiss(2)
@@ -142,7 +150,7 @@ export default function BarterConfirmationModal() {
         ) : null}
       </ScrollableSection>
       <Spacer y={15} />
-      <ModalCta onPressConfirm={onPressConfirm} />
+      <ModalCta onPressConfirm={() => onPressConfirm()} />
     </ModalBody>
   )
 }

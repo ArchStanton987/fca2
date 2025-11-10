@@ -1,7 +1,7 @@
 import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
-import { Item } from "../use-sub-inv-cat"
+import { Item } from "../item.mappers"
 
 export type DropItemParams = {
   charId: string
