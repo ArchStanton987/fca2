@@ -90,17 +90,11 @@ export function useSubMultiCollections<I, T = I>(paramsArray: UseSubParams<I, T>
   const queryClient = useQueryClient()
 
   const memoParams = useMemo(() => paramsArray, [paramsArray])
-  const pathsStr = useMemo(() => {
-    const validPaths = memoParams.map(p => p.path)
-    return JSON.stringify(validPaths)
-  }, [memoParams])
 
   useEffect(() => {
-    const paths: string[] = JSON.parse(pathsStr)
-    const childAddedUnsubscribers = paths.map((path, i) => {
+    const childAddedUnsubscribers = memoParams.map(({ path, cb }) => {
       const queryKey = pathToQk(path)
       return subEvent<I>("onChildAdded", path, ({ key, value }) => {
-        const { cb } = memoParams[i]
         const newValue = cb ? cb({ ...value, key }) : { ...value, key }
         queryClient.setQueryData(queryKey, (prev: Record<string, T>) => ({
           ...prev,
@@ -108,10 +102,9 @@ export function useSubMultiCollections<I, T = I>(paramsArray: UseSubParams<I, T>
         }))
       })
     })
-    const childChangedUnsubscribers = paths.map((path, i) => {
+    const childChangedUnsubscribers = memoParams.map(({ path, cb }) => {
       const queryKey = pathToQk(path)
       return subEvent<I>("onChildChanged", path, ({ key, value }) => {
-        const { cb } = memoParams[i]
         const newValue = cb ? cb({ ...value, key }) : { ...value, key }
         queryClient.setQueryData(queryKey, (prev: Record<string, T>) => ({
           ...prev,
@@ -119,7 +112,7 @@ export function useSubMultiCollections<I, T = I>(paramsArray: UseSubParams<I, T>
         }))
       })
     })
-    const childRemovedUnsubscribers = paths.map(path => {
+    const childRemovedUnsubscribers = memoParams.map(({ path }) => {
       const queryKey = pathToQk(path)
       return subEvent<I>("onChildRemoved", path, ({ key }) => {
         queryClient.setQueryData(queryKey, (prev: Record<string, T>) => {
@@ -128,7 +121,7 @@ export function useSubMultiCollections<I, T = I>(paramsArray: UseSubParams<I, T>
         })
       })
     })
-    const onChangeUnsubscribers = paths.map(path => {
+    const onChangeUnsubscribers = memoParams.map(({ path }) => {
       const queryKey = pathToQk(path)
       const dbRef = ref(database, path)
       return onValue(dbRef, snapshot => {
@@ -144,8 +137,7 @@ export function useSubMultiCollections<I, T = I>(paramsArray: UseSubParams<I, T>
       childRemovedUnsubscribers.forEach(unsub => unsub())
       onChangeUnsubscribers.forEach(unsub => unsub())
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [queryClient, pathsStr])
+  }, [queryClient, memoParams])
 }
 
 export function useSub<Db, T = Db>(path: string, cb?: (snapshot: Db) => T) {
@@ -165,17 +157,12 @@ export function useMultiSub<Db, T = Db>(paramsArray: UseSubParams<Db, T>[]) {
   const queryClient = useQueryClient()
 
   const memoParams = useMemo(() => paramsArray, [paramsArray])
-  const pathsStr = useMemo(() => {
-    const validPaths = memoParams.map(p => p.path)
-    return JSON.stringify(validPaths)
-  }, [memoParams])
 
   useEffect(() => {
-    const paths: string[] = JSON.parse(pathsStr)
-    const unsubscribers = paths.map((path, i) => {
+    const unsubscribers = memoParams.map(({ path, cb }) => {
       const queryKey = path.split("/")
       return subscribeToPath<Db>(path, data => {
-        const newData = memoParams[i]?.cb?.(data) ?? data
+        const newData = cb?.(data) ?? data
         queryClient.setQueryData(queryKey, newData)
       })
     })
@@ -183,6 +170,5 @@ export function useMultiSub<Db, T = Db>(paramsArray: UseSubParams<Db, T>[]) {
     return () => {
       unsubscribers.forEach(unsub => unsub())
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [queryClient, pathsStr])
+  }, [queryClient, memoParams])
 }

@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native"
 
-import { useCurrSecAttr } from "lib/character/abilities/abilities-provider"
+import { useAbilities } from "lib/character/abilities/abilities-provider"
 import { useCarry, useClothings, useWeapons } from "lib/inventory/use-sub-inv-cat"
 
 import List from "components/List"
@@ -37,7 +37,7 @@ function ClothingsListHeader() {
 }
 
 export default function EquipedObjSection({ charId }: { charId: string }) {
-  const { data: currSecAttr } = useCurrSecAttr(charId)
+  const { data: currSecAttr } = useAbilities(charId, a => a.secAttr.curr)
   const { normalCarryWeight, tempCarryWeight, maxCarryWeight, maxPlace } = currSecAttr
   const { data: equipedWeapons } = useWeapons(charId, { isEquipped: true })
   const { data: equipedClothings } = useClothings(charId, true)

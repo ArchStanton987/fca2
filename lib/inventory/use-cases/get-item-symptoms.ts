@@ -2,7 +2,8 @@
 import { useSuspenseQueries } from "@tanstack/react-query"
 import { Symptom } from "lib/character/effects/symptoms.type"
 
-import { Item, getItemsOptions } from "../use-sub-inv-cat"
+import { Item } from "../item.mappers"
+import { getItemsOptions } from "../use-sub-inv-cat"
 
 const getItemSymptoms = (items: Record<string, Item>) =>
   Object.values(items).reduce((acc, item) => {
