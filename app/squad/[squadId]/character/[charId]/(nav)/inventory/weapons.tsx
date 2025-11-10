@@ -4,7 +4,7 @@ import { View } from "react-native"
 import { router, useLocalSearchParams } from "expo-router"
 
 import { useAbilities, useSecAttr } from "lib/character/abilities/abilities-provider"
-import { useAmmo, useWeapons } from "lib/inventory/use-sub-inv-cat"
+import { useAmmo, useItems } from "lib/inventory/use-sub-inv-cat"
 import { useBarterActions } from "lib/objects/barter-store"
 import Weapon from "lib/objects/data/weapons/Weapon"
 import WeaponRow from "lib/objects/data/weapons/ui/WeaponRow"
@@ -20,6 +20,7 @@ import Spacer from "components/Spacer"
 import PlusIcon from "components/icons/PlusIcon"
 import routes from "constants/routes"
 import layout from "styles/layout"
+import { filterUnique } from "utils/array-utils"
 
 const getTitle = (cb: (str: WeaponSortableKey) => void): ComposedTitleProps => [
   {
@@ -60,8 +61,10 @@ export default function WeaponsScreen() {
   const [selectedWeapon, setSelectedWeapon] = useState<Weapon | null>(null)
   const [sort, setSort] = useState<WeaponSort>({ type: "dbKey", isAsc: false })
 
-  const { data: weaponsRec } = useWeapons(charId, { isGrouped: true })
-  const weapons = Object.values(weaponsRec)
+  const { data: allWeapons } = useItems(charId, items =>
+    Object.values(items).filter(i => i.category === "weapons")
+  )
+  const weapons = filterUnique("id", allWeapons)
 
   const { data: abilities } = useAbilities(charId)
   const { data: secAttr } = useSecAttr(charId)

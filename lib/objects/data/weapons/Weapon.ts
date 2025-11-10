@@ -79,8 +79,8 @@ export default class Weapon implements ItemInterface {
     const { strength } = special.curr
     const traitsArray = Object.keys(abilities.traits ?? {})
     const perksArray = Object.keys(abilities.perks ?? {})
-    const traitsSymptoms = traitsArray.map(t => traitsMap[t as TraitId].symptoms)
-    const perksSymptoms = perksArray.map(t => perksMap[t as PerkId].symptoms)
+    const traitsSymptoms = traitsArray.map(t => traitsMap[t as TraitId]?.symptoms ?? [])
+    const perksSymptoms = perksArray.map(t => perksMap[t as PerkId]?.symptoms ?? [])
     const innateSymptoms = [...traitsSymptoms, ...perksSymptoms].flat()
 
     const knowledgesBonus = weaponKnowledges.reduce((acc, curr: KnowledgeId) => {

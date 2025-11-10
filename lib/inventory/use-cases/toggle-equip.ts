@@ -20,12 +20,12 @@ export default function toggleEquip({ db, collectiblesData, store }: UseCasesCon
         .filter(([, value]) => value.isEquipped)
         .map(([id, value]) => [id, value])
     )
-    const item = equippedItems[itemDbKey]
+    const item = items[itemDbKey]
     if (!item) throw new Error(`Item with id : ${itemDbKey} wasn't found in equipped items`)
 
     // UNEQUIP
     if (item.isEquipped) {
-      return itemsRepo.patchChild({ charId, childKey: "isEquipped" }, false)
+      return itemsRepo.patchChild({ charId, dbKey: itemDbKey, childKey: "isEquipped" }, false)
     }
 
     // EQUIP
@@ -51,6 +51,6 @@ export default function toggleEquip({ db, collectiblesData, store }: UseCasesCon
         throw new Error("Vous ne pouvez pas avoir plusieurs armures sur la même partie du corps")
     }
 
-    return itemsRepo.patchChild({ charId, childKey: "isEquipped" }, true)
+    return itemsRepo.patchChild({ charId, dbKey: itemDbKey, childKey: "isEquipped" }, true)
   }
 }

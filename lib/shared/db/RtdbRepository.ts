@@ -64,11 +64,16 @@ export default abstract class RtdbRepository<Db extends DbEntity, BP extends Bas
     updateValue(this.getPath(params), data)
 
   patchChild = <K extends keyof Db>(params: BP & CollectibleChild<K>, data: Partial<Db[K]>) => {
-    const updatesObj: Record<RtdbReturnTypes, any> = {}
-    Object.entries(data).forEach(([key, value]) => {
-      updatesObj[this.getPath(params).concat(`/${key}`)] = value
-    })
-    return update(ref(database), updatesObj)
+    let payload: Record<RtdbReturnTypes, any> = {}
+    if (typeof data === "object") {
+      payload = {}
+      Object.entries(data).forEach(([key, value]) => {
+        payload[this.getPath(params).concat(`/${key}`)] = value
+      })
+    } else {
+      payload[this.getPath(params)] = data
+    }
+    return update(ref(database), payload)
   }
 
   deleteChild = <K extends keyof Db>(params: BP & CollectibleChild<K>) =>

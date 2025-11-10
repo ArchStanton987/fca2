@@ -12,34 +12,15 @@ import { round } from "lib/common/utils/number-utils"
 import { critters } from "lib/npc/const/npc-templates"
 import ammoMap, { defaultAmmoSet } from "lib/objects/data/ammo/ammo"
 import { AmmoSet, AmmoType } from "lib/objects/data/ammo/ammo.types"
-import Clothing from "lib/objects/data/clothings/Clothing"
-import Consumable from "lib/objects/data/consumables/Consumable"
-import MiscObject from "lib/objects/data/misc-objects/MiscObject"
-import { DbInventory, DbItem, ItemCategory } from "lib/objects/data/objects.types"
+import { DbInventory, DbItem } from "lib/objects/data/objects.types"
 import Weapon from "lib/objects/data/weapons/Weapon"
 import { attackToWeapon } from "lib/objects/data/weapons/weapons.mappers"
 import { qkToPath, useMultiSub, useSubMultiCollections } from "lib/shared/db/useSub"
 
-import { AdditionalElContextType, useCollectiblesData } from "providers/AdditionalElementsProvider"
+import { useCollectiblesData } from "providers/AdditionalElementsProvider"
 import { filterUnique } from "utils/array-utils"
 
-const itemFactory = (
-  item: DbItem & { key: string },
-  { weapons, clothings, consumables, miscObjects }: AdditionalElContextType
-) => {
-  switch (item.category) {
-    case "clothings":
-      return new Clothing(item, clothings)
-    case "consumables":
-      return new Consumable(item, consumables)
-    case "misc":
-      return new MiscObject(item, miscObjects)
-    case "weapons":
-      return new Weapon(item, weapons)
-    default:
-      throw new Error("unknown db item type")
-  }
-}
+import { Item, itemFactory } from "./item.mappers"
 
 const getInvOptions = <K extends keyof DbInventory, T>(charId: string, invElement: K) =>
   queryOptions({
@@ -47,8 +28,6 @@ const getInvOptions = <K extends keyof DbInventory, T>(charId: string, invElemen
     enabled: charId !== "",
     queryFn: () => new Promise<T>(() => {})
   })
-
-export type Item = Clothing | Consumable | MiscObject | Weapon
 
 export const getItemsOptions = (charId: string) =>
   getInvOptions<"items", Record<string, Item>>(charId, "items")
@@ -69,24 +48,17 @@ export function useMultiSubItems(ids: string[]) {
 type ItemRecord = Record<string, Item>
 type Options = { isEquipped?: boolean; isGrouped?: boolean }
 
-const groupById = (items: Item[]) =>
-  filterUnique(
-    "id",
-    items.map((item, _, currArr) => {
-      const itemsGroup = currArr.filter(i => i.id === item.id)
-      const count = itemsGroup.length
-      const dbKeys = itemsGroup.map(i => i.dbKey)
-      return { ...item, count, dbKeys }
-    })
-  )
-
-export const itemSelector = <C extends ItemCategory>(
+export const itemSelector = (
   items: ItemRecord,
-  cat: C,
+  cat: Item["category"],
   { isEquipped, isGrouped }: Options
 ) => {
   if (isGrouped) {
-    return Object.fromEntries(groupById(Object.values(items)).map(e => [e.id, e]))
+    return Object.fromEntries(
+      filterUnique("id", Object.values(items))
+        .filter(e => e.category === cat)
+        .map(e => [e.id, e])
+    )
   }
   return Object.fromEntries(
     Object.entries(items).filter(([, item]) => {
@@ -118,7 +90,11 @@ export function useWeapons(
 }
 export function useCombatWeapons(charId: string): Weapon[] {
   const templateId = useCharInfo(charId, state => state.templateId).data
-  const equipedWeapons = useWeapons(charId, { isEquipped: true }).data
+  const { data: equipedWeapons } = useItems(charId, items =>
+    Object.values(items)
+      .filter(i => i.isEquipped)
+      .filter(i => i.category === "weapons")
+  )
   const hasEquipedWeapons = Object.keys(equipedWeapons).length === 0
   if (hasEquipedWeapons) return Object.values(equipedWeapons)
   const unarmed = Weapon.getUnarmed()
