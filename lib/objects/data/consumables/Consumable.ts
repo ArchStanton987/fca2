@@ -13,13 +13,11 @@ export default class Consumable implements ItemInterface {
 
   static dbToData = (payload: Partial<DbConsumableData>): Partial<ConsumableData> => ({
     ...payload,
-    effectId: payload.effectId ?? null,
-    challengeLabel: payload.challengeLabel ?? null,
-    od: payload.od ?? false,
-    addict: payload.addict ?? false,
-    tags: Object.keys(payload.tags ?? {}) as ConsumableType[],
-    knowledges: Object.keys(payload.knowledges ?? {}) as KnowledgeId[],
-    modifiers: Object.values(payload.modifiers ?? {})
+    tags: payload.tags ? (Object.keys(payload.tags ?? {}) as ConsumableType[]) : undefined,
+    knowledges: payload.knowledges
+      ? (Object.keys(payload.knowledges ?? {}) as KnowledgeId[])
+      : undefined,
+    modifiers: payload.modifiers ? Object.values(payload.modifiers ?? {}) : undefined
   })
 
   constructor(
@@ -30,7 +28,7 @@ export default class Consumable implements ItemInterface {
     this.dbKey = payload.key
     this.category = payload.category
     this.isEquipped = payload.isEquipped
-    this.data = { ...allClothings[this.id], ...Consumable.dbToData(payload.data ?? {}) }
+    this.data = Object.assign(Consumable.dbToData(payload.data ?? {}), allClothings[this.id])
     this.remainingUse = payload.remainingUse ?? null
   }
 }

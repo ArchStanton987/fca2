@@ -10,7 +10,7 @@ export default class MiscObject implements ItemInterface {
 
   static dbToData = (payload: Partial<DbMiscObjectData>): Partial<MiscObjectData> => ({
     ...payload,
-    symptoms: Object.values(payload.symptoms ?? {})
+    symptoms: payload.symptoms ? Object.values(payload.symptoms ?? {}) : undefined
   })
 
   constructor(
@@ -21,6 +21,6 @@ export default class MiscObject implements ItemInterface {
     this.dbKey = payload.key
     this.category = payload.category
     this.isEquipped = payload.isEquipped
-    this.data = { ...allMiscObjects[this.id], ...MiscObject.dbToData(payload.data ?? {}) }
+    this.data = Object.assign(MiscObject.dbToData(payload.data ?? {}), allMiscObjects[this.id])
   }
 }

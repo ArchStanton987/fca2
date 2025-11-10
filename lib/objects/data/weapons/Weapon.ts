@@ -28,17 +28,10 @@ export default class Weapon implements ItemInterface {
 
   static dbToData = (payload: Partial<DbWeaponData>): Partial<WeaponData> => ({
     ...payload,
-    damageBasic: payload.damageBasic ?? null,
-    damageBurst: payload.damageBurst ?? null,
-    ammoType: payload.ammoType ?? null,
-    range: payload.range ?? null,
-    magazine: payload.magazine ?? null,
-    ammoPerShot: payload.ammoPerShot ?? null,
-    ammoPerBurst: payload.ammoPerBurst ?? null,
-    basicApCost: payload.basicApCost ?? null,
-    specialApCost: payload.specialApCost ?? null,
-    knowledges: Object.keys(payload.knowledges ?? {}) as KnowledgeId[],
-    tags: Object.keys(payload.tags ?? {}) as WeaponTagId[]
+    knowledges: payload.knowledges
+      ? (Object.keys(payload.knowledges ?? {}) as KnowledgeId[])
+      : undefined,
+    tags: payload.tags ? (Object.keys(payload.tags ?? {}) as WeaponTagId[]) : undefined
   })
 
   static getDamageEst(secAttr: Abilities["secAttr"], weapon: Weapon) {
@@ -65,7 +58,7 @@ export default class Weapon implements ItemInterface {
     this.dbKey = payload.key
     this.category = payload.category
     this.isEquipped = payload.isEquipped
-    this.data = { ...allWeapons[this.id], ...Weapon.dbToData(payload.data ?? {}) }
+    this.data = Object.assign(Weapon.dbToData(payload.data ?? {}), allWeapons[this.id])
     const { inMagazine = 0 } = payload
     this.inMagazine = this.data.ammoType !== null ? inMagazine : null
   }
@@ -74,7 +67,7 @@ export default class Weapon implements ItemInterface {
     const { isTwoHanded, minStrength } = this.data
     const baseScore = abilities.skills.curr[this.data.skillId]
 
-    const weaponKnowledges = this.data.knowledges
+    const weaponKnowledges = this.data.knowledges ?? []
     const { knowledges, traits, special } = abilities
     const { strength } = special.curr
     const traitsArray = Object.keys(abilities.traits ?? {})

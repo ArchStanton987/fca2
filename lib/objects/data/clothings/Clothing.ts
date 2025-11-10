@@ -11,8 +11,8 @@ export default class Clothing implements ItemInterface {
 
   static dbToData = (payload: Partial<DbClothingData>): Partial<ClothingData> => ({
     ...payload,
-    protects: Object.keys(payload.protects ?? {}) as BodyPart[],
-    symptoms: Object.values(payload.symptoms ?? {})
+    protects: payload.protects ? (Object.keys(payload.protects ?? {}) as BodyPart[]) : undefined,
+    symptoms: payload.symptoms ? Object.values(payload.symptoms ?? {}) : undefined
   })
 
   constructor(payload: DbClothing & { key: string }, allClothings: Record<string, ClothingData>) {
@@ -20,6 +20,6 @@ export default class Clothing implements ItemInterface {
     this.dbKey = payload.key
     this.category = payload.category
     this.isEquipped = payload.isEquipped
-    this.data = { ...allClothings[this.id], ...Clothing.dbToData(payload.data ?? {}) }
+    this.data = Object.assign(Clothing.dbToData(payload.data ?? {}), allClothings[this.id])
   }
 }
