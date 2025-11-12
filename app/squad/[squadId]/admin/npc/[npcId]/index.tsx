@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import { TouchableOpacity } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
@@ -12,9 +13,10 @@ import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useGetUseCases } from "providers/UseCasesProvider"
+import LoadingScreen from "screens/LoadingScreen"
 import layout from "styles/layout"
 
-export default function EnemyScreen() {
+function Screen() {
   const useCases = useGetUseCases()
   const { npcId, squadId } = useLocalSearchParams<{ npcId: string; squadId: string }>()
 
@@ -37,6 +39,16 @@ export default function EnemyScreen() {
 
   const isFighting = !!combatStatus.combatId
   const { firstname, description, templateId } = charInfo
+
+  if (!npcId)
+    return (
+      <Section
+        style={{ flex: 1 }}
+        contentContainerStyle={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      >
+        <Txt>Aucun personnage sélectionné</Txt>
+      </Section>
+    )
 
   return (
     <DrawerPage>
@@ -62,5 +74,23 @@ export default function EnemyScreen() {
         )}
       </ScrollSection>
     </DrawerPage>
+  )
+}
+
+export default function NpcScreen() {
+  const { npcId } = useLocalSearchParams<{ npcId?: string }>()
+  if (!npcId)
+    return (
+      <Section
+        style={{ flex: 1 }}
+        contentContainerStyle={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      >
+        <Txt>Aucun personnage sélectionné</Txt>
+      </Section>
+    )
+  return (
+    <Suspense fallback={<LoadingScreen />}>
+      <Screen />
+    </Suspense>
   )
 }

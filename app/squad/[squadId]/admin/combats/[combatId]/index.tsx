@@ -94,6 +94,15 @@ function Screen() {
 
 export default function CombatAdminScreen() {
   const { combatId } = useLocalSearchParams<{ combatId: string }>()
+  if (!combatId)
+    return (
+      <Section
+        style={{ flex: 1 }}
+        contentContainerStyle={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      >
+        <Txt>Aucun combat sélectionné</Txt>
+      </Section>
+    )
   return (
     <SubCombat combatId={combatId}>
       <Suspense fallback={<LoadingScreen />}>
