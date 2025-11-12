@@ -75,17 +75,21 @@ export default function WeaponsDetails({ itemDbKey }: { itemDbKey: string | null
           </Txt>
         )}
       />
-      <Spacer y={20} />
       {canLoad ? (
-        <TouchableOpacity style={styles.actionButton} onPress={() => reload()}>
-          <Txt>RECHARGER</Txt>
-        </TouchableOpacity>
+        <>
+          <Spacer y={20} />
+          <TouchableOpacity style={styles.actionButton} onPress={() => reload()}>
+            <Txt>RECHARGER</Txt>
+          </TouchableOpacity>
+        </>
       ) : null}
-      <Spacer y={20} />
       {canUnload ? (
-        <TouchableOpacity style={styles.actionButton} onPress={() => unload()}>
-          <Txt>DECHARGER</Txt>
-        </TouchableOpacity>
+        <>
+          <Spacer y={20} />
+          <TouchableOpacity style={styles.actionButton} onPress={() => unload()}>
+            <Txt>DECHARGER</Txt>
+          </TouchableOpacity>
+        </>
       ) : null}
       <Spacer y={20} />
     </>
