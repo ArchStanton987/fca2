@@ -23,6 +23,7 @@ export default function AdminDrawer({ sectionId, navElements }: DrawerProps) {
 
   const toTabs = (path: string) => {
     const params = { squadId }
+    // @ts-expect-error
     router.push({ pathname: `${adminRoute}/${sectionId}/${path}`, params })
   }
 

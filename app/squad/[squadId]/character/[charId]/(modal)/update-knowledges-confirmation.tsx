@@ -57,7 +57,9 @@ export default function UpdateKnowledgesConfirmationModal() {
           ListFooterComponent={ListFooter}
           data={knowledgesList}
           keyExtractor={item => item.id}
-          renderItem={({ item }) => <KnowledgeRow isEditable={false} knowledge={item} />}
+          renderItem={({ item }) => (
+            <KnowledgeRow isEditable={false} id={item.id} value={item.value} />
+          )}
         />
       </Section>
       <ModalCta onPressCancel={cancel} onPressConfirm={confirm} />

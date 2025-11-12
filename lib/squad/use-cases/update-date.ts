@@ -52,8 +52,8 @@ export default function updateDate(config: UseCasesConfig) {
       }
 
       if (hpDiff !== 0) {
-        const payload = { rads: 0, limbs: {}, currHp: hpDiff }
-        promises.push(updateHealth(config)({ charId, payload }))
+        const modPayload = { rads: 0, limbs: {}, currHp: hpDiff }
+        promises.push(updateHealth(config)({ charId, modPayload }))
       }
     })
     promises.push(squadRepo.setChild({ id: squadId, childKey: "datetime" }, newDate.toJSON()))

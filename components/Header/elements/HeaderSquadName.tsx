@@ -11,7 +11,7 @@ export default function HeaderSquadName() {
   const { squadId } = useLocalSearchParams<{ squadId: string }>()
   const { data: label } = useSquadLabel(squadId)
 
-  const onPress = () => router.push({ pathname: "/squad/[squadId]/", params: { squadId } })
+  const onPress = () => router.push({ pathname: "/squad/[squadId]", params: { squadId } })
 
   return (
     <HeaderElement style={{ flexGrow: 4, justifyContent: "flex-end" }}>

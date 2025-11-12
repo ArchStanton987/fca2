@@ -1,6 +1,4 @@
-import { Item } from "lib/inventory/use-sub-inv-cat"
-
-import { AmmoSet } from "./data/ammo/ammo.types"
+// import { AmmoSet } from "./data/ammo/ammo.types"
 
 // type Carriable = {
 //   data: { weight: number; place: number }
@@ -194,14 +192,14 @@ import { AmmoSet } from "./data/ammo/ammo.types"
 //   }
 // }
 
-export default class Inventory {
-  ammo: Partial<AmmoSet>
-  caps: number
-  items: Record<string, Item>
+// export default class Inventory {
+//   ammo: Partial<AmmoSet>
+//   caps: number
+//   items: Record<string, Item>
 
-  constructor(payload: { ammo: Partial<AmmoSet>; caps: number; items: Record<string, Item> }) {
-    this.ammo = payload.ammo
-    this.caps = payload.caps
-    this.items = payload.items
-  }
-}
+//   constructor(payload: { ammo: Partial<AmmoSet>; caps: number; items: Record<string, Item> }) {
+//     this.ammo = payload.ammo
+//     this.caps = payload.caps
+//     this.items = payload.items
+//   }
+// }

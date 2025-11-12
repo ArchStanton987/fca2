@@ -1,5 +1,5 @@
 import { Special } from "lib/character/abilities/special/special.types"
-import { Item } from "lib/inventory/use-sub-inv-cat"
+import { Item } from "lib/inventory/item.mappers"
 import {
   HIT_WITH_AP_COST,
   LOAD_AP_COST,

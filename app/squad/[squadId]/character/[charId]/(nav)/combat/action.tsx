@@ -11,7 +11,6 @@ import {
 } from "lib/combat/utils/combat-utils"
 
 import List from "components/List"
-import routes from "constants/routes"
 import { useActionActorId, useActionSubtype, useActionType } from "providers/ActionFormProvider"
 import { SlidesProvider } from "providers/SlidesProvider"
 import ActionUnavailableScreen from "screens/CombatScreen/ActionUnavailableScreen"
@@ -38,7 +37,7 @@ function SlideList() {
 }
 
 function WithActionRedirections({ children }: { children: ReactNode }) {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
   const { data: combatId } = useCombatId(charId)
   const { data: combatState } = useCombatState(combatId)
   const { data: combat } = useCombat(combatId)
@@ -55,7 +54,15 @@ function WithActionRedirections({ children }: { children: ReactNode }) {
   const isOverrideId = combatState.actorIdOverride === charId
   const isPlaying = isOverrideId || isDefaultPlayer
 
-  if (canReact) return <Redirect href={{ pathname: routes.combat.reaction }} />
+  if (canReact)
+    return (
+      <Redirect
+        href={{
+          pathname: "/squad/[squadId]/character/[charId]/combat/reaction",
+          params: { squadId, charId }
+        }}
+      />
+    )
 
   if (!isPlaying) return <ActionUnavailableScreen charId={charId} />
 

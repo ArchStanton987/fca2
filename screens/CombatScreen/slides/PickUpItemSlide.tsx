@@ -2,7 +2,14 @@ import { useLocalSearchParams } from "expo-router"
 
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { useCombatState } from "lib/combat/use-cases/sub-combat"
-import { useBarterStock } from "lib/objects/barter-store"
+import {
+  useBarterAmmos,
+  useBarterCaps,
+  useBarterClothings,
+  useBarterConsumables,
+  useBarterMiscObjects,
+  useBarterWeapons
+} from "lib/objects/barter-store"
 import BarterSection from "lib/objects/ui/barter/BarterSection"
 import Toast from "react-native-toast-message"
 
@@ -24,7 +31,12 @@ export default function PickUpItemSlide({ slideIndex }: SlideProps) {
   const { data: action } = useCombatState(combatId, state => state.action)
   const actorId = formActorId === "" ? charId : formActorId
 
-  const exchange = useBarterStock()
+  const barterCaps = useBarterCaps()
+  const barterAmmo = useBarterAmmos()
+  const barterWeapons = useBarterWeapons()
+  const barterClothings = useBarterClothings()
+  const barterConsumables = useBarterConsumables()
+  const barterMiscObjects = useBarterMiscObjects()
 
   const { scrollTo } = useScrollTo()
 
@@ -40,6 +52,16 @@ export default function PickUpItemSlide({ slideIndex }: SlideProps) {
 
   const onPressNext = async () => {
     try {
+      const exchange = {
+        items: {
+          ...barterWeapons,
+          ...barterClothings,
+          ...barterConsumables,
+          ...barterMiscObjects
+        },
+        ammo: barterAmmo,
+        caps: barterCaps
+      }
       await useCases.inventory.barter({ charId: actorId, ...exchange })
       await useCases.combat.doCombatAction({ combatId, action })
       Toast.show({ type: "custom", text1: "Action réalisée" })

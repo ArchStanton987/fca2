@@ -1,6 +1,6 @@
 import { TouchableHighlight } from "react-native"
 
-import { Redirect } from "expo-router"
+import { Redirect, useLocalSearchParams } from "expo-router"
 
 import { useCombatId, useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { useCombatState } from "lib/combat/use-cases/sub-combat"
@@ -16,6 +16,7 @@ import colors from "styles/colors"
 import layout from "styles/layout"
 
 function WaitScreen({ charId }: { charId: string }) {
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
   const useCases = useGetUseCases()
 
   const { data: combatId } = useCombatId(charId)
@@ -31,7 +32,8 @@ function WaitScreen({ charId }: { charId: string }) {
     useCases.combat.endWait({ combatId, combatState, charId })
   }
 
-  if (canReact) return <Redirect href={{ pathname: routes.combat.reaction }} />
+  if (canReact)
+    return <Redirect href={{ pathname: routes.combat.reaction, params: { charId, squadId } }} />
 
   return (
     <>

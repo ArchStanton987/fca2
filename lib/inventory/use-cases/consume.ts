@@ -35,8 +35,8 @@ export default function consume(config: UseCasesConfig) {
       modifiers.forEach(mod => {
         if (mod.id === "currHp") {
           const currHp = applyMod(0, mod)
-          const payload = { rads: 0, limbs: {}, currHp }
-          promises.push(updateHealth(config)({ charId, payload }))
+          const modPayload = { rads: 0, limbs: {}, currHp }
+          promises.push(updateHealth(config)({ charId, modPayload }))
         }
         if (mod.id === "rads") {
           const newRadsValue = applyMod(health[mod.id], mod)

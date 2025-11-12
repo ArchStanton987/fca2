@@ -34,6 +34,7 @@ export default function Drawer({ sectionId, navElements }: DrawerProps) {
 
   const toTabs = (path: string) => {
     router.push({
+      // @ts-expect-error
       pathname: `${charRoute}/${sectionId}/${path}`,
       params: { squadId, charId }
     })
@@ -68,6 +69,7 @@ export default function Drawer({ sectionId, navElements }: DrawerProps) {
         style={{ flex: 1 }}
         renderItem={({ item }) => {
           const { path } = item
+          // @ts-expect-error
           const isSelected = segments.includes(path)
           const hasBadge =
             (path === "skills" && canAddSkill) || (path === "knowledges" && canAddKnowledge)

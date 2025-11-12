@@ -1,8 +1,8 @@
 import { UseCasesConfig } from "lib/get-use-case.types"
+import { Item } from "lib/inventory/item.mappers"
 import consume from "lib/inventory/use-cases/consume"
 import drop from "lib/inventory/use-cases/drop"
 import toggleEquip from "lib/inventory/use-cases/toggle-equip"
-import { Item } from "lib/inventory/use-sub-inv-cat"
 
 import { DbAction } from "../combats.types"
 import actions from "../const/actions"

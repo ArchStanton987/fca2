@@ -1,6 +1,7 @@
 import { StyleSheet, View } from "react-native"
 
-import { Item, itemSelector, useItems } from "lib/inventory/use-sub-inv-cat"
+import { Item } from "lib/inventory/item.mappers"
+import { itemSelector, useItems } from "lib/inventory/use-sub-inv-cat"
 
 import List from "components/List"
 import ListItemSelectable from "components/ListItemSelectable"

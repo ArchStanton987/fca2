@@ -25,7 +25,7 @@ export default function CharacterSelectionScreen() {
 
   const toChar = (charId: string) => {
     setChar(charId)
-    router.push({ pathname: routes.main.index, params: { charId } })
+    router.push({ pathname: routes.main.index, params: { charId, squadId } })
   }
 
   const squadMembers = Object.keys(members)
