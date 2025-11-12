@@ -1,4 +1,4 @@
-import { TouchableHighlight } from "react-native"
+import { TouchableOpacity } from "react-native"
 
 import { router, useLocalSearchParams, usePathname } from "expo-router"
 
@@ -38,18 +38,16 @@ export default function AdminDrawer({ sectionId, navElements }: DrawerProps) {
           const isSelected = pathname.includes(path)
           const hasBadge = false
           return (
-            <TouchableHighlight
+            <TouchableOpacity
               style={[styles.navButton, isSelected && styles.navButtonActive]}
               onPress={() => toTabs(path)}
             >
-              <>
-                <Txt style={[styles.navButtonText, isSelected && styles.navButtonActiveText]}>
-                  {item.label}
-                </Txt>
-                <Spacer x={5} />
-                {hasBadge && <PlusIcon style={styles.badge} size={12} />}
-              </>
-            </TouchableHighlight>
+              <Txt style={[styles.navButtonText, isSelected && styles.navButtonActiveText]}>
+                {item.label}
+              </Txt>
+              <Spacer x={5} />
+              {hasBadge && <PlusIcon style={styles.badge} size={12} />}
+            </TouchableOpacity>
           )
         }}
       />

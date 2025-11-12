@@ -1,5 +1,7 @@
 import { StyleSheet } from "react-native"
 
+import colors from "styles/colors"
+
 const styles = StyleSheet.create({
   container: {
     flex: 1
@@ -14,6 +16,9 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   cta: {
+    padding: 12,
+    borderWidth: 2,
+    borderColor: colors.secColor,
     width: 130,
     justifyContent: "center",
     alignItems: "center"

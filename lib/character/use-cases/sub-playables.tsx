@@ -2,7 +2,6 @@ import { ReactNode } from "react"
 
 import { useMultiSubAmmo, useMultiSubCaps, useMultiSubItems } from "lib/inventory/use-sub-inv-cat"
 
-import Txt from "components/Txt"
 import LoadingScreen from "screens/LoadingScreen"
 
 import { useSubPlayablesAbilities } from "../abilities/abilities-provider"
@@ -49,7 +48,7 @@ function FirstProviders({
   ]
 
   const isLoading = data.some(d => d.some(q => q.isPending))
-  if (isLoading) return <Txt>First provider</Txt>
+  if (isLoading) return <LoadingScreen />
   return children
 }
 

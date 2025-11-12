@@ -17,7 +17,7 @@ function HeaderDatetime() {
 }
 
 function TabBarComponent(props: any) {
-  return <TabBar tabbarLabel="Admin" {...props} />
+  return <TabBar tabBarId="admin" {...props} />
 }
 
 export default function AdminLayout() {
