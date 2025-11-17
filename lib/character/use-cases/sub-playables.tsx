@@ -1,6 +1,9 @@
 import { ReactNode } from "react"
 
+import { useLocalSearchParams } from "expo-router"
+
 import { useMultiSubAmmo, useMultiSubCaps, useMultiSubItems } from "lib/inventory/use-sub-inv-cat"
+import { useDatetime } from "lib/squad/use-cases/sub-squad"
 
 import LoadingScreen from "screens/LoadingScreen"
 
@@ -13,15 +16,10 @@ import { useSubPlayablesHealth } from "../health/health-provider"
 import { useSubPlayablesCharInfo } from "../info/info-provider"
 import { useSubPlayablesExp } from "../progress/exp-provider"
 
-function FirstProviders({
-  children,
-  ids,
-  datetime
-}: {
-  datetime: Date
-  children: ReactNode
-  ids: string[]
-}) {
+function FirstProviders({ children, ids }: { children: ReactNode; ids: string[] }) {
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const { data: datetime } = useDatetime(squadId)
+
   // Inventory
   const capsReq = useMultiSubCaps(ids)
   const ammoReq = useMultiSubAmmo(ids)
@@ -69,15 +67,13 @@ function TerProviders({ children, ids }: { children: ReactNode; ids: string[] })
 
 export default function SubPlayables({
   children,
-  playablesIds,
-  datetime
+  playablesIds
 }: {
   children: ReactNode
   playablesIds: string[]
-  datetime: Date
 }) {
   return (
-    <FirstProviders ids={playablesIds} datetime={datetime}>
+    <FirstProviders ids={playablesIds}>
       <SecProviders ids={playablesIds}>
         <TerProviders ids={playablesIds}>{children}</TerProviders>
       </SecProviders>

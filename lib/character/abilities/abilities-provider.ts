@@ -6,7 +6,7 @@ import {
   useSuspenseQuery
 } from "@tanstack/react-query"
 import { usePlayablesItemSymptoms } from "lib/inventory/use-cases/get-item-symptoms"
-import { useMultiSub } from "lib/shared/db/useSub"
+import { qkToPath, useMultiSub } from "lib/shared/db/useSub"
 
 import { usePlayablesEffectsSymptoms } from "../effects/effects-provider"
 import { usePlayablesHealthEffects } from "../health/health-provider"
@@ -29,7 +29,7 @@ export function useSubPlayablesAbilities(ids: string[]) {
   const effectsSymptoms = usePlayablesEffectsSymptoms(ids)
   useMultiSub(
     ids.map(id => ({
-      path: getDbAbilitiesOptions(id).queryKey.join("/"),
+      path: qkToPath(getDbAbilitiesOptions(id).queryKey),
       cb: (payload: DbAbilities) =>
         new Abilities({
           payload,

@@ -1,3 +1,5 @@
+import { useMemo } from "react"
+
 import {
   QueryClient,
   queryOptions,
@@ -5,7 +7,7 @@ import {
   useSuspenseQueries,
   useSuspenseQuery
 } from "@tanstack/react-query"
-import { useMultiSub } from "lib/shared/db/useSub"
+import { qkToPath, useMultiSub } from "lib/shared/db/useSub"
 
 import CharInfo, { DbCharInfo } from "./CharInfo"
 
@@ -21,14 +23,20 @@ export const getCharInfoOptions = <TData = CharInfo>(
   })
 
 export function useSubPlayablesCharInfo(ids: string[]) {
-  const queries = ids.map(id => getCharInfoOptions(id))
-  useMultiSub<DbCharInfo>(
-    queries.map((q, i) => ({
-      path: q.queryKey.join("/"),
-      cb: payload => new CharInfo(payload, ids[i])
-    }))
+  const cbs = useMemo(
+    () => ids.map(id => (payload: DbCharInfo) => new CharInfo(payload, id)),
+    [ids]
   )
-  return useQueries({ queries })
+  const subParams = useMemo(
+    () =>
+      ids.map((id, i) => ({
+        path: qkToPath(getCharInfoOptions(id).queryKey),
+        cb: cbs[i]
+      })),
+    [ids, cbs]
+  )
+  useMultiSub(subParams)
+  return useQueries({ queries: ids.map(id => getCharInfoOptions(id)) })
 }
 
 export function usePlayablesCharInfo(ids: string[]) {

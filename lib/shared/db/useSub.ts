@@ -8,12 +8,18 @@ import { onChildAdded, onChildChanged, onChildRemoved, onValue, ref } from "fire
 export const qkToPath = (arr: string[]) => "/".concat(arr.join("/"))
 export const pathToQk = (p: string) => p.split("/").filter((_, i) => i !== 0)
 
-export function subscribeToPath<Db>(path: string, onData: (data: Db) => void): () => void {
+export function subscribeToPath<Db>(
+  path: string,
+  onData: (data: Db) => void,
+  onEmpty: () => any
+): () => void {
   const dbRef = ref(database, path)
 
   const unsubscribe = onValue(dbRef, snapshot => {
     if (snapshot.exists()) {
       onData(snapshot.val())
+    } else {
+      onEmpty()
     }
   })
 
@@ -145,9 +151,14 @@ export function useSub<Db, T = Db>(path: string, cb?: (snapshot: Db) => T) {
 
   useEffect(() => {
     const queryKey = path.split("/")
-    const unsubscribe = subscribeToPath<Db>(path, data => {
-      const newData = cb?.(data) ?? data
-      queryClient.setQueryData(queryKey, newData)
+    const dbRef = ref(database, path)
+    const unsubscribe = onValue(dbRef, snapshot => {
+      if (snapshot.exists()) {
+        const newData = cb?.(snapshot.val()) ?? snapshot.val()
+        queryClient.setQueryData(queryKey, newData)
+      } else {
+        queryClient.setQueryData(queryKey, {})
+      }
     })
     return () => unsubscribe()
   }, [queryClient, path, cb])
@@ -160,10 +171,15 @@ export function useMultiSub<Db, T = Db>(paramsArray: UseSubParams<Db, T>[]) {
 
   useEffect(() => {
     const unsubscribers = memoParams.map(({ path, cb }) => {
-      const queryKey = path.split("/")
-      return subscribeToPath<Db>(path, data => {
-        const newData = cb?.(data) ?? data
-        queryClient.setQueryData(queryKey, newData)
+      const queryKey = pathToQk(path)
+      const dbRef = ref(database, path)
+      return onValue(dbRef, snapshot => {
+        if (snapshot.exists()) {
+          const newData = cb?.(snapshot.val()) ?? snapshot.val()
+          queryClient.setQueryData(queryKey, newData)
+        } else {
+          queryClient.setQueryData(queryKey, {})
+        }
       })
     })
 

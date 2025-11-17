@@ -5,7 +5,7 @@ import {
   useSuspenseQueries,
   useSuspenseQuery
 } from "@tanstack/react-query"
-import { useMultiSub } from "lib/shared/db/useSub"
+import { qkToPath, useMultiSub } from "lib/shared/db/useSub"
 
 import { usePlayablesBaseSpecial } from "../abilities/base-special-provider"
 import { usePlayablesCharInfo } from "../info/info-provider"
@@ -27,7 +27,7 @@ export function useSubPlayablesHealth(ids: string[]) {
 
   useMultiSub(
     ids.map(id => ({
-      path: getHealthOptions(id).queryKey.join("/"),
+      path: qkToPath(getHealthOptions(id).queryKey),
       cb: (payload: DbHealth) =>
         new Health({
           health: payload,

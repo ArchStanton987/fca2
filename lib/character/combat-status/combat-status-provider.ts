@@ -1,3 +1,5 @@
+import { useMemo } from "react"
+
 import {
   QueryClient,
   queryOptions,
@@ -5,7 +7,7 @@ import {
   useSuspenseQueries,
   useSuspenseQuery
 } from "@tanstack/react-query"
-import { useMultiSub } from "lib/shared/db/useSub"
+import { qkToPath, useMultiSub } from "lib/shared/db/useSub"
 
 import { CombatStatus, DbCombatStatus } from "./combat-status.types"
 
@@ -19,9 +21,11 @@ export const combatStatusOptions = (charId: string) =>
 const cb = (res: DbCombatStatus) => new CombatStatus(res)
 
 export function useSubPlayablesCombatStatus(ids: string[]) {
-  const options = ids.map(id => combatStatusOptions(id))
-  const subs = options.map(o => ({ path: o.queryKey.join("/"), cb }))
-  useMultiSub(subs)
+  const subsParams = useMemo(
+    () => ids.map(id => ({ path: qkToPath(combatStatusOptions(id).queryKey), cb })),
+    [ids]
+  )
+  useMultiSub(subsParams)
   return useQueries({ queries: ids.map(id => combatStatusOptions(id)) })
 }
 

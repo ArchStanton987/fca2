@@ -148,9 +148,8 @@ export function useItemCount(charId: string, itemId: string) {
 const ammoCb = (data: Partial<AmmoSet>) => ({ ...defaultAmmoSet, ...data })
 
 export function useMultiSubAmmo(ids: string[]) {
-  const options = ids.map(id => getAmmoOptions(id))
-  useMultiSub(options.map(o => ({ path: o.queryKey.join("/"), cb: ammoCb })))
-  return useQueries({ queries: options })
+  useMultiSub(ids.map(id => ({ path: qkToPath(getAmmoOptions(id).queryKey), cb: ammoCb })))
+  return useQueries({ queries: ids.map(id => getAmmoOptions(id)) })
 }
 
 export function useAmmo<TData = AmmoSet>(id: string, select?: (data: AmmoSet) => TData) {
@@ -158,9 +157,8 @@ export function useAmmo<TData = AmmoSet>(id: string, select?: (data: AmmoSet) =>
 }
 
 export function useMultiSubCaps(ids: string[]) {
-  const options = ids.map(id => getCapsOptions(id))
-  useMultiSub(options.map(o => ({ path: o.queryKey.join("/") })))
-  return useQueries({ queries: options })
+  useMultiSub(ids.map(id => ({ path: qkToPath(getCapsOptions(id).queryKey) })))
+  return useQueries({ queries: ids.map(id => getCapsOptions(id)) })
 }
 
 export function useCaps(id: string) {
