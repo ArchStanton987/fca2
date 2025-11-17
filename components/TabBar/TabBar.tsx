@@ -12,15 +12,18 @@ import layout from "styles/layout"
 
 import styles from "./TabBar.styles"
 
-export default function TabBar(props: BottomTabBarProps) {
-  const { state, descriptors } = props
+type TabBarId = "char" | "admin"
+
+export default function TabBar(props: BottomTabBarProps & { tabBarId: TabBarId }) {
+  const { state, descriptors, tabBarId } = props
   const { routes } = state
   const router = useRouter()
   const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
-  const { data: isAdmin = false } = useCharInfoQuery(charId, i => i.isNpc)
+  const { data: charIsAdmin = false } = useCharInfoQuery(charId, i => i.isNpc)
+  const isAdminTab = tabBarId === "admin"
 
   const onPressTab = (routeName: string) => {
-    const pathname = isAdmin
+    const pathname = isAdminTab
       ? `/squad/[squadId]/admin/${routeName}`
       : `/squad/[squadId]/character/[charId]/${routeName}`
     // @ts-ignore
@@ -28,7 +31,7 @@ export default function TabBar(props: BottomTabBarProps) {
   }
 
   const toHome = () => {
-    if (!isAdmin) return router.push("/")
+    if (!charIsAdmin) return router.push("/")
     return router.push({ pathname: "/squad/[squadId]/admin/datetime", params: { squadId } })
   }
 
