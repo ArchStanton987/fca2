@@ -26,6 +26,15 @@ const robots: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "mediumTailed",
+    special: {
+      strength: 6,
+      perception: 4,
+      endurance: 8,
+      charisma: 3,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    },
     skills: { stealth: 10, physical: 60, barter: 50, speech: 30, manipulation: 60, aid: 40 }
   },
   mrGutsy: {
@@ -59,6 +68,15 @@ const robots: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "mediumTailed",
+    special: {
+      strength: 6,
+      perception: 4,
+      endurance: 8,
+      charisma: 3,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    },
     skills: { stealth: 10, physical: 60, barter: 50, speech: 30, manipulation: 60, aid: 40 }
   },
   sentinelRobotMkII: {
@@ -92,6 +110,15 @@ const robots: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "mediumTailed",
+    special: {
+      strength: 6,
+      perception: 4,
+      endurance: 8,
+      charisma: 3,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    },
     skills: { stealth: 10, physical: 90 }
   },
   enclaveEyebot: {
@@ -112,6 +139,15 @@ const robots: Record<string, NonHumanNpcTemplate> = {
     },
     attacks: [], // Pas d'attaques spécifiées dans le document
     limbsTemplate: "mediumTailed",
+    special: {
+      strength: 6,
+      perception: 4,
+      endurance: 8,
+      charisma: 3,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    },
     skills: { physical: 10 }
   },
   robotBrain: {
@@ -145,6 +181,15 @@ const robots: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "mediumTailed",
+    special: {
+      strength: 6,
+      perception: 4,
+      endurance: 8,
+      charisma: 3,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    },
     skills: { stealth: 10, physical: 80, barter: 50, speech: 50, manipulation: 40, aid: 20 }
   },
   robotBrainLeader: {
@@ -184,6 +229,15 @@ const robots: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "mediumTailed",
+    special: {
+      strength: 6,
+      perception: 4,
+      endurance: 8,
+      charisma: 3,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    },
     skills: { stealth: 10, physical: 90, barter: 50, speech: 50, manipulation: 40, aid: 20 }
   },
   cyberdog: {
@@ -217,6 +271,15 @@ const robots: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "mediumTailed",
+    special: {
+      strength: 6,
+      perception: 4,
+      endurance: 8,
+      charisma: 3,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    },
     skills: { stealth: 10, physical: 65 }
   },
   militaryCyberdog: {
@@ -250,6 +313,15 @@ const robots: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "mediumTailed",
+    special: {
+      strength: 6,
+      perception: 4,
+      endurance: 8,
+      charisma: 3,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    },
     skills: { stealth: 10, physical: 75 }
   }
 }

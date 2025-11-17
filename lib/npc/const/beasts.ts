@@ -22,7 +22,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       { name: "Mords", skill: 75, apCost: 4, damage: "1d6+2", effects: ["poisonRadRatVenom"] }
     ],
     limbsTemplate: "smallTailed",
-    skills: { stealth: 40, physical: 40 }
+    skills: { stealth: 40, physical: 40 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   radRat: {
     templateId: "radRat",
@@ -57,7 +66,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "smallTailed",
-    skills: { stealth: 50, physical: 25 }
+    skills: { stealth: 50, physical: 25 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   standardMolerat: {
     templateId: "standardMolerat",
@@ -80,7 +98,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       { name: "Mords", skill: 75, apCost: 4, damage: "1d6+3", effects: ["poisonLightBeast"] }
     ],
     limbsTemplate: "small",
-    skills: { stealth: 35, physical: 45 }
+    skills: { stealth: 35, physical: 45 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   powerfulMolerat: {
     templateId: "powerfulMolerat",
@@ -103,7 +130,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       { name: "Mords", skill: 90, apCost: 4, damage: "1d10", effects: ["poisonMedBeast"] }
     ],
     limbsTemplate: "medium",
-    skills: { stealth: 30, physical: 50 }
+    skills: { stealth: 30, physical: 50 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   standardPigrat: {
     templateId: "standardPigrat",
@@ -126,7 +162,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       { name: "Mords", skill: 75, apCost: 4, damage: "2d4", effects: ["poisonLightBeast"] }
     ],
     limbsTemplate: "medium",
-    skills: { stealth: 30, physical: 50 }
+    skills: { stealth: 30, physical: 50 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   powerfulPigrat: {
     templateId: "powerfulPigrat",
@@ -149,7 +194,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       { name: "Mords", skill: 75, apCost: 6, damage: "2d6+4", effects: ["poisonMedBeast"] }
     ],
     limbsTemplate: "medium",
-    skills: { stealth: 25, physical: 65 }
+    skills: { stealth: 25, physical: 65 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   radRoach: {
     templateId: "radRoach",
@@ -177,7 +231,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "small",
-    skills: { stealth: 75, physical: 20 }
+    skills: { stealth: 75, physical: 20 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   giantAnt: {
     templateId: "giantAnt",
@@ -197,7 +260,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
     },
     attacks: [{ name: "Mandibles", skill: 65, apCost: 3, damage: "1d6+5" }],
     limbsTemplate: "medium",
-    skills: { stealth: 20, physical: 40 }
+    skills: { stealth: 20, physical: 40 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   fireAnt: {
     templateId: "fireAnt",
@@ -225,7 +297,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "medium",
-    skills: { stealth: 20, physical: 45 }
+    skills: { stealth: 20, physical: 45 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   mantis: {
     templateId: "mantis",
@@ -254,7 +335,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       { name: "Griffe", skill: 75, apCost: 4, damage: "2d6+2" }
     ],
     limbsTemplate: "small",
-    skills: { stealth: 20, physical: 40 }
+    skills: { stealth: 20, physical: 40 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   mutantFly: {
     templateId: "mutantFly",
@@ -277,7 +367,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       { name: "Mords", skill: 60, apCost: 4, damage: "1d6+5" }
     ],
     limbsTemplate: "small",
-    skills: { stealth: 20, physical: 35 }
+    skills: { stealth: 20, physical: 35 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   brahmin: {
     templateId: "brahmin",
@@ -300,7 +399,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       { name: "Trample", skill: 65, apCost: 6, damage: "4d6+10" }
     ],
     limbsTemplate: "large",
-    skills: { stealth: 5, physical: 75 }
+    skills: { stealth: 5, physical: 75 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   floater: {
     templateId: "floater",
@@ -328,7 +436,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "medium",
-    skills: { stealth: 25, physical: 80 }
+    skills: { stealth: 25, physical: 80 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   centaur: {
     templateId: "centaur",
@@ -363,7 +480,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "large",
-    skills: { stealth: 25, physical: 80 }
+    skills: { stealth: 25, physical: 80 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   radScorpion: {
     templateId: "radScorpion",
@@ -392,7 +518,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       { name: "Claw", skill: 60, apCost: 3, damage: "1d6" }
     ],
     limbsTemplate: "mediumTailed",
-    skills: { stealth: 30, physical: 55 }
+    skills: { stealth: 30, physical: 55 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   giantRadScorpion: {
     templateId: "giantRadScorpion",
@@ -421,7 +556,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       { name: "Pince", skill: 75, apCost: 3, damage: "1d10" }
     ],
     limbsTemplate: "largeTailed",
-    skills: { stealth: 20, physical: 90 }
+    skills: { stealth: 20, physical: 90 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   grayWolf: {
     templateId: "grayWolf",
@@ -444,7 +588,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       { name: "Griffe", skill: 70, apCost: 3, damage: "1d6+3" }
     ],
     limbsTemplate: "medium",
-    skills: { stealth: 75, physical: 80 }
+    skills: { stealth: 75, physical: 80 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   furiousWolf: {
     templateId: "furiousWolf",
@@ -472,7 +625,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "medium",
-    skills: { stealth: 75, physical: 95 }
+    skills: { stealth: 75, physical: 95 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   wildDog: {
     templateId: "wildDog",
@@ -499,7 +661,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "medium",
-    skills: { stealth: 50, physical: 70 }
+    skills: { stealth: 50, physical: 70 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   babyDeathclaw: {
     templateId: "babyDeathclaw",
@@ -519,7 +690,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
     },
     attacks: [{ name: "Griffe", skill: 70, apCost: 4, damage: "4d6" }],
     limbsTemplate: "mediumTailed",
-    skills: { stealth: 30, physical: 95 }
+    skills: { stealth: 30, physical: 95 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   adultDeathclaw: {
     templateId: "adultDeathclaw",
@@ -539,7 +719,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
     },
     attacks: [{ name: "Griffe", skill: 90, apCost: 5, damage: "5d6+5" }],
     limbsTemplate: "largeTailed",
-    skills: { stealth: 15, physical: 110 }
+    skills: { stealth: 15, physical: 110 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   alphaFemaleDeathclaw: {
     templateId: "alphaFemaleDeathclaw",
@@ -559,7 +748,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
     },
     attacks: [{ name: "Griffe", skill: 110, apCost: 5, damage: "4d10+5" }],
     limbsTemplate: "largeTailed",
-    skills: { stealth: 5, physical: 125 }
+    skills: { stealth: 5, physical: 125 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
 
   babySpitter: {
@@ -588,7 +786,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "smallTailed",
-    skills: { stealth: 40, physical: 40 }
+    skills: { stealth: 40, physical: 40 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   adultSpitter: {
     templateId: "adultSpitter",
@@ -616,7 +823,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "mediumTailed",
-    skills: { stealth: 30, physical: 65 }
+    skills: { stealth: 30, physical: 65 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   gecko: {
     templateId: "gecko",
@@ -649,7 +865,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "medium",
-    skills: { stealth: 50, physical: 60 }
+    skills: { stealth: 50, physical: 60 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   fireGecko: {
     templateId: "fireGecko",
@@ -682,7 +907,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "medium",
-    skills: { stealth: 50, physical: 60 }
+    skills: { stealth: 50, physical: 60 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   goldenGecko: {
     templateId: "goldenGecko",
@@ -715,7 +949,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "large",
-    skills: { stealth: 50, physical: 70 }
+    skills: { stealth: 50, physical: 70 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   yaoGuai: {
     templateId: "yaoGuai",
@@ -742,7 +985,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "large",
-    skills: { stealth: 20, physical: 120 }
+    skills: { stealth: 20, physical: 120 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   mirelurk: {
     templateId: "mirelurk",
@@ -770,7 +1022,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "medium",
-    skills: { stealth: 30, physical: 40 }
+    skills: { stealth: 30, physical: 40 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   mirelurking: {
     templateId: "mirelurking",
@@ -805,7 +1066,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "large",
-    skills: { stealth: 20, physical: 60 }
+    skills: { stealth: 20, physical: 60 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   weakFeralGhoul: {
     templateId: "weakFeralGhoul",
@@ -840,7 +1110,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "medium",
-    skills: { stealth: 10, physical: 55 }
+    skills: { stealth: 10, physical: 55 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   furiousFeralGhoul: {
     templateId: "furiousFeralGhoul",
@@ -875,7 +1154,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "medium",
-    skills: { stealth: 5, physical: 70 }
+    skills: { stealth: 5, physical: 70 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   },
   glowingFeralGhoul: {
     templateId: "glowingFeralGhoul",
@@ -910,7 +1198,16 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
       }
     ],
     limbsTemplate: "medium",
-    skills: { stealth: 1, physical: 70 }
+    skills: { stealth: 1, physical: 70 },
+    special: {
+      strength: 5,
+      perception: 5,
+      endurance: 5,
+      charisma: 1,
+      intelligence: 4,
+      agility: 5,
+      luck: 3
+    }
   }
 }
 
