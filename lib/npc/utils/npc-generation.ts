@@ -17,10 +17,13 @@ import { DbInventory } from "lib/objects/data/objects.types"
 import { getRandomWeightedIndex } from "lib/shared/utils/math-utils"
 
 import humanTemplates from "../const/human-templates"
+import { critters } from "../const/npc-templates"
 
-export const getSpecialFromTemplate = (specialTemplate: keyof typeof humanTemplates) => {
-  const { special } = humanTemplates[specialTemplate]
-  const result = {
+const getSpecialFromTemplate = (templateId: TemplateId) => {
+  if (templateId === "player") throw new Error("missing player SPECIAL")
+  if (templateId in critters) return critters[templateId].special
+  const { special } = humanTemplates[templateId]
+  return {
     strength: getRandomArbitrary(special.strength.min, special.strength.max),
     perception: getRandomArbitrary(special.perception.min, special.perception.max),
     endurance: getRandomArbitrary(special.endurance.min, special.endurance.max),
@@ -29,11 +32,11 @@ export const getSpecialFromTemplate = (specialTemplate: keyof typeof humanTempla
     agility: getRandomArbitrary(special.agility.min, special.agility.max),
     luck: getRandomArbitrary(special.luck.min, special.luck.max)
   }
-  return result
 }
 
-export const getTraitsFromTemplate = (traitsTemplate: keyof typeof humanTemplates) => {
-  const { traits } = humanTemplates[traitsTemplate]
+export const getTraitsFromTemplate = (templateId: TemplateId) => {
+  if (!(templateId in humanTemplates)) return []
+  const { traits } = humanTemplates[templateId]
   if (!traits) return []
   const result = Object.entries(traits)
     .map(([trait, p]) => ({
@@ -48,12 +51,10 @@ export const getTraitsFromTemplate = (traitsTemplate: keyof typeof humanTemplate
 const getMaxTagSkills = (level: number) => Math.round(level / 5) + 2
 const getMaxSkillScore = (level: number) => 80 + level * 5
 
-export const getTagSkillsFromTemplate = (
-  level: number,
-  skillsTemplate: keyof typeof humanTemplates
-) => {
+export const getTagSkillsFromTemplate = (level: number, templateId: TemplateId) => {
+  if (!(templateId in humanTemplates)) return []
   const maxCount = getMaxTagSkills(level)
-  const { tagSkills, mandatorySkills } = humanTemplates[skillsTemplate]
+  const { tagSkills, mandatorySkills } = humanTemplates[templateId]
   const result = new Set(mandatorySkills)
   const pickedSkills = Object.entries(tagSkills)
     .map(([skill, p]) => ({ skill: skill as SkillId, has: getRandomArbitrary(1, 101) < p * 100 }))
@@ -87,6 +88,7 @@ export const getUpSkillsScores = (
     } else {
       skillId = tagSkills[getRandomWeightedIndex(tagSkills)]
     }
+    if (!(skillId in skills)) break
     const upSkillCost = getUpSkillCost(skills[skillId])
     const maxSkillScore = getMaxSkillScore(level)
     if (upSkillCost > remainingSkillPoints || maxSkillScore === skills[skillId]) break
