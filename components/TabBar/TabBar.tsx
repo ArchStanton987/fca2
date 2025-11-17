@@ -3,6 +3,7 @@ import { TouchableHighlight, TouchableOpacity, View } from "react-native"
 import { useLocalSearchParams, useRouter } from "expo-router"
 
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs"
+import { useCharInfoQuery } from "lib/character/info/info-provider"
 
 import List from "components/List"
 import Spacer from "components/Spacer"
@@ -11,14 +12,12 @@ import layout from "styles/layout"
 
 import styles from "./TabBar.styles"
 
-type TabBarId = "char" | "admin"
-
-export default function TabBar(props: BottomTabBarProps & { tabBarId: TabBarId }) {
-  const { state, descriptors, tabBarId } = props
+export default function TabBar(props: BottomTabBarProps) {
+  const { state, descriptors } = props
   const { routes } = state
   const router = useRouter()
   const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
-  const isAdmin = tabBarId === "admin"
+  const { data: isAdmin = false } = useCharInfoQuery(charId, i => i.isNpc)
 
   const onPressTab = (routeName: string) => {
     const pathname = isAdmin
@@ -29,7 +28,7 @@ export default function TabBar(props: BottomTabBarProps & { tabBarId: TabBarId }
   }
 
   const toHome = () => {
-    if (isAdmin) return router.push("/")
+    if (!isAdmin) return router.push("/")
     return router.push({ pathname: "/squad/[squadId]/admin/datetime", params: { squadId } })
   }
 

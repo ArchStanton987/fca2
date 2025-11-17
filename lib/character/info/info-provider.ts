@@ -4,6 +4,7 @@ import {
   QueryClient,
   queryOptions,
   useQueries,
+  useQuery,
   useSuspenseQueries,
   useSuspenseQuery
 } from "@tanstack/react-query"
@@ -48,6 +49,9 @@ export function usePlayablesCharInfo(ids: string[]) {
 
 export function useCharInfo<TData = CharInfo>(id: string, select?: (data: CharInfo) => TData) {
   return useSuspenseQuery(getCharInfoOptions(id, select))
+}
+export function useCharInfoQuery<TData = CharInfo>(id: string, select?: (data: CharInfo) => TData) {
+  return useQuery(getCharInfoOptions(id, select))
 }
 export function useCharsNameInfo(ids: string[]) {
   return useSuspenseQueries({
