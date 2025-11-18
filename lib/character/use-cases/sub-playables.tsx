@@ -21,17 +21,17 @@ function FirstProviders({ children, ids }: { children: ReactNode; ids: string[] 
   const { data: datetime } = useDatetime(squadId)
 
   // Inventory
-  const capsReq = useMultiSubCaps(ids)
-  const ammoReq = useMultiSubAmmo(ids)
-  const itemsReq = useMultiSubItems(ids)
+  const capsReq = useMultiSubCaps(ids).some(r => r.isPending)
+  const ammoReq = useMultiSubAmmo(ids).some(r => r.isPending)
+  const itemsReq = useMultiSubItems(ids).some(r => r.isPending)
 
   // Playable
-  const infoReq = useSubPlayablesCharInfo(ids)
-  const baseSpecialReq = useSubPlayablesBaseSpecial(ids)
-  const expReq = useSubPlayablesExp(ids)
-  const effectsReq = useSubPlayablesEffects(ids, datetime)
-  const csReq = useSubPlayablesCombatStatus(ids)
-  const chReq = useSubPlayablesCombatHistory(ids)
+  const infoReq = useSubPlayablesCharInfo(ids).some(r => r.isPending)
+  const baseSpecialReq = useSubPlayablesBaseSpecial(ids).some(r => r.isPending)
+  const expReq = useSubPlayablesExp(ids).some(r => r.isPending)
+  const effectsReq = useSubPlayablesEffects(ids, datetime).some(r => r.isPending)
+  const csReq = useSubPlayablesCombatStatus(ids).some(r => r.isPending)
+  const chReq = useSubPlayablesCombatHistory(ids).some(r => r.isPending)
 
   const data = [
     capsReq,
@@ -45,7 +45,7 @@ function FirstProviders({ children, ids }: { children: ReactNode; ids: string[] 
     chReq
   ]
 
-  const isLoading = data.some(d => d.some(q => q.isPending))
+  const isLoading = data.some(d => !!d)
   if (isLoading) return <LoadingScreen />
   return children
 }
