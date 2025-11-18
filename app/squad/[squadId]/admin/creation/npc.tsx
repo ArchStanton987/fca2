@@ -1,171 +1,59 @@
-import { useState } from "react"
 import { View } from "react-native"
 
 import { useLocalSearchParams } from "expo-router"
 
-import { BackgroundId, DbCharInfo } from "lib/character/info/CharInfo"
-import { species } from "lib/character/playable.const"
-import { getExpForLevel } from "lib/character/status/status-calc"
-import enemyTemplates, { critters } from "lib/npc/const/npc-templates"
-import { generateDbHuman } from "lib/npc/utils/npc-generation"
-import Toast from "react-native-toast-message"
+import CreateNpc from "lib/npc/ui/create-npc-form/CreateNpcComponents"
 
 import Col from "components/Col"
 import DrawerPage from "components/DrawerPage"
-import List from "components/List"
 import Row from "components/Row"
 import Section from "components/Section"
 import ScrollSection from "components/Section/ScrollSection"
-import SelectorButton from "components/SelectorButton"
 import Spacer from "components/Spacer"
-import Txt from "components/Txt"
-import TxtInput from "components/TxtInput"
-import PlusIcon from "components/icons/PlusIcon"
-import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
-
-const enemyTypes = Object.keys(enemyTemplates) as ReadonlyArray<keyof typeof enemyTemplates>
-
-type NpcForm = {
-  speciesId: (typeof enemyTypes)[number]
-  templateId: string
-  background: BackgroundId
-  squadId: string
-  firstname: string
-  lastname: string
-  description?: string
-  level: string
-  isEnemy: boolean
-}
 
 export default function NpcCreation() {
   const { squadId } = useLocalSearchParams<{ squadId: string }>()
-  const useCases = useGetUseCases()
-
-  const defaultForm: NpcForm = {
-    speciesId: "human",
-    templateId: "gunner",
-    background: "other",
-    squadId,
-    description: "",
-    firstname: "",
-    lastname: "",
-    level: "",
-    isEnemy: true
-  }
-
-  const [form, setForm] = useState(defaultForm)
-
-  const handleSetForm = <T extends keyof NpcForm>(key: T, value: NpcForm[T]) => {
-    setForm({ ...form, [key]: value })
-  }
-
-  const toggleType = () => {
-    const currIndex = enemyTypes.indexOf(form.speciesId)
-    const nextIndex = (currIndex + 1) % enemyTypes.length
-    const newType = enemyTypes[nextIndex]
-    const templateKeys = Object.keys(enemyTemplates[newType])
-    const randomIndex = Math.floor(Math.random() * templateKeys.length)
-    const newTemplateId = templateKeys[randomIndex]
-    const newLastName = newType === "human" ? form.lastname : ""
-    setForm(prev => ({
-      ...prev,
-      speciesId: newType,
-      templateId: newTemplateId,
-      lastname: newLastName
-    }))
-  }
-
-  const submit = async () => {
-    const { level, ...rest } = form
-    const isCritter = form.templateId in critters
-    const info: DbCharInfo = { isNpc: true, isCritter, ...rest }
-    const exp = getExpForLevel(parseInt(level, 10))
-    const payload = { ...generateDbHuman(exp, form.templateId), info }
-    try {
-      await useCases.npc.create({ npc: payload, squadId })
-      Toast.show({ type: "custom", text1: "Le PNJ a été créé" })
-      setForm(defaultForm)
-    } catch (err) {
-      Toast.show({ type: "error", text1: "Erreur lors de la création du PNJ" })
-    }
-  }
-
   return (
     <DrawerPage>
-      <ScrollSection style={{ flex: 1 }} title={species[form.speciesId]}>
+      <ScrollSection style={{ flex: 1 }} title="Création de PNJ">
         <Row>
           <Col>
-            <Txt>TYPE</Txt>
-            <SelectorButton
-              isSelected={false}
-              onPress={toggleType}
-              label={species[form.speciesId]}
-            />
+            <CreateNpc.SpeciesSelector />
           </Col>
           <Spacer x={layout.globalPadding} />
           <Col style={{ flex: 1 }}>
-            <Txt>FIRSTNAME</Txt>
-            <TxtInput value={form.firstname} onChangeText={e => handleSetForm("firstname", e)} />
-            {form.speciesId === "human" ? (
-              <>
-                <Spacer x={layout.globalPadding} />
-                <Txt>LASTNAME</Txt>
-                <TxtInput value={form.lastname} onChangeText={e => handleSetForm("lastname", e)} />
-              </>
-            ) : null}
+            <CreateNpc.FirstnamteInput />
+            <CreateNpc.LastnameInput />
           </Col>
           <Spacer x={layout.globalPadding} />
           <Col style={{ flex: 1 }}>
-            <Txt>TEMPLATE</Txt>
-            <Txt>{enemyTemplates[form.speciesId][form.templateId].label}</Txt>
+            <CreateNpc.Template />
           </Col>
           <Spacer x={layout.globalPadding} />
           <Col style={{ flex: 1 }}>
-            <Txt>HOSTILE</Txt>
-            <SelectorButton
-              isSelected={false}
-              onPress={() => handleSetForm("isEnemy", !form.isEnemy)}
-              label={form.isEnemy ? "ENEMY" : "ALLY"}
-            />
-            {form.speciesId === "human" ? (
-              <>
-                <Txt>LEVEL</Txt>
-                <TxtInput value={form.level} onChangeText={e => handleSetForm("level", e)} />
-              </>
-            ) : null}
+            <CreateNpc.Hostile />
+            <CreateNpc.Level />
           </Col>
         </Row>
 
         <Spacer y={15} />
 
-        <Txt>DESCRIPTION</Txt>
-        <TxtInput
-          value={form.description}
-          onChangeText={e => handleSetForm("description", e)}
-          multiline
-        />
+        <CreateNpc.Description />
       </ScrollSection>
 
       <Spacer x={layout.globalPadding} />
 
       <View style={{ width: 160 }}>
         <ScrollSection style={{ flex: 1 }} title="template">
-          <List
-            data={Object.values(enemyTemplates[form.speciesId])}
-            keyExtractor={item => item.templateId}
-            separator={<Spacer y={10} />}
-            renderItem={({ item }) => (
-              <Txt onPress={() => handleSetForm("templateId", item.templateId)}>{item.label}</Txt>
-            )}
-          />
+          <CreateNpc.TemplateList />
         </ScrollSection>
 
         <Spacer y={layout.globalPadding} />
 
         <Section title="enregistrer">
           <View style={{ alignItems: "center" }}>
-            <PlusIcon onPress={() => submit()} />
+            <CreateNpc.Submit squadId={squadId} />
           </View>
         </Section>
       </View>

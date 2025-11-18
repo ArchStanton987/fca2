@@ -1,25 +1,33 @@
-import { DbPlayable } from "lib/character/Playable"
-import {
-  KnowledgeId,
-  KnowledgeLevelValue
-} from "lib/character/abilities/knowledges/knowledge-types"
 import { defaultSkillsValues } from "lib/character/abilities/skills/skills"
 import { SkillId } from "lib/character/abilities/skills/skills.types"
 import { getUpSkillCost } from "lib/character/abilities/skills/utils/skills-utils"
 import { Special } from "lib/character/abilities/special/special.types"
 import { TraitId } from "lib/character/abilities/traits/traits.types"
 import Health, { DbHealth } from "lib/character/health/Health"
-import { TemplateId } from "lib/character/info/CharInfo"
+import { DbCharInfo, TemplateId } from "lib/character/info/CharInfo"
 import { getInitSkillsPoints, getSkillPointsPerLevel } from "lib/character/progress/progress-utils"
 import { getLevelAndThresholds } from "lib/character/status/status-calc"
 import { getRandomArbitrary } from "lib/common/utils/dice-calc"
-import { DbInventory } from "lib/objects/data/objects.types"
 import { getRandomWeightedIndex } from "lib/shared/utils/math-utils"
 
 import humanTemplates from "../const/human-templates"
 import { critters } from "../const/npc-templates"
+import { CreateNpcForm } from "../create-npc-store"
 
-const getSpecialFromTemplate = (templateId: TemplateId) => {
+export const formToDbCharInfo = (payload: CreateNpcForm, squadId: string): DbCharInfo => ({
+  speciesId: payload.speciesId,
+  templateId: payload.templateId,
+  background: payload.background,
+  firstname: payload.firstname,
+  lastname: payload.lastname,
+  description: payload.description,
+  isNpc: true,
+  isEnemy: payload.isEnemy,
+  isCritter: payload.speciesId === "beast" || payload.speciesId === "robot",
+  squadId
+})
+
+export const getSpecialFromTemplate = (templateId: TemplateId) => {
   if (templateId === "player") throw new Error("missing player SPECIAL")
   if (templateId in critters) return critters[templateId].special
   const { special } = humanTemplates[templateId]
@@ -130,34 +138,15 @@ export const getUpSkillsScores = (
 //   return equipedObjects
 // }
 
-export const getHealth = (exp: number, baseSPECIAL: Special, templateId: TemplateId): DbHealth => {
+export const getDbHealth = (
+  exp: number,
+  baseSPECIAL: Special,
+  templateId: TemplateId
+): DbHealth => {
   const { level } = getLevelAndThresholds(exp)
   return {
     rads: 0,
     currHp: Health.getMaxHp({ baseSPECIAL, exp, templateId }),
     limbs: Health.initLimbs(templateId, level)
-  }
-}
-
-export const generateDbHuman = (exp: number, template: TemplateId): Omit<DbPlayable, "info"> => {
-  const baseSPECIAL = getSpecialFromTemplate(template)
-  const traits = getTraitsFromTemplate(template)
-  const { level } = getLevelAndThresholds(exp)
-  const tagSkills = getTagSkillsFromTemplate(level, template)
-  const upSkills = getUpSkillsScores(level, tagSkills, baseSPECIAL, traits)
-  // const equipedObj = getEquipedObjects(level, tagSkills, humanTemplates[template])
-  const health = getHealth(exp, baseSPECIAL, template)
-  const combatStatus = { currAp: 0 }
-  return {
-    abilities: {
-      baseSPECIAL,
-      upSkills,
-      traits: Object.fromEntries(traits.map(t => [t, t])),
-      knowledges: {} as Record<KnowledgeId, KnowledgeLevelValue>
-    },
-    exp,
-    combatStatus,
-    inventory: {} as DbInventory,
-    health
   }
 }

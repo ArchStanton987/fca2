@@ -54,7 +54,7 @@ export function usePlayablesHealthEffects(ids: string[]) {
       Object.fromEntries(
         ids.map((id, i) => [
           id,
-          Object.values(queries[i].data.calculatedEffects)
+          Object.values(queries[i].data.calculatedEffects ?? {})
             .map(e => e.data.symptoms)
             .flat()
         ])

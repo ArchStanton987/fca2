@@ -33,8 +33,9 @@ function Screen() {
     })
   }
 
-  const deleteNpc = () => {
-    useCases.npc.delete({ squadId, npcId })
+  const deleteNpc = async () => {
+    await useCases.npc.delete({ squadId, npcId })
+    router.setParams({ npcId: "" })
   }
 
   const isFighting = !!combatStatus.combatId
