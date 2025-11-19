@@ -1,9 +1,6 @@
-import { ReactNode } from "react"
-
-import { useLocalSearchParams } from "expo-router"
+import { ReactNode, memo } from "react"
 
 import { useMultiSubAmmo, useMultiSubCaps, useMultiSubItems } from "lib/inventory/use-sub-inv-cat"
-import { useDatetime } from "lib/squad/use-cases/sub-squad"
 
 import LoadingScreen from "screens/LoadingScreen"
 
@@ -16,10 +13,15 @@ import { useSubPlayablesHealth } from "../health/health-provider"
 import { useSubPlayablesCharInfo } from "../info/info-provider"
 import { useSubPlayablesExp } from "../progress/exp-provider"
 
-function FirstProviders({ children, ids }: { children: ReactNode; ids: string[] }) {
-  const { squadId } = useLocalSearchParams<{ squadId: string }>()
-  const { data: datetime } = useDatetime(squadId)
-
+function FirstProviders({
+  children,
+  ids,
+  datetime
+}: {
+  children: ReactNode
+  ids: string[]
+  datetime: string
+}) {
   // Inventory
   const capsReq = useMultiSubCaps(ids).some(r => r.isPending)
   const ammoReq = useMultiSubAmmo(ids).some(r => r.isPending)
@@ -29,7 +31,7 @@ function FirstProviders({ children, ids }: { children: ReactNode; ids: string[] 
   const infoReq = useSubPlayablesCharInfo(ids).some(r => r.isPending)
   const baseSpecialReq = useSubPlayablesBaseSpecial(ids).some(r => r.isPending)
   const expReq = useSubPlayablesExp(ids).some(r => r.isPending)
-  const effectsReq = useSubPlayablesEffects(ids, datetime).some(r => r.isPending)
+  const effectsReq = useSubPlayablesEffects(ids, new Date(datetime)).some(r => r.isPending)
   const csReq = useSubPlayablesCombatStatus(ids).some(r => r.isPending)
   const chReq = useSubPlayablesCombatHistory(ids).some(r => r.isPending)
 
@@ -65,18 +67,22 @@ function TerProviders({ children, ids }: { children: ReactNode; ids: string[] })
   return children
 }
 
-export default function SubPlayables({
+function SubPlayables({
   children,
-  playablesIds
+  playablesIds,
+  datetime
 }: {
   children: ReactNode
   playablesIds: string[]
+  datetime: string
 }) {
   return (
-    <FirstProviders ids={playablesIds}>
+    <FirstProviders ids={playablesIds} datetime={datetime}>
       <SecProviders ids={playablesIds}>
         <TerProviders ids={playablesIds}>{children}</TerProviders>
       </SecProviders>
     </FirstProviders>
   )
 }
+
+export default memo(SubPlayables)
