@@ -15,7 +15,6 @@ import Toast from "react-native-toast-message"
 
 import fonts from "assets/fonts"
 import AdditionalElementsProvider from "providers/AdditionalElementsProvider"
-import SquadsProvider from "providers/SquadsProvider"
 import UseCasesProvider from "providers/UseCasesProvider"
 import LoadingScreen from "screens/LoadingScreen"
 import colors from "styles/colors"
@@ -70,11 +69,9 @@ export default function RootLayout() {
                 <Suspense fallback={<LoadingScreen />}>
                   <AdditionalElementsProvider>
                     <UseCasesProvider>
-                      <SquadsProvider>
-                        <StatusBar hidden />
-                        <Slot />
-                        <Toast config={toastConfig} />
-                      </SquadsProvider>
+                      <StatusBar hidden />
+                      <Slot />
+                      <Toast config={toastConfig} />
                     </UseCasesProvider>
                   </AdditionalElementsProvider>
                 </Suspense>
@@ -93,11 +90,9 @@ export default function RootLayout() {
             <Suspense fallback={<LoadingScreen />}>
               <AdditionalElementsProvider>
                 <UseCasesProvider>
-                  <SquadsProvider>
-                    <StatusBar hidden />
-                    <Slot />
-                    <Toast config={toastConfig} />
-                  </SquadsProvider>
+                  <StatusBar hidden />
+                  <Slot />
+                  <Toast config={toastConfig} />
                 </UseCasesProvider>
               </AdditionalElementsProvider>
             </Suspense>

@@ -12,9 +12,14 @@ import List from "components/List"
 import Spacer from "components/Spacer"
 import LoadingScreen from "screens/LoadingScreen"
 
-function Screen() {
+export default function Screen() {
   const { squadId } = useLocalSearchParams<{ squadId: string }>()
-  const { data: members } = useSquadMembers(squadId)
+  const { data: squadMembersRecord } = useSquadMembers(squadId)
+  const members = Object.keys(squadMembersRecord)
+
+  const charInfoReq = useSubPlayablesCharInfo(members)
+  const expReq = useSubPlayablesExp(members)
+  const isPending = charInfoReq.some(r => r.isPending) || expReq.some(r => r.isPending)
 
   const toChar = (charId: string) => {
     router.push({
@@ -23,15 +28,14 @@ function Screen() {
     })
   }
 
-  const squadMembers = Object.keys(members)
-
+  if (isPending) return <LoadingScreen />
   return (
     <>
       <WelcomeHeader />
       <View style={{ flexDirection: "row", justifyContent: "center" }}>
         <List
           horizontal
-          data={squadMembers}
+          data={members}
           separator={<Spacer x={40} />}
           keyExtractor={m => m}
           renderItem={({ item }) => (
@@ -41,14 +45,4 @@ function Screen() {
       </View>
     </>
   )
-}
-
-export default function PickCharacterScreen() {
-  const { squadId } = useLocalSearchParams<{ squadId: string }>()
-  const { data: members } = useSquadMembers(squadId)
-  const squadMembers = Object.keys(members)
-  const charInfoReq = useSubPlayablesCharInfo(squadMembers)
-  const expReq = useSubPlayablesExp(squadMembers)
-  if (charInfoReq.some(r => r.isPending) || expReq.some(r => r.isPending)) return <LoadingScreen />
-  return <Screen />
 }

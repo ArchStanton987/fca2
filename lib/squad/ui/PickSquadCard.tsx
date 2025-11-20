@@ -4,10 +4,9 @@ import Txt from "components/Txt"
 import colors from "styles/colors"
 import { getDDMMYYYY } from "utils/date"
 
-import { useSquad } from "../use-cases/sub-squad"
-
 type PickSquadCardProps = TouchableOpacityProps & {
-  squadId: string
+  label: string
+  datetime: Date
 }
 
 const styles = StyleSheet.create({
@@ -26,12 +25,11 @@ const styles = StyleSheet.create({
   }
 })
 
-export default function PickSquadCard({ squadId, ...rest }: PickSquadCardProps) {
-  const { data: squad } = useSquad(squadId)
+export default function PickSquadCard({ label, datetime, ...rest }: PickSquadCardProps) {
   return (
     <TouchableOpacity style={styles.container} {...rest}>
-      <Txt style={styles.squadLabel}>{squad.label}</Txt>
-      <Txt style={styles.squadLabel}>{getDDMMYYYY(squad.datetime)}</Txt>
+      <Txt style={styles.squadLabel}>{label}</Txt>
+      <Txt style={styles.squadLabel}>{getDDMMYYYY(datetime)}</Txt>
     </TouchableOpacity>
   )
 }

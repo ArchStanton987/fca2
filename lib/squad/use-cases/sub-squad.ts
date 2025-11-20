@@ -1,6 +1,6 @@
 import { QueryClient, queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query"
 import Squad from "lib/character/Squad"
-import { useSubCollection } from "lib/shared/db/useSub"
+import { qkToPath, useSub, useSubCollection } from "lib/shared/db/useSub"
 
 import { DbSquad } from "../squad-types"
 
@@ -25,36 +25,49 @@ export function useSquads<TData = Record<string, Squad>>(
   return useSuspenseQuery({ ...getSquadsOptions(), select })
 }
 
-export function useSquad(squadId: string) {
-  return useSquads(squads => squads[squadId])
+export const getSquadOptions = (squadId: string) =>
+  queryOptions({
+    queryKey: ["v3", "squads", squadId],
+    queryFn: () => new Promise<Squad>(() => {}),
+    enabled: typeof squadId === "string" && squadId !== ""
+  })
+
+export function useSubSquad(squadId: string) {
+  const options = getSquadOptions(squadId)
+  useSub(qkToPath(options.queryKey), cb)
+  return useQuery(options)
+}
+
+export function useSquad<TData = Squad>(squadId: string, select?: (data: Squad) => TData) {
+  return useSuspenseQuery({ ...getSquadOptions(squadId), select })
 }
 export function useDatetime(squadId: string) {
-  return useSquads(squads => squads[squadId].datetime)
+  return useSquad(squadId, squad => squad.datetime)
 }
 export function useSquadMembers(squadId: string) {
-  return useSquads(squads => squads[squadId].members)
+  return useSquad(squadId, squad => squad.members)
 }
 export function useSquadNpcs(squadId: string) {
-  return useSquads(squads => squads[squadId].npcs)
+  return useSquad(squadId, squad => squad.npcs)
 }
 export function useSquadLabel(squadId: string) {
-  return useSquads(squads => squads[squadId].label)
+  return useSquad(squadId, squad => squad.label)
 }
 export function useSquadCombats(squadId: string) {
-  return useSquads(squads => squads[squadId].combats)
+  return useSquad(squadId, squad => squad.combats)
 }
 export function getSquad(store: QueryClient, squadId: string) {
-  const squads = store.getQueryData(getSquadsOptions().queryKey) ?? {}
-  if (!squads[squadId]) throw new Error(`Squad with id : ${squadId} could not be found.`)
-  return squads[squadId]
+  const squad = store.getQueryData(getSquadOptions(squadId).queryKey)
+  if (!squad) throw new Error(`Squad with id : ${squadId} could not be found.`)
+  return squad
 }
 export function getDatetime(store: QueryClient, squadId: string) {
-  const squads = store.getQueryData(getSquadsOptions().queryKey) ?? {}
-  if (!squads[squadId]) throw new Error(`Squad with id : ${squadId} could not be found.`)
-  return squads[squadId].datetime
+  const squad = store.getQueryData(getSquadOptions(squadId).queryKey)
+  if (!squad) throw new Error(`Squad with id : ${squadId} could not be found.`)
+  return squad.datetime
 }
 export function getSquadPlayables(store: QueryClient, squadId: string) {
-  const squads = store.getQueryData(getSquadsOptions().queryKey) ?? {}
-  if (!squads[squadId]) throw new Error(`Squad with id : ${squadId} could not be found.`)
-  return { ...squads[squadId].members, ...squads[squadId].npcs }
+  const squad = store.getQueryData(getSquadOptions(squadId).queryKey)
+  if (!squad) throw new Error(`Squad with id : ${squadId} could not be found.`)
+  return { ...squad.members, ...squad.npcs }
 }
