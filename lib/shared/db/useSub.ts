@@ -150,7 +150,7 @@ export function useSub<Db, T = Db>(path: string, cb?: (snapshot: Db) => T) {
   const queryClient = useQueryClient()
 
   useEffect(() => {
-    const queryKey = path.split("/")
+    const queryKey = pathToQk(path)
     const dbRef = ref(database, path)
     const unsubscribe = onValue(dbRef, snapshot => {
       if (snapshot.exists()) {

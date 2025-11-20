@@ -1,7 +1,6 @@
 import { getCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
-import { getSquad } from "lib/squad/use-cases/sub-squad"
 
 export type DeleteNpcParams = {
   npcId: string
@@ -15,14 +14,13 @@ export default function deleteNpc(config: UseCasesConfig) {
 
   return async ({ npcId, squadId }: DeleteNpcParams) => {
     const combatStatus = getCombatStatus(store, npcId)
-    const squad = getSquad(store, squadId)
     const isFighting = !!combatStatus.combatId
     if (isFighting) throw new Error("Cannot delete NPC while in combat")
 
-    const { [npcId]: removed, ...rest } = squad.npcs
     const promises = [
       playableRepo.delete({ id: npcId }),
-      squadRepo.setChild({ id: squadId, childKey: "npc" }, rest)
+      // @ts-ignore => fix can set null
+      squadRepo.patchChild({ id: squadId, childKey: "npc" }, { [npcId]: null })
     ]
     return Promise.all(promises)
   }

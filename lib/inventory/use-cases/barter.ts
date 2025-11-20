@@ -78,7 +78,7 @@ export default function barter(config: UseCasesConfig) {
           }
 
           for (let i = 0; i < count; i += 1) {
-            promises.push(itemsRepo.add({ charId }, item))
+            promises.push(itemsRepo.add({ charId }, JSON.parse(JSON.stringify(item))))
           }
         }
 
