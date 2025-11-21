@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import { useSuspenseQueries } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { Symptom } from "lib/character/effects/symptoms.type"
 
 import { Item } from "../item.mappers"
@@ -11,11 +11,9 @@ const getItemSymptoms = (items: Record<string, Item>) =>
     return item.isEquipped ? [...acc, ...item.data.symptoms] : acc
   }, [] as Symptom[])
 
-export function usePlayablesItemSymptoms(ids: string[]) {
-  const queries = ids.map(id => getItemsOptions(id))
-
-  return useSuspenseQueries({
-    queries,
-    combine: req => Object.fromEntries(req.map((r, i) => [ids[i], getItemSymptoms(r.data ?? {})]))
+export function useItemsSymptoms(id: string) {
+  return useQuery({
+    ...getItemsOptions(id),
+    select: result => getItemSymptoms(result)
   })
 }

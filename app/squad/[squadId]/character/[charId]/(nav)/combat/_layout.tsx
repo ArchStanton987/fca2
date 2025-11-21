@@ -6,7 +6,6 @@ import { useCombatStatus } from "lib/character/combat-status/combat-status-provi
 import { useCharInfo } from "lib/character/info/info-provider"
 import SubPlayables from "lib/character/use-cases/sub-playables"
 import { SubCombat, useCombat } from "lib/combat/use-cases/sub-combat"
-import { useDatetime } from "lib/squad/use-cases/sub-squad"
 
 import Drawer from "components/Drawer/Drawer"
 import Spacer from "components/Spacer"
@@ -38,11 +37,11 @@ export default function CombatLayout() {
   const combatId = useCombatStatus(charId, data => data.combatId)
   const isInCombat = combatId.data !== ""
   const { data: contenders } = useCombat(combatId.data, combat => combat.contendersIds)
-  const datetime = useDatetime(squadId)
   const navElements = getNav(isGameMaster.data, isInCombat)
 
   return (
-    <SubPlayables playablesIds={contenders} datetime={datetime.data}>
+    <>
+      <SubPlayables playablesIds={contenders} squadId={squadId} />
       <SubCombat combatId={combatId.data}>
         <ActionFormProvider>
           <View style={styles.drawerLayout}>
@@ -73,6 +72,6 @@ export default function CombatLayout() {
           </View>
         </ActionFormProvider>
       </SubCombat>
-    </SubPlayables>
+    </>
   )
 }

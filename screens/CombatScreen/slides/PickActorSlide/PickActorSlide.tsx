@@ -12,7 +12,7 @@ import ScrollSection from "components/Section/ScrollSection"
 import DrawerSlide from "components/Slides/DrawerSlide"
 import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
-import { useActionActorId, useActionApi } from "providers/ActionFormProvider"
+import { useActionActorId } from "providers/ActionFormProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
@@ -32,19 +32,14 @@ export default function PickActorSlide({ slideIndex }: SlideProps) {
 
   const ordered = Object.values(getPlayingOrder(combatStatuses))
 
-  const enemies: { charId: string; fullname: string }[] = []
-  const players: { charId: string; fullname: string }[] = []
+  const enemies: string[] = []
+  const players: string[] = []
   ordered.forEach(({ id }) => {
     const arr = contendersInfo[id].isEnemy ? enemies : players
-    arr.push({ charId: id, fullname: contendersInfo[id].fullname })
+    arr.push(id)
   })
 
-  const { setActorId } = useActionApi()
   const actorId = useActionActorId()
-
-  const toggleSelect = (id: string) => {
-    setActorId(actorId === id ? "" : id)
-  }
 
   const submit = () => {
     useCases.combat.updateAction({ combatId, payload: { actorId } })
@@ -56,15 +51,8 @@ export default function PickActorSlide({ slideIndex }: SlideProps) {
       <ScrollSection style={{ flex: 1 }} title="joueurs">
         <List
           data={players}
-          keyExtractor={i => i.charId}
-          renderItem={({ item }) => (
-            <SelectActorButton
-              charId={item.charId}
-              fullname={item.fullname}
-              isSelected={actorId === item.charId}
-              toggleSelect={() => toggleSelect(item.charId)}
-            />
-          )}
+          keyExtractor={i => i}
+          renderItem={({ item }) => <SelectActorButton charId={item} />}
         />
       </ScrollSection>
 
@@ -73,15 +61,8 @@ export default function PickActorSlide({ slideIndex }: SlideProps) {
       <ScrollSection style={{ flex: 1 }} title="pnjs">
         <List
           data={enemies}
-          keyExtractor={i => i.charId}
-          renderItem={({ item }) => (
-            <SelectActorButton
-              charId={item.charId}
-              fullname={item.fullname}
-              isSelected={actorId === item.charId}
-              toggleSelect={() => toggleSelect(item.charId)}
-            />
-          )}
+          keyExtractor={i => i}
+          renderItem={({ item }) => <SelectActorButton charId={item} />}
         />
       </ScrollSection>
 

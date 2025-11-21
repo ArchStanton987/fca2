@@ -1,18 +1,7 @@
-import { useCallback } from "react"
-
-import {
-  QueryClient,
-  queryOptions,
-  useQueries,
-  useSuspenseQueries,
-  useSuspenseQuery
-} from "@tanstack/react-query"
-import { qkToPath, useSubMultiCollections } from "lib/shared/db/useSub"
-
-import { useCollectiblesData } from "providers/AdditionalElementsProvider"
+import { QueryClient, queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query"
 
 import Effect from "./Effect"
-import { DbEffect, EffectId } from "./effects.types"
+import { EffectId } from "./effects.types"
 
 type Effects = Record<EffectId, Effect>
 
@@ -23,26 +12,13 @@ export const getEffectsOptions = (charId: string) =>
     queryFn: () => new Promise<Effects>(() => {})
   })
 
-export function useSubPlayablesEffects(ids: string[], datetime: Date) {
-  const { effects } = useCollectiblesData()
-  const cb = useCallback(
-    (payload: DbEffect) => new Effect(payload, effects, datetime),
-    [effects, datetime]
-  )
-  useSubMultiCollections(ids.map(id => ({ path: qkToPath(getEffectsOptions(id).queryKey), cb })))
-  return useQueries({ queries: ids.map(id => getEffectsOptions(id)) })
-}
-
-export function usePlayablesEffectsSymptoms(ids: string[]) {
-  return useSuspenseQueries({
-    queries: ids.map(id => getEffectsOptions(id)),
-    combine: queries =>
-      Object.fromEntries(
-        ids.map((id, i) => [
-          id,
-          Object.values(queries[i].data).map(effect => effect.data.symptoms ?? [])
-        ])
-      )
+export function useEffectsSymptoms(id: string) {
+  return useQuery({
+    ...getEffectsOptions(id),
+    select: result =>
+      Object.values(result)
+        .map(effect => effect.data.symptoms ?? [])
+        .flat()
   })
 }
 

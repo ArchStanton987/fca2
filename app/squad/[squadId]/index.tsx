@@ -1,9 +1,8 @@
+import { Suspense } from "react"
 import { View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
-import { useSubPlayablesCharInfo } from "lib/character/info/info-provider"
-import { useSubPlayablesExp } from "lib/character/progress/exp-provider"
 import PickCharacterCard from "lib/character/ui/PickCharacterCard/PickCharacterCard"
 import WelcomeHeader from "lib/shared/ui/welcome/WelcomeHeader"
 import { useSquadMembers } from "lib/squad/use-cases/sub-squad"
@@ -14,12 +13,8 @@ import LoadingScreen from "screens/LoadingScreen"
 
 export default function Screen() {
   const { squadId } = useLocalSearchParams<{ squadId: string }>()
-  const { data: squadMembersRecord } = useSquadMembers(squadId)
-  const members = Object.keys(squadMembersRecord)
 
-  const charInfoReq = useSubPlayablesCharInfo(members)
-  const expReq = useSubPlayablesExp(members)
-  const isPending = charInfoReq.some(r => r.isPending) || expReq.some(r => r.isPending)
+  const { data: members } = useSquadMembers(squadId)
 
   const toChar = (charId: string) => {
     router.push({
@@ -28,14 +23,13 @@ export default function Screen() {
     })
   }
 
-  if (isPending) return <LoadingScreen />
   return (
-    <>
+    <Suspense fallback={<LoadingScreen />}>
       <WelcomeHeader />
       <View style={{ flexDirection: "row", justifyContent: "center" }}>
         <List
           horizontal
-          data={members}
+          data={Object.keys(members)}
           separator={<Spacer x={40} />}
           keyExtractor={m => m}
           renderItem={({ item }) => (
@@ -43,6 +37,6 @@ export default function Screen() {
           )}
         />
       </View>
-    </>
+    </Suspense>
   )
 }

@@ -4,7 +4,7 @@ import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { calculatedEffects } from "lib/character/effects/effects-utils"
 import { limbsMap } from "lib/character/health/Health"
 import { limbsTemplates } from "lib/character/health/health.const"
-import { useCharInfo, usePlayablesCharInfo } from "lib/character/info/info-provider"
+import { useCharInfo, useFullname } from "lib/character/info/info-provider"
 import { useContenders } from "lib/combat/use-cases/sub-combat"
 import { critters } from "lib/npc/const/npc-templates"
 
@@ -14,22 +14,25 @@ import Txt from "components/Txt"
 import { useCollectiblesData } from "providers/AdditionalElementsProvider"
 import { useDamageFormStore } from "providers/DamageFormProvider"
 
+function CharEntry({ charId }: { charId: string }) {
+  const actions = useDamageFormStore(state => state.actions)
+  const { data: fullname } = useFullname(charId)
+  return (
+    <Selectable isSelected={false} onPress={() => actions.setEntry("charId", charId)}>
+      <Txt>{fullname}</Txt>
+    </Selectable>
+  )
+}
+
 function CharList() {
   const { charId } = useLocalSearchParams<{ charId: string }>()
   const { data: combatId } = useCombatId(charId)
   const { data: contenders } = useContenders(combatId)
-  const chars = usePlayablesCharInfo(contenders)
-  const charList = Object.entries(chars).map(([id, value]) => ({ id, label: value.fullname }))
-  const actions = useDamageFormStore(state => state.actions)
   return (
     <List
-      data={charList}
-      keyExtractor={e => e.id}
-      renderItem={({ item }) => (
-        <Selectable isSelected={false} onPress={() => actions.setEntry("charId", item.id)}>
-          <Txt>{item.label}</Txt>
-        </Selectable>
-      )}
+      data={contenders}
+      keyExtractor={e => e}
+      renderItem={({ item }) => <CharEntry charId={item} />}
     />
   )
 }

@@ -1,8 +1,7 @@
 import { StyleSheet, TouchableOpacity, TouchableOpacityProps } from "react-native"
 
-import { useSuspenseQuery } from "@tanstack/react-query"
-import { getCharInfoOptions } from "lib/character/info/info-provider"
-import { getExpOptions } from "lib/character/progress/exp-provider"
+import { useCharInfo } from "lib/character/info/info-provider"
+import { useExp } from "lib/character/progress/exp-provider"
 
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
@@ -26,11 +25,8 @@ const styles = StyleSheet.create({
 })
 
 export default function PickCharacterCard({ charId, ...rest }: PickCharacterCardProps) {
-  const { data: exp } = useSuspenseQuery(getExpOptions(charId))
-  const { data: fullname } = useSuspenseQuery({
-    ...getCharInfoOptions(charId),
-    select: data => data.fullname
-  })
+  const { data: exp } = useExp(charId)
+  const { data: fullname } = useCharInfo(charId, data => data.fullname)
 
   return (
     <TouchableOpacity style={styles.container} {...rest}>

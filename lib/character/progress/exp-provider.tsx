@@ -1,13 +1,4 @@
-import { useMemo } from "react"
-
-import {
-  QueryClient,
-  queryOptions,
-  useQueries,
-  useSuspenseQueries,
-  useSuspenseQuery
-} from "@tanstack/react-query"
-import { qkToPath, useMultiSub } from "lib/shared/db/useSub"
+import { QueryClient, queryOptions, useSuspenseQuery } from "@tanstack/react-query"
 
 export const getExpOptions = (charId: string) =>
   queryOptions({
@@ -15,22 +6,6 @@ export const getExpOptions = (charId: string) =>
     enabled: charId !== "",
     queryFn: () => new Promise<number>(() => {})
   })
-
-export function useSubPlayablesExp(ids: string[]) {
-  const paths = useMemo(
-    () => ids.map(id => ({ path: qkToPath(getExpOptions(id).queryKey) })),
-    [ids]
-  )
-  useMultiSub(paths)
-  return useQueries({ queries: ids.map(id => getExpOptions(id)) })
-}
-
-export function usePlayablesExp(ids: string[]) {
-  return useSuspenseQueries({
-    queries: ids.map(id => getExpOptions(id)),
-    combine: queries => Object.fromEntries(ids.map((id, i) => [id, queries[i].data]))
-  })
-}
 
 export function useExp(id: string) {
   return useSuspenseQuery(getExpOptions(id))

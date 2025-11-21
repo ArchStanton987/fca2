@@ -1,52 +1,14 @@
-import {
-  QueryClient,
-  queryOptions,
-  useQueries,
-  useSuspenseQueries,
-  useSuspenseQuery
-} from "@tanstack/react-query"
-import { usePlayablesItemSymptoms } from "lib/inventory/use-cases/get-item-symptoms"
-import { qkToPath, useMultiSub } from "lib/shared/db/useSub"
+import { QueryClient, queryOptions, useSuspenseQuery } from "@tanstack/react-query"
 
-import { usePlayablesEffectsSymptoms } from "../effects/effects-provider"
-import { usePlayablesHealthEffects } from "../health/health-provider"
-import { usePlayablesCharInfo } from "../info/info-provider"
 import Abilities from "./Abilities"
-import { DbAbilities } from "./abilities.types"
 import { KnowledgeId, KnowledgeLevelValue } from "./knowledges/knowledge-types"
 
-export const getDbAbilitiesOptions = (charId: string) =>
+export const getDbAbilitiesOptions = (charId: string, enabled = true) =>
   queryOptions({
     queryKey: ["v3", "playables", charId, "abilities"],
-    enabled: charId !== "",
+    enabled: charId !== "" && enabled,
     queryFn: () => new Promise<Abilities>(() => {})
   })
-
-export function useSubPlayablesAbilities(ids: string[]) {
-  const info = usePlayablesCharInfo(ids)
-  const healthEffects = usePlayablesHealthEffects(ids)
-  const itemsSymptoms = usePlayablesItemSymptoms(ids)
-  const effectsSymptoms = usePlayablesEffectsSymptoms(ids)
-  useMultiSub(
-    ids.map(id => ({
-      path: qkToPath(getDbAbilitiesOptions(id).queryKey),
-      cb: (payload: DbAbilities) =>
-        new Abilities({
-          payload,
-          symptoms: [...healthEffects[id], ...itemsSymptoms[id], ...effectsSymptoms[id]].flat(),
-          templateId: info[id].templateId
-        })
-    }))
-  )
-  return useQueries({ queries: ids.map(id => getDbAbilitiesOptions(id)) })
-}
-
-export function usePlayablesAbilities(ids: string[]) {
-  return useSuspenseQueries({
-    queries: ids.map(id => getDbAbilitiesOptions(id)),
-    combine: queries => Object.fromEntries(ids.map((id, i) => [id, queries[i].data]))
-  })
-}
 
 export const sortKnowledges = (knowledges: Partial<Record<KnowledgeId, KnowledgeLevelValue>>) =>
   Object.entries(knowledges)

@@ -1,64 +1,22 @@
-import {
-  QueryClient,
-  queryOptions,
-  useQueries,
-  useSuspenseQueries,
-  useSuspenseQuery
-} from "@tanstack/react-query"
-import { qkToPath, useMultiSub } from "lib/shared/db/useSub"
+import { QueryClient, queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query"
 
-import { usePlayablesBaseSpecial } from "../abilities/base-special-provider"
-import { usePlayablesCharInfo } from "../info/info-provider"
-import { usePlayablesExp } from "../progress/exp-provider"
-import Health, { DbHealth } from "./Health"
+import Health from "./Health"
 import { LimbId } from "./health.const"
 
-export const getHealthOptions = (charId: string) =>
+export const getHealthOptions = (charId: string, isReady = true) =>
   queryOptions({
     queryKey: ["v3", "playables", charId, "health"],
-    enabled: charId !== "",
+    enabled: charId !== "" && isReady,
     queryFn: () => new Promise<Health>(() => {})
   })
 
-export function useSubPlayablesHealth(ids: string[]) {
-  const special = usePlayablesBaseSpecial(ids)
-  const exp = usePlayablesExp(ids)
-  const info = usePlayablesCharInfo(ids)
-
-  useMultiSub(
-    ids.map(id => ({
-      path: qkToPath(getHealthOptions(id).queryKey),
-      cb: (payload: DbHealth) =>
-        new Health({
-          health: payload,
-          baseSPECIAL: special[id],
-          exp: exp[id],
-          templateId: info[id].templateId
-        })
-    }))
-  )
-  return useQueries({ queries: ids.map(id => getHealthOptions(id)) })
-}
-
-export function usePlayablesHealth(ids: string[]) {
-  return useSuspenseQueries({
-    queries: ids.map(id => getHealthOptions(id)),
-    combine: queries => Object.fromEntries(ids.map((id, i) => [id, queries[i].data]))
-  })
-}
-
-export function usePlayablesHealthEffects(ids: string[]) {
-  return useSuspenseQueries({
-    queries: ids.map(id => getHealthOptions(id)),
-    combine: queries =>
-      Object.fromEntries(
-        ids.map((id, i) => [
-          id,
-          Object.values(queries[i].data.calculatedEffects ?? {})
-            .map(e => e.data.symptoms)
-            .flat()
-        ])
-      )
+export function useHealthSymptoms(id: string) {
+  return useQuery({
+    ...getHealthOptions(id),
+    select: result =>
+      Object.values(result.calculatedEffects ?? {})
+        .map(e => e.data.symptoms)
+        .flat()
   })
 }
 

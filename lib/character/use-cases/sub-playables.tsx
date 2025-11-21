@@ -1,88 +1,113 @@
-import { ReactNode, memo } from "react"
+import { useCallback, useMemo } from "react"
 
-import { useMultiSubAmmo, useMultiSubCaps, useMultiSubItems } from "lib/inventory/use-sub-inv-cat"
+import { useQuery } from "@tanstack/react-query"
+import { itemFactory } from "lib/inventory/item.mappers"
+import { useItemsSymptoms } from "lib/inventory/use-cases/get-item-symptoms"
+import {
+  ammoCb,
+  getAmmoOptions,
+  getCapsOptions,
+  getItemsOptions
+} from "lib/inventory/use-sub-inv-cat"
+import { DbItem } from "lib/objects/data/objects.types"
+import { qkToPath, useSub, useSubCollection } from "lib/shared/db/useSub"
+import { useDatetime } from "lib/squad/use-cases/sub-squad"
 
-import LoadingScreen from "screens/LoadingScreen"
+import { useCollectiblesData } from "providers/AdditionalElementsProvider"
 
-import { useSubPlayablesAbilities } from "../abilities/abilities-provider"
-import { useSubPlayablesBaseSpecial } from "../abilities/base-special-provider"
-import { useSubPlayablesCombatHistory } from "../combat-history/combat-history-provider"
-import { useSubPlayablesCombatStatus } from "../combat-status/combat-status-provider"
-import { useSubPlayablesEffects } from "../effects/effects-provider"
-import { useSubPlayablesHealth } from "../health/health-provider"
-import { useSubPlayablesCharInfo } from "../info/info-provider"
-import { useSubPlayablesExp } from "../progress/exp-provider"
+import Abilities from "../abilities/Abilities"
+import { getDbAbilitiesOptions } from "../abilities/abilities-provider"
+import { DbAbilities } from "../abilities/abilities.types"
+import { getBaseSpecialOptions } from "../abilities/base-special-provider"
+import { defaultSpecial } from "../abilities/special/special"
+import { getCharCombatHistoryOptions } from "../combat-history/combat-history-provider"
+import { csCb, getCombatStatusOptions } from "../combat-status/combat-status-provider"
+import Effect from "../effects/Effect"
+import { getEffectsOptions, useEffectsSymptoms } from "../effects/effects-provider"
+import { DbEffect } from "../effects/effects.types"
+import Health, { DbHealth } from "../health/Health"
+import { getHealthOptions, useHealthSymptoms } from "../health/health-provider"
+import CharInfo, { DbCharInfo } from "../info/CharInfo"
+import { getCharInfoOptions } from "../info/info-provider"
+import { getExpOptions } from "../progress/exp-provider"
 
-function FirstProviders({
-  children,
-  ids,
-  datetime
-}: {
-  children: ReactNode
-  ids: string[]
-  datetime: string
-}) {
+function SubPlayable({ id, squadId }: { id: string; squadId: string }) {
+  //
+  const { data: datetime } = useDatetime(squadId)
+  const collectiblesData = useCollectiblesData()
+  const itemsCb = useCallback(
+    (db: DbItem & { key: string }) => itemFactory(db, collectiblesData),
+    [collectiblesData]
+  )
+  const { effects } = collectiblesData
+  const infoCb = useCallback((payload: DbCharInfo) => new CharInfo(payload, id), [id])
+  const effectsCb = useCallback(
+    (payload: DbEffect) => new Effect(payload, effects, datetime),
+    [effects, datetime]
+  )
+
   // Inventory
-  const capsReq = useMultiSubCaps(ids).some(r => r.isPending)
-  const ammoReq = useMultiSubAmmo(ids).some(r => r.isPending)
-  const itemsReq = useMultiSubItems(ids).some(r => r.isPending)
+  useSub(qkToPath(getCapsOptions(id).queryKey))
+  useSub(qkToPath(getAmmoOptions(id).queryKey), ammoCb)
+  useSubCollection(qkToPath(getItemsOptions(id).queryKey), itemsCb)
 
   // Playable
-  const infoReq = useSubPlayablesCharInfo(ids).some(r => r.isPending)
-  const baseSpecialReq = useSubPlayablesBaseSpecial(ids).some(r => r.isPending)
-  const expReq = useSubPlayablesExp(ids).some(r => r.isPending)
-  const effectsReq = useSubPlayablesEffects(ids, new Date(datetime)).some(r => r.isPending)
-  const csReq = useSubPlayablesCombatStatus(ids).some(r => r.isPending)
-  const chReq = useSubPlayablesCombatHistory(ids).some(r => r.isPending)
+  const infoOptions = getCharInfoOptions(id)
+  const specialOptions = getBaseSpecialOptions(id)
+  const expOptions = getExpOptions(id)
+  useSub(qkToPath(getCharInfoOptions(id).queryKey), infoCb)
+  useSub(qkToPath(specialOptions.queryKey))
+  useSub(qkToPath(expOptions.queryKey))
+  useSubCollection(qkToPath(getEffectsOptions(id).queryKey), effectsCb)
+  useSub(qkToPath(getCombatStatusOptions(id).queryKey), csCb)
+  useSub(qkToPath(getCharCombatHistoryOptions(id).queryKey))
 
-  const data = [
-    capsReq,
-    ammoReq,
-    itemsReq,
-    infoReq,
-    baseSpecialReq,
-    expReq,
-    effectsReq,
-    csReq,
-    chReq
-  ]
+  const { data: info } = useQuery(infoOptions)
+  const { data: special } = useQuery(specialOptions)
+  const { data: exp } = useQuery(expOptions)
 
-  const isLoading = data.some(d => !!d)
-  if (isLoading) return <LoadingScreen />
-  return children
-}
-
-function SecProviders({ children, ids }: { children: ReactNode; ids: string[] }) {
-  const healthReq = useSubPlayablesHealth(ids)
-  const isLoading = healthReq.some(q => q.isPending)
-  if (isLoading) return <LoadingScreen />
-  return children
-}
-
-function TerProviders({ children, ids }: { children: ReactNode; ids: string[] }) {
-  const abilitiesReq = useSubPlayablesAbilities(ids)
-  const allData = [abilitiesReq]
-  const isLoading = allData.some(d => d.some(q => q.isPending))
-  if (isLoading) return <LoadingScreen />
-  return children
-}
-
-function SubPlayables({
-  children,
-  playablesIds,
-  datetime
-}: {
-  children: ReactNode
-  playablesIds: string[]
-  datetime: string
-}) {
-  return (
-    <FirstProviders ids={playablesIds} datetime={datetime}>
-      <SecProviders ids={playablesIds}>
-        <TerProviders ids={playablesIds}>{children}</TerProviders>
-      </SecProviders>
-    </FirstProviders>
+  const healthCb = useCallback(
+    (payload: DbHealth) =>
+      new Health({
+        health: payload,
+        baseSPECIAL: special ?? defaultSpecial,
+        exp: exp ?? 0,
+        templateId: info?.templateId ?? "player"
+      }),
+    [info, special, exp]
   )
+
+  const isHealthReady = !!info && !!special && typeof exp === "number"
+  useSub(qkToPath(getHealthOptions(id, isHealthReady).queryKey), healthCb)
+
+  const { data: healthSymptoms = [], isPending: isHSPending } = useHealthSymptoms(id)
+  const { data: itemsSymptoms = [], isPending: isISPending } = useItemsSymptoms(id)
+  const { data: effectsSymptoms = [], isPending: isESPending } = useEffectsSymptoms(id)
+  const symptoms = useMemo(
+    () => [...healthSymptoms, ...itemsSymptoms, ...effectsSymptoms],
+    [healthSymptoms, itemsSymptoms, effectsSymptoms]
+  )
+  const abilitiesCb = useCallback(
+    (payload: DbAbilities) =>
+      new Abilities({
+        payload,
+        symptoms,
+        templateId: info?.templateId ?? "player"
+      }),
+    [symptoms, info]
+  )
+  const abilitiesIsReady = !!info && ![isHSPending, isISPending, isESPending].some(r => !!r)
+  useSub(qkToPath(getDbAbilitiesOptions(id, abilitiesIsReady).queryKey), abilitiesCb)
+
+  return null
 }
 
-export default memo(SubPlayables)
+export default function SubPlayables({
+  playablesIds,
+  squadId
+}: {
+  playablesIds: string[]
+  squadId: string
+}) {
+  return playablesIds.map(id => <SubPlayable key={id} id={id} squadId={squadId} />)
+}

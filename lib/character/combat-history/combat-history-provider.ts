@@ -1,11 +1,4 @@
-import {
-  QueryClient,
-  queryOptions,
-  useQueries,
-  useSuspenseQueries,
-  useSuspenseQuery
-} from "@tanstack/react-query"
-import { qkToPath, useSubMultiCollections } from "lib/shared/db/useSub"
+import { QueryClient, queryOptions, useSuspenseQuery } from "@tanstack/react-query"
 
 export const getCharCombatHistoryOptions = (charId: string) =>
   queryOptions({
@@ -14,18 +7,6 @@ export const getCharCombatHistoryOptions = (charId: string) =>
     queryFn: () => new Promise<Record<string, string>>(() => {})
   })
 
-export function useSubPlayablesCombatHistory(ids: string[]) {
-  const queries = ids.map(id => getCharCombatHistoryOptions(id))
-  useSubMultiCollections(queries.map(q => ({ path: qkToPath(q.queryKey) })))
-  return useQueries({ queries: ids.map(id => getCharCombatHistoryOptions(id)) })
-}
-
-export function usePlayablesCombatHistory(ids: string[]) {
-  return useSuspenseQueries({
-    queries: ids.map(id => getCharCombatHistoryOptions(id)),
-    combine: results => Object.fromEntries(ids.map((id, i) => [id, results[i].data]))
-  })
-}
 export function usePlayableCombatHistory(charId: string) {
   return useSuspenseQuery(getCharCombatHistoryOptions(charId))
 }

@@ -45,9 +45,11 @@ type Timespan = "MIN" | "HOUR" | "DAY"
 const timespans: Timespan[] = ["MIN", "HOUR", "DAY"]
 const selectors = [1, 5, 20, 60]
 
-function Screen({ datetime }: { datetime: Date }) {
+export default function Screen() {
   const { squadId } = useLocalSearchParams<{ squadId: string }>()
   const useCases = useGetUseCases()
+
+  const { data: datetime } = useDatetime(squadId)
 
   const [newDate, setNewDate] = useState<Date>(() => datetime)
   const [selectedTimespan, setSelectedTimespan] = useState<Timespan>("MIN")
@@ -150,13 +152,7 @@ function Screen({ datetime }: { datetime: Date }) {
           </ViewSection>
         </View>
       </TabPage>
-      <Spacer y={10} />
+      <Spacer y={15} />
     </>
   )
-}
-
-export default function DatetimeSelectionScreen() {
-  const { squadId } = useLocalSearchParams<{ squadId: string }>()
-  const { data: datetime } = useDatetime(squadId)
-  return <Screen datetime={datetime} />
 }

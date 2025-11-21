@@ -3,7 +3,6 @@ import { useCallback } from "react"
 import {
   QueryClient,
   queryOptions,
-  useQueries,
   useSuspenseQueries,
   useSuspenseQuery
 } from "@tanstack/react-query"
@@ -12,15 +11,13 @@ import { round } from "lib/common/utils/number-utils"
 import { critters } from "lib/npc/const/npc-templates"
 import ammoMap, { defaultAmmoSet } from "lib/objects/data/ammo/ammo"
 import { AmmoSet, AmmoType } from "lib/objects/data/ammo/ammo.types"
-import { DbInventory, DbItem } from "lib/objects/data/objects.types"
+import { DbInventory } from "lib/objects/data/objects.types"
 import Weapon from "lib/objects/data/weapons/Weapon"
 import { attackToWeapon } from "lib/objects/data/weapons/weapons.mappers"
-import { qkToPath, useMultiSub, useSubMultiCollections } from "lib/shared/db/useSub"
 
-import { useCollectiblesData } from "providers/AdditionalElementsProvider"
 import { filterUnique } from "utils/array-utils"
 
-import { Item, itemFactory } from "./item.mappers"
+import { Item } from "./item.mappers"
 
 const getInvOptions = <K extends keyof DbInventory, T>(charId: string, invElement: K) =>
   queryOptions({
@@ -31,19 +28,8 @@ const getInvOptions = <K extends keyof DbInventory, T>(charId: string, invElemen
 
 export const getItemsOptions = (charId: string) =>
   getInvOptions<"items", Record<string, Item>>(charId, "items")
-const getAmmoOptions = (charId: string) => getInvOptions<"ammo", AmmoSet>(charId, "ammo")
-const getCapsOptions = (charId: string) => getInvOptions<"caps", number>(charId, "caps")
-
-export function useMultiSubItems(ids: string[]) {
-  const collectiblesData = useCollectiblesData()
-  const options = ids.map(id => getItemsOptions(id))
-  const cb = useCallback(
-    (db: DbItem & { key: string }) => itemFactory(db, collectiblesData),
-    [collectiblesData]
-  )
-  useSubMultiCollections(options.map(o => ({ path: qkToPath(o.queryKey), cb })))
-  return useQueries({ queries: options })
-}
+export const getAmmoOptions = (charId: string) => getInvOptions<"ammo", AmmoSet>(charId, "ammo")
+export const getCapsOptions = (charId: string) => getInvOptions<"caps", number>(charId, "caps")
 
 type ItemRecord = Record<string, Item>
 type Options = { isEquipped?: boolean; isGrouped?: boolean }
@@ -145,20 +131,10 @@ export function useItemCount(charId: string, itemId: string) {
   })
 }
 
-const ammoCb = (data: Partial<AmmoSet>) => ({ ...defaultAmmoSet, ...data })
-
-export function useMultiSubAmmo(ids: string[]) {
-  useMultiSub(ids.map(id => ({ path: qkToPath(getAmmoOptions(id).queryKey), cb: ammoCb })))
-  return useQueries({ queries: ids.map(id => getAmmoOptions(id)) })
-}
+export const ammoCb = (data: Partial<AmmoSet>) => ({ ...defaultAmmoSet, ...data })
 
 export function useAmmo<TData = AmmoSet>(id: string, select?: (data: AmmoSet) => TData) {
   return useSuspenseQuery({ ...getAmmoOptions(id), select })
-}
-
-export function useMultiSubCaps(ids: string[]) {
-  useMultiSub(ids.map(id => ({ path: qkToPath(getCapsOptions(id).queryKey) })))
-  return useQueries({ queries: ids.map(id => getCapsOptions(id)) })
 }
 
 export function useCaps(id: string) {

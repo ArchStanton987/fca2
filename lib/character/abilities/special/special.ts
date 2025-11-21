@@ -12,7 +12,7 @@ const specialMap: Record<SpecialId, Special> = {
     id: "strength",
     label: "Force",
     short: "FO",
-    description: `La FORCE ! La force c'est bien, plus on en a, plus on est fort ! Avec de la force, on peut porter plein de trucs, tapper fort pour arriver à prendre le casse-croûte des copains. Certaines armes requierent un minimum de biscoteaux pour être maniées correctement ! ${"\n"} "ROK FOOOOORT !!!" (ROK) `
+    description: `La FORCE ! La force c'est bien, plus on en a, plus on est fort ! Avec de la force, on peut porter plein de trucs, tapper fort pour arriver à prendre le casse-croûte des copains. Certaines armes requierent un minimum de biscoteaux pour être maniées correctement !`
   },
   endurance: {
     id: "endurance",
@@ -53,5 +53,15 @@ const specialMap: Record<SpecialId, Special> = {
 }
 
 export const specialArray = Object.values(specialMap)
+
+export const defaultSpecial = {
+  strength: 5,
+  endurance: 5,
+  agility: 5,
+  perception: 5,
+  intelligence: 5,
+  charisma: 5,
+  luck: 5
+}
 
 export default specialMap
