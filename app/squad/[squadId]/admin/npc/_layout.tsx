@@ -1,6 +1,7 @@
+import { useMemo } from "react"
 import { View } from "react-native"
 
-import { Slot } from "expo-router"
+import { Slot, useLocalSearchParams } from "expo-router"
 
 import { useCharsNameInfo } from "lib/character/info/info-provider"
 import LoadPlayables from "lib/character/use-cases/load-playables"
@@ -11,7 +12,7 @@ import Spacer from "components/Spacer"
 import styles from "styles/DrawerLayout.styles"
 import layout from "styles/layout"
 
-export default function Layout({ squadId }: { squadId: string }) {
+function Layout({ squadId }: { squadId: string }) {
   const { data: npcs } = useSquadNpcs(squadId)
   const npcsIds = Object.keys(npcs)
   const names = useCharsNameInfo(npcsIds)
@@ -22,12 +23,21 @@ export default function Layout({ squadId }: { squadId: string }) {
   }))
 
   return (
-    <LoadPlayables playablesIds={npcsIds}>
-      <View style={styles.drawerLayout}>
-        <AdminDrawer sectionId="npc" navElements={navElements} />
-        <Spacer x={layout.globalPadding} />
-        <Slot />
-      </View>
+    <View style={styles.drawerLayout}>
+      <AdminDrawer sectionId="npc" navElements={navElements} />
+      <Spacer x={layout.globalPadding} />
+      <Slot />
+    </View>
+  )
+}
+
+export default function NpcAdminLayout() {
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const { data: npcsRecord } = useSquadNpcs(squadId)
+  const npcs = useMemo(() => Object.keys(npcsRecord), [npcsRecord])
+  return (
+    <LoadPlayables playablesIds={npcs}>
+      <Layout squadId={squadId} />
     </LoadPlayables>
   )
 }
