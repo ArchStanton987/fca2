@@ -31,14 +31,14 @@ import CharInfo, { DbCharInfo } from "../info/CharInfo"
 import { getCharInfoOptions } from "../info/info-provider"
 import { getExpOptions } from "../progress/exp-provider"
 
-function SubPlayable({ id, squadId }: { id: string; squadId: string }) {
-  //
+function SubPrim({ id, squadId }: { id: string; squadId: string }) {
   const { data: datetime } = useSquads(squads => squads[squadId].datetime)
   const collectiblesData = useCollectiblesData()
   const itemsCb = useCallback(
     (db: DbItem & { key: string }) => itemFactory(db, collectiblesData),
     [collectiblesData]
   )
+
   const { effects } = collectiblesData
   const infoCb = useCallback((payload: DbCharInfo) => new CharInfo(payload, id), [id])
   const effectsCb = useCallback(
@@ -52,19 +52,20 @@ function SubPlayable({ id, squadId }: { id: string; squadId: string }) {
   useSubCollection(qkToPath(getItemsOptions(id).queryKey), itemsCb)
 
   // Playable
-  const infoOptions = getCharInfoOptions(id)
-  const specialOptions = getBaseSpecialOptions(id)
-  const expOptions = getExpOptions(id)
   useSub(qkToPath(getCharInfoOptions(id).queryKey), infoCb)
-  useSub(qkToPath(specialOptions.queryKey))
-  useSub(qkToPath(expOptions.queryKey))
+  useSub(qkToPath(getBaseSpecialOptions(id).queryKey))
+  useSub(qkToPath(getExpOptions(id).queryKey))
   useSubCollection(qkToPath(getEffectsOptions(id).queryKey), effectsCb)
   useSub(qkToPath(getCombatStatusOptions(id).queryKey), csCb)
   useSub(qkToPath(getCharCombatHistoryOptions(id).queryKey))
 
-  const { data: info } = useQuery(infoOptions)
-  const { data: special } = useQuery(specialOptions)
-  const { data: exp } = useQuery(expOptions)
+  return null
+}
+
+function SubHealth({ id }: { id: string }) {
+  const { data: info } = useQuery(getCharInfoOptions(id))
+  const { data: special } = useQuery(getBaseSpecialOptions(id))
+  const { data: exp } = useQuery(getExpOptions(id))
 
   const healthCb = useCallback(
     (payload: DbHealth) =>
@@ -79,6 +80,12 @@ function SubPlayable({ id, squadId }: { id: string; squadId: string }) {
 
   const isHealthReady = !!info && !!special && typeof exp === "number"
   useSub(qkToPath(getHealthOptions(id, isHealthReady).queryKey), healthCb)
+
+  return null
+}
+
+function SubAbilities({ id }: { id: string }) {
+  const { data: info } = useQuery(getCharInfoOptions(id))
 
   const { data: healthSymptoms = [], isPending: isHSPending } = useHealthSymptoms(id)
   const { data: itemsSymptoms = [], isPending: isISPending } = useItemsSymptoms(id)
@@ -100,6 +107,16 @@ function SubPlayable({ id, squadId }: { id: string; squadId: string }) {
   useSub(qkToPath(getDbAbilitiesOptions(id, abilitiesIsReady).queryKey), abilitiesCb)
 
   return null
+}
+
+function SubPlayable({ id, squadId }: { id: string; squadId: string }) {
+  return (
+    <>
+      <SubPrim id={id} squadId={squadId} />
+      <SubHealth id={id} />
+      <SubAbilities id={id} />
+    </>
+  )
 }
 
 export default function SubPlayables({

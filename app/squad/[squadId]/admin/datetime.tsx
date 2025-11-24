@@ -1,9 +1,10 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { StyleSheet, TouchableOpacity, View } from "react-native"
 
 import { useLocalSearchParams } from "expo-router"
 
-import { useDatetime } from "lib/squad/use-cases/sub-squad"
+import LoadPlayables from "lib/character/use-cases/load-playables"
+import { useDatetime, useSquadNpcs } from "lib/squad/use-cases/sub-squad"
 import Toast from "react-native-toast-message"
 
 import AmountSelector from "components/AmountSelector"
@@ -50,6 +51,8 @@ export default function Screen() {
   const useCases = useGetUseCases()
 
   const { data: datetime } = useDatetime(squadId)
+  const { data: npcs } = useSquadNpcs(squadId)
+  const npcsIds = useMemo(() => Object.keys(npcs), [npcs])
 
   const [newDate, setNewDate] = useState<Date>(() => datetime)
   const [selectedTimespan, setSelectedTimespan] = useState<Timespan>("MIN")
@@ -92,7 +95,7 @@ export default function Screen() {
   }
 
   return (
-    <>
+    <LoadPlayables playablesIds={npcsIds}>
       <TabPage>
         <View style={styles.row}>
           <ViewSection title="NOUVELLE DATE" style={{ flex: 1 }}>
@@ -153,6 +156,6 @@ export default function Screen() {
         </View>
       </TabPage>
       <Spacer y={15} />
-    </>
+    </LoadPlayables>
   )
 }
