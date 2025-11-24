@@ -11,7 +11,7 @@ import {
 } from "lib/inventory/use-sub-inv-cat"
 import { DbItem } from "lib/objects/data/objects.types"
 import { qkToPath, useSub, useSubCollection } from "lib/shared/db/useSub"
-import { useDatetime } from "lib/squad/use-cases/sub-squad"
+import { useSquads } from "lib/squad/use-cases/sub-squad"
 
 import { useCollectiblesData } from "providers/AdditionalElementsProvider"
 
@@ -33,7 +33,7 @@ import { getExpOptions } from "../progress/exp-provider"
 
 function SubPlayable({ id, squadId }: { id: string; squadId: string }) {
   //
-  const { data: datetime } = useDatetime(squadId)
+  const { data: datetime } = useSquads(squads => squads[squadId].datetime)
   const collectiblesData = useCollectiblesData()
   const itemsCb = useCallback(
     (db: DbItem & { key: string }) => itemFactory(db, collectiblesData),

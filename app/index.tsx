@@ -4,12 +4,10 @@ import { router } from "expo-router"
 
 import WelcomeHeader from "lib/shared/ui/welcome/WelcomeHeader"
 import PickSquadCard from "lib/squad/ui/PickSquadCard"
-import { useSubSquads } from "lib/squad/use-cases/sub-squad"
+import { useSquads } from "lib/squad/use-cases/sub-squad"
 
 import List from "components/List"
 import Spacer from "components/Spacer"
-import Txt from "components/Txt"
-import LoadingScreen from "screens/LoadingScreen"
 
 const styles = StyleSheet.create({
   container: {
@@ -28,17 +26,14 @@ const styles = StyleSheet.create({
   }
 })
 
-export default function SquadSelection() {
-  const { data: squads, isPending, isError } = useSubSquads()
+export default function Screen() {
+  const { data: squads } = useSquads()
 
   const toSquad = (squadId: string) =>
     router.push({ pathname: "/squad/[squadId]", params: { squadId } })
 
   const toAdmin = (squadId: string) =>
     router.push({ pathname: "/squad/[squadId]/admin/datetime", params: { squadId } })
-
-  if (isError) return <Txt>Erreur lors de la récupération des parties</Txt>
-  if (isPending) return <LoadingScreen />
 
   const squadsList = Object.entries(squads).map(([id, value]) => ({
     id,

@@ -1,6 +1,5 @@
-import { QueryClient, queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query"
+import { QueryClient, queryOptions, useSuspenseQuery } from "@tanstack/react-query"
 import Squad from "lib/character/Squad"
-import { qkToPath, useSub, useSubCollection } from "lib/shared/db/useSub"
 
 import { DbSquad } from "../squad-types"
 
@@ -10,14 +9,7 @@ export const getSquadsOptions = () =>
     queryFn: () => new Promise<Record<string, Squad>>(() => {})
   })
 
-const cb = (payload: DbSquad) => new Squad(payload)
-
-export function useSubSquads() {
-  const options = getSquadsOptions()
-  const path = options.queryKey.join("/")
-  useSubCollection(path, cb)
-  return useQuery(options)
-}
+export const squadCb = (payload: DbSquad) => new Squad(payload)
 
 export function useSquads<TData = Record<string, Squad>>(
   select?: (data: Record<string, Squad>) => TData
@@ -31,12 +23,6 @@ export const getSquadOptions = (squadId: string) =>
     queryFn: () => new Promise<Squad>(() => {}),
     enabled: typeof squadId === "string" && squadId !== ""
   })
-
-export function useSubSquad(squadId: string) {
-  const options = getSquadOptions(squadId)
-  useSub(qkToPath(options.queryKey), cb)
-  return useQuery(options)
-}
 
 export function useSquad<TData = Squad>(squadId: string, select?: (data: Squad) => TData) {
   return useSuspenseQuery({ ...getSquadOptions(squadId), select })

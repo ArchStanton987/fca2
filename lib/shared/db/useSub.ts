@@ -5,8 +5,8 @@ import { useQueryClient } from "@tanstack/react-query"
 import database from "config/firebase-env"
 import { onChildAdded, onChildChanged, onChildRemoved, onValue, ref } from "firebase/database"
 
-export const qkToPath = (arr: string[]) => "/".concat(arr.join("/"))
-export const pathToQk = (p: string) => p.split("/").filter((_, i) => i !== 0)
+export const qkToPath = (arr: string[]) => arr.join("/")
+export const pathToQk = (p: string) => p.split("/")
 
 export function subscribeToPath<Db>(
   path: string,
@@ -49,7 +49,7 @@ export function useSubCollection<I, T = I>(path: string, cb?: (dbCollectible: I)
   const dbRef = ref(database, path)
 
   useEffect(() => {
-    const queryKey = path.split("/")
+    const queryKey = pathToQk(path)
 
     const unsubOnChildAdded = subEvent<I>("onChildAdded", path, ({ key, value }) => {
       queryClient.setQueryData(queryKey, (prev: Record<string, T>) => ({

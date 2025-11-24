@@ -1,11 +1,11 @@
-import { ReactNode, Suspense, useEffect } from "react"
+import { Suspense, useEffect } from "react"
 import { Platform, View } from "react-native"
 
 import { Slot, SplashScreen } from "expo-router"
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { useFonts } from "expo-font"
-import { useKeepAwake } from "expo-keep-awake"
 import * as ScreenOrientation from "expo-screen-orientation"
 import { StatusBar } from "expo-status-bar"
 import { toastConfig } from "lib/common/ui/toast"
@@ -15,6 +15,8 @@ import Toast from "react-native-toast-message"
 
 import fonts from "assets/fonts"
 import AdditionalElementsProvider from "providers/AdditionalElementsProvider"
+import InitProvider from "providers/InitProvider"
+import KeepAwakeProvider from "providers/KeepAwakeProvider"
 import UseCasesProvider from "providers/UseCasesProvider"
 import LoadingScreen from "screens/LoadingScreen"
 import colors from "styles/colors"
@@ -25,12 +27,14 @@ let didInit = false
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { staleTime: Infinity } } })
 
-SplashScreen.preventAutoHideAsync()
+// This code is only for TypeScript
+// declare global {
+//   interface Window {
+//     __TANSTACK_QUERY_CLIENT__: import("@tanstack/query-core").QueryClient
+//   }
+// }
 
-const WithKeepAwake = ({ children }: { children: ReactNode }) => {
-  useKeepAwake()
-  return children
-}
+SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts(fonts)
@@ -59,14 +63,14 @@ export default function RootLayout() {
     return <LoadingScreen />
   }
 
-  if (Platform.OS !== "web") {
-    return (
-      <WithKeepAwake>
+  return (
+    <View style={{ flex: 1, backgroundColor: colors.primColor }}>
+      <KeepAwakeProvider>
         <QueryClientProvider client={queryClient}>
-          <View style={{ flex: 1, backgroundColor: colors.primColor }}>
-            <AuthContainer>
-              <ErrorBoundary fallback={<ErrorUi />}>
-                <Suspense fallback={<LoadingScreen />}>
+          <AuthContainer>
+            <ErrorBoundary fallback={<ErrorUi />}>
+              <Suspense fallback={<LoadingScreen />}>
+                <InitProvider>
                   <AdditionalElementsProvider>
                     <UseCasesProvider>
                       <StatusBar hidden />
@@ -74,31 +78,13 @@ export default function RootLayout() {
                       <Toast config={toastConfig} />
                     </UseCasesProvider>
                   </AdditionalElementsProvider>
-                </Suspense>
-              </ErrorBoundary>
-            </AuthContainer>
-          </View>
+                </InitProvider>
+              </Suspense>
+            </ErrorBoundary>
+          </AuthContainer>
+          {/* <ReactQueryDevtools initialIsOpen /> */}
         </QueryClientProvider>
-      </WithKeepAwake>
-    )
-  }
-  return (
-    <QueryClientProvider client={queryClient}>
-      <View style={{ flex: 1, backgroundColor: colors.primColor }}>
-        <AuthContainer>
-          <ErrorBoundary fallback={<ErrorUi />}>
-            <Suspense fallback={<LoadingScreen />}>
-              <AdditionalElementsProvider>
-                <UseCasesProvider>
-                  <StatusBar hidden />
-                  <Slot />
-                  <Toast config={toastConfig} />
-                </UseCasesProvider>
-              </AdditionalElementsProvider>
-            </Suspense>
-          </ErrorBoundary>
-        </AuthContainer>
-      </View>
-    </QueryClientProvider>
+      </KeepAwakeProvider>
+    </View>
   )
 }

@@ -1,38 +1,21 @@
 import { createContext, useContext, useMemo } from "react"
 
-import { useQueries } from "@tanstack/react-query"
+import { useSuspenseQueries } from "@tanstack/react-query"
 import effectsMap from "lib/character/effects/effects"
 import { EffectData } from "lib/character/effects/effects.types"
-import {
-  getCreatedEffectsOptions,
-  useSubCreatedEffects
-} from "lib/character/effects/use-cases/get-all-effects"
+import { getCreatedEffectsOptions } from "lib/character/effects/use-cases/get-all-effects"
 import clothingsMap from "lib/objects/data/clothings/clothings"
 import { ClothingData } from "lib/objects/data/clothings/clothings.types"
-import {
-  getCreatedClothingsOptions,
-  useSubCreatedClothings
-} from "lib/objects/data/clothings/use-cases/get-all-clothings"
+import { getCreatedClothingsOptions } from "lib/objects/data/clothings/use-cases/get-all-clothings"
 import consumablesMap from "lib/objects/data/consumables/consumables"
 import { ConsumableData } from "lib/objects/data/consumables/consumables.types"
-import {
-  getCreatedConsumablesOptions,
-  useSubCreatedConsumables
-} from "lib/objects/data/consumables/use-cases/get-all-consumables"
+import { getCreatedConsumablesOptions } from "lib/objects/data/consumables/use-cases/get-all-consumables"
 import miscObjectsMap from "lib/objects/data/misc-objects/misc-objects"
 import { MiscObjectData } from "lib/objects/data/misc-objects/misc-objects-types"
-import {
-  getCreatedMiscObjectsOptions,
-  useSubCreatedMiscObjects
-} from "lib/objects/data/misc-objects/use-cases/get-all-misc-objects"
-import {
-  getCreatedWeaponOptions,
-  useSubCreatedWeapons
-} from "lib/objects/data/weapons/use-cases/get-all-weapons"
+import { getCreatedMiscObjectsOptions } from "lib/objects/data/misc-objects/use-cases/get-all-misc-objects"
+import { getCreatedWeaponOptions } from "lib/objects/data/weapons/use-cases/get-all-weapons"
 import weaponsMap from "lib/objects/data/weapons/weapons"
 import { WeaponData } from "lib/objects/data/weapons/weapons.types"
-
-import LoadingScreen from "screens/LoadingScreen"
 
 export type AdditionalElContextType = {
   clothings: Record<string, ClothingData>
@@ -51,13 +34,7 @@ const AdditionalElementsContext = createContext<AdditionalElContextType>({
 })
 
 export default function AdditionalElementsProvider({ children }: { children: React.ReactNode }) {
-  useSubCreatedWeapons()
-  useSubCreatedClothings()
-  useSubCreatedConsumables()
-  useSubCreatedEffects()
-  useSubCreatedMiscObjects()
-
-  const queries = useQueries({
+  const queries = useSuspenseQueries({
     queries: [
       getCreatedWeaponOptions(),
       getCreatedClothingsOptions(),
@@ -82,8 +59,6 @@ export default function AdditionalElementsProvider({ children }: { children: Rea
     const { weapons, clothings, consumables, miscObjects, effects } = queries.data
     return { weapons, clothings, consumables, miscObjects, effects }
   }, [queries.data])
-
-  if (queries.isPending) return <LoadingScreen />
 
   return <AdditionalElementsContext value={value}>{children}</AdditionalElementsContext>
 }

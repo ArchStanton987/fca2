@@ -1,4 +1,3 @@
-import { Suspense } from "react"
 import { View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
@@ -9,7 +8,6 @@ import { useSquadMembers } from "lib/squad/use-cases/sub-squad"
 
 import List from "components/List"
 import Spacer from "components/Spacer"
-import LoadingScreen from "screens/LoadingScreen"
 
 export default function Screen() {
   const { squadId } = useLocalSearchParams<{ squadId: string }>()
@@ -24,7 +22,7 @@ export default function Screen() {
   }
 
   return (
-    <Suspense fallback={<LoadingScreen />}>
+    <>
       <WelcomeHeader />
       <View style={{ flexDirection: "row", justifyContent: "center" }}>
         <List
@@ -37,6 +35,6 @@ export default function Screen() {
           )}
         />
       </View>
-    </Suspense>
+    </>
   )
 }
