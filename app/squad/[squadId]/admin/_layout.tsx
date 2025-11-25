@@ -1,5 +1,5 @@
 import { useMemo } from "react"
-import { View } from "react-native"
+import { StyleSheet, View } from "react-native"
 
 import { Tabs, useLocalSearchParams } from "expo-router"
 
@@ -21,6 +21,17 @@ function TabBarComponent(props: any) {
   return <TabBar tabBarId="admin" {...props} />
 }
 
+const styles = StyleSheet.create({
+  headerStyle: {
+    backgroundColor: colors.primColor,
+    height: 40,
+    borderBottomWidth: 0
+  },
+  sceneStyle: {
+    backgroundColor: colors.primColor
+  }
+})
+
 export default function Layout() {
   const { squadId } = useLocalSearchParams<{ squadId: string }>()
   const { data: npcs } = useSquadNpcs(squadId)
@@ -34,8 +45,8 @@ export default function Layout() {
           screenOptions={{
             tabBarHideOnKeyboard: true,
             header: HeaderDatetime,
-            headerStyle: { backgroundColor: colors.primColor, borderBottomWidth: 0 },
-            sceneStyle: { backgroundColor: colors.primColor }
+            headerStyle: styles.headerStyle,
+            sceneStyle: styles.sceneStyle
           }}
         >
           <Tabs.Screen name="datetime" options={{ title: "Horloge" }} />

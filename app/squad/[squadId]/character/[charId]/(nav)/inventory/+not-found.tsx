@@ -1,16 +1,14 @@
-import DrawerPage from "components/DrawerPage"
-import Section from "components/Section"
-import Txt from "components/Txt"
+import { Redirect, useLocalSearchParams } from "expo-router"
 
-export default function InventoryNotFound() {
+export default function NotFoundScreen() {
+  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+
   return (
-    <DrawerPage>
-      <Section
-        style={{ flex: 1 }}
-        contentContainerStyle={{ justifyContent: "center", alignItems: "center", flex: 1 }}
-      >
-        <Txt>Choisissez une catégorie d&apos;objets</Txt>
-      </Section>
-    </DrawerPage>
+    <Redirect
+      href={{
+        pathname: "/squad/[squadId]/character/[charId]/inventory/weapons",
+        params: { charId, squadId }
+      }}
+    />
   )
 }

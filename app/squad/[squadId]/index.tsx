@@ -16,7 +16,7 @@ export default function Screen() {
 
   const toChar = (charId: string) => {
     router.push({
-      pathname: "/squad/[squadId]/character/[charId]/main/recap",
+      pathname: "/squad/[squadId]/character/[charId]/main",
       params: { charId, squadId }
     })
   }

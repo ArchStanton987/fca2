@@ -1,13 +1,12 @@
 import { Redirect, useLocalSearchParams } from "expo-router"
 
-export default function IndexScreen() {
+export default function CombatIndex() {
   const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
-
   return (
     <Redirect
       href={{
-        pathname: "/squad/[squadId]/character/[charId]/inventory/weapons",
-        params: { charId, squadId }
+        pathname: "/squad/[squadId]/character/[charId]/combat/recap",
+        params: { squadId, charId }
       }}
     />
   )

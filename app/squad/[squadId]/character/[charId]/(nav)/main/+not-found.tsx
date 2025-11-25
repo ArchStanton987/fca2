@@ -1,6 +1,6 @@
 import { Redirect, useLocalSearchParams } from "expo-router"
 
-export default function MainNotFound() {
+export default function IndexScreen() {
   const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
 
   return (
