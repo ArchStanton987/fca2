@@ -29,15 +29,6 @@ export default function toggleEquip({ db, collectiblesData, store }: UseCasesCon
     }
 
     // EQUIP
-    const handsTaken = Object.values(equippedItems).reduce((acc, it) => {
-      if (it.category === "misc" || it.category === "clothings") return acc
-      const hands = it.category === "weapons" && it.data.isTwoHanded ? 2 : 1
-      return acc + hands
-    }, 0)
-    const handsNeeded = item.category === "weapons" && item.data.isTwoHanded ? 2 : 1
-    const emptyHands = 2 - handsTaken
-    if (handsNeeded > emptyHands) throw new Error("Pour faire ça, il vous faudrait plus de mains !")
-
     if (item.category === "clothings") {
       const equItemsArray = Object.values(equippedItems)
       const protectedBodyParts = equItemsArray
@@ -49,6 +40,16 @@ export default function toggleEquip({ db, collectiblesData, store }: UseCasesCon
       )
       if (hasClothOnBodyPart)
         throw new Error("Vous ne pouvez pas avoir plusieurs armures sur la même partie du corps")
+    } else {
+      const handsTaken = Object.values(equippedItems).reduce((acc, it) => {
+        if (it.category === "misc" || it.category === "clothings") return acc
+        const hands = it.category === "weapons" && it.data.isTwoHanded ? 2 : 1
+        return acc + hands
+      }, 0)
+      const handsNeeded = item.category === "weapons" && item.data.isTwoHanded ? 2 : 1
+      const emptyHands = 2 - handsTaken
+      if (handsNeeded > emptyHands)
+        throw new Error("Pour faire ça, il vous faudrait plus de mains !")
     }
 
     return itemsRepo.patchChild({ charId, dbKey: itemDbKey, childKey: "isEquipped" }, true)
