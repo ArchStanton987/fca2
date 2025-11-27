@@ -1,4 +1,6 @@
+import { useDatetime } from "lib/squad/use-cases/sub-squad"
 import { create } from "zustand"
+import { useShallow } from "zustand/shallow"
 
 type TxtFields = "location" | "title" | "description"
 
@@ -41,4 +43,20 @@ export const useCreateCombatLocation = () => useCreateCombatStore(state => state
 export const useCreateCombatTitle = () => useCreateCombatStore(state => state.title)
 export const useCreateCombatDescription = () => useCreateCombatStore(state => state.description)
 export const useCreateCombatContenders = () => useCreateCombatStore(state => state.contenders)
+export const useCreateCombatIsCharSelected = (id: string) =>
+  useCreateCombatStore(state => state.contenders.includes(id))
 export const useCreateCombatIsStartingNow = () => useCreateCombatStore(state => state.isStartingNow)
+export const useCreateCombatPayload = (squadId: string) => {
+  const { data: datetime } = useDatetime(squadId)
+  return useCreateCombatStore(
+    useShallow(state => ({
+      gameId: squadId,
+      date: datetime.toJSON(),
+      location: state.location,
+      title: state.title,
+      description: state.description,
+      contenders: state.contenders,
+      isStartingNow: state.isStartingNow
+    }))
+  )
+}
