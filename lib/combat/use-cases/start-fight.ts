@@ -2,7 +2,7 @@ import { getSecAttr } from "lib/character/abilities/abilities-provider"
 import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
-import { getContenders } from "./sub-combat"
+import { getContenders } from "./sub-combats"
 
 export type StartFightParams = {
   combatId: string

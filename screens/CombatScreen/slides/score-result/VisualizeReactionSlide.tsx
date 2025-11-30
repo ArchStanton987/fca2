@@ -1,4 +1,4 @@
-import { useCombatState } from "lib/combat/use-cases/sub-combat"
+import { useCombatState } from "lib/combat/use-cases/sub-combats"
 import { getRollFinalScore } from "lib/combat/utils/combat-utils"
 
 import Col from "components/Col"

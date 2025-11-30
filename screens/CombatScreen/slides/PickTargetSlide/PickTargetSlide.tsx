@@ -4,7 +4,7 @@ import { useLocalSearchParams } from "expo-router"
 
 import { useCombatId, useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
 import { useCharInfo, usePlayablesCharInfo } from "lib/character/info/info-provider"
-import { useContenders } from "lib/combat/use-cases/sub-combat"
+import { useContenders } from "lib/combat/use-cases/sub-combats"
 
 import Col from "components/Col"
 import List from "components/List"

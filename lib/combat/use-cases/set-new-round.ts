@@ -6,7 +6,7 @@ import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import { defaultAction } from "../Combat"
-import { getCombat } from "./sub-combat"
+import { getCombat } from "./sub-combats"
 
 export type SetNewRoundParams = {
   combatId: string

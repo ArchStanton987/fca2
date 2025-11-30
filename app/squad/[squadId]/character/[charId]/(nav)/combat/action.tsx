@@ -3,7 +3,7 @@ import { ReactNode } from "react"
 import { Redirect, useLocalSearchParams } from "expo-router"
 
 import { useCombatId, useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
-import { useCombat, useCombatState } from "lib/combat/use-cases/sub-combat"
+import { useCombat, useCombatState } from "lib/combat/use-cases/sub-combats"
 import {
   getDefaultPlayingId,
   getInitiativePrompts,

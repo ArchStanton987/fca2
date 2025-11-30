@@ -1,7 +1,7 @@
 import { TouchableHighlight } from "react-native"
 
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
-import { useCombatState } from "lib/combat/use-cases/sub-combat"
+import { useCombatState } from "lib/combat/use-cases/sub-combats"
 
 import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"

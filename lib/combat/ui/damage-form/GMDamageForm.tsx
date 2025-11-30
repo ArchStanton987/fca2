@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native"
 
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
-import { useCombatState } from "lib/combat/use-cases/sub-combat"
+import { useCombatState } from "lib/combat/use-cases/sub-combats"
 import { getRealDamage } from "lib/combat/utils/combat-utils"
 import { useItems } from "lib/inventory/use-sub-inv-cat"
 

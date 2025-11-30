@@ -3,7 +3,7 @@ import { ReactNode, createContext, useContext, useState } from "react"
 import { useLocalSearchParams } from "expo-router"
 
 import { ActionStore, createActionStore } from "lib/combat/action-store"
-import { useCombatState } from "lib/combat/use-cases/sub-combat"
+import { useCombatState } from "lib/combat/use-cases/sub-combats"
 import { useItem } from "lib/inventory/use-sub-inv-cat"
 import { StoreApi, useStore } from "zustand"
 

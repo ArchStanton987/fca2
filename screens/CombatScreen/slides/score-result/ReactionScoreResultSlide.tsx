@@ -4,7 +4,7 @@ import { useAbilities, useSpecial } from "lib/character/abilities/abilities-prov
 import skillsMap from "lib/character/abilities/skills/skills"
 import { useCombatId, useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { getCritFailureThreshold } from "lib/combat/const/crit"
-import { useCombatState } from "lib/combat/use-cases/sub-combat"
+import { useCombatState } from "lib/combat/use-cases/sub-combats"
 import { getRollBonus } from "lib/combat/utils/combat-utils"
 
 import Col from "components/Col"

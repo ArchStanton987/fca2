@@ -2,7 +2,7 @@ import { useLocalSearchParams } from "expo-router"
 
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import GMDamageForm from "lib/combat/ui/damage-form/GMDamageForm"
-import { useCombatState } from "lib/combat/use-cases/sub-combat"
+import { useCombatState } from "lib/combat/use-cases/sub-combats"
 
 import DrawerPage from "components/DrawerPage"
 import Txt from "components/Txt"

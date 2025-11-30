@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native"
 import { useLocalSearchParams } from "expo-router"
 
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
-import { useCombatState } from "lib/combat/use-cases/sub-combat"
+import { useCombatState } from "lib/combat/use-cases/sub-combats"
 import { useGetPlayerCanReact } from "lib/combat/utils/combat-utils"
 import { useItem } from "lib/inventory/use-sub-inv-cat"
 

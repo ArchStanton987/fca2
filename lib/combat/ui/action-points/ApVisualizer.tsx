@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native"
 
 import { useAbilities } from "lib/character/abilities/abilities-provider"
 import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
-import { useCombatState } from "lib/combat/use-cases/sub-combat"
+import { useCombatState } from "lib/combat/use-cases/sub-combats"
 
 import CheckBox from "components/CheckBox/CheckBox"
 import List from "components/List"

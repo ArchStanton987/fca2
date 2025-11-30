@@ -5,7 +5,7 @@ import { calculatedEffects } from "lib/character/effects/effects-utils"
 import { limbsMap } from "lib/character/health/Health"
 import { limbsTemplates } from "lib/character/health/health.const"
 import { useCharInfo, useFullname } from "lib/character/info/info-provider"
-import { useContenders } from "lib/combat/use-cases/sub-combat"
+import { useContenders } from "lib/combat/use-cases/sub-combats"
 import { critters } from "lib/npc/const/npc-templates"
 
 import List from "components/List"

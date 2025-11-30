@@ -16,7 +16,7 @@ import { getSquadOptions, squadCb, useSquads } from "lib/squad/use-cases/sub-squ
 
 import LoadingScreen from "screens/LoadingScreen"
 
-const getPlayableOptions = (id: string) => [
+export const getPlayableOptions = (id: string) => [
   getCapsOptions(id),
   getAmmoOptions(id),
   getItemsOptions(id),

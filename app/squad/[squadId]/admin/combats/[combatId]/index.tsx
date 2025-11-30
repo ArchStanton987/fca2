@@ -1,10 +1,9 @@
-import { Suspense } from "react"
 import { TouchableOpacity } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
 import { useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
-import { SubCombat, useCombat, useContenders } from "lib/combat/use-cases/sub-combat"
+import { useCombat, useContenders } from "lib/combat/use-cases/sub-combats"
 import Toast from "react-native-toast-message"
 
 import DrawerPage from "components/DrawerPage"
@@ -13,7 +12,6 @@ import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useGetUseCases } from "providers/UseCasesProvider"
-import LoadingScreen from "screens/LoadingScreen"
 import layout from "styles/layout"
 import { getDDMMYYYY, getHHMM } from "utils/date"
 
@@ -103,11 +101,5 @@ export default function CombatAdminScreen() {
         <Txt>Aucun combat sélectionné</Txt>
       </Section>
     )
-  return (
-    <SubCombat combatId={combatId}>
-      <Suspense fallback={<LoadingScreen />}>
-        <Screen />
-      </Suspense>
-    </SubCombat>
-  )
+  return <Screen />
 }

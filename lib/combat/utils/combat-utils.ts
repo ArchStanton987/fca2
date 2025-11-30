@@ -23,7 +23,7 @@ import Action from "../Action"
 import { Roll } from "../combats.types"
 import actions from "../const/actions"
 import { DEFAULT_INITIATIVE, DODGE_AP_COST, PARRY_AP_COST } from "../const/combat-const"
-import { useCombat, useCombatState } from "../use-cases/sub-combat"
+import { useCombat, useCombatState } from "../use-cases/sub-combats"
 
 export const getPlayingOrder = (combatStatuses: Record<string, CombatStatus>) => {
   // sort contenders by initiative and current ap, then combat status inactive, then dead

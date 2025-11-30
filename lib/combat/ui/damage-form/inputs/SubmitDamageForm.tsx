@@ -1,7 +1,7 @@
 import { useLocalSearchParams } from "expo-router"
 
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
-import { useCombat } from "lib/combat/use-cases/sub-combat"
+import { useCombat } from "lib/combat/use-cases/sub-combats"
 import { reIndexHealthEntries } from "lib/combat/utils/damage-utils"
 import Toast from "react-native-toast-message"
 

@@ -6,7 +6,7 @@ import Section from "components/Section"
 import Txt from "components/Txt"
 import colors from "styles/colors"
 
-import { useCombat } from "../use-cases/sub-combat"
+import { useCombat } from "../use-cases/sub-combats"
 
 const styles = StyleSheet.create({
   centeredSection: {

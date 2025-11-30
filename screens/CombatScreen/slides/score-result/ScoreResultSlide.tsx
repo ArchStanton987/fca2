@@ -4,7 +4,7 @@ import { useAbilities, useSpecial } from "lib/character/abilities/abilities-prov
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { limbsMap } from "lib/character/health/Health"
 import { getCritFailureThreshold } from "lib/combat/const/crit"
-import { useCombatState } from "lib/combat/use-cases/sub-combat"
+import { useCombatState } from "lib/combat/use-cases/sub-combats"
 import { getActorSkillFromAction } from "lib/combat/utils/combat-utils"
 import { useItem } from "lib/inventory/use-sub-inv-cat"
 import Toast from "react-native-toast-message"

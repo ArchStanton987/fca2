@@ -4,7 +4,7 @@ import { useAbilities } from "lib/character/abilities/abilities-provider"
 import { useCombatId, useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { REACTION_MIN_AP_COST } from "lib/combat/const/combat-const"
 import difficultyArray from "lib/combat/const/difficulty"
-import { useCombatState } from "lib/combat/use-cases/sub-combat"
+import { useCombatState } from "lib/combat/use-cases/sub-combats"
 import {
   getActorSkillFromAction,
   getRollBonus,

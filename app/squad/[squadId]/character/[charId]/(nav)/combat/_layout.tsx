@@ -1,15 +1,20 @@
+import { ReactNode, useMemo } from "react"
 import { View } from "react-native"
 
 import { Stack, useLocalSearchParams } from "expo-router"
 
+import { useQueries, useQuery } from "@tanstack/react-query"
 import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { useCharInfo } from "lib/character/info/info-provider"
 import SubPlayables from "lib/character/use-cases/sub-playables"
-import { SubCombat, useCombat } from "lib/combat/use-cases/sub-combat"
+import { SubCombats, getCombatOptions, useCombat } from "lib/combat/use-cases/sub-combats"
+import { useSquadMembers } from "lib/squad/use-cases/sub-squad"
 
 import Drawer from "components/Drawer/Drawer"
 import Spacer from "components/Spacer"
 import { ActionFormProvider } from "providers/ActionFormProvider"
+import { getPlayableOptions } from "providers/SquadProvider"
+import LoadingScreen from "screens/LoadingScreen"
 import styles from "styles/DrawerLayout.styles"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -31,47 +36,91 @@ const getNav = (isGm: boolean, hasCombat: boolean) => {
   return gmNavElements
 }
 
+function Loader({
+  contendersIds,
+  combatId,
+  children
+}: {
+  contendersIds: string[]
+  combatId: string
+  children: ReactNode
+}) {
+  const isContendersPending = useQueries({
+    queries: contendersIds.flatMap(id => getPlayableOptions(id)),
+    combine: r => r.some(q => q.isPending)
+  })
+  const combatQuery = useQuery(getCombatOptions(combatId))
+  const isCombatPending = combatQuery.isEnabled && combatQuery.isPending
+  if (isContendersPending || isCombatPending) return <LoadingScreen />
+  return children
+}
+
+function CombatProvider({
+  children,
+  squadId,
+  charId
+}: {
+  children: ReactNode
+  squadId: string
+  charId: string
+}) {
+  const { data: combatId = "" } = useCombatStatus(charId, cs => cs.combatId)
+  const { data: members } = useSquadMembers(squadId)
+  const { data: contenders = [] } = useCombat(combatId, combat => combat.contendersIds)
+  const subPlayables = useMemo(() => {
+    const contendersSet = new Set(contenders)
+    const membersSet = new Set(Object.keys(members))
+    return Array.from(contendersSet.difference(membersSet))
+  }, [contenders, members])
+
+  return (
+    <>
+      <SubPlayables playablesIds={subPlayables} squadId={squadId} />
+      <SubCombats ids={[combatId]} />
+      <Loader contendersIds={subPlayables} combatId={combatId}>
+        {children}
+      </Loader>
+    </>
+  )
+}
+
 export default function CombatLayout() {
   const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
   const isGameMaster = useCharInfo(charId, info => info.isNpc)
   const combatId = useCombatStatus(charId, data => data.combatId)
   const isInCombat = combatId.data !== ""
-  const { data: contenders } = useCombat(combatId.data, combat => combat.contendersIds)
   const navElements = getNav(isGameMaster.data, isInCombat)
 
   return (
-    <>
-      <SubPlayables playablesIds={contenders} squadId={squadId} />
-      <SubCombat combatId={combatId.data}>
-        <ActionFormProvider>
-          <View style={styles.drawerLayout}>
-            <Drawer sectionId="combat" navElements={navElements} />
-            <Spacer x={layout.globalPadding} />
-            <Stack
-              screenOptions={{
-                headerShown: false,
-                contentStyle: { backgroundColor: colors.primColor, padding: 0 }
-              }}
-            >
-              <Stack.Protected guard={!isInCombat}>
-                <Stack.Screen name="recap" />
-              </Stack.Protected>
-              <Stack.Protected guard={isInCombat}>
-                <Stack.Screen name="combat-recap" />
-              </Stack.Protected>
-              <Stack.Protected guard={!isGameMaster.data}>
-                <Stack.Screen name="action" />
-              </Stack.Protected>
-              <Stack.Protected guard={isGameMaster.data}>
-                <Stack.Screen name="action-order" />
-                <Stack.Screen name="gm-action" />
-                <Stack.Screen name="gm-difficulty" />
-                <Stack.Screen name="gm-damage" />
-              </Stack.Protected>
-            </Stack>
-          </View>
-        </ActionFormProvider>
-      </SubCombat>
-    </>
+    <CombatProvider squadId={squadId} charId={charId}>
+      <ActionFormProvider>
+        <View style={styles.drawerLayout}>
+          <Drawer sectionId="combat" navElements={navElements} />
+          <Spacer x={layout.globalPadding} />
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: { backgroundColor: colors.primColor, padding: 0 }
+            }}
+          >
+            <Stack.Protected guard={!isInCombat}>
+              <Stack.Screen name="recap" />
+            </Stack.Protected>
+            <Stack.Protected guard={isInCombat}>
+              <Stack.Screen name="combat-recap" />
+            </Stack.Protected>
+            <Stack.Protected guard={!isGameMaster.data}>
+              <Stack.Screen name="action" />
+            </Stack.Protected>
+            <Stack.Protected guard={isGameMaster.data}>
+              <Stack.Screen name="action-order" />
+              <Stack.Screen name="gm-action" />
+              <Stack.Screen name="gm-difficulty" />
+              <Stack.Screen name="gm-damage" />
+            </Stack.Protected>
+          </Stack>
+        </View>
+      </ActionFormProvider>
+    </CombatProvider>
   )
 }

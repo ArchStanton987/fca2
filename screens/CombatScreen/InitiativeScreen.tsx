@@ -8,7 +8,7 @@ import { useAbilities } from "lib/character/abilities/abilities-provider"
 import skillsMap from "lib/character/abilities/skills/skills"
 import { useCombatId, useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
 import { useCharInfo } from "lib/character/info/info-provider"
-import { useContenders } from "lib/combat/use-cases/sub-combat"
+import { useContenders } from "lib/combat/use-cases/sub-combats"
 import { getRandomArbitrary } from "lib/common/utils/dice-calc"
 import Toast from "react-native-toast-message"
 

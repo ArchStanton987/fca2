@@ -1,7 +1,7 @@
 import { useLocalSearchParams } from "expo-router"
 
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
-import { useCombatState } from "lib/combat/use-cases/sub-combat"
+import { useCombatState } from "lib/combat/use-cases/sub-combats"
 import {
   useBarterAmmos,
   useBarterCaps,

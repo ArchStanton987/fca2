@@ -4,7 +4,7 @@ import { useLocalSearchParams } from "expo-router"
 
 import { useAbilities } from "lib/character/abilities/abilities-provider"
 import { useCombatId, useCombatStatus } from "lib/character/combat-status/combat-status-provider"
-import { useCombatState } from "lib/combat/use-cases/sub-combat"
+import { useCombatState } from "lib/combat/use-cases/sub-combats"
 import { useItem } from "lib/inventory/use-sub-inv-cat"
 import Toast from "react-native-toast-message"
 

@@ -3,7 +3,7 @@ import {
   useCombatStatus,
   useCombatStatuses
 } from "lib/character/combat-status/combat-status-provider"
-import { useContenders } from "lib/combat/use-cases/sub-combat"
+import { useContenders } from "lib/combat/use-cases/sub-combats"
 import { getActivePlayersWithAp } from "lib/combat/utils/combat-utils"
 import Toast from "react-native-toast-message"
 

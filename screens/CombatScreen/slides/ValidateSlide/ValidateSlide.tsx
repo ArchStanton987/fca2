@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity } from "react-native"
 import { useLocalSearchParams } from "expo-router"
 
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
-import { useCombatState } from "lib/combat/use-cases/sub-combat"
+import { useCombatState } from "lib/combat/use-cases/sub-combats"
 import { useItem } from "lib/inventory/use-sub-inv-cat"
 import Weapon from "lib/objects/data/weapons/Weapon"
 import Toast from "react-native-toast-message"
@@ -45,7 +45,7 @@ export default function ValidateSlide() {
   const { data: item = Weapon.getUnarmed() } = useItem(actorId, action?.itemDbKey || "")
 
   if (!action) return <SlideError error={slideErrors.noCombatError} />
-  const { rawDamage, itemDbKey } = action
+  const { rawDamage } = action
   const isDamageRolled = typeof rawDamage === "number"
   const isWaitingForGm = isDamageRolled && action?.healthChangeEntries === undefined
 

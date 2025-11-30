@@ -18,7 +18,7 @@ import itemAction from "./item-action"
 import prepareAction from "./prepare-action"
 import saveAction from "./save-action"
 import setNewRound from "./set-new-round"
-import { getCombat } from "./sub-combat"
+import { getCombat } from "./sub-combats"
 import waitAction from "./wait-action"
 import weaponAction from "./weapon-action"
 

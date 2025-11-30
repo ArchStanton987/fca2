@@ -9,7 +9,7 @@ import { useCombatId, useCombatStatuses } from "lib/character/combat-status/comb
 import { useCharInfo } from "lib/character/info/info-provider"
 import { ActionTypeId, withRollActionsTypes } from "lib/combat/const/actions"
 import difficultyArray from "lib/combat/const/difficulty"
-import { useCombatState, useContenders } from "lib/combat/use-cases/sub-combat"
+import { useCombatState, useContenders } from "lib/combat/use-cases/sub-combats"
 import { getDefaultPlayingId } from "lib/combat/utils/combat-utils"
 
 import DrawerPage from "components/DrawerPage"

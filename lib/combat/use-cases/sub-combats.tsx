@@ -1,12 +1,13 @@
-import { ReactNode } from "react"
+import { useCallback } from "react"
 
 import {
   QueryClient,
   queryOptions,
+  useQuery,
   useSuspenseQueries,
   useSuspenseQuery
 } from "@tanstack/react-query"
-import { useMultiSub, useSub } from "lib/shared/db/useSub"
+import { qkToPath, useSub } from "lib/shared/db/useSub"
 
 import Combat from "../Combat"
 import CombatState from "../CombatState"
@@ -33,10 +34,31 @@ export const getCombatOptions = (combatId: string) =>
 
 const cb = (payload: DbCombatState) => new CombatState(payload)
 
-export function useSubCombatState(combatId: string) {
-  const options = combatStateOptions(combatId)
-  const path = options.queryKey.join("/")
-  useSub(path, cb)
+function SubPrim({ id }: { id: string }) {
+  useSub(qkToPath(combatStateOptions(id).queryKey), cb)
+  useSub(qkToPath(combatHistoryOptions(id).queryKey))
+  return null
+}
+function SubInfo({ id }: { id: string }) {
+  const { data: history = {} } = useQuery(combatHistoryOptions(id))
+  const combatCb = useCallback(
+    () => (data: DbCombatInfo) => new Combat({ info: data, history, combatId: id }),
+    [history, id]
+  )
+  useSub(qkToPath(getCombatOptions(id).queryKey), combatCb)
+  return null
+}
+function SubCombat({ id }: { id: string }) {
+  return (
+    <>
+      <SubPrim id={id} />
+      <SubInfo id={id} />
+    </>
+  )
+}
+
+export function SubCombats({ ids }: { ids: string[] }) {
+  return ids.map(id => <SubCombat id={id} />)
 }
 
 export function useCombatState<TData = CombatState>(
@@ -46,57 +68,11 @@ export function useCombatState<TData = CombatState>(
   return useSuspenseQuery({ ...combatStateOptions(combatId), select })
 }
 
-function useSubCombatHistory(combatId: string) {
-  const options = combatHistoryOptions(combatId)
-  const path = options.queryKey.join("/")
-  useSub(path)
-}
-function useSubCombatsHistories(combatsIds: string[]) {
-  useMultiSub(combatsIds.map(id => ({ path: combatHistoryOptions(id).queryKey.join("/") })))
-}
-function useCombatsHistories(combatsIds: string[]) {
-  return useSuspenseQueries({
-    queries: combatsIds.map(id => combatHistoryOptions(id)),
-    combine: results => Object.fromEntries(combatsIds.map((id, i) => [id, results[i]]))
-  })
-}
-
-function useSubCombat(combatId: string) {
-  const options = getCombatOptions(combatId)
-  const path = options.queryKey.join("/")
-  const history = useSuspenseQuery(combatHistoryOptions(combatId))
-  useSub(path, (data: DbCombatInfo) => new Combat({ info: data, history, combatId }))
-}
-export function SubCombats({
-  children,
-  combatsIds
-}: {
-  children: ReactNode
-  combatsIds: string[]
-}) {
-  useSubCombatsHistories(combatsIds)
-  const histories = useCombatsHistories(combatsIds)
-  useMultiSub(
-    combatsIds.map((id, i) => ({
-      path: getCombatOptions(id).queryKey.join("/"),
-      cb: (data: DbCombatInfo) => new Combat({ info: data, history: histories[i], combatId: id })
-    }))
-  )
-  return children
-}
 export function useCombats(combatsIds: string[]) {
   return useSuspenseQueries({
     queries: combatsIds.map(id => getCombatOptions(id)),
     combine: results => Object.fromEntries(combatsIds.map((id, i) => [id, results[i]]))
   })
-}
-
-export function SubCombat({ children, combatId }: { children: ReactNode; combatId: string }) {
-  useSubCombatState(combatId)
-  useSubCombatHistory(combatId)
-  useSubCombat(combatId)
-
-  return children
 }
 
 export function useCombat<TData = Combat>(combatId: string, select?: (data: Combat) => TData) {

@@ -5,7 +5,7 @@ import { DbCombatStatus } from "lib/character/combat-status/combat-status.types"
 import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
-import { getContenders } from "./sub-combat"
+import { getContenders } from "./sub-combats"
 
 export type AdminEndFightParams = {
   combatId: string
