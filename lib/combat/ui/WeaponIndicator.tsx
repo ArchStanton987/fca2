@@ -75,7 +75,7 @@ function WeaponActions({ weaponKey, charId }: { weaponKey: string; charId: strin
   const useCases = useGetUseCases()
   const { data: maxAp } = useAbilities(charId, a => a.secAttr.curr.actionPoints)
   const { data: currAp } = useCombatStatus(charId, cs => cs.currAp)
-  const { data: weapon } = useItem(charId, weaponKey)
+  const { data: weapon = Weapon.getUnarmed() } = useItem(charId, weaponKey)
   const { data: ammo } = useAmmo(charId)
 
   const [selectedAction, setSelectedAction] = useState("")
@@ -131,7 +131,7 @@ function WeaponActions({ weaponKey, charId }: { weaponKey: string; charId: strin
 
 function WeaponInfoUi({ charId, weaponKey }: WeaponInfoUiProps) {
   const { data: abilities } = useAbilities(charId)
-  const { data: weapon } = useItem(charId, weaponKey)
+  const { data: weapon = Weapon.getUnarmed() } = useItem(charId, weaponKey)
   const hasMalus = getHasStrengthMalus(weapon, abilities.special.curr)
   if (weapon.category !== "weapons") throw new Error("Item is not a weapon")
   return (

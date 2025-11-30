@@ -13,13 +13,13 @@ import Combat from "../Combat"
 import CombatState from "../CombatState"
 import { DbCombatHistory, DbCombatInfo, DbCombatState } from "../combats.types"
 
-const combatStateOptions = (combatId: string) =>
+export const combatStateOptions = (combatId: string) =>
   queryOptions({
     queryKey: ["v3", "combats", combatId, "state"],
     enabled: combatId !== "",
     queryFn: () => new Promise<CombatState>(() => {})
   })
-const combatHistoryOptions = (combatId: string) =>
+export const combatHistoryOptions = (combatId: string) =>
   queryOptions({
     queryKey: ["v3", "combats", combatId, "history"],
     enabled: combatId !== "",
@@ -58,7 +58,7 @@ function SubCombat({ id }: { id: string }) {
 }
 
 export function SubCombats({ ids }: { ids: string[] }) {
-  return ids.map(id => <SubCombat id={id} />)
+  return ids.map(id => <SubCombat key={id} id={id} />)
 }
 
 export function useCombatState<TData = CombatState>(

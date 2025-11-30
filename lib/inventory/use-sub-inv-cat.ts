@@ -81,13 +81,12 @@ export function useCombatWeapons(charId: string): Weapon[] {
       .filter(i => i.isEquipped)
       .filter(i => i.category === "weapons")
   )
-  const hasEquipedWeapons = Object.keys(equipedWeapons).length === 0
+  const hasEquipedWeapons = Object.keys(equipedWeapons).length > 0
   if (hasEquipedWeapons) return Object.values(equipedWeapons)
-  const unarmed = Weapon.getUnarmed()
   if (critters[templateId]) {
     return critters[templateId].attacks.map(a => attackToWeapon(a))
   }
-  return [unarmed]
+  return [Weapon.getUnarmed()]
 }
 
 export function useClothings(charId: string, isEquipped?: boolean, isGrouped?: boolean) {

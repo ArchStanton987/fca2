@@ -52,7 +52,9 @@ export default function AmmoScreen() {
   const title = getTitle(onPressHeader)
 
   const sortedAmmo = useMemo(() => {
-    const ammoArray = Object.entries(ammo).map(([id, count]) => ({ id: id as AmmoType, count }))
+    const ammoArray = Object.entries(ammo)
+      .map(([id, count]) => ({ id: id as AmmoType, count }))
+      .filter(({ count }) => count > 0)
     const sortFn = (a: AmmoEntry, b: AmmoEntry) => {
       if (sort.type === "name") return ammoMap[b.id].label.localeCompare(ammoMap[a.id].label)
       if (sort.type === "count") return a.count - b.count

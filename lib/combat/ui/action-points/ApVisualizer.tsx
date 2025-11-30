@@ -50,9 +50,12 @@ function ApVisualizerUi({ apArr, currAp, maxAp, handleSetAp }: ApVisualizerProps
 
 export default function ApVisualizer({ charId }: { charId: string }) {
   const useCases = useGetUseCases()
-  const { data: action } = useCombatState(charId, state => state.action)
+  const { data: combatStatus } = useCombatStatus(charId, cs => ({
+    currAp: cs.currAp,
+    combatId: cs.combatId
+  }))
+  const { data: action } = useCombatState(combatStatus.combatId, state => state.action)
   const { data: maxAp } = useAbilities(charId, a => a.secAttr.curr.actionPoints)
-  const { data: currAp } = useCombatStatus(charId, cs => cs.currAp)
 
   const actorId = action?.actorId ?? ""
   const targetId = action?.targetId ?? ""
@@ -65,7 +68,7 @@ export default function ApVisualizer({ charId }: { charId: string }) {
   }
 
   const handleSetAp = async (i: number) => {
-    const newValue = i < currAp ? i : i + 1
+    const newValue = i < combatStatus.currAp ? i : i + 1
     await useCases.character.updateCombatStatus({
       charId,
       payload: { currAp: newValue }
@@ -74,10 +77,17 @@ export default function ApVisualizer({ charId }: { charId: string }) {
 
   const apArr = []
   for (let i = 0; i < maxAp; i += 1) {
-    const isChecked = i < currAp
-    const isPreview = i >= currAp - apCost && i < currAp
+    const isChecked = i < combatStatus.currAp
+    const isPreview = i >= combatStatus.currAp - apCost && i < combatStatus.currAp
     apArr.push({ id: i.toString(), isChecked, isPreview })
   }
 
-  return <ApVisualizerUi apArr={apArr} maxAp={maxAp} currAp={currAp} handleSetAp={handleSetAp} />
+  return (
+    <ApVisualizerUi
+      apArr={apArr}
+      maxAp={maxAp}
+      currAp={combatStatus.currAp}
+      handleSetAp={handleSetAp}
+    />
+  )
 }

@@ -1,20 +1,26 @@
 import { ReactNode, createContext, useContext, useState } from "react"
 
-import { useLocalSearchParams } from "expo-router"
-
+import { useQuery } from "@tanstack/react-query"
+import Action from "lib/combat/Action"
 import { ActionStore, createActionStore } from "lib/combat/action-store"
-import { useCombatState } from "lib/combat/use-cases/sub-combats"
+import { combatStateOptions } from "lib/combat/use-cases/sub-combats"
 import { useItem } from "lib/inventory/use-sub-inv-cat"
 import { StoreApi, useStore } from "zustand"
 
 const ActionContext = createContext<StoreApi<ActionStore>>({} as StoreApi<ActionStore>)
 
-export function ActionFormProvider({ children }: { children: ReactNode }) {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
-  const { data: action } = useCombatState(charId, state => state.action)
-
-  const [actionStore] = useState(() => createActionStore(action))
-
+export function ActionFormProvider({
+  children,
+  combatId
+}: {
+  children: ReactNode
+  combatId: string
+}) {
+  const { data: action } = useQuery({
+    ...combatStateOptions(combatId),
+    select: state => state.action
+  })
+  const [actionStore] = useState(() => createActionStore(action ?? new Action({})))
   return <ActionContext.Provider value={actionStore}>{children}</ActionContext.Provider>
 }
 
