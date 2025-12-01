@@ -42,7 +42,7 @@ function SubPrim({ id }: { id: string }) {
 function SubInfo({ id }: { id: string }) {
   const { data: history = {} } = useQuery(combatHistoryOptions(id))
   const combatCb = useCallback(
-    () => (data: DbCombatInfo) => new Combat({ info: data, history, combatId: id }),
+    (data: DbCombatInfo) => new Combat({ info: data, history, combatId: id }),
     [history, id]
   )
   useSub(qkToPath(getCombatOptions(id).queryKey), combatCb)

@@ -33,8 +33,9 @@ export default function AmmoIndicator({ charId, weaponKey }: AmmoIndicatorProps)
   const { data: weapon = Weapon.getUnarmed() } = useItem(charId, weaponKey)
   const { data: ammo } = useAmmo(charId)
   if (weapon.category !== "weapons") return null
+  if (weapon.data.ammoType === null) return null
   const inMagazine = weapon?.inMagazine || 0
-  const ammoLabel = weapon.data.ammoType ? ammoMap[weapon.data.ammoType].label : "-"
+  const ammoLabel = ammoMap[weapon.data.ammoType].label
   return (
     <Col style={{ alignItems: "flex-start" }}>
       <Txt style={{ fontSize: 20 }}>{fillZeros(inMagazine)}</Txt>

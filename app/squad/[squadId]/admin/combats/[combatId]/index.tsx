@@ -3,6 +3,7 @@ import { TouchableOpacity } from "react-native"
 import { router, useLocalSearchParams } from "expo-router"
 
 import { useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
+import Combat from "lib/combat/Combat"
 import { useCombat, useContenders } from "lib/combat/use-cases/sub-combats"
 import Toast from "react-native-toast-message"
 
@@ -15,11 +16,25 @@ import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
 import { getDDMMYYYY, getHHMM } from "utils/date"
 
+const getIsValidCombatId = (combatId: string) =>
+  combatId !== undefined && combatId !== "" && combatId !== "index"
+
+function NoCombatSelected() {
+  return (
+    <Section
+      style={{ flex: 1 }}
+      contentContainerStyle={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+    >
+      <Txt>Aucun combat sélectionné</Txt>
+    </Section>
+  )
+}
+
 function Screen() {
   const { combatId, squadId } = useLocalSearchParams<{ combatId: string; squadId: string }>()
   const useCases = useGetUseCases()
 
-  const { data: contendersIds } = useContenders(combatId)
+  const { data: contendersIds = [] } = useContenders(combatId)
   const combatStatuses = useCombatStatuses(contendersIds)
   const isFightActive = Object.values(combatStatuses).some(c => c.combatId === combatId)
   const { data: combat } = useCombat(combatId)
@@ -44,13 +59,16 @@ function Screen() {
   }
 
   const startFight = async () => {
+    if (!contendersIds) throw new Error("no contenders")
     try {
-      await useCases.combat.startFight({ combatId })
+      await useCases.combat.startFight({ combatId, contenders: combat.contendersIds })
       Toast.show({ type: "custom", text1: "Le combat a été démarré" })
     } catch (error) {
       Toast.show({ type: "error", text1: "Erreur lors du démarrage du combat" })
     }
   }
+
+  if (!getIsValidCombatId(combatId) || !(combat instanceof Combat)) return <NoCombatSelected />
 
   const { title, description, location, date } = combat
   const d = getDDMMYYYY(date)
@@ -92,14 +110,6 @@ function Screen() {
 
 export default function CombatAdminScreen() {
   const { combatId } = useLocalSearchParams<{ combatId: string }>()
-  if (!combatId)
-    return (
-      <Section
-        style={{ flex: 1 }}
-        contentContainerStyle={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-      >
-        <Txt>Aucun combat sélectionné</Txt>
-      </Section>
-    )
+  if (!getIsValidCombatId(combatId)) return <NoCombatSelected />
   return <Screen />
 }

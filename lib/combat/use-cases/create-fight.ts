@@ -36,7 +36,7 @@ export default function createFight(config: UseCasesConfig) {
     squadRepo.patchChild({ id: rest.gameId, childKey: "combats" }, { [combatId]: combatId })
 
     if (isStartingNow) {
-      await startFight(config)({ combatId })
+      await startFight(config)({ combatId, contenders })
     }
     return combatId
   }

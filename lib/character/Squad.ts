@@ -12,5 +12,6 @@ export default class Squad {
     this.label = payload.label
     this.members = Object.fromEntries(Object.keys(payload.members ?? {}).map(i => [i, i]))
     this.npcs = Object.fromEntries(Object.keys(payload.npc ?? {}).map(i => [i, i]))
+    this.combats = Object.fromEntries(Object.keys(payload.combats ?? {}).map(c => [c, c]))
   }
 }

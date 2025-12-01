@@ -22,14 +22,9 @@ export default function deleteFight(config: UseCasesConfig) {
   return ({ gameId, combatId }: DeleteFightParams) => {
     const promises: Promise<void>[] = []
 
-    // delete combat entry
-    promises.push(combatRepo.delete({ id: combatId }))
-    // @ts-ignore
-    promises.push(squadRepo.patchChild({ id: gameId, childKey: "combats" }, { [combatId]: null }))
-
     const contenders = getContenders(store, combatId)
 
-    Object.keys(contenders).forEach(charId => {
+    Object.values(contenders).forEach(charId => {
       // remove fight ID in characters combat archive
       const combatHistory = getPlayableCombatHistory(store, charId)
       if (combatHistory[combatId]) {
@@ -45,6 +40,11 @@ export default function deleteFight(config: UseCasesConfig) {
         promises.push(combatStatusRepo.set({ charId }, defaultCombatStatus))
       }
     })
+
+    // delete combat entry
+    promises.push(combatRepo.delete({ id: combatId }))
+    // @ts-ignore
+    promises.push(squadRepo.patchChild({ id: gameId, childKey: "combats" }, { [combatId]: null }))
 
     return Promise.all(promises)
   }

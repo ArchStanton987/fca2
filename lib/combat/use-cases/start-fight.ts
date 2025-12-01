@@ -2,21 +2,18 @@ import { getSecAttr } from "lib/character/abilities/abilities-provider"
 import { UseCasesConfig } from "lib/get-use-case.types"
 import repositoryMap from "lib/shared/db/get-repository"
 
-import { getContenders } from "./sub-combats"
-
 export type StartFightParams = {
   combatId: string
+  contenders: string[]
 }
 
 export default function startFight({ db, store }: UseCasesConfig) {
   const combatStatusRepo = repositoryMap[db].combatStatusRepository
 
-  return async ({ combatId }: StartFightParams) => {
+  return async ({ combatId, contenders }: StartFightParams) => {
     const promises: Promise<void>[] = []
 
-    const contenders = getContenders(store, combatId)
-
-    Object.keys(contenders).forEach(charId => {
+    Object.values(contenders).forEach(charId => {
       const secAttr = getSecAttr(store, charId)
       const currAp = secAttr.curr.actionPoints
       promises.push(
