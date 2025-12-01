@@ -49,6 +49,7 @@ export default function MiscObjectsCreation() {
     }
     try {
       await useCases.additional.addMiscObject(JSON.parse(JSON.stringify(payload)))
+      setMiscForm(defaultForm)
       Toast.show({ type: "custom", text1: "L'objet a été ajouté" })
     } catch (err: any) {
       Toast.show({ type: "error", text1: "Erreur lors de la création de l'objet" })

@@ -75,7 +75,7 @@ const resistances: { label: string; key: keyof typeof defaultClothingForm }[] = 
   { label: "FEU", key: "fireDamageResist" }
 ] as const
 const operationCycle: Operation[] = ["add", "mult", "abs"]
-const attributesTypes: AttributeType[] = ["special", "secAttr", "skills", "combatMod", "knowledges"]
+const attributesTypes: AttributeType[] = ["special", "secAttr", "skills", "combatMod"]
 type Displays = "attributes"
 
 type ClothingForm = {
@@ -212,7 +212,7 @@ export default function ClothingsCreation() {
           <Spacer x={layout.globalPadding} />
           <Col style={{ flex: 1 }}>
             <Txt>TIER</Txt>
-            <TxtInput value={clothingForm.label} onChangeText={e => handleSetForm("tier", e)} />
+            <TxtInput value={clothingForm.tier} onChangeText={e => handleSetForm("tier", e)} />
           </Col>
         </Row>
 

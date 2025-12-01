@@ -40,7 +40,6 @@ type ConsumableFormType = ReplaceNumberWithString<
 >
 
 type DbTags = Record<ConsumableType, ConsumableType>
-type DbKnowledges = Record<KnowledgeId, KnowledgeId>
 type StateModifier = ReplaceNumberWithString<Modifier>
 type StateModifiers = Record<string, StateModifier>
 type Displays = "knowledges" | "effects" | "skills"
@@ -70,7 +69,7 @@ export default function ConsumablesCreation() {
   const [currDisplay, setCurrDisplay] = useState<Displays | null>(null)
   const [consumableForm, setConsumableForm] = useState<ConsumableFormType>(defaultForm)
   const [tags, setTags] = useState({} as DbTags)
-  const [knowledges, setKnowledges] = useState({} as DbKnowledges)
+  const [knowledge, setKnowledge] = useState<KnowledgeId | null>(null)
   const [modifiers, setModifiers] = useState({} as StateModifiers)
 
   const handleSetForm = (key: keyof typeof defaultForm, value: any) => {
@@ -78,7 +77,7 @@ export default function ConsumablesCreation() {
   }
 
   const handleSetKnowledge = (k: KnowledgeId) => {
-    setKnowledges({ ...knowledges, [k]: k })
+    setKnowledge(k)
   }
 
   const toggleTag = (tag: ConsumableType) => {
@@ -133,7 +132,7 @@ export default function ConsumablesCreation() {
       weight: parseFloat(consumableForm.weight),
       maxUsage: parseInt(consumableForm.maxUsage, 10),
       tags,
-      knowledges,
+      knowledges: knowledge ? { [knowledge]: knowledge } : {},
       modifiers: newModifiers
     }
     try {
@@ -192,11 +191,7 @@ export default function ConsumablesCreation() {
           <Spacer x={layout.globalPadding} />
           <Col style={{ flex: 1 }}>
             <Txt>KNOWLEDGE ID</Txt>
-            <TxtInput
-              onFocus={() => setCurrDisplay("knowledges")}
-              value={Object.keys(knowledges).join() ?? ""}
-              onChangeText={e => handleSetKnowledge(e as KnowledgeId)}
-            />
+            <TxtInput onFocus={() => setCurrDisplay("knowledges")} value={knowledge ?? ""} />
           </Col>
         </Row>
 

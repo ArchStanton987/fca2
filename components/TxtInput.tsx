@@ -9,7 +9,7 @@ export default function TxtInput({ style, ...rest }: TextInputProps) {
       style={[
         {
           padding: 5,
-          paddingRight: 30,
+          paddingRight: 5,
           backgroundColor: colors.terColor,
           color: colors.secColor,
           fontFamily: "monofonto"
