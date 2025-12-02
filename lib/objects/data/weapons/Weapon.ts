@@ -5,7 +5,9 @@ import perksMap from "lib/character/abilities/perks/perks"
 import { PerkId } from "lib/character/abilities/perks/perks.types"
 import traitsMap from "lib/character/abilities/traits/traits"
 import { TraitId } from "lib/character/abilities/traits/traits.types"
+import { TemplateId } from "lib/character/info/CharInfo"
 import { getModAttribute } from "lib/common/utils/char-calc"
+import { critters } from "lib/npc/const/npc-templates"
 
 import { AmmoSet } from "../ammo/ammo.types"
 import { DbWeapon, ItemInterface } from "../objects.types"
@@ -63,7 +65,15 @@ export default class Weapon implements ItemInterface {
     this.inMagazine = this.data.ammoType !== null ? inMagazine : null
   }
 
-  getSkillScore(abilities: Abilities) {
+  getSkillScore(abilities: Abilities, charInfo: { isCritter: boolean; templateId: TemplateId }) {
+    if (charInfo.isCritter && charInfo.templateId in critters) {
+      const template = critters[charInfo.templateId]
+      const attack = template.attacks.find(a => a.name === this.id)
+      if (!attack)
+        throw new Error(`Could not find attack with name : ${this.id}for : ${charInfo.templateId}`)
+      return attack.skill
+    }
+
     const { isTwoHanded, minStrength } = this.data
     const baseScore = abilities.skills.curr[this.data.skillId]
 
@@ -93,10 +103,18 @@ export default class Weapon implements ItemInterface {
   }
 
   getApCost(
-    traits: Abilities["traits"],
-    secAttr: Abilities["secAttr"],
-    actionType: WeaponActionId
+    abilities: { traits: Abilities["traits"]; secAttr: Abilities["secAttr"] },
+    actionType: WeaponActionId,
+    charInfo: { isCritter: boolean; templateId: TemplateId }
   ) {
+    if (charInfo.isCritter && charInfo.templateId in critters) {
+      const template = critters[charInfo.templateId]
+      const attack = template.attacks.find(a => a.name === this.id)
+      if (!attack)
+        throw new Error(`Could not find attack with name : ${this.id}for : ${charInfo.templateId}`)
+      return attack.apCost
+    }
+    const { secAttr, traits } = abilities
     const apCosts = {
       basic: this.data.basicApCost,
       aim: this.data.specialApCost,

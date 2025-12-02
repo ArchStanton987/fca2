@@ -272,3 +272,4 @@ export type WeaponTagId =
   | "fusil d'assault"
   | "mitrailleuse lourde"
   | "minigun"
+  | "attack"

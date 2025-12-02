@@ -58,5 +58,33 @@ export const attackToWeapon = (attack: BeastAttack): Weapon => {
       modifiers
     }
   }
-  return new Weapon({ ...dbWeapon, key: name }, {})
+  return new Weapon(
+    { ...dbWeapon, key: name },
+    {
+      [name]: {
+        id: "" as WeaponId,
+        label: "",
+        img: "",
+        damageType: "physical",
+        damageBasic: null,
+        damageBurst: null,
+        ammoType: null,
+        range: null,
+        magazine: null,
+        ammoPerShot: null,
+        ammoPerBurst: null,
+        basicApCost: null,
+        specialApCost: null,
+        minStrength: 1,
+        place: 0,
+        weight: 0,
+        value: 0,
+        frequency: 1,
+        skillId: "unarmed",
+        isTwoHanded: false,
+        knowledges: [],
+        tags: ["attack"]
+      }
+    }
+  )
 }

@@ -5,6 +5,7 @@ import { Image } from "expo-image"
 import { useAbilities } from "lib/character/abilities/abilities-provider"
 import secAttrMap from "lib/character/abilities/sec-attr/sec-attr"
 import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
+import { useCharInfo } from "lib/character/info/info-provider"
 import { useAmmo, useCombatWeapons, useItem } from "lib/inventory/use-sub-inv-cat"
 import Weapon from "lib/objects/data/weapons/Weapon"
 import {
@@ -131,6 +132,10 @@ function WeaponActions({ weaponKey, charId }: { weaponKey: string; charId: strin
 
 function WeaponInfoUi({ charId, weaponKey }: WeaponInfoUiProps) {
   const { data: abilities } = useAbilities(charId)
+  const { data: info } = useCharInfo(charId, i => ({
+    templateId: i.templateId,
+    isCritter: i.isCritter
+  }))
   const { data: weapon = Weapon.getUnarmed() } = useItem(charId, weaponKey)
   const hasMalus = getHasStrengthMalus(weapon, abilities.special.curr)
   if (weapon.category !== "weapons") throw new Error("Item is not a weapon")
@@ -165,7 +170,7 @@ function WeaponInfoUi({ charId, weaponKey }: WeaponInfoUiProps) {
         <Row>
           <Txt style={[styles.attr, hasMalus && styles.malus]}>COMP</Txt>
           <Spacer x={10} />
-          <Txt style={hasMalus && styles.malus}>{weapon.getSkillScore(abilities)}</Txt>
+          <Txt style={hasMalus && styles.malus}>{weapon.getSkillScore(abilities, info)}</Txt>
         </Row>
         {weapon.data.range && (
           <Row>
