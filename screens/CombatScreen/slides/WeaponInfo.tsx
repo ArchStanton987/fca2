@@ -5,6 +5,7 @@ import { useLocalSearchParams } from "expo-router"
 import { Image } from "expo-image"
 import { useAbilities, useSpecial } from "lib/character/abilities/abilities-provider"
 import secAttrMap from "lib/character/abilities/sec-attr/sec-attr"
+import { useCharInfo } from "lib/character/info/info-provider"
 import { useItem } from "lib/inventory/use-sub-inv-cat"
 import { getHasStrengthMalus } from "lib/objects/data/weapons/weapons-utils"
 
@@ -32,6 +33,7 @@ export default function WeaponInfo({ selectedWeapon }: { selectedWeapon: string 
   const actorId = formActorId === "" ? charId : formActorId
 
   const { data: abilities } = useAbilities(actorId)
+  const { data: charInfo } = useCharInfo(actorId)
   const { data: weapon } = useItem(actorId, selectedWeapon)
   const { data: special } = useSpecial(actorId)
 
@@ -70,7 +72,7 @@ export default function WeaponInfo({ selectedWeapon }: { selectedWeapon: string 
         <Row>
           <Txt style={[styles.attr, hasMalus && styles.malus]}>COMP</Txt>
           <Spacer x={10} />
-          <Txt style={hasMalus && styles.malus}>{weapon.getSkillScore(abilities)}</Txt>
+          <Txt style={hasMalus && styles.malus}>{weapon.getSkillScore(abilities, charInfo)}</Txt>
         </Row>
         {weapon.data.range && (
           <Row>

@@ -62,8 +62,8 @@ export const attackToWeapon = (attack: BeastAttack): Weapon => {
     { ...dbWeapon, key: name },
     {
       [name]: {
-        id: "" as WeaponId,
-        label: "",
+        id: name as WeaponId,
+        label: name,
         img: "",
         damageType: "physical",
         damageBasic: null,

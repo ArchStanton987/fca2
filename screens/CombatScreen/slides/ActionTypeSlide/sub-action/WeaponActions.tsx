@@ -1,5 +1,6 @@
 import { useAbilities, useSecAttr, useTraits } from "lib/character/abilities/abilities-provider"
 import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
+import { useCharInfo } from "lib/character/info/info-provider"
 import { useAmmo, useCombatWeapons, useItem } from "lib/inventory/use-sub-inv-cat"
 import {
   getAvailableWeaponActions,
@@ -23,6 +24,7 @@ export default function WeaponActions({ charId }: { charId: string }) {
   const actionSubtype = useActionSubtype()
   const actorId = formActorId === "" ? charId : formActorId
   const { data: currAp } = useCombatStatus(actorId, s => s.currAp)
+  const { data: charInfo } = useCharInfo(actorId)
   const { data: maxAp } = useAbilities(actorId, a => a.secAttr.curr.actionPoints)
   const { data: traits } = useTraits(actorId)
   const { data: secAttr } = useSecAttr(actorId)
@@ -43,7 +45,7 @@ export default function WeaponActions({ charId }: { charId: string }) {
         data={actions}
         keyExtractor={item => item}
         renderItem={({ item }) => {
-          const apCost = weapon.getApCost(traits, secAttr, item)
+          const apCost = weapon.getApCost({ traits, secAttr }, item, charInfo)
           return (
             <ListItemSelectable
               isSelected={actionSubtype === item}

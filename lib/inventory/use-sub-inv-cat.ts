@@ -81,11 +81,11 @@ export function useCombatWeapons(charId: string): Weapon[] {
       .filter(i => i.isEquipped)
       .filter(i => i.category === "weapons")
   )
-  const hasEquipedWeapons = Object.keys(equipedWeapons).length > 0
-  if (hasEquipedWeapons) return Object.values(equipedWeapons)
   if (critters[templateId]) {
     return critters[templateId].attacks.map(a => attackToWeapon(a))
   }
+  const hasEquipedWeapons = Object.keys(equipedWeapons).length > 0
+  if (hasEquipedWeapons) return Object.values(equipedWeapons)
   return [Weapon.getUnarmed()]
 }
 

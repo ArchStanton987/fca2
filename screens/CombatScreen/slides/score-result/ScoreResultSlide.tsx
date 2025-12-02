@@ -3,6 +3,7 @@ import { useLocalSearchParams } from "expo-router"
 import { useAbilities, useSpecial } from "lib/character/abilities/abilities-provider"
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { limbsMap } from "lib/character/health/Health"
+import { useCharInfo } from "lib/character/info/info-provider"
 import { getCritFailureThreshold } from "lib/combat/const/crit"
 import { useCombatState } from "lib/combat/use-cases/sub-combats"
 import { getActorSkillFromAction } from "lib/combat/utils/combat-utils"
@@ -49,6 +50,10 @@ export default function ScoreResultSlide({ slideIndex }: SlideProps) {
   const { data: action } = useCombatState(combatId, s => s.action)
   const { data: abilities } = useAbilities(actorId)
   const { data: critChance } = useAbilities(actorId, a => a.secAttr.curr.critChance)
+  const { data: charInfo } = useCharInfo(actorId, i => ({
+    templateId: i.templateId,
+    isCritter: i.isCritter
+  }))
   const { data: item } = useItem(actorId, itemDbKey)
   const { data: special } = useSpecial(actorId)
 
@@ -74,7 +79,7 @@ export default function ScoreResultSlide({ slideIndex }: SlideProps) {
   }
 
   const o = { actionType, actionSubtype, item }
-  const { skillLabel } = getActorSkillFromAction({ ...o }, abilities)
+  const { skillLabel } = getActorSkillFromAction({ ...o }, abilities, charInfo)
 
   const isDefaultCritSuccess = dice !== 0 && dice <= critChance
   const isCritFail = dice !== 0 && dice >= getCritFailureThreshold(special.curr)

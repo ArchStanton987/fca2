@@ -9,6 +9,7 @@ import { useCombatId, useCombatStatus } from "lib/character/combat-status/combat
 import { CombatStatus } from "lib/character/combat-status/combat-status.types"
 import { limbsMap } from "lib/character/health/Health"
 import { LimbId } from "lib/character/health/health.const"
+import { TemplateId } from "lib/character/info/CharInfo"
 import { useCharInfo } from "lib/character/info/info-provider"
 import { withDodgeSpecies } from "lib/character/playable.const"
 import { Item } from "lib/inventory/item.mappers"
@@ -156,12 +157,13 @@ const getKnowledgesFromAction = <T extends keyof typeof actions>({
 
 export const getActorSkillFromAction = <T extends keyof typeof actions>(
   { actionType, actionSubtype, item }: ActionForm<T>,
-  abilities: Abilities
+  abilities: Abilities,
+  charInfo: { templateId: TemplateId; isCritter: boolean }
 ) => {
   if (actionType === "weapon" && item?.category === "weapons") {
     if (actionSubtype !== "hit" && actionSubtype !== "throw") {
       const { skillId } = item.data
-      const sumAbilities = item.getSkillScore(abilities)
+      const sumAbilities = item.getSkillScore(abilities, charInfo)
       return { skillId, skillLabel: skillsMap[skillId].short, sumAbilities }
     }
   }

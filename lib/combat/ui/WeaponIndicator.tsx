@@ -136,9 +136,10 @@ function WeaponInfoUi({ charId, weaponKey }: WeaponInfoUiProps) {
     templateId: i.templateId,
     isCritter: i.isCritter
   }))
-  const { data: weapon = Weapon.getUnarmed() } = useItem(charId, weaponKey)
+  const weapons = useCombatWeapons(charId)
+  const weapon = weapons.find(w => w.dbKey === weaponKey)
+  if (!weapon || weapon.category !== "weapons") throw new Error("Item is not a weapon")
   const hasMalus = getHasStrengthMalus(weapon, abilities.special.curr)
-  if (weapon.category !== "weapons") throw new Error("Item is not a weapon")
   return (
     <>
       <Row style={{ alignItems: "center", justifyContent: "center" }}>

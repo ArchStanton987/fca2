@@ -2,6 +2,7 @@ import React from "react"
 import { PressableProps, View } from "react-native"
 
 import { useAbilities } from "lib/character/abilities/abilities-provider"
+import { useCharInfo } from "lib/character/info/info-provider"
 import { Item } from "lib/inventory/item.mappers"
 import { useAmmo, useItems } from "lib/inventory/use-sub-inv-cat"
 import Toast from "react-native-toast-message"
@@ -31,6 +32,7 @@ export default function WeaponRow({ charId, weapon, isSelected, onPress }: Weapo
   const useCases = useGetUseCases()
 
   const { data: abilities } = useAbilities(charId)
+  const { data: charInfo } = useCharInfo(charId)
   const { data: ammo } = useAmmo(charId)
   const { data: count } = useItems(charId, items => getCount(items, weapon))
 
@@ -60,7 +62,7 @@ export default function WeaponRow({ charId, weapon, isSelected, onPress }: Weapo
         <Txt>{damageBurst ?? "-"}</Txt>
       </View>
       <Spacer x={5} />
-      <ListScoreLabel score={weapon.getSkillScore(abilities)} />
+      <ListScoreLabel score={weapon.getSkillScore(abilities, charInfo)} />
       <Spacer x={5} />
       <ListScoreLabel score={weapon.getAmmoCount(ammo) ?? "-"} />
       <Spacer x={5} />

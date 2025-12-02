@@ -60,7 +60,7 @@ export default class Weapon implements ItemInterface {
     this.dbKey = payload.key
     this.category = payload.category
     this.isEquipped = payload.isEquipped
-    this.data = Object.assign(Weapon.dbToData(payload.data ?? {}), allWeapons[this.id])
+    this.data = Object.assign(allWeapons[this.id], Weapon.dbToData(payload.data ?? {}))
     const { inMagazine = 0 } = payload
     this.inMagazine = this.data.ammoType !== null ? inMagazine : null
   }
@@ -70,7 +70,7 @@ export default class Weapon implements ItemInterface {
       const template = critters[charInfo.templateId]
       const attack = template.attacks.find(a => a.name === this.id)
       if (!attack)
-        throw new Error(`Could not find attack with name : ${this.id}for : ${charInfo.templateId}`)
+        throw new Error(`Could not find attack with name : ${this.id} for : ${charInfo.templateId}`)
       return attack.skill
     }
 

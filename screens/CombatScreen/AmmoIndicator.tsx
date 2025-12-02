@@ -2,9 +2,8 @@ import React from "react"
 import { View } from "react-native"
 
 import { fillZeros } from "lib/common/utils/number-utils"
-import { useAmmo, useItem } from "lib/inventory/use-sub-inv-cat"
+import { useAmmo, useCombatWeapons } from "lib/inventory/use-sub-inv-cat"
 import ammoMap from "lib/objects/data/ammo/ammo"
-import Weapon from "lib/objects/data/weapons/Weapon"
 
 import Col from "components/Col"
 import Txt from "components/Txt"
@@ -30,9 +29,10 @@ type AmmoIndicatorProps = {
 // }
 
 export default function AmmoIndicator({ charId, weaponKey }: AmmoIndicatorProps) {
-  const { data: weapon = Weapon.getUnarmed() } = useItem(charId, weaponKey)
   const { data: ammo } = useAmmo(charId)
-  if (weapon.category !== "weapons") return null
+  const weapons = useCombatWeapons(charId)
+  const weapon = weapons.find(w => w.dbKey === weaponKey)
+  if (!weapon || weapon.category !== "weapons") return null
   if (weapon.data.ammoType === null) return null
   const inMagazine = weapon?.inMagazine || 0
   const ammoLabel = ammoMap[weapon.data.ammoType].label

@@ -4,6 +4,7 @@ import { View } from "react-native"
 import { router, useLocalSearchParams } from "expo-router"
 
 import { useAbilities, useSecAttr } from "lib/character/abilities/abilities-provider"
+import { useCharInfo } from "lib/character/info/info-provider"
 import { useAmmo, useItems } from "lib/inventory/use-sub-inv-cat"
 import { useBarterActions } from "lib/objects/barter-store"
 import Weapon from "lib/objects/data/weapons/Weapon"
@@ -68,6 +69,7 @@ export default function WeaponsScreen() {
 
   const { data: abilities } = useAbilities(charId)
   const { data: secAttr } = useSecAttr(charId)
+  const { data: charInfo } = useCharInfo(charId)
   const { data: ammo } = useAmmo(charId)
 
   const barterActions = useBarterActions()
@@ -95,7 +97,7 @@ export default function WeaponsScreen() {
       if (sort.type === "damage")
         return Weapon.getDamageEst(secAttr, a) > Weapon.getDamageEst(secAttr, b) ? 1 : -1
       if (sort.type === "skill")
-        return b.getSkillScore(abilities) > a.getSkillScore(abilities) ? -1 : 1
+        return b.getSkillScore(abilities, charInfo) > a.getSkillScore(abilities, charInfo) ? -1 : 1
       if (sort.type === "ammo")
         return (b.getAmmoCount(ammo) ?? 0) > (a.getAmmoCount(ammo) ?? 0) ? -1 : 1
       if (sort.type === "equiped") return a.isEquipped ? 1 : -1
@@ -103,7 +105,7 @@ export default function WeaponsScreen() {
     }
     const sorted = weapons.sort(sortFn)
     return sort.isAsc ? sorted : sorted.reverse()
-  }, [weapons, sort, abilities, ammo, secAttr])
+  }, [weapons, sort, abilities, ammo, secAttr, charInfo])
 
   return (
     <DrawerPage>

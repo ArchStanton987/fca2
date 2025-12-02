@@ -2,6 +2,7 @@ import { useLocalSearchParams } from "expo-router"
 
 import { useAbilities } from "lib/character/abilities/abilities-provider"
 import { useCombatId, useCombatStatus } from "lib/character/combat-status/combat-status-provider"
+import { useCharInfo } from "lib/character/info/info-provider"
 import { REACTION_MIN_AP_COST } from "lib/combat/const/combat-const"
 import difficultyArray from "lib/combat/const/difficulty"
 import { useCombatState } from "lib/combat/use-cases/sub-combats"
@@ -59,6 +60,10 @@ export default function DiceRollSlide({ slideIndex }: SlideProps) {
   const actorDiceScore = useActorDiceScore()
 
   const { data: combatStatus } = useCombatStatus(actorId)
+  const { data: charInfo } = useCharInfo(actorId, i => ({
+    isCritter: i.isCritter,
+    templateId: i.templateId
+  }))
   const { data: abilities } = useAbilities(actorId)
   const { data: targetAp } = useCombatStatus(targetId, s => s.currAp)
   const targetArmorClass = useContenderAc(targetId)
@@ -67,7 +72,11 @@ export default function DiceRollSlide({ slideIndex }: SlideProps) {
   const { setRoll } = useActionApi()
 
   const o = { actionType, actionSubtype, item }
-  const { skillLabel, skillId, sumAbilities } = getActorSkillFromAction({ ...o, item }, abilities)
+  const { skillLabel, skillId, sumAbilities } = getActorSkillFromAction(
+    { ...o, item },
+    abilities,
+    charInfo
+  )
 
   if (!action) return <SlideError error={slideErrors.noCombatError} />
   if (action.roll === false) return <NoRollSlide />
