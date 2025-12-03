@@ -71,7 +71,7 @@ function Submit({ actorId, onSubmit }: { actorId: string; onSubmit: () => void }
   }))
 
   const bonus = getRollBonus(combatStatus, action)
-  const skillId = useActionSkill(actorId)
+  const skillId = useActionSkill(actorId)?.id
   const sumAbilities = useActionSkillScore(actorId)
 
   const dice = actorDiceScore ? parseInt(actorDiceScore, 10) : 0
