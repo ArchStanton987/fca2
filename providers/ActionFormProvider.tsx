@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 import Action from "lib/combat/Action"
 import { ActionStore, createActionStore } from "lib/combat/action-store"
 import { combatStateOptions } from "lib/combat/use-cases/sub-combats"
+import { getSkillFromAction } from "lib/combat/utils/combat-utils"
 import { useItem } from "lib/inventory/use-sub-inv-cat"
 import { StoreApi, useStore } from "zustand"
 
@@ -69,4 +70,12 @@ export const useDamageRoll = (charId: string) => {
     default:
       throw new Error("unknown action subtype for weapon")
   }
+}
+
+export const useActionSkill = (actorId: string) => {
+  const actionType = useActionType()
+  const actionSubtype = useActionSubtype()
+  const itemDbKey = useActionItemDbKey() ?? ""
+  const { data: item } = useItem(actorId, itemDbKey)
+  return getSkillFromAction({ actionType, actionSubtype, item })
 }

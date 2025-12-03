@@ -1,7 +1,12 @@
 import { useLocalSearchParams } from "expo-router"
 
+import { useQuery } from "@tanstack/react-query"
 import { useAbilities } from "lib/character/abilities/abilities-provider"
-import { useCombatId, useCombatStatus } from "lib/character/combat-status/combat-status-provider"
+import {
+  getCombatStatusOptions,
+  useCombatId,
+  useCombatStatus
+} from "lib/character/combat-status/combat-status-provider"
 import { useCharInfo } from "lib/character/info/info-provider"
 import { REACTION_MIN_AP_COST } from "lib/combat/const/combat-const"
 import difficultyArray from "lib/combat/const/difficulty"
@@ -36,18 +41,19 @@ import layout from "styles/layout"
 import NextButton from "../NextButton"
 import SlideError, { slideErrors } from "../SlideError"
 import AwaitGmSlide from "../wait-slides/AwaitGmSlide"
+import DiceRoll, { SkillLabelSection } from "./DiceRollComponents"
 import styles from "./DiceRollSlide.styles"
 import NoRollSlide from "./NoRollSlide"
 
 export default function DiceRollSlide({ slideIndex }: SlideProps) {
   const { charId } = useLocalSearchParams<{ charId: string }>()
-  const { scrollTo } = useScrollTo()
+  // const { scrollTo } = useScrollTo()
 
-  const scrollNext = () => {
-    scrollTo(slideIndex + 1)
-  }
+  // const scrollNext = () => {
+  //   scrollTo(slideIndex + 1)
+  // }
 
-  const useCases = useGetUseCases()
+  // const useCases = useGetUseCases()
 
   const formActorId = useActionActorId()
   const actorId = formActorId === "" ? charId : formActorId
@@ -65,8 +71,12 @@ export default function DiceRollSlide({ slideIndex }: SlideProps) {
     templateId: i.templateId
   }))
   const { data: abilities } = useAbilities(actorId)
-  const { data: targetAp } = useCombatStatus(targetId, s => s.currAp)
-  const targetArmorClass = useContenderAc(targetId)
+  // const { data: targetAp } = useCombatStatus(targetId, s => s.currAp)
+
+  // const csReq = useQuery(getCombatStatusOptions(targetId))
+  // console.log("target : ", targetId)
+
+  // const targetArmorClass = useContenderAc(targetId)
   const { data: item } = useItem(actorId, itemDbKey)
 
   const { setRoll } = useActionApi()
@@ -91,14 +101,14 @@ export default function DiceRollSlide({ slideIndex }: SlideProps) {
 
   const bonus = getRollBonus(combatStatus, action)
   const onPressConfirm = async () => {
-    if (!isValid) return
-    let reactionRoll
-    if (targetId) {
-      reactionRoll = targetAp >= REACTION_MIN_AP_COST ? undefined : (false as const)
-    }
-    const roll = { difficulty, sumAbilities, dice, bonus, targetArmorClass, skillId }
-    await useCases.combat.updateAction({ combatId, payload: { roll, reactionRoll } })
-    scrollNext()
+    // if (!isValid) return
+    // let reactionRoll
+    // if (targetId) {
+    //   reactionRoll = targetAp >= REACTION_MIN_AP_COST ? undefined : (false as const)
+    // }
+    // const roll = { difficulty, sumAbilities, dice, bonus, targetArmorClass, skillId }
+    // await useCases.combat.updateAction({ combatId, payload: { roll, reactionRoll } })
+    // scrollNext()
   }
 
   const handlePad = (v: string) => {
@@ -119,16 +129,12 @@ export default function DiceRollSlide({ slideIndex }: SlideProps) {
           title="JET DE DÉ"
           contentContainerStyle={styles.scoreContainer}
         >
-          <Txt style={styles.score}>{actorDiceScore}</Txt>
+          <DiceRoll.DiceScore />
         </Section>
         <Spacer y={layout.globalPadding} />
-        <Section
-          style={{ flex: 1 }}
-          title={skillLabel}
-          contentContainerStyle={styles.scoreContainer}
-        >
+        <DiceRoll.SkillLabelSection actorId={actorId}>
           <Txt style={styles.score}>{sumAbilities}</Txt>
-        </Section>
+        </DiceRoll.SkillLabelSection>
       </Col>
 
       <Spacer x={layout.globalPadding} />
