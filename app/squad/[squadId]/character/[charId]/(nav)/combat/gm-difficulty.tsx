@@ -77,9 +77,11 @@ export default function GMActionsScreen() {
   if (!actionHasDifficulty)
     return (
       <DrawerPage>
-        <Section style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
+        <Section
+          style={{ flex: 1 }}
+          contentContainerStyle={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
           <Txt>Rien à faire pour le moment</Txt>
-          <Spacer y={50} />
         </Section>
       </DrawerPage>
     )

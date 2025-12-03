@@ -5,6 +5,7 @@ import GMDamageForm from "lib/combat/ui/damage-form/GMDamageForm"
 import { useCombatState } from "lib/combat/use-cases/sub-combats"
 
 import DrawerPage from "components/DrawerPage"
+import Section from "components/Section"
 import Txt from "components/Txt"
 import { DamageFormProvider } from "providers/DamageFormProvider"
 
@@ -27,7 +28,12 @@ export default function GMDamage() {
           <GMDamageForm charId={charId} />
         </DamageFormProvider>
       ) : (
-        <Txt>Rien à faire pour le moment</Txt>
+        <Section
+          style={{ flex: 1 }}
+          contentContainerStyle={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Txt>Rien à faire pour le moment</Txt>
+        </Section>
       )}
     </DrawerPage>
   )
