@@ -58,7 +58,8 @@ export default function PickTargetSlide({ slideIndex }: SlideProps) {
   }
 
   const submit = () => {
-    useCases.combat.updateAction({ combatId, payload: { targetId } })
+    if (!targetId) return
+    useCases.combat.pickTarget({ combatId, targetId })
     scrollTo(slideIndex + 1)
   }
 

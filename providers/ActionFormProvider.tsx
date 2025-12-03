@@ -1,11 +1,13 @@
 import { ReactNode, createContext, useContext, useState } from "react"
 
 import { useQuery } from "@tanstack/react-query"
+import { useAbilities } from "lib/character/abilities/abilities-provider"
+import { useCharInfo } from "lib/character/info/info-provider"
 import Action from "lib/combat/Action"
 import { ActionStore, createActionStore } from "lib/combat/action-store"
 import { combatStateOptions } from "lib/combat/use-cases/sub-combats"
-import { getSkillFromAction } from "lib/combat/utils/combat-utils"
-import { useItem } from "lib/inventory/use-sub-inv-cat"
+import { getActorSkillFromAction, getSkillFromAction } from "lib/combat/utils/combat-utils"
+import { useCombatWeapons, useItem } from "lib/inventory/use-sub-inv-cat"
 import { StoreApi, useStore } from "zustand"
 
 const ActionContext = createContext<StoreApi<ActionStore>>({} as StoreApi<ActionStore>)
@@ -72,10 +74,32 @@ export const useDamageRoll = (charId: string) => {
   }
 }
 
+export const useActionItem = (actorId: string, dbKey: string = "") => {
+  const combatWeapons = useCombatWeapons(actorId)
+  const { data: item } = useItem(actorId, dbKey)
+  if (item) return item
+  const equWeaponIndex = combatWeapons.findIndex(w => w.dbKey === dbKey)
+  return equWeaponIndex === -1 ? undefined : combatWeapons[equWeaponIndex]
+}
+
 export const useActionSkill = (actorId: string) => {
   const actionType = useActionType()
   const actionSubtype = useActionSubtype()
-  const itemDbKey = useActionItemDbKey() ?? ""
-  const { data: item } = useItem(actorId, itemDbKey)
+  const itemDbKey = useActionItemDbKey()
+  const item = useActionItem(actorId, itemDbKey)
   return getSkillFromAction({ actionType, actionSubtype, item })
+}
+
+export const useActionSkillScore = (actorId: string) => {
+  const actionType = useActionType()
+  const actionSubtype = useActionSubtype()
+  const itemDbKey = useActionItemDbKey()
+  const item = useActionItem(actorId, itemDbKey)
+  const { data: abilities } = useAbilities(actorId)
+  const { data: charInfo } = useCharInfo(actorId, i => ({
+    templateId: i.templateId,
+    isCritter: i.isCritter
+  }))
+  return getActorSkillFromAction({ actionType, actionSubtype, item }, abilities, charInfo)
+    .sumAbilities
 }

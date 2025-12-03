@@ -24,12 +24,14 @@ import createFight, { CreateFightParams } from "./combat/use-cases/create-fight"
 import deleteFight, { DeleteFightParams } from "./combat/use-cases/delete-fight"
 import doCombatAction, { CombatActionParams } from "./combat/use-cases/do-combat-action"
 import endWait, { EndWaitParams } from "./combat/use-cases/end-wait"
+import pickTarget, { PickTargetParams } from "./combat/use-cases/pick-target"
 import prepareAction, { PrepareActionParams } from "./combat/use-cases/prepare-action"
 import resetDifficulty, { ResetDifficultyParams } from "./combat/use-cases/reset-difficulty"
 import saveAction, { SaveActionParams } from "./combat/use-cases/save-action"
 import setDifficulty, { SetDifficultyParams } from "./combat/use-cases/set-difficulty"
 import startFight, { StartFightParams } from "./combat/use-cases/start-fight"
 import updateAction, { UpdateActionParams } from "./combat/use-cases/update-action"
+import updateRoll, { UpdateRollParams } from "./combat/use-cases/update-roll"
 import waitAction, { WaitActionParams } from "./combat/use-cases/wait-action"
 import { UseCasesConfig } from "./get-use-case.types"
 import barter, { BarterParams } from "./inventory/use-cases/barter"
@@ -103,6 +105,8 @@ export default function getUseCases(config: UseCasesConfig) {
       saveAction: (data: SaveActionParams) => saveAction(config)(data),
       setDifficulty: (data: SetDifficultyParams) => setDifficulty(config)(data),
       resetDifficulty: (data: ResetDifficultyParams) => resetDifficulty(config)(data),
+      pickTarget: (data: PickTargetParams) => pickTarget(config)(data),
+      updateRoll: (data: UpdateRollParams) => updateRoll(config)(data),
       // GM
       applyDamageEntries: (data: ApplyDamageEntriesParams) => applyDamageEntries(config)(data)
     },
