@@ -104,7 +104,7 @@ interface ActionForm<T extends keyof typeof actions> {
   item?: Item
 }
 
-export const getSkillIdFromAction = <T extends keyof typeof actions>({
+export const getSkillFromAction = <T extends keyof typeof actions>({
   actionType,
   actionSubtype,
   item
@@ -167,7 +167,7 @@ export const getActorSkillFromAction = <T extends keyof typeof actions>(
       return { skillId, skillLabel: skillsMap[skillId].short, sumAbilities }
     }
   }
-  const skill = getSkillIdFromAction({ actionType, actionSubtype, item })
+  const skill = getSkillFromAction({ actionType, actionSubtype, item })
   if (!skill) throw new Error("No skill found")
   const knowledges = getKnowledgesFromAction({ actionType, actionSubtype, item })
   const knowledgeBonus = getKnowledgesBonus(knowledges, abilities.knowledges)
