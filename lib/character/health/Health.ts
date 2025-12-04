@@ -20,6 +20,7 @@ type LimbData = {
   id: LimbId
   crippledEffectId: EffectId
   label: string
+  hpLabel: string
   short: string
   minHpPool: number
   getMaxValue: (lvl: number) => number
@@ -50,7 +51,8 @@ export const limbsMap: Record<LimbId, LimbData> = {
   head: {
     id: "head",
     crippledEffectId: "crippledHead",
-    label: "PV tête",
+    label: "Tête",
+    hpLabel: "PV tête",
     short: "PVtê",
     minHpPool: 15,
     getMaxValue: (lvl: number) => lvl - 1 + limbsMap.head.minHpPool,
@@ -60,7 +62,8 @@ export const limbsMap: Record<LimbId, LimbData> = {
   leftTorso: {
     id: "leftTorso",
     crippledEffectId: "crippledLeftTorso",
-    label: "PV torse gauche",
+    label: "Torse gauche",
+    hpLabel: "PV torse gauche",
     short: "PVto",
     minHpPool: 25,
     getMaxValue: (lvl: number) => lvl - 1 + limbsMap.leftTorso.minHpPool,
@@ -70,7 +73,8 @@ export const limbsMap: Record<LimbId, LimbData> = {
   rightTorso: {
     id: "rightTorso",
     crippledEffectId: "crippledRightTorso",
-    label: "PV torse droit",
+    label: "Torse droit",
+    hpLabel: "PV torse droit",
     short: "PVto",
     minHpPool: 30,
     getMaxValue: (lvl: number) => lvl - 1 + limbsMap.rightTorso.minHpPool,
@@ -80,7 +84,8 @@ export const limbsMap: Record<LimbId, LimbData> = {
   leftArm: {
     id: "leftArm",
     crippledEffectId: "crippledLeftArm",
-    label: "PV bras gauche",
+    label: "Bras gauche",
+    hpLabel: "PV bras gauche",
     short: "PVBrG",
     minHpPool: 20,
     getMaxValue: (lvl: number) => lvl - 1 + limbsMap.leftArm.minHpPool,
@@ -90,7 +95,8 @@ export const limbsMap: Record<LimbId, LimbData> = {
   rightArm: {
     id: "rightArm",
     crippledEffectId: "crippledRightArm",
-    label: "PV bras droit",
+    label: "Bras droit",
+    hpLabel: "PV bras droit",
     short: "PVBrD",
     minHpPool: 20,
     getMaxValue: (lvl: number) => lvl - 1 + limbsMap.rightArm.minHpPool,
@@ -100,7 +106,8 @@ export const limbsMap: Record<LimbId, LimbData> = {
   leftLeg: {
     id: "leftLeg",
     crippledEffectId: "crippledLeftLeg",
-    label: "PV jambe gauche",
+    label: "Jambe gauche",
+    hpLabel: "PV jambe gauche",
     short: "PVJaG",
     minHpPool: 20,
     getMaxValue: (lvl: number) => lvl - 1 + limbsMap.leftLeg.minHpPool,
@@ -110,7 +117,8 @@ export const limbsMap: Record<LimbId, LimbData> = {
   rightLeg: {
     id: "rightLeg",
     crippledEffectId: "crippledRightLeg",
-    label: "PV jambe droite",
+    label: "Jambe droite",
+    hpLabel: "PV jambe droite",
     short: "PVJaD",
     minHpPool: 20,
     getMaxValue: (lvl: number) => lvl - 1 + limbsMap.rightLeg.minHpPool,
@@ -120,7 +128,8 @@ export const limbsMap: Record<LimbId, LimbData> = {
   groin: {
     id: "groin",
     crippledEffectId: "crippledGroin",
-    label: "PV entrejambe",
+    label: "Entrejambe",
+    hpLabel: "PV entrejambe",
     short: "PVEnJ",
     minHpPool: 15,
     getMaxValue: (lvl: number) => lvl - 1 + limbsMap.groin.minHpPool,
@@ -131,6 +140,7 @@ export const limbsMap: Record<LimbId, LimbData> = {
     id: "body",
     crippledEffectId: "crippledBody",
     label: "Corps",
+    hpLabel: "PV corps",
     short: "Corps",
     minHpPool: 30,
     getMaxValue: (lvl: number) => lvl - 1 + limbsMap.body.minHpPool,
@@ -141,6 +151,7 @@ export const limbsMap: Record<LimbId, LimbData> = {
     id: "tail",
     crippledEffectId: "crippledTail",
     label: "Queue",
+    hpLabel: "PV queue",
     short: "Queue",
     minHpPool: 20,
     getMaxValue: (lvl: number) => lvl - 1 + limbsMap.tail.minHpPool,

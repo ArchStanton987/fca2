@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { ReactNode, useState } from "react"
 import { StyleSheet } from "react-native"
 
 import { useLocalSearchParams } from "expo-router"
@@ -21,6 +21,7 @@ import {
   useActionItem,
   useActionItemDbKey,
   useActionRawDamage,
+  useActionTargetId,
   useActionType
 } from "providers/ActionFormProvider"
 import { useScrollTo } from "providers/SlidesProvider"
@@ -49,6 +50,59 @@ const styles = StyleSheet.create({
 
 type DamageSlideProps = SlideProps & {}
 
+function AwaitReactionWrapper({ children }: { children: ReactNode }) {
+  const targetId = useActionTargetId()
+  const isWaitingForReaction = useGetPlayerCanReact(targetId ?? "")
+  if (isWaitingForReaction) return <AwaitReactionSlide />
+  return children
+}
+
+function AwaitTargetWrapper({ children }: { children: ReactNode }) {
+  const targetId = useActionTargetId()
+  if (!targetId) return <AwaitReactionSlide />
+  return children
+}
+
+function VisualizeReactionWrapper({
+  children,
+  combatId,
+  actorId,
+  scrollNext
+}: {
+  children: ReactNode
+  combatId: string
+  actorId: string
+  scrollNext: () => void
+}) {
+  const useCases = useGetUseCases()
+  const [isReactionResultVisible, setIsReactionResultVisible] = useState(() => true)
+
+  const { data: action } = useCombatState(combatId, state => state.action)
+
+  const submitNoDamages = async () => {
+    const payload = {
+      ...action,
+      actorId,
+      rawDamage: false as const,
+      damageType: false as const,
+      healthEntriesChange: false
+    }
+    await useCases.combat.doCombatAction({ combatId, action: payload })
+    scrollNext()
+  }
+
+  if (!!action.reactionRoll && isReactionResultVisible)
+    return (
+      <VisualizeReactionSlide
+        combatId={combatId}
+        dismiss={() => setIsReactionResultVisible(false)}
+        skipDamage={() => submitNoDamages()}
+      />
+    )
+
+  return children
+}
+
 export default function DamageSlide({ slideIndex }: DamageSlideProps) {
   const { charId } = useLocalSearchParams<{ charId: string }>()
   const useCases = useGetUseCases()
@@ -63,7 +117,6 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
   const formActorId = useActionActorId()
   const actorId = formActorId === "" ? charId : formActorId
   const { data: combatId } = useCombatId(actorId)
-  const { data: action } = useCombatState(combatId, state => state.action)
   const item = useActionItem(actorId, itemDbKey)
 
   const { scrollTo } = useScrollTo()
@@ -71,8 +124,6 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
   const scrollNext = () => {
     scrollTo(slideIndex + 1)
   }
-
-  const [isReactionResultVisible, setIsReactionResultVisible] = useState(() => true)
 
   const resetField = () => {
     setForm({ rawDamage: "" })
@@ -92,74 +143,63 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
     await useCases.combat.updateAction({ combatId, payload })
     scrollNext()
   }
-  const submitNoDamages = async () => {
-    const payload = {
-      ...action,
-      actorId,
-      rawDamage: false as const,
-      damageType: false as const,
-      healthEntriesChange: false
-    }
-    await useCases.combat.doCombatAction({ combatId, action: payload })
-    scrollNext()
-  }
-
-  // AWAIT REACTION (loading)
-  const isWaitingForReaction = useGetPlayerCanReact(action.targetId || "")
-  if (isWaitingForReaction) return <AwaitReactionSlide />
-
-  // SEE REACTION
-  if (!!action.reactionRoll && isReactionResultVisible)
-    return (
-      <VisualizeReactionSlide
-        charId={charId}
-        dismiss={() => setIsReactionResultVisible(false)}
-        skipDamage={() => submitNoDamages()}
-      />
-    )
 
   // NO SUCCESSFUL REACTION
   return (
-    <DrawerSlide>
-      <Section title="score de dégâts" contentContainerStyle={{ flex: 1, height: "100%" }}>
-        <NumPad onPressKeyPad={onPressPad} />
-      </Section>
+    <AwaitTargetWrapper>
+      <AwaitReactionWrapper>
+        <VisualizeReactionWrapper combatId={combatId} actorId={actorId} scrollNext={scrollNext}>
+          <DrawerSlide>
+            <Section title="score de dégâts" contentContainerStyle={{ flex: 1, height: "100%" }}>
+              <NumPad onPressKeyPad={onPressPad} />
+            </Section>
 
-      <Spacer x={layout.globalPadding} />
+            <Spacer x={layout.globalPadding} />
 
-      <Col style={{ flex: 1 }}>
-        <Section title="jet dégâts" contentContainerStyle={styles.scoreContainer}>
-          <DamageRoll charId={actorId} />
-        </Section>
-        <Spacer y={layout.globalPadding} />
-        <Section title={actionType === "weapon" ? "arme" : "objet"} style={{ flex: 1 }}>
-          {actionType === "weapon" ? (
-            <WeaponInfo selectedWeapon={itemDbKey ?? ""} />
-          ) : (
-            <>
-              <Txt>{item?.data?.label}</Txt>
-              <Txt>poids : {item?.data?.weight}</Txt>
-            </>
-          )}
-        </Section>
-      </Col>
+            <Col style={{ flex: 1 }}>
+              <Section title="jet dégâts" contentContainerStyle={styles.scoreContainer}>
+                <DamageRoll charId={actorId} />
+              </Section>
+              <Spacer y={layout.globalPadding} />
+              <Section title={actionType === "weapon" ? "arme" : "objet"} style={{ flex: 1 }}>
+                {actionType === "weapon" ? (
+                  <WeaponInfo selectedWeapon={itemDbKey ?? ""} />
+                ) : (
+                  <>
+                    <Txt>{item?.data?.label}</Txt>
+                    <Txt>poids : {item?.data?.weight}</Txt>
+                  </>
+                )}
+              </Section>
+            </Col>
 
-      <Spacer x={layout.globalPadding} />
+            <Spacer x={layout.globalPadding} />
 
-      <Col style={{ minWidth: 100 }}>
-        <Section title="résultat" style={{ flex: 1 }} contentContainerStyle={styles.scoreContainer}>
-          <Txt style={styles.score}>{rawDamage}</Txt>
-        </Section>
-        <Spacer y={layout.globalPadding} />
+            <Col style={{ minWidth: 100 }}>
+              <Section
+                title="résultat"
+                style={{ flex: 1 }}
+                contentContainerStyle={styles.scoreContainer}
+              >
+                <Txt style={styles.score}>{rawDamage}</Txt>
+              </Section>
+              <Spacer y={layout.globalPadding} />
 
-        <Section title="valider" style={{ flex: 1 }} contentContainerStyle={styles.scoreContainer}>
-          <PlayButton
-            onLongPress={() => resetField()}
-            disabled={!isValid}
-            onPress={() => submitDamages()}
-          />
-        </Section>
-      </Col>
-    </DrawerSlide>
+              <Section
+                title="valider"
+                style={{ flex: 1 }}
+                contentContainerStyle={styles.scoreContainer}
+              >
+                <PlayButton
+                  onLongPress={() => resetField()}
+                  disabled={!isValid}
+                  onPress={() => submitDamages()}
+                />
+              </Section>
+            </Col>
+          </DrawerSlide>
+        </VisualizeReactionWrapper>
+      </AwaitReactionWrapper>
+    </AwaitTargetWrapper>
   )
 }

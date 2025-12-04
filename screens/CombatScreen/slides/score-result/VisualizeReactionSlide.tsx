@@ -15,15 +15,15 @@ import ActionOutcome from "./ActionOutcome"
 import styles from "./ScoreResultSlide.styles"
 
 export default function VisualizeReactionSlide({
-  charId,
+  combatId,
   dismiss,
   skipDamage
 }: {
-  charId: string
+  combatId: string
   dismiss: () => void
   skipDamage: () => void
 }) {
-  const { data: action } = useCombatState(charId, state => state.action)
+  const { data: action } = useCombatState(combatId, state => state.action)
 
   if (!action?.roll || !action?.reactionRoll)
     return <SlideError error={slideErrors.noDiceRollError} />
