@@ -8,7 +8,6 @@ import Clothing from "lib/objects/data/clothings/Clothing"
 import Consumable from "lib/objects/data/consumables/Consumable"
 import MiscObject from "lib/objects/data/misc-objects/MiscObject"
 import Weapon from "lib/objects/data/weapons/Weapon"
-import weaponsMap from "lib/objects/data/weapons/weapons"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import { DbAction } from "../combats.types"
@@ -54,9 +53,8 @@ export default function doCombatAction(config: UseCasesConfig) {
         // handle case with species which can't carry weapon
         if (meta.speciesId === "robot" || meta.speciesId === "beast") break
         if (!item) throw new Error("Item is required for weapon action")
-        if (!(item?.data?.id in weaponsMap)) throw new Error("item is not a weapon")
-        // @ts-ignore
-        promises.push(weaponAction(dbType)({ action, contenders, item }))
+        if (item.category !== "weapons") throw new Error("item is not a weapon")
+        promises.push(weaponAction(config)({ action, item }))
         break
       }
       case "other":

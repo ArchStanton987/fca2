@@ -6,7 +6,6 @@ import { useLocalSearchParams } from "expo-router"
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { useCombatState } from "lib/combat/use-cases/sub-combats"
 import { useGetPlayerCanReact } from "lib/combat/utils/combat-utils"
-import { useItem } from "lib/inventory/use-sub-inv-cat"
 
 import Col from "components/Col"
 import NumPad from "components/NumPad/NumPad"
@@ -19,6 +18,7 @@ import {
   useActionActorId,
   useActionApi,
   useActionDamageType,
+  useActionItem,
   useActionItemDbKey,
   useActionRawDamage,
   useActionType
@@ -64,7 +64,7 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
   const actorId = formActorId === "" ? charId : formActorId
   const { data: combatId } = useCombatId(actorId)
   const { data: action } = useCombatState(combatId, state => state.action)
-  const { data: item } = useItem(actorId, itemDbKey ?? "")
+  const item = useActionItem(actorId, itemDbKey)
 
   const { scrollTo } = useScrollTo()
 

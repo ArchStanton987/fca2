@@ -22,7 +22,7 @@ export default function setNewRound(config: UseCasesConfig) {
     const combat = getCombat(store, combatId)
     const nextRoundId = combat.currRoundId + 1
     const contenders = combat.contendersIds
-    Object.keys(contenders).forEach(charId => {
+    Object.values(contenders).forEach(charId => {
       const health = getHealth(store, charId)
       const secAttr = getSecAttr(store, charId)
       const combatStatus = getCombatStatus(store, charId)
