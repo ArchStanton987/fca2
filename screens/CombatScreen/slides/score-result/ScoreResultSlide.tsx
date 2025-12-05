@@ -7,7 +7,6 @@ import { useCharInfo } from "lib/character/info/info-provider"
 import { getCritFailureThreshold } from "lib/combat/const/crit"
 import { useCombatState } from "lib/combat/use-cases/sub-combats"
 import { getActorSkillFromAction } from "lib/combat/utils/combat-utils"
-import { useItem } from "lib/inventory/use-sub-inv-cat"
 import Toast from "react-native-toast-message"
 
 import Col from "components/Col"
@@ -21,6 +20,7 @@ import {
   useActionActorId,
   useActionAimZone,
   useActionApi,
+  useActionItem,
   useActionItemDbKey,
   useActionSubtype,
   useActionType
@@ -54,7 +54,7 @@ export default function ScoreResultSlide({ slideIndex }: SlideProps) {
     templateId: i.templateId,
     isCritter: i.isCritter
   }))
-  const { data: item } = useItem(actorId, itemDbKey)
+  const item = useActionItem(actorId, itemDbKey)
   const { data: special } = useSpecial(actorId)
 
   const { reset } = useActionApi()

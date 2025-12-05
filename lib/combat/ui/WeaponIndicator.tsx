@@ -6,7 +6,7 @@ import { useAbilities } from "lib/character/abilities/abilities-provider"
 import secAttrMap from "lib/character/abilities/sec-attr/sec-attr"
 import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { useCharInfo } from "lib/character/info/info-provider"
-import { useAmmo, useCombatWeapons, useItem } from "lib/inventory/use-sub-inv-cat"
+import { useAmmo, useCombatWeapons } from "lib/inventory/use-sub-inv-cat"
 import Weapon from "lib/objects/data/weapons/Weapon"
 import {
   getCanBasicUseFirearm,
@@ -76,8 +76,9 @@ function WeaponActions({ weaponKey, charId }: { weaponKey: string; charId: strin
   const useCases = useGetUseCases()
   const { data: maxAp } = useAbilities(charId, a => a.secAttr.curr.actionPoints)
   const { data: currAp } = useCombatStatus(charId, cs => cs.currAp)
-  const { data: weapon = Weapon.getUnarmed() } = useItem(charId, weaponKey)
   const { data: ammo } = useAmmo(charId)
+  const combatWeapons = useCombatWeapons(charId)
+  const weapon = combatWeapons.find(w => w.dbKey === weaponKey)
 
   const [selectedAction, setSelectedAction] = useState("")
 
@@ -85,7 +86,7 @@ function WeaponActions({ weaponKey, charId }: { weaponKey: string; charId: strin
     setSelectedAction(prev => (prev === id ? "" : id))
   }
 
-  if (weapon.category !== "weapons") throw new Error("Item is not a weapon")
+  if (weapon?.category !== "weapons") throw new Error("Item is not a weapon")
 
   const canShoot = getCanBasicUseFirearm(weapon)
   const canShootBurst = getCanShootBurst(weapon, { currAp, maxAp })

@@ -2,7 +2,6 @@ import { StyleSheet } from "react-native"
 
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { useCombatState } from "lib/combat/use-cases/sub-combats"
-import { useItem } from "lib/inventory/use-sub-inv-cat"
 import Consumable from "lib/objects/data/consumables/Consumable"
 import Toast from "react-native-toast-message"
 
@@ -14,7 +13,12 @@ import DrawerSlide from "components/Slides/DrawerSlide"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import HealthFigure from "components/draws/HealthFigure/HealthFigure"
-import { useActionActorId, useActionApi, useActionItemDbKey } from "providers/ActionFormProvider"
+import {
+  useActionActorId,
+  useActionApi,
+  useActionItem,
+  useActionItemDbKey
+} from "providers/ActionFormProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
 
@@ -40,7 +44,7 @@ export default function ChallengeSlide() {
   const { reset } = useActionApi()
   const { data: combatId } = useCombatId(actorId)
   const { data: action } = useCombatState(combatId)
-  const { data: consumable } = useItem(actorId, itemDbKey ?? "")
+  const consumable = useActionItem(actorId, itemDbKey)
 
   const submit = async (item: Consumable) => {
     try {
@@ -53,7 +57,7 @@ export default function ChallengeSlide() {
     }
   }
 
-  if (consumable.category !== "consumables")
+  if (consumable?.category !== "consumables")
     return <SlideError error={slideErrors.noConsumableError} />
 
   return (

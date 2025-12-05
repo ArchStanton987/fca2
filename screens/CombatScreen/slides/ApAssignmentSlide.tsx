@@ -5,7 +5,6 @@ import { useLocalSearchParams } from "expo-router"
 import { useAbilities } from "lib/character/abilities/abilities-provider"
 import { useCombatId, useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { useCombatState } from "lib/combat/use-cases/sub-combats"
-import { useItem } from "lib/inventory/use-sub-inv-cat"
 import Toast from "react-native-toast-message"
 
 import CheckBox from "components/CheckBox/CheckBox"
@@ -23,6 +22,7 @@ import {
   useActionActorId,
   useActionApCost,
   useActionApi,
+  useActionItem,
   useActionItemDbKey,
   useActionSubtype,
   useActionType
@@ -59,7 +59,7 @@ export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
   const itemDbKey = useActionItemDbKey()
 
   const actorId = formActorId === "" ? charId : formActorId
-  const { data: item } = useItem(actorId, itemDbKey ?? "")
+  const item = useActionItem(actorId, itemDbKey)
   const { data: currAp } = useCombatStatus(actorId, s => s.currAp)
   const { data: maxAp } = useAbilities(actorId, a => a.secAttr.curr.actionPoints)
 
@@ -120,7 +120,7 @@ export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
         return
       case "item": {
         // checks if requires further action (throw, pickup & use when object has challenge label)
-        const isConsumable = item.category === "consumables"
+        const isConsumable = item?.category === "consumables"
         const hasChallenge = isConsumable && item.data.challengeLabel !== null
         const hasFurtherAction =
           actionSubtype === "throw" ||

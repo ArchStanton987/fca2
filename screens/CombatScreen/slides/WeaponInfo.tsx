@@ -6,7 +6,7 @@ import { Image } from "expo-image"
 import { useAbilities, useSpecial } from "lib/character/abilities/abilities-provider"
 import secAttrMap from "lib/character/abilities/sec-attr/sec-attr"
 import { useCharInfo } from "lib/character/info/info-provider"
-import { useItem } from "lib/inventory/use-sub-inv-cat"
+import { useCombatWeapons } from "lib/inventory/use-sub-inv-cat"
 import { getHasStrengthMalus } from "lib/objects/data/weapons/weapons-utils"
 
 import unarmedImg from "assets/images/unarmed.png"
@@ -34,10 +34,11 @@ export default function WeaponInfo({ selectedWeapon }: { selectedWeapon: string 
 
   const { data: abilities } = useAbilities(actorId)
   const { data: charInfo } = useCharInfo(actorId)
-  const { data: weapon } = useItem(actorId, selectedWeapon)
+  const combatWeapons = useCombatWeapons(actorId)
+  const weapon = combatWeapons.find(w => w.dbKey === selectedWeapon)
   const { data: special } = useSpecial(actorId)
 
-  if (weapon.category !== "weapons") return null
+  if (weapon?.category !== "weapons") return null
 
   const hasMalus = getHasStrengthMalus(weapon, special.curr)
 

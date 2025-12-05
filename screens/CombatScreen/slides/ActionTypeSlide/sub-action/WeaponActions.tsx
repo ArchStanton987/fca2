@@ -1,7 +1,7 @@
 import { useAbilities, useSecAttr, useTraits } from "lib/character/abilities/abilities-provider"
 import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { useCharInfo } from "lib/character/info/info-provider"
-import { useAmmo, useCombatWeapons, useItem } from "lib/inventory/use-sub-inv-cat"
+import { useAmmo, useCombatWeapons } from "lib/inventory/use-sub-inv-cat"
 import {
   getAvailableWeaponActions,
   getWeaponActionLabel
@@ -31,11 +31,10 @@ export default function WeaponActions({ charId }: { charId: string }) {
   const { data: ammo } = useAmmo(actorId)
   const { setActionSubtype } = useActionApi()
 
-  const { data: actionWeapon } = useItem(actorId, itemDbKey ?? "")
   const weapons = useCombatWeapons(actorId)
-  const weapon = actionWeapon ?? weapons[0]
+  const weapon = weapons.find(w => w.dbKey === itemDbKey)
 
-  if (weapon.category !== "weapons") return null
+  if (weapon?.category !== "weapons") return null
 
   const actions = getAvailableWeaponActions(weapon, { currAp, maxAp }, ammo)
 

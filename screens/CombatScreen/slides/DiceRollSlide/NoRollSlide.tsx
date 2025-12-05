@@ -2,14 +2,18 @@ import { TouchableHighlight } from "react-native"
 
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { useCombatState } from "lib/combat/use-cases/sub-combats"
-import { useItem } from "lib/inventory/use-sub-inv-cat"
 import Toast from "react-native-toast-message"
 
 import Section from "components/Section"
 import DrawerSlide from "components/Slides/DrawerSlide"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { useActionActorId, useActionApi, useActionItemDbKey } from "providers/ActionFormProvider"
+import {
+  useActionActorId,
+  useActionApi,
+  useActionItem,
+  useActionItemDbKey
+} from "providers/ActionFormProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 
@@ -21,7 +25,7 @@ export default function NoRollSlide() {
 
   const { data: combatId } = useCombatId(actorId)
   const { data: action } = useCombatState(combatId, s => s.action)
-  const { data: item } = useItem(actorId, itemDbKey ?? "")
+  const item = useActionItem(actorId, itemDbKey)
 
   const submit = async () => {
     try {

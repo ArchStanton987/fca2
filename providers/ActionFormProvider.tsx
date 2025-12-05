@@ -50,18 +50,26 @@ export const useActionItemDbKey = () => useActionForm(state => state.itemDbKey)
 
 export const useActionApi = () => useActionForm(state => state.actions)
 
+export const useActionItem = (actorId: string, dbKey: string = "") => {
+  const combatWeapons = useCombatWeapons(actorId)
+  const { data: item } = useItem(actorId, dbKey)
+  if (item) return item
+  const equWeaponIndex = combatWeapons.findIndex(w => w.dbKey === dbKey)
+  return equWeaponIndex === -1 ? undefined : combatWeapons[equWeaponIndex]
+}
+
 export const useDamageRoll = (charId: string) => {
   const actionSubtype = useActionSubtype()
   const itemDbKey = useActionItemDbKey()
-  const { data: item } = useItem(charId, itemDbKey ?? "")
+  const item = useActionItem(charId, itemDbKey)
 
   switch (actionSubtype) {
     case "basic":
     case "aim":
-      if (item.category !== "weapons") throw new Error("Item is not a weapon.")
+      if (item?.category !== "weapons") throw new Error("Item is not a weapon.")
       return item.data.damageBasic
     case "burst":
-      if (item.category !== "weapons") throw new Error("Item is not a weapon.")
+      if (item?.category !== "weapons") throw new Error("Item is not a weapon.")
       return item.data.damageBurst
     case "hit":
     case "throw": {
@@ -72,14 +80,6 @@ export const useDamageRoll = (charId: string) => {
     default:
       throw new Error("unknown action subtype for weapon")
   }
-}
-
-export const useActionItem = (actorId: string, dbKey: string = "") => {
-  const combatWeapons = useCombatWeapons(actorId)
-  const { data: item } = useItem(actorId, dbKey)
-  if (item) return item
-  const equWeaponIndex = combatWeapons.findIndex(w => w.dbKey === dbKey)
-  return equWeaponIndex === -1 ? undefined : combatWeapons[equWeaponIndex]
 }
 
 export const useActionSkill = (actorId: string) => {
