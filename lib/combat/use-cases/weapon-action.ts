@@ -24,7 +24,7 @@ export default function weaponAction(config: UseCasesConfig) {
       case "aim":
       case "burst":
         if (!item) throw new Error("Missing item")
-        return useWeapon(config)({ charId, weapon: item, actionId: "burst" })
+        return useWeapon(config)({ charId, weapon: item, actionId: actionSubtype })
       case "reload":
         if (!item) throw new Error("Missing item")
         return loadWeapon(config)({ charId, weapon: item })

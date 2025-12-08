@@ -6,6 +6,7 @@ import { useLocalSearchParams } from "expo-router"
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { useCombatState } from "lib/combat/use-cases/sub-combats"
 import { useGetPlayerCanReact } from "lib/combat/utils/combat-utils"
+import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
 
 import Col from "components/Col"
 import NumPad from "components/NumPad/NumPad"
@@ -17,7 +18,6 @@ import Txt from "components/Txt"
 import {
   useActionActorId,
   useActionApi,
-  useActionDamageType,
   useActionItem,
   useActionItemDbKey,
   useActionRawDamage,
@@ -33,6 +33,7 @@ import PlayButton from "../PlayButton"
 import WeaponInfo from "../WeaponInfo"
 import VisualizeReactionSlide from "../score-result/VisualizeReactionSlide"
 import AwaitReactionSlide from "../wait-slides/AwaitReactionSlide"
+import AwaitTargetSlide from "../wait-slides/AwaitTargetSlide"
 import DamageRoll from "./DamageRoll"
 
 const styles = StyleSheet.create({
@@ -59,7 +60,7 @@ function AwaitReactionWrapper({ children }: { children: ReactNode }) {
 
 function AwaitTargetWrapper({ children }: { children: ReactNode }) {
   const targetId = useActionTargetId()
-  if (!targetId) return <AwaitReactionSlide />
+  if (!targetId) return <AwaitTargetSlide />
   return children
 }
 
@@ -110,7 +111,6 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
   const rawDamage = useActionRawDamage()
   const itemDbKey = useActionItemDbKey()
   const actionType = useActionType()
-  const damageType = useActionDamageType()
 
   const { setForm, setRoll } = useActionApi()
 
@@ -138,7 +138,10 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
 
   const submitDamages = async () => {
     if (!isValid) throw new Error("invalid score")
-    if (!damageType) throw new Error("No damage type")
+    let damageType: DamageTypeId = "physical"
+    if (item && item.category === "weapons") {
+      damageType = item.data.damageType
+    }
     const payload = { rawDamage: parsedScore, damageType }
     await useCases.combat.updateAction({ combatId, payload })
     scrollNext()

@@ -35,17 +35,17 @@ const styles = StyleSheet.create({
 
 export default function GMDamageForm({ charId }: { charId: string }) {
   const { data: combatId } = useCombatId(charId)
-  const combatState = useCombatState(combatId, cs => ({
+  const { data: combatState } = useCombatState(combatId, cs => ({
     rawDamage: cs.action.rawDamage || 0,
     damageType: cs.action.damageType || "physical",
     targetId: cs.action.targetId || "",
     damageLocalization: cs.action.aimZone || cs.action.damageLocalization || "rightTorso"
   }))
-  const { data: targetItems } = useItems(combatState.data.targetId)
+  const { data: targetItems } = useItems(combatState.targetId)
   const realDamage = getRealDamage(targetItems, {
-    damageType: combatState.data.damageType,
-    rawDamage: combatState.data.rawDamage,
-    damageLocalization: combatState.data.damageLocalization
+    damageType: combatState.damageType,
+    rawDamage: combatState.rawDamage,
+    damageLocalization: combatState.damageLocalization
   })
 
   const actions = useDamageFormActions()
@@ -55,7 +55,7 @@ export default function GMDamageForm({ charId }: { charId: string }) {
         <Row>
           <Col style={{ flex: 1 }}>
             <Txt>Dég. bruts : </Txt>
-            <TxtInput readOnly editable={false} value={combatState.data.rawDamage.toString()} />
+            <TxtInput readOnly editable={false} value={combatState.rawDamage.toString()} />
           </Col>
           <Spacer x={layout.globalPadding} />
           <Col style={{ flex: 1 }}>
@@ -65,7 +65,7 @@ export default function GMDamageForm({ charId }: { charId: string }) {
           <Spacer x={layout.globalPadding} />
           <Col style={{ flex: 1 }}>
             <Txt>Type :</Txt>
-            <TxtInput readOnly editable={false} value={combatState.data.damageType} />
+            <TxtInput readOnly editable={false} value={combatState.damageType} />
           </Col>
         </Row>
 
