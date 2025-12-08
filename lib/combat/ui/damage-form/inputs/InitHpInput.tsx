@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native"
 
-import { useHealth } from "lib/character/health/health-provider"
+import { useQuery } from "@tanstack/react-query"
+import { getHealthOptions } from "lib/character/health/health-provider"
 
 import TxtInput from "components/TxtInput"
 import { useDamageEntry } from "providers/DamageFormProvider"
@@ -16,7 +17,7 @@ const styles = StyleSheet.create({
 export default function InitHpInput({ entryId }: InitHpInputProps) {
   const entry = useDamageEntry(entryId)
   const { charId } = entry
-  const { data: currHp = 0 } = useHealth(charId, h => h.currHp)
+  const { data: currHp = 0 } = useQuery({ ...getHealthOptions(charId), select: h => h.currHp })
 
   return <TxtInput editable={false} style={styles.input} value={currHp.toString()} />
 }

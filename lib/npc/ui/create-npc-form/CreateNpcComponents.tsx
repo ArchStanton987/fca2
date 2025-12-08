@@ -145,7 +145,6 @@ function Submit({ squadId }: { squadId: string }) {
       Toast.show({ type: "custom", text1: "Le PNJ a été créé" })
       actions.reset()
     } catch (err) {
-      console.log("err", err)
       Toast.show({ type: "error", text1: "Erreur lors de la création du PNJ" })
     }
   }

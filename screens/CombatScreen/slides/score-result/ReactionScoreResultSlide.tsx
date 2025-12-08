@@ -1,3 +1,5 @@
+import { ReactNode } from "react"
+
 import { router, useLocalSearchParams } from "expo-router"
 
 import { useAbilities, useSpecial } from "lib/character/abilities/abilities-provider"
@@ -24,19 +26,33 @@ import SlideError, { slideErrors } from "../SlideError"
 import ActionOutcome from "./ActionOutcome"
 import styles from "./ScoreResultSlide.styles"
 
+function ReactionWrapper({ children }: { children: ReactNode }) {
+  const form = useReactionForm()
+  if (form.reaction === "none") {
+    return (
+      <Section contentContainerStyle={styles.scoreContainer}>
+        <Txt>Pas de réaction sélectionnée</Txt>
+      </Section>
+    )
+  }
+  return children
+}
+
+function Skill({ charId }: { charId: string }) {
+  const { skillId } = ReactionRoll.useGetReaction(charId)
+  return <Txt>{skillsMap[skillId].short}</Txt>
+}
+
 export default function ReactionScoreResultSlide() {
   const { charId } = useLocalSearchParams<{ charId: string }>()
 
   const { data: special } = useSpecial(charId)
   const { data: critChance } = useAbilities(charId, a => a.secAttr.curr.critChance)
 
-  const { skillId } = ReactionRoll.useGetReaction(charId)
-
   const { data: combatId } = useCombatId(charId)
   const { diceRoll, reaction } = useReactionForm()
   const { data: action } = useCombatState(combatId, s => s.action)
-  const opponentId = action?.reactionRoll ? action.reactionRoll.opponentId : ""
-  const { data: opponentCombatStatus } = useCombatStatus(opponentId)
+  const { data: opponentCombatStatus } = useCombatStatus(charId)
 
   const diceScore = parseInt(diceRoll, 10)
   const { reset } = useReactionApi()
@@ -68,88 +84,90 @@ export default function ReactionScoreResultSlide() {
 
   return (
     <DrawerSlide>
-      <Section title="scores" style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
-        <Row style={styles.scoreDetailRow}>
-          <Col style={styles.scoreContainer}>
-            <Txt>Compétence</Txt>
-            <Txt>{skillsMap[skillId].short}</Txt>
-            <Txt style={styles.score}>{opponentSumAbilities}</Txt>
-          </Col>
-          <Spacer x={10} />
-          <Txt style={styles.score}>-</Txt>
-          <Spacer x={10} />
-          <Col style={styles.scoreContainer}>
-            <Txt>Jet de dé</Txt>
-            <Txt
-              style={[styles.score, isCrit && styles.critSuccess, isCritFail && styles.critFail]}
-            >
-              {diceRoll}
-            </Txt>
-          </Col>
-          <Spacer x={10} />
-          <Txt style={styles.score}>+</Txt>
-          <Spacer x={10} />
-          <Col style={styles.scoreContainer}>
-            <Txt>Bonus / Malus</Txt>
-            <Txt style={styles.score}>{opponentBonus}</Txt>
-          </Col>
-          <Spacer x={10} />
-          <Txt style={styles.score}>=</Txt>
-          <Spacer x={10} />
-          <Col style={styles.scoreContainer}>
-            <Txt>Score</Txt>
-            <Txt style={styles.score}>{opponentScore}</Txt>
-          </Col>
-        </Row>
+      <ReactionWrapper>
+        <Section title="scores" style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
+          <Row style={styles.scoreDetailRow}>
+            <Col style={styles.scoreContainer}>
+              <Txt>Compétence</Txt>
+              <Skill charId={charId} />
+              <Txt style={styles.score}>{opponentSumAbilities}</Txt>
+            </Col>
+            <Spacer x={10} />
+            <Txt style={styles.score}>-</Txt>
+            <Spacer x={10} />
+            <Col style={styles.scoreContainer}>
+              <Txt>Jet de dé</Txt>
+              <Txt
+                style={[styles.score, isCrit && styles.critSuccess, isCritFail && styles.critFail]}
+              >
+                {diceRoll}
+              </Txt>
+            </Col>
+            <Spacer x={10} />
+            <Txt style={styles.score}>+</Txt>
+            <Spacer x={10} />
+            <Col style={styles.scoreContainer}>
+              <Txt>Bonus / Malus</Txt>
+              <Txt style={styles.score}>{opponentBonus}</Txt>
+            </Col>
+            <Spacer x={10} />
+            <Txt style={styles.score}>=</Txt>
+            <Spacer x={10} />
+            <Col style={styles.scoreContainer}>
+              <Txt>Score</Txt>
+              <Txt style={styles.score}>{opponentScore}</Txt>
+            </Col>
+          </Row>
 
-        <Spacer y={20} />
+          <Spacer y={20} />
 
-        <Row style={styles.scoreDetailRow}>
-          <Col style={styles.scoreContainer}>
-            <Txt>Score</Txt>
-            <Txt style={styles.score}>{opponentScore}</Txt>
-          </Col>
+          <Row style={styles.scoreDetailRow}>
+            <Col style={styles.scoreContainer}>
+              <Txt>Score</Txt>
+              <Txt style={styles.score}>{opponentScore}</Txt>
+            </Col>
 
-          <Spacer x={10} />
+            <Spacer x={10} />
 
-          <Txt style={styles.score}>-</Txt>
-          <Spacer x={10} />
-          <Col style={styles.scoreContainer}>
-            <Txt>Adversaire</Txt>
-            <Txt style={styles.score}>{actorFinalScore}</Txt>
-          </Col>
-          <Spacer x={10} />
-          <Txt style={styles.score}>=</Txt>
-          <Spacer x={10} />
-          <Col style={styles.scoreContainer}>
-            <Txt>Score final</Txt>
-            <Txt style={styles.score}>{finalScore}</Txt>
-          </Col>
-        </Row>
-      </Section>
-
-      <Spacer x={layout.globalPadding} />
-      <Col style={{ width: 100 }}>
-        <Section
-          title="résultat"
-          style={{ flex: 1 }}
-          contentContainerStyle={styles.centeredSection}
-        >
-          <ActionOutcome
-            isCritFail={!isSuccess && isCritFail}
-            isCritSuccess={isSuccess && isCrit}
-            isCritHit={false}
-            finalScore={finalScore}
-          />
+            <Txt style={styles.score}>-</Txt>
+            <Spacer x={10} />
+            <Col style={styles.scoreContainer}>
+              <Txt>Adversaire</Txt>
+              <Txt style={styles.score}>{actorFinalScore}</Txt>
+            </Col>
+            <Spacer x={10} />
+            <Txt style={styles.score}>=</Txt>
+            <Spacer x={10} />
+            <Col style={styles.scoreContainer}>
+              <Txt>Score final</Txt>
+              <Txt style={styles.score}>{finalScore}</Txt>
+            </Col>
+          </Row>
         </Section>
-        <Spacer y={layout.globalPadding} />
-        <Section
-          title="suivant"
-          contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}
-        >
-          <NextButton size={45} onPress={submit} />
-        </Section>
-      </Col>
+
+        <Spacer x={layout.globalPadding} />
+        <Col style={{ width: 100 }}>
+          <Section
+            title="résultat"
+            style={{ flex: 1 }}
+            contentContainerStyle={styles.centeredSection}
+          >
+            <ActionOutcome
+              isCritFail={!isSuccess && isCritFail}
+              isCritSuccess={isSuccess && isCrit}
+              isCritHit={false}
+              finalScore={finalScore}
+            />
+          </Section>
+          <Spacer y={layout.globalPadding} />
+          <Section
+            title="suivant"
+            contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}
+          >
+            <NextButton size={45} onPress={submit} />
+          </Section>
+        </Col>
+      </ReactionWrapper>
     </DrawerSlide>
   )
 }

@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native"
 
-import { useHealth } from "lib/character/health/health-provider"
+import { useQuery } from "@tanstack/react-query"
+import { getHealthOptions } from "lib/character/health/health-provider"
 
 import TxtInput from "components/TxtInput"
 import { useDamageEntry, useDamageFormStore } from "providers/DamageFormProvider"
@@ -17,7 +18,7 @@ export default function NewHpInput({ entryId }: NewHpInputProps) {
   const actions = useDamageFormStore(state => state.actions)
   const entry = useDamageEntry(entryId)
   const { charId, damage = 0 } = entry
-  const { data: currHp = 0 } = useHealth(charId, h => h.currHp)
+  const { data: currHp = 0 } = useQuery({ ...getHealthOptions(charId), select: h => h.currHp })
   const newHp = currHp - damage
 
   const setPannelAndSelectEntry = () => {

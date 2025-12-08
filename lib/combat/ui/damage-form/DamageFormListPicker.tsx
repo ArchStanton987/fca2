@@ -1,10 +1,11 @@
 import { useLocalSearchParams } from "expo-router"
 
+import { useQuery } from "@tanstack/react-query"
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { calculatedEffects } from "lib/character/effects/effects-utils"
 import { limbsMap } from "lib/character/health/Health"
 import { limbsTemplates } from "lib/character/health/health.const"
-import { useCharInfo, useFullname } from "lib/character/info/info-provider"
+import { getCharInfoOptions, useFullname } from "lib/character/info/info-provider"
 import { useContenders } from "lib/combat/use-cases/sub-combats"
 import { critters } from "lib/npc/const/npc-templates"
 
@@ -43,7 +44,10 @@ function LimbsList() {
     if (!state.selectedEntry) return ""
     return state.entries[state.selectedEntry].charId
   })
-  const { data: templateId } = useCharInfo(selectedChar, i => i.templateId)
+  const { data: templateId = "player" } = useQuery({
+    ...getCharInfoOptions(selectedChar),
+    select: i => i.templateId
+  })
   const limbsTemplateId = templateId in critters ? critters[templateId].limbsTemplate : "large"
   const limbsTemplate = limbsTemplates[limbsTemplateId]
   return (

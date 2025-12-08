@@ -1,7 +1,7 @@
 import { ReactNode, useCallback } from "react"
 import { ActivityIndicator } from "react-native"
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useIsMutating, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { limbsMap } from "lib/character/health/Health"
 import { LimbId } from "lib/character/health/health.const"
@@ -58,10 +58,9 @@ function LimbResult() {
   const targetId = useActionTargetId() ?? ""
   const { data: targetTemplateId } = useCharInfo(targetId, i => i.templateId)
   const query = useLocResult(damageLocScore, targetTemplateId)
-  if (!query.isEnabled) return null
-  if (query.isLoading || !query.data)
-    return <ActivityIndicator color={colors.secColor} size="large" />
-  if (query.isError) return "-"
+  const isMutating = useIsMutating({ mutationKey: ["GET_LOC"] }) > 0
+  if (isMutating) return <ActivityIndicator color={colors.secColor} size="large" />
+  if (query.isError || !query.data) return <Txt>-</Txt>
   return <Txt>{limbsMap[query.data].label}</Txt>
 }
 
@@ -80,6 +79,7 @@ function NextSection({ children }: { children: ReactNode }) {
 const useSetLocResult = () => {
   const queryClient = useQueryClient()
   return useMutation({
+    mutationKey: ["GET_LOC"],
     mutationFn: async (payload: { score: string; templateId: TemplateId }) => {
       const { score, templateId } = payload
       const result = await delay(1000, getBodyPart(score, templateId))

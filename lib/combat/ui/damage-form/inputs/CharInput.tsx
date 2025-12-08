@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native"
 
-import { useCharInfo } from "lib/character/info/info-provider"
+import { useQuery } from "@tanstack/react-query"
+import { getCharInfoOptions } from "lib/character/info/info-provider"
 
 import TxtInput from "components/TxtInput"
 import { useDamageEntry, useDamageFormStore } from "providers/DamageFormProvider"
@@ -17,7 +18,10 @@ export default function CharInput({ entryId }: CharInputProps) {
   const actions = useDamageFormStore(state => state.actions)
   const entry = useDamageEntry(entryId)
   const { charId } = entry
-  const { data: charName } = useCharInfo(charId, i => i.firstname)
+  const { data: charName = "" } = useQuery({
+    ...getCharInfoOptions(charId),
+    select: i => i.firstname
+  })
 
   const setPannelAndSelectEntry = () => {
     actions.setPannel("chars")
