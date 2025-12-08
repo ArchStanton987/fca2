@@ -4,7 +4,7 @@ import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { DamageEntry } from "lib/combat/combats.types"
 import { GMDamageFormState, createDmgStore } from "lib/combat/gm-damage-store"
 import { useCombatState } from "lib/combat/use-cases/sub-combats"
-import { getRealDamage } from "lib/combat/utils/combat-utils"
+import { getRealDamage, useDamageLocalization } from "lib/combat/utils/combat-utils"
 import { useItems } from "lib/inventory/use-sub-inv-cat"
 import { StoreApi, useStore } from "zustand"
 
@@ -16,15 +16,21 @@ export const useGetInitDamageEntry = (combatId: string): DamageEntry => {
   const { data: action } = useCombatState(combatId, cs => cs.action)
   const targetId = action.targetId || ""
   const { data: items } = useItems(targetId)
+
+  const damageLocalization = useDamageLocalization(
+    action.damageLocalizationScore || 0,
+    action.targetId ? action.targetId : ""
+  )
+
   const dmgEntry = {
-    damageLocalization: action.aimZone || action.damageLocalization || "rightTorso",
+    damageLocalization: action.aimZone || damageLocalization,
     rawDamage: action.rawDamage || 0,
     damageType: action.damageType || "physical"
   }
   return {
     charId: targetId,
     entryType: "hp",
-    localization: action.damageLocalization || "rightTorso",
+    localization: damageLocalization,
     damage: getRealDamage(items, dmgEntry)
   }
 }

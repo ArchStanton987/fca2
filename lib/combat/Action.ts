@@ -20,7 +20,7 @@ export default class Action {
   itemId?: ItemId | false
   itemDbKey?: string | false
   targetId?: string | false
-  damageLocalization?: LimbId | false
+  damageLocalizationScore?: number | false
   aimZone?: LimbId | false
   rawDamage?: number | false
   damageType?: DamageTypeId | false
@@ -76,14 +76,14 @@ export default class Action {
       this.targetId = false
       this.rawDamage = false
       this.damageType = false
-      this.damageLocalization = false
+      this.damageLocalizationScore = false
       this.healthChangeEntries = false
     } else {
       this.reactionRoll = payload.reactionRoll
       this.targetId = payload.targetId
       this.rawDamage = payload.rawDamage
       this.damageType = payload.damageType
-      this.damageLocalization = payload.damageLocalization
+      this.damageLocalizationScore = payload.damageLocalizationScore
       this.healthChangeEntries = payload.healthChangeEntries
     }
 
@@ -119,8 +119,8 @@ export default class Action {
       if (typeof dice !== "number") return "AWAIT_PLAYER_ROLL"
       if (typeof sumAbilities !== "number") return "AWAIT_PLAYER_ROLL"
     }
-    const { damageLocalization, reactionRoll } = this
-    if (damageLocalization === undefined) return "AWAIT_DAMAGE_LOCALIZATION"
+    const { damageLocalizationScore, reactionRoll } = this
+    if (damageLocalizationScore === undefined) return "AWAIT_DAMAGE_LOCALIZATION"
     if (reactionRoll === undefined) return "AWAIT_REACTION"
     // with reaction
     if (reactionRoll !== false) {

@@ -17,7 +17,7 @@ export type ActionFormType = Form<{
   actorDiceScore?: string
   targetId?: string
   aimZone?: LimbId
-  damageLocalization?: LimbId
+  damageLocalizationScore?: string
   rawDamage?: string
   damageType?: DamageTypeId
   itemDbKey?: string
@@ -33,7 +33,7 @@ export const defaultActionForm = {
   actorDiceScore: undefined,
   targetId: undefined,
   aimZone: undefined,
-  damageLocalization: undefined,
+  damageLocalizationScore: undefined,
   rawDamage: undefined,
   damageType: undefined,
   itemDbKey: undefined
@@ -50,8 +50,10 @@ function convertActionToForm(action: Action): ActionFormType {
     actorDiceScore: action.isDone ? String(action.apCost) : "", // Example logic for actorDiceScore
     targetId: typeof action.targetId === "string" ? action.targetId : undefined, // Default to empty string if undefined
     aimZone: typeof action.aimZone === "string" ? action.aimZone : undefined, // Default to empty string if undefined
-    damageLocalization:
-      typeof action.damageLocalization === "string" ? action.damageLocalization : undefined, // Default to empty string if undefined
+    damageLocalizationScore:
+      typeof action.damageLocalizationScore === "string"
+        ? action.damageLocalizationScore
+        : undefined,
     rawDamage: action.rawDamage ? String(action.rawDamage) : "", // Convert rawDamage to string if exists
     damageType: typeof action.damageType === "string" ? action.damageType : undefined, // Default to empty string if undefined
     itemDbKey: typeof action.itemDbKey === "string" ? action.itemDbKey : undefined // Default to empty string if undefined
@@ -67,7 +69,10 @@ export type ActionStore = ActionFormType & {
     setActionSubtype: (actionSubtype: string, apCost: number) => void
     setActorId: (id: string) => void
     setForm: (payload: Partial<ActionFormType>) => void
-    setRoll: (value: string, type: "action" | "damage") => void
+    setRoll: (
+      value: string,
+      type: "actorDiceScore" | "damageLocalizationScore" | "rawDamage"
+    ) => void
     reset: () => void
   }
 }
@@ -115,10 +120,9 @@ export const createActionStore = (initAction: Action) =>
 
       setRoll: (value, type) => {
         set(state => {
-          const key = type === "action" ? "actorDiceScore" : "rawDamage"
-          const initRollValue = state[key] ?? ""
+          const initRollValue = state[type] ?? ""
           const newValue = getNewNumpadValue(initRollValue, value)
-          return { ...state, [key]: newValue }
+          return { ...state, [type]: newValue }
         })
       },
 

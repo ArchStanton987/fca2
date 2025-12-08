@@ -14,6 +14,7 @@ import { useCharInfo } from "lib/character/info/info-provider"
 import { withDodgeSpecies } from "lib/character/playable.const"
 import { Item } from "lib/inventory/item.mappers"
 import { useCombatWeapons } from "lib/inventory/use-sub-inv-cat"
+import { critters } from "lib/npc/const/npc-templates"
 import { BodyPart } from "lib/objects/data/clothings/armor.types"
 import { ClothingData } from "lib/objects/data/clothings/clothings.types"
 import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
@@ -236,29 +237,77 @@ export const getRealDamage = (
   return Math.round(realDamage)
 }
 
-// export const getItemFromId = (inv: Inventory, itemDbKey?: string) => {
-//   if (!itemDbKey) return undefined
-//   if (itemDbKey in inv.weaponsRecord) return inv.weaponsRecord[itemDbKey]
-//   if (itemDbKey in inv.clothingsRecord) return inv.clothingsRecord[itemDbKey]
-//   if (itemDbKey in inv.consumablesRecord) return inv.consumablesRecord[itemDbKey]
-//   if (itemDbKey in inv.miscObjectsRecord) return inv.miscObjectsRecord[itemDbKey]
-//   return undefined
-// }
-
-export const getBodyPart = (scoreStr: string): LimbId => {
+export const getBodyPart = (scoreStr: string, templateId: TemplateId): LimbId => {
   const score = parseInt(scoreStr, 10)
   if (Number.isNaN(score)) throw new Error("invalid score")
-  // REWORKED MAP
-  if (score === 69) return "groin"
-  if (score <= 10) return "head"
-  if (score <= 15) return "groin"
-  if (score <= 26) return "leftLeg"
-  if (score <= 37) return "rightLeg"
-  if (score <= 48) return "leftArm"
-  if (score <= 59) return "rightArm"
-  if (score <= 80) return "leftTorso"
-  if (score <= 100) return "rightTorso"
-  throw new Error("invalid score")
+
+  const isCritter = templateId in critters
+  const limbsTemplate = isCritter ? critters[templateId].limbsTemplate : "large"
+
+  switch (limbsTemplate) {
+    case "large": {
+      if (score === 69) return "groin"
+      if (score <= 10) return "head"
+      if (score <= 15) return "groin"
+      if (score <= 26) return "leftLeg"
+      if (score <= 37) return "rightLeg"
+      if (score <= 48) return "leftArm"
+      if (score <= 59) return "rightArm"
+      if (score <= 80) return "leftTorso"
+      if (score <= 100) return "rightTorso"
+      throw new Error("invalid score")
+    }
+    case "largeTailed": {
+      if (score <= 10) return "head"
+      if (score <= 15) return "groin"
+      if (score <= 24) return "tail"
+      if (score <= 35) return "leftLeg"
+      if (score <= 46) return "rightLeg"
+      if (score <= 57) return "leftArm"
+      if (score <= 68) return "rightArm"
+      if (score <= 84) return "leftTorso"
+      if (score <= 100) return "rightTorso"
+      throw new Error("invalid score")
+    }
+    case "medium": {
+      if (score <= 10) return "head"
+      if (score <= 24) return "leftLeg"
+      if (score <= 38) return "rightLeg"
+      if (score <= 52) return "leftArm"
+      if (score <= 66) return "rightArm"
+      if (score <= 100) return "body"
+      throw new Error("invalid score")
+    }
+    case "mediumTailed": {
+      if (score <= 10) return "head"
+      if (score <= 20) return "tail"
+      if (score <= 32) return "leftLeg"
+      if (score <= 44) return "rightLeg"
+      if (score <= 56) return "leftArm"
+      if (score <= 68) return "rightArm"
+      if (score <= 100) return "body"
+      throw new Error("invalid score")
+    }
+    case "small": {
+      if (score <= 15) return "head"
+      if (score <= 100) return "body"
+      throw new Error("invalid score")
+    }
+    case "smallTailed": {
+      if (score <= 15) return "head"
+      if (score <= 25) return "tail"
+      if (score <= 100) return "body"
+      throw new Error("invalid score")
+    }
+    default:
+      throw new Error("Unknown limbs template")
+  }
+}
+
+export const useDamageLocalization = (score: number, targetId: string) => {
+  const { data: templateId } = useCharInfo(targetId, i => i.templateId)
+  if (score === 0) return "head"
+  return getBodyPart(score.toString(), templateId)
 }
 
 export const getParrySkill = (weaponSkill: SkillId): SkillId => {
@@ -306,7 +355,8 @@ export const useGetPlayerCanReact = (charId: string) => {
   }))
   const { data: combatState } = useCombatState(combatStatus.combatId, state => ({
     isTarget: state.action.targetId === charId,
-    isAwaitingReaction: !!state.action.damageLocalization && state.action.reactionRoll === undefined
+    isAwaitingReaction:
+      !!state.action.damageLocalizationScore && state.action.reactionRoll === undefined
   }))
   if (!canDodge) return false
   if (!combatState.isTarget || !combatState.isAwaitingReaction) return false

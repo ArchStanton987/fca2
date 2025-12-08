@@ -38,7 +38,7 @@ export default function DiceRollSlide({ slideIndex }: SlideProps) {
   const { setRoll } = useActionApi()
 
   const handlePad = (v: string) => {
-    setRoll(v, "action")
+    setRoll(v, "actorDiceScore")
   }
 
   return (

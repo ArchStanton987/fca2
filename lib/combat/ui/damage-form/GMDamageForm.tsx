@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native"
 
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { useCombatState } from "lib/combat/use-cases/sub-combats"
-import { getRealDamage } from "lib/combat/utils/combat-utils"
+import { getRealDamage, useDamageLocalization } from "lib/combat/utils/combat-utils"
 import { useItems } from "lib/inventory/use-sub-inv-cat"
 
 import Col from "components/Col"
@@ -39,13 +39,16 @@ export default function GMDamageForm({ charId }: { charId: string }) {
     rawDamage: cs.action.rawDamage || 0,
     damageType: cs.action.damageType || "physical",
     targetId: cs.action.targetId || "",
-    damageLocalization: cs.action.aimZone || cs.action.damageLocalization || "rightTorso"
+    damageLocalizationScore:
+      typeof cs.action.damageLocalizationScore !== "number" ? 0 : cs.action.damageLocalizationScore
   }))
   const { data: targetItems } = useItems(combatState.targetId)
+  const damageLocalization =
+    useDamageLocalization(combatState.damageLocalizationScore, combatState.targetId) ?? "head"
   const realDamage = getRealDamage(targetItems, {
     damageType: combatState.damageType,
     rawDamage: combatState.rawDamage,
-    damageLocalization: combatState.damageLocalization
+    damageLocalization
   })
 
   const actions = useDamageFormActions()

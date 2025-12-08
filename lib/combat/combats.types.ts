@@ -48,7 +48,7 @@ export type DbAction = {
   itemId?: ItemId | false
   itemDbKey?: string | false
   targetId?: string | false
-  damageLocalization?: LimbId | false
+  damageLocalizationScore?: number | false
   aimZone?: AimZone | false
   rawDamage?: number | false
   damageType?: DamageTypeId | false

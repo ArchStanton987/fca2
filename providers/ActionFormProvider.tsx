@@ -43,7 +43,7 @@ export const useActionApCost = () => useActionForm(state => state.apCost)
 export const useActorDiceScore = () => useActionForm(state => state.actorDiceScore)
 export const useActionTargetId = () => useActionForm(state => state.targetId)
 export const useActionAimZone = () => useActionForm(state => state.aimZone)
-export const useActionDamageLoc = () => useActionForm(state => state.damageLocalization)
+export const useActionDamageLocScore = () => useActionForm(state => state.damageLocalizationScore)
 export const useActionRawDamage = () => useActionForm(state => state.rawDamage)
 export const useActionDamageType = () => useActionForm(state => state.damageType)
 export const useActionItemDbKey = () => useActionForm(state => state.itemDbKey)
@@ -78,7 +78,7 @@ export const useDamageRoll = (charId: string) => {
       return `1D6+DM+${roundedWeight}`
     }
     default:
-      throw new Error("unknown action subtype for weapon")
+      return "-"
   }
 }
 

@@ -130,7 +130,7 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
   }
 
   const onPressPad = (e: string) => {
-    setRoll(e, "damage")
+    setRoll(e, "rawDamage")
   }
 
   const parsedScore = parseInt(rawDamage ?? "", 10)

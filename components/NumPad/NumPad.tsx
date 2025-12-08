@@ -1,3 +1,4 @@
+import { memo } from "react"
 import { StyleSheet, TouchableHighlightProps, TouchableOpacity } from "react-native"
 
 import Feather from "@expo/vector-icons/Feather"
@@ -57,7 +58,7 @@ type NumPadProps = {
   onPressKeyPad: (value: string) => void
 }
 
-export default function NumPad({ onPressKeyPad }: NumPadProps) {
+function NumPad({ onPressKeyPad }: NumPadProps) {
   return (
     <List
       data={rows}
@@ -79,3 +80,5 @@ export default function NumPad({ onPressKeyPad }: NumPadProps) {
     />
   )
 }
+
+export default memo(NumPad)
