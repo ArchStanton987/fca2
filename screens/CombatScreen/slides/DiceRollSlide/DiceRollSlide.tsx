@@ -18,13 +18,17 @@ import layout from "styles/layout"
 import AwaitGmSlide from "../wait-slides/AwaitGmSlide"
 import DiceRoll from "./DiceRollComponents"
 import styles from "./DiceRollSlide.styles"
+import NoRollSlide from "./NoRollSlide"
 
 function DifficultyReadyWrapper({ children, actorId }: { children: ReactNode; actorId: string }) {
   const { data: combatId } = useCombatId(actorId)
-  const { data: difficulty } = useCombatState(combatId, cs =>
-    cs.action.roll ? cs.action.roll.difficulty : null
-  )
-  if (typeof difficulty !== "number") return <AwaitGmSlide messageCase="difficulty" />
+  const { data: combatState } = useCombatState(combatId, cs => ({
+    hasDifficulty: cs.action.roll ? typeof cs.action.roll?.difficulty === "number" : false,
+    shouldNotRoll: cs.action.roll === false
+  }))
+  const { hasDifficulty, shouldNotRoll } = combatState
+  if (shouldNotRoll) return <NoRollSlide />
+  if (!hasDifficulty) return <AwaitGmSlide messageCase="difficulty" />
   return children
 }
 
