@@ -1,10 +1,9 @@
-import { useMemo } from "react"
 import { StyleSheet, View } from "react-native"
 
 import { Tabs, useLocalSearchParams } from "expo-router"
 
 import SubPlayables from "lib/character/use-cases/sub-playables"
-import { useSquadNpcs } from "lib/squad/use-cases/sub-squad"
+import { useSquad } from "lib/squad/use-cases/sub-squad"
 
 import Header from "components/Header/Header"
 import { HeaderElementId } from "components/Header/Header.utils"
@@ -34,11 +33,13 @@ const styles = StyleSheet.create({
 
 export default function Layout() {
   const { squadId } = useLocalSearchParams<{ squadId: string }>()
-  const { data: npcs } = useSquadNpcs(squadId)
-  const npcsIds = useMemo(() => Object.keys(npcs), [npcs])
+  const { data: playablesIds } = useSquad(squadId, squad => [
+    ...Object.values(squad.members),
+    ...Object.values(squad.npcs)
+  ])
   return (
     <>
-      <SubPlayables playablesIds={npcsIds} squadId={squadId} />
+      <SubPlayables playablesIds={playablesIds} squadId={squadId} />
       <View style={{ padding: 10, flex: 1 }}>
         <Tabs
           tabBar={TabBarComponent}
