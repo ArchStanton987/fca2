@@ -14,7 +14,12 @@ import DrawerSlide from "components/Slides/DrawerSlide"
 import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { useActionActorId, useActionApi, useActionTargetId } from "providers/ActionFormProvider"
+import {
+  useActionActorId,
+  useActionApi,
+  useActionSubtype,
+  useActionTargetId
+} from "providers/ActionFormProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
@@ -48,6 +53,7 @@ export default function PickTargetSlide({ slideIndex }: SlideProps) {
   const { data: combatId } = useCombatId(actorId)
   const { data: contendersIds } = useContenders(combatId)
   const { data: isEnemy } = useCharInfo(charId, i => i.isEnemy)
+  const isAimAttack = useActionSubtype() === "aim"
   const combatStatuses = useCombatStatuses(contendersIds)
   const contendersInfo = usePlayablesCharInfo(contendersIds)
 
@@ -77,7 +83,9 @@ export default function PickTargetSlide({ slideIndex }: SlideProps) {
 
   const hostiles = aliveContenders.filter(c => (isEnemy ? !c.isEnemy : c.isEnemy))
   const nonHostiles = aliveContenders.filter(c => (isEnemy ? c.isEnemy : !c.isEnemy))
-  const targetList = [...hostiles, { fullname: "autre", id: "other" }, ...nonHostiles]
+  const targetList = isAimAttack
+    ? [...hostiles, ...nonHostiles]
+    : [...hostiles, { fullname: "autre", id: "other" }, ...nonHostiles]
 
   return (
     <DrawerSlide>
