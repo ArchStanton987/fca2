@@ -15,8 +15,7 @@ import layout from "styles/layout"
 
 export default function InCombatRecapPage() {
   const { charId } = useLocalSearchParams<{ charId: string }>()
-  const { data: combatId } = useCombatStatus(charId, cs => cs.combatId)
-  const hasCombat = combatId !== ""
+  const { data: hasCombat } = useCombatStatus(charId, cs => cs.combatId !== "")
   return (
     <DrawerPage style={{ flexDirection: "column" }}>
       <ApVisualizer charId={charId} />
