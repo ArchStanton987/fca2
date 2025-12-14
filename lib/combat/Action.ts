@@ -33,9 +33,9 @@ export default class Action {
     return false
   }
 
-  static getActionIsNotAggressive = ({ actionSubtype }: DbAction) => {
+  static getActionIsAggressive = ({ actionSubtype }: DbAction) => {
     const aggressiveActionsSubtypes = ["basic", "aim", "burst", "throw", "hit"]
-    return !aggressiveActionsSubtypes.includes(actionSubtype ?? "")
+    return aggressiveActionsSubtypes.includes(actionSubtype ?? "")
   }
 
   static getActionHasNoItem = (action: DbAction) => {
@@ -69,7 +69,7 @@ export default class Action {
       this.roll = payload.roll
     }
 
-    const actionIsNotAggressive = Action.getActionIsNotAggressive(payload)
+    const actionIsNotAggressive = !Action.getActionIsAggressive(payload)
     const isRollMissed = !!this.roll && Action.getIsRollMissed(this.roll)
     if (actionIsNotAggressive || isRollMissed) {
       this.reactionRoll = false

@@ -7,6 +7,7 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import Slider from "@react-native-community/slider"
 import { useCombatId, useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
 import { useCharInfo } from "lib/character/info/info-provider"
+import Action from "lib/combat/Action"
 import { ActionTypeId, withRollActionsTypes } from "lib/combat/const/actions"
 import difficultyArray from "lib/combat/const/difficulty"
 import { useCombatState, useContenders } from "lib/combat/use-cases/sub-combats"
@@ -73,6 +74,7 @@ export default function GMActionsScreen() {
 
   const actionHasDifficulty = withRollActionsTypes.includes(cs.action?.actionType as ActionTypeId)
   const isDifficultySet = cs.action?.roll === false || cs.action?.roll?.difficulty !== undefined
+  const actionIsAgressive = cs?.action ? Action.getActionIsAggressive(cs.action) : false
 
   if (!actionHasDifficulty)
     return (
@@ -164,7 +166,11 @@ export default function GMActionsScreen() {
         <Spacer x={layout.globalPadding} />
 
         <Section contentContainerStyle={styles.centeredSection} title="valider">
-          <NextButton onPress={submit} size={45} disabled={isDifficultySet} />
+          <NextButton
+            onPress={submit}
+            size={45}
+            disabled={isDifficultySet || (actionIsAgressive && !hasRoll)}
+          />
         </Section>
       </Row>
     </DrawerPage>
