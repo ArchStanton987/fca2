@@ -17,7 +17,6 @@ import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import HealthFigure from "components/draws/HealthFigure/HealthFigure"
-import routes from "constants/routes"
 import { useReactionApi, useReactionForm } from "providers/ReactionProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
@@ -48,7 +47,7 @@ const styles = StyleSheet.create({
 })
 
 export default function PickReactionSlide({ slideIndex }: SlideProps) {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const { squadId, charId } = useLocalSearchParams<{ squadId: string; charId: string }>()
   const useCases = useGetUseCases()
   const { data: combatStatus } = useCombatStatus(charId)
 
@@ -80,7 +79,10 @@ export default function PickReactionSlide({ slideIndex }: SlideProps) {
     if (leftAp < 0) throw new Error("No enough AP")
     if (reaction === "none") {
       await useCases.combat.updateAction({ combatId, payload: { reactionRoll: false } })
-      router.replace(routes.combat.action)
+      router.replace({
+        pathname: "/squad/[squadId]/character/[charId]/combat/action",
+        params: { squadId, charId }
+      })
       reset()
       return
     }
