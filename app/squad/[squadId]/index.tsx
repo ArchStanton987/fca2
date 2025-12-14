@@ -6,6 +6,7 @@ import { router, useLocalSearchParams } from "expo-router"
 import { useQueries, useQuery } from "@tanstack/react-query"
 import CharInfo, { DbCharInfo } from "lib/character/info/CharInfo"
 import { getCharInfoOptions } from "lib/character/info/info-provider"
+import { getExpOptions } from "lib/character/progress/exp-provider"
 import PickCharacterCard from "lib/character/ui/PickCharacterCard/PickCharacterCard"
 import { qkToPath, useSub } from "lib/shared/db/useSub"
 import WelcomeHeader from "lib/shared/ui/welcome/WelcomeHeader"
@@ -18,6 +19,7 @@ import LoadingScreen from "screens/LoadingScreen"
 function SubChar({ charId }: { charId: string }) {
   const infoCb = useCallback((payload: DbCharInfo) => new CharInfo(payload, charId), [charId])
   useSub(qkToPath(getCharInfoOptions(charId).queryKey), infoCb)
+  useSub(qkToPath(getExpOptions(charId).queryKey))
   return null
 }
 
@@ -54,7 +56,7 @@ export default function Screen() {
   return (
     <>
       {squadMembers.map(id => (
-        <SubChar charId={id} />
+        <SubChar key={id} charId={id} />
       ))}
       <Loader squadMembers={squadMembers} squadId={squadId}>
         <WelcomeHeader />

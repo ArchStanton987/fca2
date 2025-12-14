@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from "react"
+import { ReactNode } from "react"
 import { View } from "react-native"
 
 import { Stack, useLocalSearchParams } from "expo-router"
@@ -8,7 +8,6 @@ import { useCombatStatus } from "lib/character/combat-status/combat-status-provi
 import { useCharInfo } from "lib/character/info/info-provider"
 import SubPlayables, { getPlayableOptions } from "lib/character/use-cases/sub-playables"
 import { SubCombats, getCombatOptions } from "lib/combat/use-cases/sub-combats"
-import { useSquadMembers } from "lib/squad/use-cases/sub-squad"
 
 import Drawer from "components/Drawer/Drawer"
 import Spacer from "components/Spacer"
@@ -35,32 +34,13 @@ const getNav = (isGm: boolean, hasCombat: boolean) => {
   return gmNavElements
 }
 
-const useContenders = (combatId: string, squadId: string) => {
-  const { data: members } = useSquadMembers(squadId)
-  const { data: contenders = [] } = useQuery({
+function Loader({ combatId, children }: { combatId: string; children: ReactNode }) {
+  const { data: contendersIds = [] } = useQuery({
     ...getCombatOptions(combatId),
     select: combat => combat.contendersIds
   })
-  const subPlayables = useMemo(() => {
-    const contendersSet = new Set(contenders)
-    const membersSet = new Set(Object.keys(members))
-    return Array.from(contendersSet.difference(membersSet))
-  }, [contenders, members])
-  return subPlayables
-}
-
-function Loader({
-  squadId,
-  combatId,
-  children
-}: {
-  squadId: string
-  combatId: string
-  children: ReactNode
-}) {
-  const playablesIds = useContenders(combatId, squadId)
   const isContendersPending = useQueries({
-    queries: playablesIds.flatMap(id => getPlayableOptions(id)),
+    queries: contendersIds.flatMap(id => getPlayableOptions(id)),
     combine: r => r.some(q => q.isPending)
   })
   const combatQuery = useQuery(getCombatOptions(combatId))
@@ -69,9 +49,20 @@ function Loader({
   return children
 }
 
-function SubContenders({ squadId, combatId }: { squadId: string; combatId: string }) {
-  const playablesIds = useContenders(combatId, squadId)
-  return <SubPlayables playablesIds={playablesIds} squadId={squadId} />
+function SubContenders({
+  squadId,
+  combatId,
+  charId
+}: {
+  squadId: string
+  combatId: string
+  charId: string
+}) {
+  const { data: contendersIds = [] } = useQuery({
+    ...getCombatOptions(combatId),
+    select: combat => combat.contendersIds.filter(c => c !== charId)
+  })
+  return <SubPlayables playablesIds={contendersIds} squadId={squadId} />
 }
 
 function CombatProvider({
@@ -87,8 +78,8 @@ function CombatProvider({
   return (
     <>
       <SubCombats ids={[combatId]} />
-      <SubContenders squadId={squadId} combatId={combatId} />
-      <Loader squadId={squadId} combatId={combatId}>
+      <SubContenders squadId={squadId} combatId={combatId} charId={charId} />
+      <Loader combatId={combatId}>
         <ActionFormProvider combatId={combatId}>{children}</ActionFormProvider>
       </Loader>
     </>
@@ -98,8 +89,7 @@ function CombatProvider({
 export default function CombatLayout() {
   const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
   const { data: isGameMaster } = useCharInfo(charId, info => info.isNpc)
-  const { data: combatId } = useCombatStatus(charId, data => data.combatId)
-  const isInCombat = combatId !== ""
+  const { data: isInCombat } = useCombatStatus(charId, data => data.combatId !== "")
   const navElements = getNav(isGameMaster, isInCombat)
 
   return (
