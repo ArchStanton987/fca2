@@ -27,7 +27,13 @@ const styles = StyleSheet.create({
 })
 
 export default function Screen() {
-  const { data: squads } = useSquads()
+  const { data: squads } = useSquads(s =>
+    Object.entries(s).map(([id, value]) => ({
+      id,
+      label: value.label,
+      datetime: value.datetime
+    }))
+  )
 
   const toSquad = (squadId: string) =>
     router.push({ pathname: "/squad/[squadId]", params: { squadId } })
@@ -35,17 +41,11 @@ export default function Screen() {
   const toAdmin = (squadId: string) =>
     router.push({ pathname: "/squad/[squadId]/admin/datetime", params: { squadId } })
 
-  const squadsList = Object.entries(squads).map(([id, value]) => ({
-    id,
-    label: value.label,
-    datetime: value.datetime
-  }))
-
   return (
     <ScrollView style={styles.container}>
       <WelcomeHeader />
       <List
-        data={squadsList}
+        data={squads}
         keyExtractor={e => e.id}
         separator={<Spacer y={20} />}
         renderItem={({ item }) => (

@@ -31,6 +31,20 @@ import CharInfo, { DbCharInfo } from "../info/CharInfo"
 import { getCharInfoOptions } from "../info/info-provider"
 import { getExpOptions } from "../progress/exp-provider"
 
+export const getPlayableOptions = (id: string) => [
+  getCapsOptions(id),
+  getAmmoOptions(id),
+  getItemsOptions(id),
+  getCharInfoOptions(id),
+  getBaseSpecialOptions(id),
+  getExpOptions(id),
+  getEffectsOptions(id),
+  getCombatStatusOptions(id),
+  getCharCombatHistoryOptions(id),
+  getHealthOptions(id),
+  getDbAbilitiesOptions(id)
+]
+
 function SubPrim({ id, squadId }: { id: string; squadId: string }) {
   const { data: datetime } = useSquads(squads => squads[squadId].datetime)
   const collectiblesData = useCollectiblesData()
