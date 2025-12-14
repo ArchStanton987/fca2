@@ -5,8 +5,6 @@ import BarterSection from "lib/objects/ui/barter/BarterSection"
 
 import ModalCta from "components/ModalCta/ModalCta"
 import ModalBody from "components/wrappers/ModalBody"
-import routes from "constants/routes"
-import { toLocalParams } from "screens/ScreenParams"
 
 export default function BarterModal() {
   const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
@@ -14,8 +12,10 @@ export default function BarterModal() {
   const actions = useBarterActions()
 
   const next = () => {
-    const params = toLocalParams({ squadId, charId })
-    router.push({ pathname: routes.modal.barterConfirmation, params })
+    router.push({
+      pathname: "/squad/[squadId]/character/[charId]/barter-confirmation",
+      params: { charId, squadId }
+    })
   }
 
   const cancel = () => {

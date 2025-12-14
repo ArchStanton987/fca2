@@ -15,7 +15,6 @@ import Section from "components/Section"
 import DrawerSlide from "components/Slides/DrawerSlide"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import routes from "constants/routes"
 import { useReactionApi, useReactionForm } from "providers/ReactionProvider"
 import { useSetSliderIndex } from "providers/SlidesProvider"
 import ReactionRoll from "screens/CombatScreen/slides/DiceRollSlide/ReactionRollComponents"
@@ -44,7 +43,7 @@ function Skill({ charId }: { charId: string }) {
 }
 
 export default function ReactionScoreResultSlide() {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
 
   const { data: special } = useSpecial(charId)
   const { data: critChance } = useAbilities(charId, a => a.secAttr.curr.critChance)
@@ -79,7 +78,10 @@ export default function ReactionScoreResultSlide() {
   const submit = () => {
     setSlideIndex("reactionSlider", 0)
     reset()
-    router.replace(routes.combat.action)
+    router.replace({
+      pathname: "/squad/[squadId]/character/[charId]/combat/action",
+      params: { charId, squadId }
+    })
   }
 
   return (

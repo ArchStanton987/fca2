@@ -12,7 +12,6 @@ import { useProgress } from "lib/character/progress/progress-provider"
 import pipboy from "assets/images/pipboy.png"
 import ProgressionBar from "components/ProgressionBar/ProgressionBar"
 import Spacer from "components/Spacer"
-import routes from "constants/routes"
 import colors from "styles/colors"
 
 import styles from "./HealthFigure.styles"
@@ -35,9 +34,8 @@ function Bar({ charId, limbId }: { charId: string; limbId: LimbId }) {
   const onPress = () => {
     updateHealthActions.selectCategory("limbs")
     updateHealthActions.selectLimb(limbId)
-    const pathname = routes.modal.updateHealth
     const params = { charId, squadId }
-    router.push({ pathname, params })
+    router.push({ pathname: "/squad/[squadId]/character/[charId]/update-health", params })
   }
   return (
     <TouchableOpacity onPress={onPress}>
@@ -60,9 +58,8 @@ export default function HealthFigure({ charId }: { charId: string }) {
     limbs
 
   const onPressElement = (element: LimbId) => {
-    const pathname = routes.modal.updateHealth
     const params = { initElement: element, charId, squadId }
-    router.push({ pathname, params })
+    router.push({ pathname: "/squad/[squadId]/character/[charId]/update-health", params })
   }
 
   return (

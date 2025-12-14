@@ -10,7 +10,6 @@ import { useBarterActions } from "lib/objects/barter-store"
 import capsIcon from "assets/images/caps-icon.png"
 import HeaderElement from "components/Header/HeaderElement"
 import Txt from "components/Txt"
-import routes from "constants/routes"
 
 export default function HeaderCaps() {
   const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
@@ -20,8 +19,10 @@ export default function HeaderCaps() {
 
   const onPress = () => {
     barterActions.selectCategory("caps")
-    const pathname = routes.modal.barter
-    router.push({ pathname, params: { charId, squadId } })
+    router.push({
+      pathname: "/squad/[squadId]/character/[charId]/barter",
+      params: { charId, squadId }
+    })
   }
 
   return (

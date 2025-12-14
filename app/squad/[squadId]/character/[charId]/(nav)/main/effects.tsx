@@ -15,7 +15,6 @@ import { ComposedTitleProps } from "components/Section/Section.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import PlusIcon from "components/icons/PlusIcon"
-import routes from "constants/routes"
 import { useCollectiblesData } from "providers/AdditionalElementsProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
@@ -55,7 +54,7 @@ export default function EffectsScreen() {
 
   const onPressAdd = () =>
     router.push({
-      pathname: routes.modal.updateEffects,
+      pathname: "/squad/[squadId]/character/[charId]/update-effects",
       params: { squadId, charId }
     })
 

@@ -7,7 +7,6 @@ import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import PlusIcon from "components/icons/PlusIcon"
-import { adminRoute } from "constants/routes"
 
 import styles from "./Drawer.styles"
 
@@ -24,7 +23,7 @@ export default function AdminDrawer({ sectionId, navElements }: DrawerProps) {
   const toTabs = (path: string) => {
     const params = { squadId }
     // @ts-expect-error
-    router.push({ pathname: `${adminRoute}/${sectionId}/${path}`, params })
+    router.push({ pathname: `squad/[squadId]/admin/${sectionId}/${path}`, params })
   }
 
   return (

@@ -18,7 +18,6 @@ import ViewSection from "components/ViewSection"
 import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import ModalBody from "components/wrappers/ModalBody"
-import routes from "constants/routes"
 import { useCollectiblesData } from "providers/AdditionalElementsProvider"
 import colors from "styles/colors"
 
@@ -71,7 +70,7 @@ export default function UpdateEffectsModal() {
   const onPressConfirm = () => {
     if (newEffects.length === 0) return
     router.push({
-      pathname: `${routes.modal.updateEffectsConfirmation}`,
+      pathname: "/squad/[squadId]/character/[charId]/update-effects-confirmation",
       params: { charId, squadId }
     })
   }

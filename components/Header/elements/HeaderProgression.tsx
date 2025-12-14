@@ -10,7 +10,6 @@ import HeaderElement from "components/Header/HeaderElement"
 import ProgressionBar from "components/ProgressionBar/ProgressionBar"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import routes from "constants/routes"
 import { SearchParams } from "screens/ScreenParams"
 
 export default function HeaderProgression() {
@@ -20,8 +19,10 @@ export default function HeaderProgression() {
   const { level, prev, next } = getLevelAndThresholds(exp.data)
 
   const onPress = () => {
-    const pathname = routes.modal.updateExp
-    router.push({ pathname, params: { squadId, charId } })
+    router.push({
+      pathname: "/squad/[squadId]/character/[charId]/update-exp",
+      params: { squadId, charId }
+    })
   }
 
   return (

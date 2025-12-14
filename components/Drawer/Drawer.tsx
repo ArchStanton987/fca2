@@ -10,7 +10,6 @@ import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import PlusIcon from "components/icons/PlusIcon"
-import routes, { charRoute } from "constants/routes"
 import { toLocalParams } from "screens/ScreenParams"
 
 import styles from "./Drawer.styles"
@@ -44,14 +43,20 @@ export default function Drawer({ sectionId, navElements }: DrawerProps) {
     if (!hasBadge) return
     const isSkills = path === "skills"
     if (isSkills) {
-      router.push({ pathname: routes.modal.updateSkills, params: { charId, squadId } })
+      router.push({
+        pathname: "/squad/[squadId]/character/[charId]/update-skills",
+        params: { charId, squadId }
+      })
     } else {
       const params = {
         charId,
         squadId,
         isFreeKnowledges: availableFreeKnowledgePoints > 0
       }
-      router.push({ pathname: routes.modal.updateKnowledges, params: toLocalParams(params) })
+      router.push({
+        pathname: "/squad/[squadId]/character/[charId]/update-knowledges",
+        params: toLocalParams(params)
+      })
     }
   }
 

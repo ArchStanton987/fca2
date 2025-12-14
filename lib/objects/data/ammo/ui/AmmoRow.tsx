@@ -8,7 +8,6 @@ import DeleteInput from "components/DeleteInput"
 import ListLabel from "components/ListLabel"
 import ListScoreLabel from "components/ListScoreLabel"
 import Selectable from "components/Selectable"
-import routes from "constants/routes"
 
 import ammoMap from "../ammo"
 import { AmmoType } from "../ammo.types"
@@ -28,7 +27,7 @@ export default function AmmoRow({ ammoType, count, isSelected, onPress }: AmmoRo
   const onPressDel = () => {
     barterActions.selectCategory("ammo")
     router.push({
-      pathname: routes.modal.barter,
+      pathname: "/squad/[squadId]/character/[charId]/barter",
       params: { squadId, charId }
     })
   }

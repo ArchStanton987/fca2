@@ -8,7 +8,6 @@ import { DrawerParams } from "components/Drawer/Drawer.params"
 import ProgressionBar from "components/ProgressionBar/ProgressionBar"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import routes from "constants/routes"
 import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
 
@@ -19,8 +18,10 @@ export default function HeaderHp() {
   const { data: health } = useHealth(charId)
 
   const onPress = () => {
-    const pathname = routes.modal.updateHealth
-    router.push({ pathname, params: { charId, squadId } })
+    router.push({
+      pathname: "/squad/[squadId]/character/[charId]/update-health",
+      params: { charId, squadId }
+    })
   }
 
   const getColor = () => {

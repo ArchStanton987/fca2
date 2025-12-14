@@ -11,7 +11,6 @@ import ScrollableSection from "components/ScrollableSection"
 import Spacer from "components/Spacer"
 import ViewSection from "components/ViewSection"
 import ModalBody from "components/wrappers/ModalBody"
-import routes from "constants/routes"
 
 const styles = StyleSheet.create({
   categoriesSection: {
@@ -37,7 +36,10 @@ export default function UpdateHealthModal() {
   const actions = useUpdateHealthActions()
 
   const onPressConfirm = () =>
-    router.push({ pathname: routes.modal.updateHealthConfirmation, params: { charId, squadId } })
+    router.push({
+      pathname: "/squad/[squadId]/character/[charId]/update-health-confirmation",
+      params: { charId, squadId }
+    })
 
   const onCancel = () => {
     actions.reset()

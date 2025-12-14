@@ -14,7 +14,6 @@ import Section from "components/Section"
 import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import routes from "constants/routes"
 import OrderRow, { OrderRowHeader } from "screens/GMActionOrder/OrderRow"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -69,7 +68,14 @@ export default function GMCombatScreen() {
   const charInfo = useCharInfo(charId, state => ({ isNpc: state.isNpc }))
 
   if (!charInfo.data.isNpc)
-    return <Redirect href={{ pathname: routes.combat.index, params: { charId, squadId } }} />
+    return (
+      <Redirect
+        href={{
+          pathname: "/squad/[squadId]/character/[charId]/combat/recap",
+          params: { charId, squadId }
+        }}
+      />
+    )
 
   const defaultPlayingId = getDefaultPlayingId(contendersCombatStatus)
   const playingId = actorIdOverride || defaultPlayingId

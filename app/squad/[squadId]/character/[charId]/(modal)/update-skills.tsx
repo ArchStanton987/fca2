@@ -15,7 +15,6 @@ import Txt from "components/Txt"
 import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import ModalBody from "components/wrappers/ModalBody"
-import routes from "constants/routes"
 import colors from "styles/colors"
 
 type RowProps = {
@@ -120,7 +119,7 @@ export default function UpdateSkillsModal() {
   const onCancel = () => router.dismiss(1)
   const onConfirm = async () => {
     router.push({
-      pathname: routes.modal.updateSkillsConfirmation,
+      pathname: "/squad/[squadId]/character/[charId]/update-skills-confirmation",
       params: { newUpSkills: JSON.stringify(newUpSkills), charId, squadId }
     })
   }

@@ -23,7 +23,6 @@ import ModalCta from "components/ModalCta/ModalCta"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import ModalBody from "components/wrappers/ModalBody"
-import routes from "constants/routes"
 import colors from "styles/colors"
 
 export default function UpdateKnowledgesModal() {
@@ -64,7 +63,7 @@ export default function UpdateKnowledgesModal() {
       modifiedKnowledges[id] = value
     })
     router.push({
-      pathname: routes.modal.updateKnowledgesConfirmation,
+      pathname: "/squad/[squadId]/character/[charId]/update-knowledges-confirmation",
       params: { charId, squadId }
     })
   }

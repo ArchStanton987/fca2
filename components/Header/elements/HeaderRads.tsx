@@ -12,7 +12,6 @@ import { DrawerParams } from "components/Drawer/Drawer.params"
 import HeaderElement from "components/Header/HeaderElement"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import routes from "constants/routes"
 import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
 
@@ -30,8 +29,10 @@ export default function HeaderRads() {
 
   const onPress = () => {
     healthActions.selectCategory("rads")
-    const pathname = routes.modal.updateHealth
-    router.push({ pathname, params: { squadId, charId } })
+    router.push({
+      pathname: "/squad/[squadId]/character/[charId]/update-health",
+      params: { squadId, charId }
+    })
   }
 
   return (

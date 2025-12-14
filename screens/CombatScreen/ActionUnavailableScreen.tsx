@@ -10,7 +10,6 @@ import DrawerPage from "components/DrawerPage"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import routes from "constants/routes"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 import layout from "styles/layout"
@@ -33,7 +32,14 @@ function WaitScreen({ charId }: { charId: string }) {
   }
 
   if (canReact)
-    return <Redirect href={{ pathname: routes.combat.reaction, params: { charId, squadId } }} />
+    return (
+      <Redirect
+        href={{
+          pathname: "/squad/[squadId]/character/[charId]/combat/reaction",
+          params: { charId, squadId }
+        }}
+      />
+    )
 
   return (
     <>

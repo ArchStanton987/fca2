@@ -16,7 +16,6 @@ import ScrollSection from "components/Section/ScrollSection"
 import { ComposedTitleProps } from "components/Section/Section.types"
 import Spacer from "components/Spacer"
 import PlusIcon from "components/icons/PlusIcon"
-import routes from "constants/routes"
 import layout from "styles/layout"
 import { filterUnique } from "utils/array-utils"
 
@@ -66,7 +65,7 @@ export default function ClothingsScreen() {
   const onPressAdd = () => {
     barterActions.selectCategory("clothings")
     router.push({
-      pathname: routes.modal.barter,
+      pathname: "/squad/[squadId]/character/[charId]/barter",
       params: { squadId, charId }
     })
   }

@@ -12,7 +12,6 @@ import { useSquadMembers } from "lib/squad/use-cases/sub-squad"
 import List from "components/List"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import routes from "constants/routes"
 import LoadingScreen from "screens/LoadingScreen"
 
 import styles from "./CharacterSelectionScreen.styles"
@@ -25,7 +24,10 @@ export default function CharacterSelectionScreen() {
 
   const toChar = (charId: string) => {
     setChar(charId)
-    router.push({ pathname: routes.main.index, params: { charId, squadId } })
+    router.push({
+      pathname: "/squad/[squadId]/character/[charId]/main/recap",
+      params: { charId, squadId }
+    })
   }
 
   const squadMembers = Object.keys(members)
