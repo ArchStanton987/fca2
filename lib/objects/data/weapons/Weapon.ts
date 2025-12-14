@@ -11,6 +11,7 @@ import { critters } from "lib/npc/const/npc-templates"
 
 import { AmmoSet } from "../ammo/ammo.types"
 import { DbWeapon, ItemInterface } from "../objects.types"
+import weaponsMap from "./weapons"
 import {
   HIT_WITH_AP_COST,
   LOAD_AP_COST,
@@ -53,9 +54,12 @@ export default class Weapon implements ItemInterface {
   }
 
   static getUnarmed = () =>
-    new Weapon({ id: "unarmed", category: "weapons", key: "unarmed", isEquipped: true }, {})
+    new Weapon({ id: "unarmed", category: "weapons", key: "unarmed", isEquipped: true })
 
-  constructor(payload: DbWeapon & { key: string }, allWeapons: Record<string, WeaponData>) {
+  constructor(
+    payload: DbWeapon & { key: string },
+    allWeapons: Record<string, WeaponData> = weaponsMap
+  ) {
     this.id = payload.id
     this.dbKey = payload.key
     this.category = payload.category
