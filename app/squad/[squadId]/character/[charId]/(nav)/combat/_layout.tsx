@@ -75,12 +75,19 @@ function CombatProvider({
   charId: string
 }) {
   const { data: combatId = "" } = useCombatStatus(charId, cs => cs.combatId)
+  const { data: actionKey = "1-1" } = useQuery({
+    ...getCombatOptions(combatId),
+    select: combat => `${combat.currRoundId}-${combat.currActionId}`,
+    enabled: combatId !== ""
+  })
   return (
     <>
       <SubCombats ids={[combatId]} />
       <SubContenders squadId={squadId} combatId={combatId} charId={charId} />
       <Loader combatId={combatId}>
-        <ActionFormProvider combatId={combatId}>{children}</ActionFormProvider>
+        <ActionFormProvider key={actionKey} combatId={combatId}>
+          {children}
+        </ActionFormProvider>
       </Loader>
     </>
   )
