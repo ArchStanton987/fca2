@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query"
 import Abilities from "lib/character/abilities/Abilities"
 import { useAbilities } from "lib/character/abilities/abilities-provider"
 import { KnowledgeId } from "lib/character/abilities/knowledges/knowledge-types"
@@ -10,7 +11,7 @@ import { CombatStatus } from "lib/character/combat-status/combat-status.types"
 import { limbsMap } from "lib/character/health/Health"
 import { LimbId } from "lib/character/health/health.const"
 import { TemplateId } from "lib/character/info/CharInfo"
-import { useCharInfo } from "lib/character/info/info-provider"
+import { getCharInfoOptions, useCharInfo } from "lib/character/info/info-provider"
 import { withDodgeSpecies } from "lib/character/playable.const"
 import { Item } from "lib/inventory/item.mappers"
 import { useCombatWeapons } from "lib/inventory/use-sub-inv-cat"
@@ -305,8 +306,11 @@ export const getBodyPart = (scoreStr: string, templateId: TemplateId): LimbId =>
 }
 
 export const useDamageLocalization = (score: number, targetId: string) => {
-  const { data: templateId } = useCharInfo(targetId, i => i.templateId)
-  if (score === 0) return "head"
+  const { data: templateId = "player" } = useQuery({
+    ...getCharInfoOptions(targetId),
+    select: i => i.templateId
+  })
+  if (score === 0 || targetId === "other") return "head"
   return getBodyPart(score.toString(), templateId)
 }
 

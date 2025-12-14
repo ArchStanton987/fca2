@@ -1,8 +1,9 @@
 import { ReactNode } from "react"
 import { TouchableOpacity } from "react-native"
 
+import { useQuery } from "@tanstack/react-query"
 import { limbsMap } from "lib/character/health/Health"
-import { useHealth } from "lib/character/health/health-provider"
+import { getHealthOptions } from "lib/character/health/health-provider"
 import { LimbId } from "lib/character/health/health.const"
 
 import List from "components/List"
@@ -29,9 +30,11 @@ function LimbListElement({ limbId }: { limbId: LimbId }) {
   )
 }
 
-function TargetLimbsList() {
-  const targetId = useActionTargetId() ?? ""
-  const { data: targetLimbs } = useHealth(targetId, h => h.limbs)
+function Limbs({ targetId }: { targetId: string }) {
+  const { data: targetLimbs = [] } = useQuery({
+    ...getHealthOptions(targetId),
+    select: h => Object.keys(h.limbs)
+  })
   return (
     <List
       data={Object.keys(targetLimbs) as LimbId[]}
@@ -39,6 +42,12 @@ function TargetLimbsList() {
       renderItem={({ item }) => <LimbListElement limbId={item} />}
     />
   )
+}
+
+function TargetLimbsList() {
+  const targetId = useActionTargetId() ?? ""
+  if (!targetId || targetId === "other") return null
+  return <Limbs targetId={targetId} />
 }
 
 function TargetWrapper({ children }: { children: ReactNode }) {

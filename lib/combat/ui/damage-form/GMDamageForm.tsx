@@ -1,9 +1,10 @@
 import { StyleSheet } from "react-native"
 
+import { useQuery } from "@tanstack/react-query"
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { useCombatState } from "lib/combat/use-cases/sub-combats"
 import { getRealDamage, useDamageLocalization } from "lib/combat/utils/combat-utils"
-import { useItems } from "lib/inventory/use-sub-inv-cat"
+import { getItemsOptions } from "lib/inventory/use-sub-inv-cat"
 
 import Col from "components/Col"
 import DrawerPage from "components/DrawerPage"
@@ -42,7 +43,7 @@ export default function GMDamageForm({ charId }: { charId: string }) {
     damageLocalizationScore:
       typeof cs.action.damageLocalizationScore !== "number" ? 0 : cs.action.damageLocalizationScore
   }))
-  const { data: targetItems } = useItems(combatState.targetId)
+  const { data: targetItems = {} } = useQuery(getItemsOptions(combatState.targetId))
   const damageLocalization =
     useDamageLocalization(combatState.damageLocalizationScore, combatState.targetId) ?? "head"
   const realDamage = getRealDamage(targetItems, {

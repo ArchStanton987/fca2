@@ -15,11 +15,18 @@ export default function pickTarget({ db, store }: UseCasesConfig) {
   const actionRepo = repositoryMap[db].actionRepository
 
   return ({ combatId, targetId }: PickTargetParams) => {
-    const targetCurrArmorClass = getSecAttr(store, targetId).curr.armorClass
-    const roundId = getCombat(store, combatId).currRoundId
-    const combatStatus = getCombatStatus(store, targetId)
-    const bonusAc = combatStatus.armorClassBonusRecord?.[roundId] ?? 0
-    const targetAp = combatStatus.currAp
+    let targetCurrArmorClass = 0
+    let bonusAc = 0
+    let targetAp = 0
+
+    if (targetId !== "other") {
+      targetCurrArmorClass = getSecAttr(store, targetId).curr.armorClass
+      const combatStatus = getCombatStatus(store, targetId)
+      const roundId = getCombat(store, combatId).currRoundId
+      bonusAc = combatStatus.armorClassBonusRecord?.[roundId] ?? 0
+      targetAp = combatStatus.currAp
+    }
+
     const targetCanReact = targetAp >= REACTION_MIN_AP_COST
     const targetArmorClass = targetCurrArmorClass + bonusAc
 

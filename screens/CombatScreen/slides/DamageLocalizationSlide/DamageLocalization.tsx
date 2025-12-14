@@ -1,5 +1,5 @@
 import { ReactNode, useCallback } from "react"
-import { ActivityIndicator } from "react-native"
+import { ActivityIndicator, TouchableOpacity } from "react-native"
 
 import { useIsMutating, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
@@ -12,6 +12,8 @@ import { delay } from "lib/shared/utils/fn-utils"
 
 import NumPad from "components/NumPad/NumPad"
 import Section from "components/Section"
+import DrawerSlide from "components/Slides/DrawerSlide"
+import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import {
   useActionActorId,
@@ -24,6 +26,20 @@ import colors from "styles/colors"
 
 import NextButton from "../NextButton"
 import styles from "./DamageLocalization.styles"
+
+function TargetIsNotAPlayableSlide({ onPressNext }: { onPressNext: () => void }) {
+  return (
+    <DrawerSlide>
+      <Section style={{ flex: 1 }} title="valider" contentContainerStyle={styles.centeredSection}>
+        <Txt>La cible n&apos;est pas dans le combat, pas besoin de localiser les dégâts... !</Txt>
+        <Spacer y={30} />
+        <TouchableOpacity style={styles.cta} onPress={onPressNext}>
+          <Txt style={styles.ctaText}>SUIVANT</Txt>
+        </TouchableOpacity>
+      </Section>
+    </DrawerSlide>
+  )
+}
 
 function Score() {
   const score = useActionDamageLocScore() ?? "-"
@@ -130,6 +146,13 @@ function Submit({ onSuccess }: { onSuccess: () => void }) {
   )
 }
 
-const components = { Score, DamageLocNumPad, LimbResult, NextSection, Submit }
+const components = {
+  Score,
+  DamageLocNumPad,
+  LimbResult,
+  NextSection,
+  Submit,
+  TargetIsNotAPlayableSlide
+}
 
 export default components

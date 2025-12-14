@@ -15,8 +15,13 @@ import styles from "./DamageLocalization.styles"
 
 type DamageLocalizationSlideProps = SlideProps & {}
 
-function AwaitTargetWrapper({ children }: { children: ReactNode }) {
+function AwaitTargetWrapper({ children, slideIndex }: { children: ReactNode; slideIndex: number }) {
   const targetId = useActionTargetId() ?? ""
+  const { scrollTo } = useScrollTo()
+  const onPressNext = () => {
+    scrollTo(slideIndex + 1)
+  }
+  if (targetId === "other") return <DamageLoc.TargetIsNotAPlayableSlide onPressNext={onPressNext} />
   if (!targetId || targetId === "") return <AwaitTargetSlide />
   return children
 }
@@ -25,7 +30,7 @@ export default function DamageLocalizationSlide({ slideIndex }: DamageLocalizati
   const { scrollTo } = useScrollTo()
 
   return (
-    <AwaitTargetWrapper>
+    <AwaitTargetWrapper slideIndex={slideIndex}>
       <DrawerSlide>
         <Section
           title="localisation des dégâts"

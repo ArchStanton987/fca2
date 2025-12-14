@@ -1,11 +1,12 @@
 import { ReactNode, createContext, useContext, useState } from "react"
 
+import { useQuery } from "@tanstack/react-query"
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { DamageEntry } from "lib/combat/combats.types"
 import { GMDamageFormState, createDmgStore } from "lib/combat/gm-damage-store"
 import { useCombatState } from "lib/combat/use-cases/sub-combats"
 import { getRealDamage, useDamageLocalization } from "lib/combat/utils/combat-utils"
-import { useItems } from "lib/inventory/use-sub-inv-cat"
+import { getItemsOptions } from "lib/inventory/use-sub-inv-cat"
 import { StoreApi, useStore } from "zustand"
 
 const GmDamageContext = createContext<StoreApi<GMDamageFormState>>(
@@ -15,7 +16,7 @@ const GmDamageContext = createContext<StoreApi<GMDamageFormState>>(
 export const useGetInitDamageEntry = (combatId: string): DamageEntry => {
   const { data: action } = useCombatState(combatId, cs => cs.action)
   const targetId = action.targetId || ""
-  const { data: items } = useItems(targetId)
+  const { data: items = {} } = useQuery(getItemsOptions(targetId))
 
   const damageLocalization = useDamageLocalization(
     action.damageLocalizationScore || 0,

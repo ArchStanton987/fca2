@@ -3,6 +3,18 @@ import { StyleSheet } from "react-native"
 import colors from "styles/colors"
 
 const styles = StyleSheet.create({
+  cta: {
+    padding: 20,
+    backgroundColor: colors.secColor
+  },
+  ctaText: {
+    color: colors.primColor
+  },
+  centeredSection: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  },
   score: {
     color: colors.secColor,
     fontSize: 42,

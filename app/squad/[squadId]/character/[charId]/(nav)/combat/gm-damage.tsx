@@ -13,13 +13,8 @@ import { DamageFormProvider } from "providers/DamageFormProvider"
 
 function DamageWrapper({ children, combatId }: { children: ReactNode; combatId: string }) {
   const { data: isReady } = useCombatState(combatId, cs => {
-    const isDamageSet = typeof cs.action.rawDamage === "number"
-    if (!isDamageSet) return false
-    const hasTarget = !!cs.action.targetId
-    if (!hasTarget) return false
-    const hasDamageLoc =
-      typeof cs.action.damageLocalizationScore === "number" || !!cs.action.aimZone
-    if (!hasDamageLoc) return false
+    if (!(typeof cs.action.rawDamage === "number")) return false
+    if (!cs.action.targetId) return false
     const hasHealthEntry = cs.action.healthChangeEntries !== undefined
     return !hasHealthEntry
   })

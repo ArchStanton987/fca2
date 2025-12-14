@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react"
+import { ReactNode, useCallback, useState } from "react"
 import { StyleSheet } from "react-native"
 
 import { useLocalSearchParams } from "expo-router"
@@ -51,9 +51,8 @@ const styles = StyleSheet.create({
 
 type DamageSlideProps = SlideProps & {}
 
-function AwaitReactionWrapper({ children }: { children: ReactNode }) {
-  const targetId = useActionTargetId()
-  const isWaitingForReaction = useGetPlayerCanReact(targetId ?? "")
+function AwaitReactionWrapper({ children, targetId }: { children: ReactNode; targetId: string }) {
+  const isWaitingForReaction = useGetPlayerCanReact(targetId)
   if (isWaitingForReaction) return <AwaitReactionSlide />
   return children
 }
@@ -61,7 +60,8 @@ function AwaitReactionWrapper({ children }: { children: ReactNode }) {
 function AwaitTargetWrapper({ children }: { children: ReactNode }) {
   const targetId = useActionTargetId()
   if (!targetId) return <AwaitTargetSlide />
-  return children
+  if (targetId === "other") return children
+  return <AwaitReactionWrapper targetId={targetId}>{children}</AwaitReactionWrapper>
 }
 
 function VisualizeReactionWrapper({
@@ -129,9 +129,12 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
     setForm({ rawDamage: "" })
   }
 
-  const onPressPad = (e: string) => {
-    setRoll(e, "rawDamage")
-  }
+  const onPressPad = useCallback(
+    (e: string) => {
+      setRoll(e, "rawDamage")
+    },
+    [setRoll]
+  )
 
   const parsedScore = parseInt(rawDamage ?? "", 10)
   const isValid = !Number.isNaN(parsedScore) && parsedScore >= 0 && parsedScore < 1000
@@ -150,59 +153,57 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
   // NO SUCCESSFUL REACTION
   return (
     <AwaitTargetWrapper>
-      <AwaitReactionWrapper>
-        <VisualizeReactionWrapper combatId={combatId} actorId={actorId} scrollNext={scrollNext}>
-          <DrawerSlide>
-            <Section title="score de dégâts" contentContainerStyle={{ flex: 1, height: "100%" }}>
-              <NumPad onPressKeyPad={onPressPad} />
+      <VisualizeReactionWrapper combatId={combatId} actorId={actorId} scrollNext={scrollNext}>
+        <DrawerSlide>
+          <Section title="score de dégâts" contentContainerStyle={{ flex: 1, height: "100%" }}>
+            <NumPad onPressKeyPad={onPressPad} />
+          </Section>
+
+          <Spacer x={layout.globalPadding} />
+
+          <Col style={{ flex: 1 }}>
+            <Section title="jet dégâts" contentContainerStyle={styles.scoreContainer}>
+              <DamageRoll charId={actorId} />
             </Section>
+            <Spacer y={layout.globalPadding} />
+            <Section title={actionType === "weapon" ? "arme" : "objet"} style={{ flex: 1 }}>
+              {actionType === "weapon" ? (
+                <WeaponInfo selectedWeapon={itemDbKey ?? ""} />
+              ) : (
+                <>
+                  <Txt>{item?.data?.label}</Txt>
+                  <Txt>poids : {item?.data?.weight}</Txt>
+                </>
+              )}
+            </Section>
+          </Col>
 
-            <Spacer x={layout.globalPadding} />
+          <Spacer x={layout.globalPadding} />
 
-            <Col style={{ flex: 1 }}>
-              <Section title="jet dégâts" contentContainerStyle={styles.scoreContainer}>
-                <DamageRoll charId={actorId} />
-              </Section>
-              <Spacer y={layout.globalPadding} />
-              <Section title={actionType === "weapon" ? "arme" : "objet"} style={{ flex: 1 }}>
-                {actionType === "weapon" ? (
-                  <WeaponInfo selectedWeapon={itemDbKey ?? ""} />
-                ) : (
-                  <>
-                    <Txt>{item?.data?.label}</Txt>
-                    <Txt>poids : {item?.data?.weight}</Txt>
-                  </>
-                )}
-              </Section>
-            </Col>
+          <Col style={{ minWidth: 100 }}>
+            <Section
+              title="résultat"
+              style={{ flex: 1 }}
+              contentContainerStyle={styles.scoreContainer}
+            >
+              <Txt style={styles.score}>{rawDamage}</Txt>
+            </Section>
+            <Spacer y={layout.globalPadding} />
 
-            <Spacer x={layout.globalPadding} />
-
-            <Col style={{ minWidth: 100 }}>
-              <Section
-                title="résultat"
-                style={{ flex: 1 }}
-                contentContainerStyle={styles.scoreContainer}
-              >
-                <Txt style={styles.score}>{rawDamage}</Txt>
-              </Section>
-              <Spacer y={layout.globalPadding} />
-
-              <Section
-                title="valider"
-                style={{ flex: 1 }}
-                contentContainerStyle={styles.scoreContainer}
-              >
-                <PlayButton
-                  onLongPress={() => resetField()}
-                  disabled={!isValid}
-                  onPress={() => submitDamages()}
-                />
-              </Section>
-            </Col>
-          </DrawerSlide>
-        </VisualizeReactionWrapper>
-      </AwaitReactionWrapper>
+            <Section
+              title="valider"
+              style={{ flex: 1 }}
+              contentContainerStyle={styles.scoreContainer}
+            >
+              <PlayButton
+                onLongPress={() => resetField()}
+                disabled={!isValid}
+                onPress={() => submitDamages()}
+              />
+            </Section>
+          </Col>
+        </DrawerSlide>
+      </VisualizeReactionWrapper>
     </AwaitTargetWrapper>
   )
 }
