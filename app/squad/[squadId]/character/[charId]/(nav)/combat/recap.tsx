@@ -17,7 +17,6 @@ export default function CombatRecapPage() {
       <ApVisualizer charId={charId} />
       <Spacer y={layout.globalPadding} />
       <Row style={{ flex: 1 }}>
-        <Spacer x={layout.globalPadding} />
         <NoCombatWeaponIndicator charId={charId} withActions />
         <Spacer x={layout.globalPadding} />
         <Section
