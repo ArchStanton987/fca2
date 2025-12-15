@@ -33,11 +33,11 @@ function LimbListElement({ limbId }: { limbId: LimbId }) {
 function Limbs({ targetId }: { targetId: string }) {
   const { data: targetLimbs = [] } = useQuery({
     ...getHealthOptions(targetId),
-    select: h => Object.keys(h.limbs)
+    select: h => Object.keys(h.limbs) as LimbId[]
   })
   return (
     <List
-      data={Object.keys(targetLimbs) as LimbId[]}
+      data={targetLimbs}
       keyExtractor={e => e}
       renderItem={({ item }) => <LimbListElement limbId={item} />}
     />
