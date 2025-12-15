@@ -1,10 +1,10 @@
 import { ReactNode } from "react"
 
-import { useLocalSearchParams } from "expo-router"
+import { Redirect, useLocalSearchParams } from "expo-router"
 
 import { useCombatId, useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
 import { useContenders } from "lib/combat/use-cases/sub-combats"
-import { getInitiativePrompts } from "lib/combat/utils/combat-utils"
+import { getInitiativePrompts, useGetPlayerCanReact } from "lib/combat/utils/combat-utils"
 
 import List from "components/List"
 import { useActionActorId, useActionSubtype, useActionType } from "providers/ActionFormProvider"
@@ -33,16 +33,29 @@ function SlideList() {
 }
 
 function WithActionRedirections({ children }: { children: ReactNode }) {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
   const { data: combatId } = useCombatId(charId)
   const { data: contendersIds } = useContenders(combatId)
   const combatStatuses = useCombatStatuses(contendersIds)
+
+  const canReact = useGetPlayerCanReact(charId)
 
   if (!combatId) return <SlideError error={slideErrors.noCombatError} />
 
   const prompts = getInitiativePrompts(charId, combatStatuses)
   if (prompts.playerShouldRollInitiative) return <InitiativeScreen />
   if (prompts.shouldWaitOthers) return <WaitInitiativeScreen />
+
+  if (canReact) {
+    return (
+      <Redirect
+        href={{
+          pathname: "/squad/[squadId]/character/[charId]/combat/reaction",
+          params: { charId, squadId }
+        }}
+      />
+    )
+  }
 
   return children
 }

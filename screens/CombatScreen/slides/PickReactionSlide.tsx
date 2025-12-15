@@ -4,6 +4,7 @@ import { router, useLocalSearchParams } from "expo-router"
 
 import { useAbilities } from "lib/character/abilities/abilities-provider"
 import { useCombatId, useCombatStatus } from "lib/character/combat-status/combat-status-provider"
+import { useCharInfo } from "lib/character/info/info-provider"
 import { useGetReactionAbilities } from "lib/combat/utils/combat-utils"
 import { reactions, reactionsRecord } from "lib/reaction/reactions.const"
 
@@ -50,6 +51,7 @@ export default function PickReactionSlide({ slideIndex }: SlideProps) {
   const { squadId, charId } = useLocalSearchParams<{ squadId: string; charId: string }>()
   const useCases = useGetUseCases()
   const { data: combatStatus } = useCombatStatus(charId)
+  const { data: isGm } = useCharInfo(charId, i => i.isNpc)
 
   const form = useReactionForm()
   const { reaction } = form
@@ -76,11 +78,12 @@ export default function PickReactionSlide({ slideIndex }: SlideProps) {
   }
 
   const onPressNext = async () => {
-    if (leftAp < 0) throw new Error("No enough AP")
     if (reaction === "none") {
-      await useCases.combat.updateAction({ combatId, payload: { reactionRoll: false } })
+      await useCases.combat.saveReaction({ combatId, payload: { reactionType: reaction } })
       router.replace({
-        pathname: "/squad/[squadId]/character/[charId]/combat/action",
+        pathname: isGm
+          ? "/squad/[squadId]/character/[charId]/combat/gm-action"
+          : "/squad/[squadId]/character/[charId]/combat/action",
         params: { squadId, charId }
       })
       reset()

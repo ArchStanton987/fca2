@@ -28,6 +28,7 @@ import pickTarget, { PickTargetParams } from "./combat/use-cases/pick-target"
 import prepareAction, { PrepareActionParams } from "./combat/use-cases/prepare-action"
 import resetDifficulty, { ResetDifficultyParams } from "./combat/use-cases/reset-difficulty"
 import saveAction, { SaveActionParams } from "./combat/use-cases/save-action"
+import saveReaction, { SaveReactionParams } from "./combat/use-cases/save-reaction"
 import setDifficulty, { SetDifficultyParams } from "./combat/use-cases/set-difficulty"
 import startFight, { StartFightParams } from "./combat/use-cases/start-fight"
 import updateAction, { UpdateActionParams } from "./combat/use-cases/update-action"
@@ -107,6 +108,7 @@ export default function getUseCases(config: UseCasesConfig) {
       resetDifficulty: (data: ResetDifficultyParams) => resetDifficulty(config)(data),
       pickTarget: (data: PickTargetParams) => pickTarget(config)(data),
       updateRoll: (data: UpdateRollParams) => updateRoll(config)(data),
+      saveReaction: (data: SaveReactionParams) => saveReaction(config)(data),
       // GM
       applyDamageEntries: (data: ApplyDamageEntriesParams) => applyDamageEntries(config)(data)
     },

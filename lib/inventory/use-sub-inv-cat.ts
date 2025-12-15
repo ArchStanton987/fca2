@@ -6,7 +6,7 @@ import {
   useSuspenseQueries,
   useSuspenseQuery
 } from "@tanstack/react-query"
-import { useCharInfo } from "lib/character/info/info-provider"
+import { getCharInfo, useCharInfo } from "lib/character/info/info-provider"
 import { round } from "lib/common/utils/number-utils"
 import { critters } from "lib/npc/const/npc-templates"
 import ammoMap, { defaultAmmoSet } from "lib/objects/data/ammo/ammo"
@@ -193,4 +193,13 @@ export function getAmmo(store: QueryClient, charId: string) {
   const ammoSet = store.getQueryData(getAmmoOptions(charId).queryKey)
   if (!ammoSet) throw new Error(`Ammo of char with id : ${charId} could not be found`)
   return ammoSet
+}
+export function getCombatWeapons(store: QueryClient, charId: string) {
+  const { templateId } = getCharInfo(store, charId)
+  if (critters[templateId]) return critters[templateId].attacks.map(a => attackToWeapon(a))
+  const items = getItems(store, charId)
+  const equippedItems = Object.values(items)
+    .filter(i => i.isEquipped)
+    .filter(i => i.category === "weapons")
+  return equippedItems.length > 0 ? equippedItems : [Weapon.getUnarmed()]
 }

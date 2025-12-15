@@ -93,3 +93,8 @@ export function getContenders(store: QueryClient, combatId: string) {
   if (!combat) throw new Error(`Could not find combat with id : ${combatId}`)
   return combat.contendersIds
 }
+export function getCombatState(store: QueryClient, combatId: string) {
+  const combatState = store.getQueryData(combatStateOptions(combatId).queryKey)
+  if (!combatState) throw new Error(`Could not find combat state with id : ${combatId}`)
+  return combatState
+}

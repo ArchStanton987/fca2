@@ -52,3 +52,12 @@ export function getSecAttr(store: QueryClient, charId: string) {
   if (!ab?.secAttr) throw new Error(`Could not find sec attr for id : ${charId}`)
   return ab.secAttr
 }
+export function getSkills(store: QueryClient, charId: string) {
+  const ab = store.getQueryData(getDbAbilitiesOptions(charId).queryKey)
+  if (!ab?.skills) throw new Error(`Could not find skills for id : ${charId}`)
+  return ab.skills
+}
+export function getKnowledges(store: QueryClient, charId: string) {
+  const ab = store.getQueryData(getDbAbilitiesOptions(charId).queryKey)
+  return ab?.knowledges ?? {}
+}
