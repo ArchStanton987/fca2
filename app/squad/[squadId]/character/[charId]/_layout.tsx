@@ -5,7 +5,7 @@ import { Stack, useLocalSearchParams } from "expo-router"
 
 import { NativeStackNavigationOptions } from "@react-navigation/native-stack"
 import { useQueries } from "@tanstack/react-query"
-import { useCurrCharId } from "lib/character/character-store"
+import { useCurrCharId, useSetCurrCharId } from "lib/character/character-store"
 import SubPlayables, { getPlayableOptions } from "lib/character/use-cases/sub-playables"
 import NotifyTimeChange from "lib/squad/use-cases/notify-time-change"
 
@@ -32,9 +32,16 @@ function Loader({ children, charId }: { children: ReactNode; charId: string }) {
 }
 
 export default function CharStack() {
-  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const { squadId, charId } = useLocalSearchParams<{ squadId: string; charId: string }>()
 
   const currCharId = useCurrCharId()
+  const setCharId = useSetCurrCharId()
+
+  if (currCharId === "" && currCharId !== charId) {
+    setCharId(charId)
+  }
+
+  if (!currCharId) return <LoadingScreen />
 
   return (
     <>

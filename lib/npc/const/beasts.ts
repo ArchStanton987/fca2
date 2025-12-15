@@ -233,11 +233,11 @@ const beasts: Record<string, NonHumanNpcTemplate> = {
     limbsTemplate: "small",
     skills: { stealth: 75, physical: 20 },
     special: {
-      strength: 5,
-      perception: 5,
+      strength: 3,
+      perception: 4,
       endurance: 5,
       charisma: 1,
-      intelligence: 4,
+      intelligence: 3,
       agility: 5,
       luck: 3
     }

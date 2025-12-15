@@ -37,6 +37,22 @@ function SlideList() {
   )
 }
 
+function NoCombatRedirection({ children }: { children: ReactNode }) {
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
+  const { data: combatId } = useCombatId(charId)
+  if (combatId === "")
+    return (
+      <Redirect
+        href={{
+          pathname: "/squad/[squadId]/character/[charId]/combat/recap",
+          params: { squadId, charId }
+        }}
+      />
+    )
+  return children
+}
+
 function WithActionRedirections({ children }: { children: ReactNode }) {
   const { squadId } = useLocalSearchParams<{ squadId: string }>()
   const charId = useCurrCharId()
@@ -73,10 +89,12 @@ function WithActionRedirections({ children }: { children: ReactNode }) {
 
 export default function ActionScreen() {
   return (
-    <WithActionRedirections>
-      <SlidesProvider sliderId="actionSlider">
-        <SlideList />
-      </SlidesProvider>
-    </WithActionRedirections>
+    <NoCombatRedirection>
+      <WithActionRedirections>
+        <SlidesProvider sliderId="actionSlider">
+          <SlideList />
+        </SlidesProvider>
+      </WithActionRedirections>
+    </NoCombatRedirection>
   )
 }
