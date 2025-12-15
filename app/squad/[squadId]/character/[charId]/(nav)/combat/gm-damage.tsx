@@ -1,7 +1,6 @@
 import { ReactNode } from "react"
 
-import { useLocalSearchParams } from "expo-router"
-
+import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import GMDamageForm from "lib/combat/ui/damage-form/GMDamageForm"
 import { useCombat, useCombatState } from "lib/combat/use-cases/sub-combats"
@@ -31,7 +30,8 @@ function DamageWrapper({ children, combatId }: { children: ReactNode; combatId: 
 }
 
 export default function GMDamage() {
-  const { charId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const charId = useCurrCharId()
+
   const { data: combatId } = useCombatId(charId)
   const { data: actionKey } = useCombat(combatId, c => `${c.currRoundId}-${c.currActionId}`)
   return (

@@ -1,10 +1,9 @@
 import { useCallback, useState } from "react"
 import { StyleSheet, TouchableOpacity } from "react-native"
 
-import { useLocalSearchParams } from "expo-router"
-
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import Slider from "@react-native-community/slider"
+import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId, useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
 import { useCharInfo } from "lib/character/info/info-provider"
 import Action from "lib/combat/Action"
@@ -37,7 +36,7 @@ const styles = StyleSheet.create({
 })
 
 export default function GMActionsScreen() {
-  const { charId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const charId = useCurrCharId()
   const useCases = useGetUseCases()
   const { data: combatId } = useCombatId(charId)
   const { data: contenders } = useContenders(combatId)

@@ -2,6 +2,7 @@ import { ReactNode } from "react"
 
 import { Redirect, useLocalSearchParams } from "expo-router"
 
+import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId, useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
 import { useContenders } from "lib/combat/use-cases/sub-combats"
 import { getInitiativePrompts, useGetPlayerCanReact } from "lib/combat/utils/combat-utils"
@@ -33,7 +34,8 @@ function SlideList() {
 }
 
 function WithActionRedirections({ children }: { children: ReactNode }) {
-  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
   const { data: combatId } = useCombatId(charId)
   const { data: contendersIds } = useContenders(combatId)
   const combatStatuses = useCombatStatuses(contendersIds)

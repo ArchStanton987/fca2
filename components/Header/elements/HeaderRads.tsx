@@ -3,6 +3,7 @@ import { TouchableOpacity } from "react-native"
 import { router, useLocalSearchParams } from "expo-router"
 
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
+import { useCurrCharId } from "lib/character/character-store"
 import Health from "lib/character/health/Health"
 import { useHealth } from "lib/character/health/health-provider"
 import { radStates } from "lib/character/health/health.const"
@@ -20,7 +21,8 @@ const getColor = (health: Health) => {
 }
 
 export default function HeaderRads() {
-  const { squadId, charId } = useLocalSearchParams<{ squadId: string; charId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
   const { data: health } = useHealth(charId)
 
   const healthActions = useUpdateHealthActions()

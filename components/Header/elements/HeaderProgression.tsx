@@ -2,6 +2,7 @@ import { TouchableOpacity } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useCurrCharId } from "lib/character/character-store"
 import { useExp } from "lib/character/progress/exp-provider"
 import { getLevelAndThresholds } from "lib/character/status/status-calc"
 
@@ -11,7 +12,8 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 
 export default function HeaderProgression() {
-  const { squadId, charId } = useLocalSearchParams<{ squadId: string; charId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
   const exp = useExp(charId)
 
   const { level, prev, next } = getLevelAndThresholds(exp.data)

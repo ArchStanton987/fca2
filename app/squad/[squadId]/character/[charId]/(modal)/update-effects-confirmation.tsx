@@ -1,7 +1,8 @@
 import { View } from "react-native"
 
-import { router, useLocalSearchParams } from "expo-router"
+import { router } from "expo-router"
 
+import { useCurrCharId } from "lib/character/character-store"
 import {
   useUpdateEffects,
   useUpdateEffectsAction
@@ -17,7 +18,7 @@ import { useCollectiblesData } from "providers/AdditionalElementsProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 
 export default function EffectsConfirmationModal() {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
 
   const { effects } = useCollectiblesData()
 

@@ -2,6 +2,7 @@ import { StyleSheet } from "react-native"
 
 import { Redirect, useLocalSearchParams } from "expo-router"
 
+import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId, useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
 import { useCharInfo } from "lib/character/info/info-provider"
 import { useCombat, useCombatState, useContenders } from "lib/combat/use-cases/sub-combats"
@@ -59,7 +60,8 @@ const styles = StyleSheet.create({
 })
 
 export default function GMCombatScreen() {
-  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
   const { data: combatId } = useCombatId(charId)
   const { data: combat } = useCombat(combatId)
   const { data: actorIdOverride } = useCombatState(combatId, cs => cs.actorIdOverride)

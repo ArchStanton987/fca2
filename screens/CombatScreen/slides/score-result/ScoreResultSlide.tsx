@@ -1,6 +1,5 @@
-import { useLocalSearchParams } from "expo-router"
-
 import { useAbilities, useSpecial } from "lib/character/abilities/abilities-provider"
+import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { limbsMap } from "lib/character/health/Health"
 import { useCharInfo } from "lib/character/info/info-provider"
@@ -36,7 +35,7 @@ import ActionOutcome from "./ActionOutcome"
 import styles from "./ScoreResultSlide.styles"
 
 export default function ScoreResultSlide({ slideIndex }: SlideProps) {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
   const useCases = useGetUseCases()
 
   const itemDbKey = useActionItemDbKey() ?? ""

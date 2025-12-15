@@ -3,6 +3,8 @@ import { View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useCurrCharId } from "lib/character/character-store"
+
 import DrawerPage from "components/DrawerPage"
 import List from "components/List"
 import Section from "components/Section"
@@ -44,7 +46,8 @@ const title: ComposedTitleProps = [
 ]
 
 export default function EffectsScreen() {
-  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
   const useCases = useGetUseCases()
   const allEffects = useCollectiblesData().effects
 

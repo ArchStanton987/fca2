@@ -1,8 +1,8 @@
 import { StyleSheet, View } from "react-native"
 
-import { router, useLocalSearchParams } from "expo-router"
+import { router } from "expo-router"
 
-import { useSetCurrCharId } from "lib/character/character-store"
+import { useCurrCharId, useSetCurrCharId } from "lib/character/character-store"
 import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { useHealth } from "lib/character/health/health-provider"
 import { useCharInfo } from "lib/character/info/info-provider"
@@ -87,7 +87,7 @@ export function OrderRowHeader() {
 }
 
 export default function OrderRow(props: OrderRowProps) {
-  const params = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const currCharId = useCurrCharId()
   const { charId, isPlaying, isCombinedAction } = props
   const { data: info } = useCharInfo(charId)
   const { data: health } = useHealth(charId)
@@ -109,7 +109,7 @@ export default function OrderRow(props: OrderRowProps) {
         <Col style={styles.checkboxCol}>
           <CheckBox
             onPress={() => onChangePlayer(charId)}
-            isChecked={charId === params?.charId}
+            isChecked={charId === currCharId}
             size={30}
             disabled={!info.isNpc}
           />

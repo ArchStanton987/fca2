@@ -3,6 +3,7 @@ import { View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useCurrCharId } from "lib/character/character-store"
 import { useAmmo } from "lib/inventory/use-sub-inv-cat"
 import { useBarterActions } from "lib/objects/barter-store"
 import ammoMap from "lib/objects/data/ammo/ammo"
@@ -29,7 +30,8 @@ const getTitle = (cb: (str: AmmoSortableKey) => void): ComposedTitleProps => [
 ]
 
 export default function AmmoScreen() {
-  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
   const [selectedAmmo, setSelectedAmmo] = useState<AmmoType | null>(null)
   const [sort, setSort] = useState<AmmoSort>({ type: "name", isAsc: false })
 

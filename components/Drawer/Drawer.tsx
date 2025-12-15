@@ -2,6 +2,7 @@ import { TouchableOpacity } from "react-native"
 
 import { router, useLocalSearchParams, useSegments } from "expo-router"
 
+import { useCurrCharId } from "lib/character/character-store"
 import { useCharInfo } from "lib/character/info/info-provider"
 import { useProgress } from "lib/character/progress/progress-provider"
 
@@ -20,7 +21,8 @@ type DrawerProps = {
 }
 
 export default function Drawer({ sectionId, navElements }: DrawerProps) {
-  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
 
   const segments = useSegments()
   const charInfo = useCharInfo(charId, data => ({ firstname: data.firstname }))

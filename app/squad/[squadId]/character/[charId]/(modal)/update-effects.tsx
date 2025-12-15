@@ -2,6 +2,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useCurrCharId } from "lib/character/character-store"
 import { calculatedEffects } from "lib/character/effects/effects-utils"
 import {
   useUpdateEffects,
@@ -57,7 +58,8 @@ const styles = StyleSheet.create({
 })
 
 export default function UpdateEffectsModal() {
-  const { squadId, charId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
 
   const { effects } = useCollectiblesData()
 

@@ -1,10 +1,9 @@
 import React, { useState } from "react"
 
-import { useLocalSearchParams } from "expo-router"
-
 import { useSpecial } from "lib/character/abilities/abilities-provider"
 import specialMap, { specialArray } from "lib/character/abilities/special/special"
 import { SpecialId } from "lib/character/abilities/special/special.types"
+import { useCurrCharId } from "lib/character/character-store"
 
 import DrawerPage from "components/DrawerPage"
 import List from "components/List"
@@ -23,7 +22,7 @@ const title: ComposedTitleProps = [
 ]
 
 export default function SpecialScreen() {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
   const [selectedId, setSelectedId] = useState<SpecialId | null>(null)
 
   const { data: special } = useSpecial(charId)

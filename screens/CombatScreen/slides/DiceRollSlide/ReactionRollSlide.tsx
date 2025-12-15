@@ -1,6 +1,6 @@
 import { ReactNode } from "react"
 
-import { useLocalSearchParams } from "expo-router"
+import { useCurrCharId } from "lib/character/character-store"
 
 import Col from "components/Col"
 import Section from "components/Section"
@@ -27,7 +27,7 @@ function ReactionWrapper({ children }: { children: ReactNode }) {
 }
 
 export default function ReactionRollSlide({ slideIndex }: SlideProps) {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
 
   const form = useReactionForm()
   const { diceRoll } = form

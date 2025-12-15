@@ -1,7 +1,8 @@
 import { View } from "react-native"
 
-import { router, useLocalSearchParams } from "expo-router"
+import { router } from "expo-router"
 
+import { useCurrCharId } from "lib/character/character-store"
 import { limbsMap } from "lib/character/health/Health"
 import { LimbId } from "lib/character/health/health.const"
 import {
@@ -29,7 +30,7 @@ function ListElement({ label, count }: { label: string; count: number }) {
 }
 
 export default function UpdateHealthConfirmationModal() {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
 
   const useCases = useGetUseCases()
 

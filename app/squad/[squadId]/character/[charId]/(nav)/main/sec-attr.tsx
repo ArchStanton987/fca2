@@ -1,7 +1,6 @@
-import { useLocalSearchParams } from "expo-router"
-
 import { useSecAttr } from "lib/character/abilities/abilities-provider"
 import secAttrMap from "lib/character/abilities/sec-attr/sec-attr"
+import { useCurrCharId } from "lib/character/character-store"
 
 import DrawerPage from "components/DrawerPage"
 import List from "components/List"
@@ -19,7 +18,7 @@ const title: ComposedTitleProps = [
 ]
 
 export default function SecAttrScreen() {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
   const { data: secAttr } = useSecAttr(charId)
   const { base, mod, curr } = secAttr
 

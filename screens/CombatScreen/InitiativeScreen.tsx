@@ -1,11 +1,12 @@
 import { useCallback, useState } from "react"
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from "react-native"
 
-import { useFocusEffect, useLocalSearchParams } from "expo-router"
+import { useFocusEffect } from "expo-router"
 
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
 import { useAbilities } from "lib/character/abilities/abilities-provider"
 import skillsMap from "lib/character/abilities/skills/skills"
+import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId, useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
 import { useCharInfo } from "lib/character/info/info-provider"
 import { useContenders } from "lib/combat/use-cases/sub-combats"
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
 })
 
 export default function InitiativeScreen() {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
 
   const useCases = useGetUseCases()
 

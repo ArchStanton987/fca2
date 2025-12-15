@@ -1,7 +1,6 @@
 import { StyleSheet, TouchableOpacity } from "react-native"
 
-import { useLocalSearchParams } from "expo-router"
-
+import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId, useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
 import { useCharInfo, usePlayablesCharInfo } from "lib/character/info/info-provider"
 import { useContenders } from "lib/combat/use-cases/sub-combats"
@@ -42,7 +41,7 @@ const styles = StyleSheet.create({
 })
 
 export default function PickTargetSlide({ slideIndex }: SlideProps) {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
   const { scrollTo } = useScrollTo()
 
   const useCases = useGetUseCases()

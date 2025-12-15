@@ -1,8 +1,7 @@
 import { TouchableOpacity, View } from "react-native"
 
-import { useLocalSearchParams } from "expo-router"
-
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
+import { useCurrCharId } from "lib/character/character-store"
 import actions from "lib/combat/const/actions"
 import { CombatWeaponIndicator } from "lib/combat/ui/WeaponIndicator"
 import { useCombatWeapons } from "lib/inventory/use-sub-inv-cat"
@@ -32,7 +31,7 @@ import SubActionList from "./sub-action/SubActionList"
 const actionTypes = Object.values(actions).map(a => ({ id: a.id, label: a.label }))
 
 export default function ActionTypeSlide({ slideIndex }: SlideProps) {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
 
   const formActorId = useActionActorId()
   const actionType = useActionType()

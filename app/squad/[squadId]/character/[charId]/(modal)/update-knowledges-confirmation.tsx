@@ -10,6 +10,7 @@ import KnowledgeRow, {
   ListFooter,
   ListHeader
 } from "lib/character/abilities/knowledges/ui/KnowledgeRow"
+import { useCurrCharId } from "lib/character/character-store"
 
 import ModalCta from "components/ModalCta/ModalCta"
 import Section from "components/Section"
@@ -19,7 +20,6 @@ import ModalBody from "components/wrappers/ModalBody"
 import { useGetUseCases } from "providers/UseCasesProvider"
 
 type Params = {
-  charId: string
   squadId: string
   modifiedKnowledges: string
 }
@@ -27,7 +27,7 @@ type ModifiedKnowledges = Record<KnowledgeId, KnowledgeLevelValue>
 
 export default function UpdateKnowledgesConfirmationModal() {
   const params = useLocalSearchParams<Params>()
-  const { charId } = params
+  const charId = useCurrCharId()
   const useCases = useGetUseCases()
   const modifiedKnowledges = (JSON.parse(params.modifiedKnowledges) ?? {}) as ModifiedKnowledges
 

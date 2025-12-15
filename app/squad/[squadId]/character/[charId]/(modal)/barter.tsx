@@ -1,5 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useCurrCharId } from "lib/character/character-store"
 import { useBarterActions } from "lib/objects/barter-store"
 import BarterSection from "lib/objects/ui/barter/BarterSection"
 
@@ -7,7 +8,8 @@ import ModalCta from "components/ModalCta/ModalCta"
 import ModalBody from "components/wrappers/ModalBody"
 
 export default function BarterModal() {
-  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
 
   const actions = useBarterActions()
 

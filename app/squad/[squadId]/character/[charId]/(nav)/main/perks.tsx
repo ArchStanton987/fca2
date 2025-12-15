@@ -1,12 +1,11 @@
 import React, { useState } from "react"
 import { ScrollView, View } from "react-native"
 
-import { useLocalSearchParams } from "expo-router"
-
 import { usePerks, useTraits } from "lib/character/abilities/abilities-provider"
 import perksMap from "lib/character/abilities/perks/perks"
 import TraitPerkRow from "lib/character/abilities/perks/ui/TraitPerkRow"
 import traitsMap from "lib/character/abilities/traits/traits"
+import { useCurrCharId } from "lib/character/character-store"
 
 import DrawerPage from "components/DrawerPage"
 import List from "components/List"
@@ -17,7 +16,7 @@ import Txt from "components/Txt"
 import layout from "styles/layout"
 
 export default function PerksScreen() {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
   const [selectedElement, setSelectedElement] = useState<string | null>(null)
   const { data: traits } = useTraits(charId)
   const { data: perks } = usePerks(charId)

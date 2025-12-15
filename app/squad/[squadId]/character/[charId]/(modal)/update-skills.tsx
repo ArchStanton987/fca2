@@ -6,6 +6,7 @@ import { router, useLocalSearchParams } from "expo-router"
 import { useAbilities } from "lib/character/abilities/abilities-provider"
 import skillsMap from "lib/character/abilities/skills/skills"
 import { SkillId } from "lib/character/abilities/skills/skills.types"
+import { useCurrCharId } from "lib/character/character-store"
 import { useProgress } from "lib/character/progress/progress-provider"
 
 import ModalCta from "components/ModalCta/ModalCta"
@@ -96,7 +97,8 @@ function Row({ label, skillId, values, onModSkill, canAdd, canRemove }: RowProps
 }
 
 export default function UpdateSkillsModal() {
-  const { squadId, charId } = useLocalSearchParams<{ squadId: string; charId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
   const { availableSkillPoints, usedSkillsPoints } = useProgress(charId)
   const {
     data: { base, up }

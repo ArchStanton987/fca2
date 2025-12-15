@@ -4,6 +4,7 @@ import { View } from "react-native"
 import { router, useLocalSearchParams } from "expo-router"
 
 import { useAbilities, useSecAttr } from "lib/character/abilities/abilities-provider"
+import { useCurrCharId } from "lib/character/character-store"
 import { useCharInfo } from "lib/character/info/info-provider"
 import { useAmmo, useItems } from "lib/inventory/use-sub-inv-cat"
 import { useBarterActions } from "lib/objects/barter-store"
@@ -57,7 +58,8 @@ const getTitle = (cb: (str: WeaponSortableKey) => void): ComposedTitleProps => [
 ]
 
 export default function WeaponsScreen() {
-  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
   const [selectedWeapon, setSelectedWeapon] = useState<string | null>(null)
   const [sort, setSort] = useState<WeaponSort>({ type: "dbKey", isAsc: false })
 

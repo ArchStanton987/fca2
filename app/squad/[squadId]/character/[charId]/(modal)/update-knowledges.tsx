@@ -16,6 +16,7 @@ import UpdateKnowledgeRow, {
   ListHeader
 } from "lib/character/abilities/knowledges/ui/UpdateKnowledgeRow"
 import useUpdateKnowledges from "lib/character/abilities/knowledges/ui/useUpdateKnowledges"
+import { useCurrCharId } from "lib/character/character-store"
 import { useCharInfo } from "lib/character/info/info-provider"
 import { useProgress } from "lib/character/progress/progress-provider"
 
@@ -28,11 +29,11 @@ import colors from "styles/colors"
 export default function UpdateKnowledgesModal() {
   const params = useLocalSearchParams<{
     isFreeKnowledges?: string
-    charId: string
     squadId: string
   }>()
-  const { charId, squadId } = params
+  const { squadId } = params
   const isFreeKnowledges = params.isFreeKnowledges === "true"
+  const charId = useCurrCharId()
 
   const progress = useProgress(charId)
   const { data: background } = useCharInfo(charId, i => i.background)

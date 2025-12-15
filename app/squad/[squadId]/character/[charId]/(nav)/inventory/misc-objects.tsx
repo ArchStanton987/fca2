@@ -3,6 +3,7 @@ import { View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useCurrCharId } from "lib/character/character-store"
 import { useItems } from "lib/inventory/use-sub-inv-cat"
 import { useBarterActions } from "lib/objects/barter-store"
 import MiscObject from "lib/objects/data/misc-objects/MiscObject"
@@ -25,7 +26,8 @@ const getTitle = (cb: (str: string) => void): ComposedTitleProps => [
 ]
 
 export default function MiscObjScreen() {
-  const { squadId, charId } = useLocalSearchParams<{ squadId: string; charId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
   const useCases = useGetUseCases()
   const [selectedItem, setSelectedItem] = useState<MiscObject | null>(null)
   const [isAscSort, setIsAscSort] = useState(true)

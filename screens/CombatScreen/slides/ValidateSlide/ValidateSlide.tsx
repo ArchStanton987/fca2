@@ -1,8 +1,7 @@
 import { ReactNode } from "react"
 import { StyleSheet, TouchableOpacity } from "react-native"
 
-import { useLocalSearchParams } from "expo-router"
-
+import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { useCombatState } from "lib/combat/use-cases/sub-combats"
 import Toast from "react-native-toast-message"
@@ -46,7 +45,7 @@ function AwaitDamageWrapper({ children, actorId }: { children: ReactNode; actorI
 }
 
 export default function ValidateSlide() {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
   const useCases = useGetUseCases()
   const { reset } = useActionApi()
   const formActorId = useActionActorId()

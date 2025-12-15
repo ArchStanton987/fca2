@@ -1,8 +1,7 @@
 import React from "react"
 import { PressableProps } from "react-native"
 
-import { useLocalSearchParams } from "expo-router"
-
+import { useCurrCharId } from "lib/character/character-store"
 import { useItem, useItems } from "lib/inventory/use-sub-inv-cat"
 
 import DeleteInput from "components/DeleteInput"
@@ -22,7 +21,7 @@ export default function MiscObjRow({
   onPress,
   onPressDelete
 }: MiscObjRowProps) {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
 
   const { data: item } = useItem(charId, objDbKey)
   const { data: count } = useItems(

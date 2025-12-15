@@ -1,7 +1,10 @@
 import { Redirect, useLocalSearchParams } from "expo-router"
 
+import { useCurrCharId } from "lib/character/character-store"
+
 export default function NotFoundScreen() {
-  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
 
   return (
     <Redirect

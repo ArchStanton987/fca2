@@ -2,6 +2,7 @@ import { StyleSheet, View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useCurrCharId } from "lib/character/character-store"
 import UpdateHealthComponents from "lib/character/health/ui/update-health/UpdateHealthComponents"
 import { useUpdateHealthActions } from "lib/character/health/update-health-store"
 
@@ -31,7 +32,8 @@ const styles = StyleSheet.create({
 })
 
 export default function UpdateHealthModal() {
-  const { squadId, charId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
 
   const actions = useUpdateHealthActions()
 

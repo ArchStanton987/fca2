@@ -1,7 +1,6 @@
 import { ReactNode } from "react"
 
-import { useLocalSearchParams } from "expo-router"
-
+import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { useCombatState } from "lib/combat/use-cases/sub-combats"
 
@@ -33,7 +32,7 @@ function DifficultyReadyWrapper({ children, actorId }: { children: ReactNode; ac
 }
 
 export default function DiceRollSlide({ slideIndex }: SlideProps) {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
   const { scrollTo } = useScrollTo()
 
   const formActorId = useActionActorId()

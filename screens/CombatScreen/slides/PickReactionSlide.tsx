@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native"
 import { router, useLocalSearchParams } from "expo-router"
 
 import { useAbilities } from "lib/character/abilities/abilities-provider"
+import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId, useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { useCharInfo } from "lib/character/info/info-provider"
 import { useGetReactionAbilities } from "lib/combat/utils/combat-utils"
@@ -48,7 +49,8 @@ const styles = StyleSheet.create({
 })
 
 export default function PickReactionSlide({ slideIndex }: SlideProps) {
-  const { squadId, charId } = useLocalSearchParams<{ squadId: string; charId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
   const useCases = useGetUseCases()
   const { data: combatStatus } = useCombatStatus(charId)
   const { data: isGm } = useCharInfo(charId, i => i.isNpc)

@@ -6,8 +6,8 @@ import { router, useLocalSearchParams } from "expo-router"
 import { useAbilities } from "lib/character/abilities/abilities-provider"
 import skillsMap from "lib/character/abilities/skills/skills"
 import { SkillId, SkillsValues } from "lib/character/abilities/skills/skills.types"
+import { useCurrCharId } from "lib/character/character-store"
 
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import ModalCta from "components/ModalCta/ModalCta"
 import ScrollableSection from "components/ScrollableSection"
 import Spacer from "components/Spacer"
@@ -15,15 +15,11 @@ import Txt from "components/Txt"
 import ModalBody from "components/wrappers/ModalBody"
 import { useGetUseCases } from "providers/UseCasesProvider"
 
-type SkillsConfirmationModalParams = DrawerParams & {
-  newUpSkills?: string
-}
-
 export default function UpdateSkillsConfirmation() {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
   const useCases = useGetUseCases()
+  const charId = useCurrCharId()
   const { data: upSkills } = useAbilities(charId, abilities => abilities.skills.up)
-  const params = useLocalSearchParams<SkillsConfirmationModalParams>()
+  const params = useLocalSearchParams<{ squadId: string; newUpSkills?: string }>()
   const newUpSkills: SkillsValues = JSON.parse(params.newUpSkills as string)
 
   const modifiedSkills = Object.entries(newUpSkills)

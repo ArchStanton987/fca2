@@ -1,14 +1,13 @@
-import { useLocalSearchParams } from "expo-router"
-
 import { useSpecial } from "lib/character/abilities/abilities-provider"
 import specialMap from "lib/character/abilities/special/special"
 import { SpecialId } from "lib/character/abilities/special/special.types"
+import { useCurrCharId } from "lib/character/character-store"
 
 import HeaderElement from "components/Header/HeaderElement"
 import Txt from "components/Txt"
 
 export default function HeaderSpecialElement({ specialId }: { specialId: SpecialId }) {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
   const { data: special } = useSpecial(charId)
   const label = specialMap[specialId].short
   const value = special.curr[specialId]

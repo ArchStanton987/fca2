@@ -1,8 +1,7 @@
 import React from "react"
 import { StyleSheet, TouchableOpacity } from "react-native"
 
-import { useLocalSearchParams } from "expo-router"
-
+import { useCurrCharId } from "lib/character/character-store"
 import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { useAmmo, useItems } from "lib/inventory/use-sub-inv-cat"
 import ammoMap from "lib/objects/data/ammo/ammo"
@@ -42,7 +41,7 @@ const styles = StyleSheet.create({
 })
 
 export default function WeaponsDetails({ itemDbKey }: { itemDbKey: string | null }) {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
   const useCases = useGetUseCases()
 
   const { data: weapon } = useItems(charId, items =>

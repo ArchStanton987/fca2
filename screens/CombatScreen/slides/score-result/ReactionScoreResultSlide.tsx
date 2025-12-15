@@ -4,6 +4,7 @@ import { router, useLocalSearchParams } from "expo-router"
 
 import { useAbilities, useSpecial } from "lib/character/abilities/abilities-provider"
 import skillsMap from "lib/character/abilities/skills/skills"
+import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId, useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { getCritFailureThreshold } from "lib/combat/const/crit"
 import { useCombatState } from "lib/combat/use-cases/sub-combats"
@@ -43,7 +44,8 @@ function Skill({ charId }: { charId: string }) {
 }
 
 export default function ReactionScoreResultSlide() {
-  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
 
   const { data: special } = useSpecial(charId)
   const { data: critChance } = useAbilities(charId, a => a.secAttr.curr.critChance)

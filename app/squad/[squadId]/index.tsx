@@ -4,6 +4,7 @@ import { View } from "react-native"
 import { router, useLocalSearchParams } from "expo-router"
 
 import { useQueries, useQuery } from "@tanstack/react-query"
+import { useSetCurrCharId } from "lib/character/character-store"
 import CharInfo, { DbCharInfo } from "lib/character/info/CharInfo"
 import { getCharInfoOptions } from "lib/character/info/info-provider"
 import { getExpOptions } from "lib/character/progress/exp-provider"
@@ -45,8 +46,10 @@ export default function Screen() {
   const { squadId } = useLocalSearchParams<{ squadId: string }>()
 
   const { data: squadMembers } = useSquads(squads => Object.keys(squads[squadId].members))
+  const setCurrChar = useSetCurrCharId()
 
   const toChar = (charId: string) => {
+    setCurrChar(charId)
     router.push({
       pathname: "/squad/[squadId]/character/[charId]/main",
       params: { charId, squadId }

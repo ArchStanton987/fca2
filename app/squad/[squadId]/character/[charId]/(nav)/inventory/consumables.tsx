@@ -3,6 +3,7 @@ import { View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useCurrCharId } from "lib/character/character-store"
 import { useItems } from "lib/inventory/use-sub-inv-cat"
 import { useBarterActions } from "lib/objects/barter-store"
 import Consumable from "lib/objects/data/consumables/Consumable"
@@ -27,7 +28,8 @@ const getTitle = (cb: (str: string) => void): ComposedTitleProps => [
 ]
 
 export default function ConsumablesScreen() {
-  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
   const useCases = useGetUseCases()
   const [selectedItem, setSelectedItem] = useState<string | null>(null)
   const [isAscSort, setIsAscSort] = useState(true)

@@ -1,5 +1,4 @@
-import { useLocalSearchParams } from "expo-router"
-
+import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId, useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
 import { usePlayablesCharInfo } from "lib/character/info/info-provider"
 import { useContenders } from "lib/combat/use-cases/sub-combats"
@@ -21,7 +20,7 @@ import NextButton from "../NextButton"
 import SelectActorButton from "./SelectActorButton"
 
 export default function PickActorSlide({ slideIndex }: SlideProps) {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
   const useCases = useGetUseCases()
   const { scrollTo } = useScrollTo()
 

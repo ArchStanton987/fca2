@@ -1,9 +1,11 @@
 import { Redirect, useLocalSearchParams } from "expo-router"
 
+import { useCurrCharId } from "lib/character/character-store"
 import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 
 export default function CombatIndex() {
-  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
   const { data: hasCombat } = useCombatStatus(charId, cs => cs.combatId !== "")
   return (
     <Redirect

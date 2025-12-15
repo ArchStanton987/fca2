@@ -1,6 +1,5 @@
-import { useLocalSearchParams } from "expo-router"
-
 import { useSecAttr } from "lib/character/abilities/abilities-provider"
+import { useCurrCharId } from "lib/character/character-store"
 import { getWeightColor } from "lib/inventory/ui/EquipedObjSection.utils"
 import { useCarry } from "lib/inventory/use-sub-inv-cat"
 
@@ -9,7 +8,7 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 
 export default function HeaderWeight() {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
   const { data: secAttr } = useSecAttr(charId)
   const { normalCarryWeight, tempCarryWeight, maxCarryWeight } = secAttr.curr
   const { weight } = useCarry(charId)

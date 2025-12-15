@@ -2,6 +2,7 @@ import { PressableProps } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useCurrCharId } from "lib/character/character-store"
 import { useBarterActions } from "lib/objects/barter-store"
 
 import DeleteInput from "components/DeleteInput"
@@ -20,7 +21,8 @@ type AmmoRowProps = PressableProps & {
 }
 
 export default function AmmoRow({ ammoType, count, isSelected, onPress }: AmmoRowProps) {
-  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
 
   const barterActions = useBarterActions()
 

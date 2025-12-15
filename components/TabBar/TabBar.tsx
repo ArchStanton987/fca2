@@ -3,6 +3,7 @@ import { TouchableHighlight, TouchableOpacity, View } from "react-native"
 import { useLocalSearchParams, useRouter } from "expo-router"
 
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs"
+import { useCurrCharId, useSetCurrCharId } from "lib/character/character-store"
 import { useCharInfoQuery } from "lib/character/info/info-provider"
 
 import List from "components/List"
@@ -18,7 +19,10 @@ export default function TabBar(props: BottomTabBarProps & { tabBarId: TabBarId }
   const { state, descriptors, tabBarId } = props
   const { routes } = state
   const router = useRouter()
-  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
+  const setCurrChar = useSetCurrCharId()
+
   const { data: charIsAdmin = false } = useCharInfoQuery(charId, i => i.isNpc)
   const isAdminTab = tabBarId === "admin"
 
@@ -31,6 +35,7 @@ export default function TabBar(props: BottomTabBarProps & { tabBarId: TabBarId }
   }
 
   const toHome = () => {
+    setCurrChar("")
     if (!charIsAdmin) return router.push("/")
     return router.push({ pathname: "/squad/[squadId]/admin/datetime", params: { squadId } })
   }

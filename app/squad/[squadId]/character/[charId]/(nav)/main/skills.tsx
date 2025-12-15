@@ -1,7 +1,6 @@
-import { useLocalSearchParams } from "expo-router"
-
 import { useSkills } from "lib/character/abilities/abilities-provider"
 import skillsMap from "lib/character/abilities/skills/skills"
+import { useCurrCharId } from "lib/character/character-store"
 
 import DrawerPage from "components/DrawerPage"
 import List from "components/List"
@@ -20,7 +19,7 @@ const title: ComposedTitleProps = [
 ]
 
 export default function SkillsScreen() {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
   const { data: skills } = useSkills(charId)
   const { base, up, mod, curr } = skills
 

@@ -1,6 +1,5 @@
-import { useLocalSearchParams } from "expo-router"
-
 import { useQuery } from "@tanstack/react-query"
+import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { calculatedEffects } from "lib/character/effects/effects-utils"
 import { limbsMap } from "lib/character/health/Health"
@@ -26,7 +25,7 @@ function CharEntry({ charId }: { charId: string }) {
 }
 
 function CharList() {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
   const { data: combatId } = useCombatId(charId)
   const { data: contenders } = useContenders(combatId)
   return (

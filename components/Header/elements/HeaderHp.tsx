@@ -2,6 +2,7 @@ import { TouchableOpacity } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useCurrCharId } from "lib/character/character-store"
 import { useHealth } from "lib/character/health/health-provider"
 
 import ProgressionBar from "components/ProgressionBar/ProgressionBar"
@@ -12,7 +13,8 @@ import colors from "styles/colors"
 import HeaderElement from "../HeaderElement"
 
 export default function HeaderHp() {
-  const { squadId, charId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
   const { data: health } = useHealth(charId)
 
   const onPress = () => {

@@ -1,6 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import { useLocalSearchParams } from "expo-router"
-
+import { useCurrCharId } from "lib/character/character-store"
 import { limbsMap } from "lib/character/health/Health"
 import { useCurrHp, useHealth, useLimbHp, useRads } from "lib/character/health/health-provider"
 import { LimbId } from "lib/character/health/health.const"
@@ -49,21 +48,21 @@ function ListItemHeader() {
 }
 
 function Rads() {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
   const { data: init } = useRads(charId)
   const mod = useUpdateHealthRads()
   return <ListItem element="RADS" current={init} mod={mod} prevision={init + mod} />
 }
 
 function CurrHp() {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
   const { data: init } = useCurrHp(charId)
   const mod = useUpdateHealthCurrHp()
   return <ListItem element="PV" current={init} mod={mod} prevision={init + mod} />
 }
 
 function Limb({ limbId }: { limbId: LimbId }) {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
   const actions = useUpdateHealthActions()
   const selectedLimb = useUpdateHealthSelectedLimb()
   const { data: currLimbHp } = useLimbHp(charId, limbId)
@@ -82,7 +81,7 @@ function Limb({ limbId }: { limbId: LimbId }) {
   )
 }
 function Limbs() {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
   const { data: limbs } = useHealth(charId, health => Object.keys(health.limbs) as LimbId[])
   return (
     <List data={limbs} keyExtractor={l => l} renderItem={({ item }) => <Limb limbId={item} />} />
@@ -102,7 +101,7 @@ function ElementList() {
 }
 
 function HealthUpdateButtons() {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
 
   const { data: exp } = useExp(charId)
   const { level } = getLevelAndThresholds(exp)

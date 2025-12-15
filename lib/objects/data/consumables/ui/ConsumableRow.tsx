@@ -1,8 +1,7 @@
 import React from "react"
 import { PressableProps, TouchableOpacity, View } from "react-native"
 
-import { useLocalSearchParams } from "expo-router"
-
+import { useCurrCharId } from "lib/character/character-store"
 import { changeableAttributesMap } from "lib/character/effects/changeable-attr"
 import { useItems } from "lib/inventory/use-sub-inv-cat"
 import Consumable from "lib/objects/data/consumables/Consumable"
@@ -46,7 +45,7 @@ export default function ConsumableRow({
   onDelete,
   onPress
 }: ConsumableRowProps) {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
   const { effects } = useCollectiblesData()
   const { label, effectId, challengeLabel, modifiers = [] } = charConsumable.data
   const symptoms = effectId ? effects[effectId].symptoms : []

@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useCurrCharId } from "lib/character/character-store"
 import { useItems } from "lib/inventory/use-sub-inv-cat"
 import { useBarterActions } from "lib/objects/barter-store"
 import Clothing from "lib/objects/data/clothings/Clothing"
@@ -51,7 +52,8 @@ const getTitle = (cb: (str: ClothingSortableKey) => void): ComposedTitleProps =>
 ]
 
 export default function ClothingsScreen() {
-  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
   const [selectedCloth, setSelectedCloth] = useState<string | null>(null)
   const [sort, setSort] = useState<ClothingSort>({ type: "dbKey", isAsc: false })
 

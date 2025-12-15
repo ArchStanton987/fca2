@@ -1,8 +1,7 @@
 import { ReactNode, useCallback, useState } from "react"
 import { StyleSheet } from "react-native"
 
-import { useLocalSearchParams } from "expo-router"
-
+import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { useCombatState } from "lib/combat/use-cases/sub-combats"
 import { useGetPlayerCanReact } from "lib/combat/utils/combat-utils"
@@ -105,7 +104,7 @@ function VisualizeReactionWrapper({
 }
 
 export default function DamageSlide({ slideIndex }: DamageSlideProps) {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
   const useCases = useGetUseCases()
 
   const rawDamage = useActionRawDamage()

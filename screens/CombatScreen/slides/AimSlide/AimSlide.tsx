@@ -1,5 +1,4 @@
-import { useLocalSearchParams } from "expo-router"
-
+import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { limbsMap } from "lib/character/health/Health"
 
@@ -20,7 +19,7 @@ import styles from "./AimSlide.styles"
 import AimSlideComponents from "./AimSlideComponents"
 
 export default function AimSlide({ slideIndex }: SlideProps) {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
   const useCases = useGetUseCases()
   const aimZone = useActionAimZone()
 

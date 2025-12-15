@@ -1,11 +1,11 @@
 import { ReactNode } from "react"
 import { Platform } from "react-native"
 
-import { Stack, router, useLocalSearchParams } from "expo-router"
+import { Stack, useLocalSearchParams } from "expo-router"
 
 import { NativeStackNavigationOptions } from "@react-navigation/native-stack"
 import { useQueries } from "@tanstack/react-query"
-import { useCurrCharStore } from "lib/character/character-store"
+import { useCurrCharId } from "lib/character/character-store"
 import SubPlayables, { getPlayableOptions } from "lib/character/use-cases/sub-playables"
 import NotifyTimeChange from "lib/squad/use-cases/notify-time-change"
 
@@ -32,21 +32,18 @@ function Loader({ children, charId }: { children: ReactNode; charId: string }) {
 }
 
 export default function CharStack() {
-  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
 
-  const currCharId = useCurrCharStore(state => state.charId)
-
-  if (currCharId !== null && currCharId !== charId) {
-    router.setParams({ charId: currCharId })
-  }
+  const currCharId = useCurrCharId()
 
   return (
     <>
-      <SubPlayables playablesIds={[charId]} squadId={squadId} />
+      <SubPlayables playablesIds={[currCharId]} squadId={squadId} />
       <NotifyTimeChange squadId={squadId} />
-      <Loader charId={charId}>
+      <Loader charId={currCharId}>
         <ReactionProvider>
           <Stack
+            key={currCharId ?? "none"}
             screenOptions={{
               headerShown: false,
               contentStyle: { backgroundColor: colors.primColor, padding: 10 }

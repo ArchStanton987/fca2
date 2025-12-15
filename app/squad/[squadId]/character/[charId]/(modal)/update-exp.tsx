@@ -1,8 +1,9 @@
 import React, { useState } from "react"
 import { StyleSheet, TouchableOpacity, View } from "react-native"
 
-import { router, useLocalSearchParams } from "expo-router"
+import { router } from "expo-router"
 
+import { useCurrCharId } from "lib/character/character-store"
 import { useExp } from "lib/character/progress/exp-provider"
 
 import AmountSelector from "components/AmountSelector"
@@ -50,8 +51,8 @@ const styles = StyleSheet.create({
 })
 
 export default function UpdateExpModal() {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
   const useCases = useGetUseCases()
+  const charId = useCurrCharId()
 
   const { data: exp } = useExp(charId)
 

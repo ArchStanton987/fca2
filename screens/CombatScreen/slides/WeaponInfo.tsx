@@ -1,10 +1,9 @@
 import { StyleSheet, View } from "react-native"
 
-import { useLocalSearchParams } from "expo-router"
-
 import { Image } from "expo-image"
 import { useAbilities, useSpecial } from "lib/character/abilities/abilities-provider"
 import secAttrMap from "lib/character/abilities/sec-attr/sec-attr"
+import { useCurrCharId } from "lib/character/character-store"
 import { useCharInfo } from "lib/character/info/info-provider"
 import { useCombatWeapons } from "lib/inventory/use-sub-inv-cat"
 import { getHasStrengthMalus } from "lib/objects/data/weapons/weapons-utils"
@@ -28,7 +27,7 @@ const styles = StyleSheet.create({
 })
 
 export default function WeaponInfo({ selectedWeapon }: { selectedWeapon: string }) {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
   const formActorId = useActionActorId()
   const actorId = formActorId === "" ? charId : formActorId
 

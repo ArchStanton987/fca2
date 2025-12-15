@@ -1,10 +1,9 @@
 import { ScrollView, View } from "react-native"
 
-import { useLocalSearchParams } from "expo-router"
-
 import { sortKnowledges, useKnowledges } from "lib/character/abilities/abilities-provider"
 import { KnowledgeId } from "lib/character/abilities/knowledges/knowledge-types"
 import KnowledgeRow, { ListHeader } from "lib/character/abilities/knowledges/ui/KnowledgeRow"
+import { useCurrCharId } from "lib/character/character-store"
 
 import DrawerPage from "components/DrawerPage"
 import List from "components/List"
@@ -21,7 +20,7 @@ const title: ComposedTitleProps = [
 ]
 
 export default function KnowledgesScreen() {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
   const { data: knowledges } = useKnowledges(charId)
   const list = sortKnowledges(knowledges)
 

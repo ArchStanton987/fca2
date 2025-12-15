@@ -1,8 +1,7 @@
 import { useMemo } from "react"
 import { View } from "react-native"
 
-import { useLocalSearchParams } from "expo-router"
-
+import { useCurrCharId } from "lib/character/character-store"
 import { Item } from "lib/inventory/item.mappers"
 import {
   getCategoriesMap,
@@ -27,7 +26,7 @@ import { useCollectiblesData } from "providers/AdditionalElementsProvider"
 import styles from "./BarterComponents.styles"
 
 function ModButtons() {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
   const actions = useBarterActions()
   const selectedItem = useBarterSelectedItem()
   const inInv = useInInvCount(charId, selectedItem ?? "")
@@ -45,7 +44,7 @@ type ListItemRowProps = {
 }
 
 function ListItemRow({ id, label }: ListItemRowProps) {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
 
   const actions = useBarterActions()
 

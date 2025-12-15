@@ -4,6 +4,7 @@ import { View } from "react-native"
 import { Stack, useLocalSearchParams } from "expo-router"
 
 import { useQueries, useQuery } from "@tanstack/react-query"
+import { useCurrCharId } from "lib/character/character-store"
 import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { useCharInfo } from "lib/character/info/info-provider"
 import SubPlayables, { getPlayableOptions } from "lib/character/use-cases/sub-playables"
@@ -94,7 +95,8 @@ function CombatProvider({
 }
 
 export default function CombatLayout() {
-  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
   const { data: isGameMaster } = useCharInfo(charId, info => info.isNpc)
   const { data: isInCombat } = useCombatStatus(charId, data => data.combatId !== "")
   const navElements = getNav(isGameMaster, isInCombat)

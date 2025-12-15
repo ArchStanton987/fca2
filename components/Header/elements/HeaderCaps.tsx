@@ -4,6 +4,7 @@ import { TouchableOpacity } from "react-native"
 import { router, useLocalSearchParams } from "expo-router"
 
 import { Image } from "expo-image"
+import { useCurrCharId } from "lib/character/character-store"
 import { useCaps } from "lib/inventory/use-sub-inv-cat"
 import { useBarterActions } from "lib/objects/barter-store"
 
@@ -12,7 +13,8 @@ import HeaderElement from "components/Header/HeaderElement"
 import Txt from "components/Txt"
 
 export default function HeaderCaps() {
-  const { charId, squadId } = useLocalSearchParams<{ charId: string; squadId: string }>()
+  const { squadId } = useLocalSearchParams<{ squadId: string }>()
+  const charId = useCurrCharId()
   const caps = useCaps(charId)
 
   const barterActions = useBarterActions()

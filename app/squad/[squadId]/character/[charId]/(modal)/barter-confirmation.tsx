@@ -1,7 +1,8 @@
 import { StyleSheet } from "react-native"
 
-import { router, useLocalSearchParams } from "expo-router"
+import { router } from "expo-router"
 
+import { useCurrCharId } from "lib/character/character-store"
 import {
   useBarterActions,
   useBarterAmmos,
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
 })
 
 export default function BarterConfirmationModal() {
-  const { charId } = useLocalSearchParams<{ charId: string }>()
+  const charId = useCurrCharId()
 
   const { weapons, clothings, consumables, miscObjects } = useCollectiblesData()
 
