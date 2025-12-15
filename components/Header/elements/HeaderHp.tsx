@@ -4,17 +4,15 @@ import { router, useLocalSearchParams } from "expo-router"
 
 import { useHealth } from "lib/character/health/health-provider"
 
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import ProgressionBar from "components/ProgressionBar/ProgressionBar"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
 
 import HeaderElement from "../HeaderElement"
 
 export default function HeaderHp() {
-  const { squadId, charId } = useLocalSearchParams() as SearchParams<DrawerParams>
+  const { squadId, charId } = useLocalSearchParams<{ charId: string; squadId: string }>()
   const { data: health } = useHealth(charId)
 
   const onPress = () => {

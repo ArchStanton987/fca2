@@ -10,7 +10,6 @@ import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import PlusIcon from "components/icons/PlusIcon"
-import { toLocalParams } from "screens/ScreenParams"
 
 import styles from "./Drawer.styles"
 
@@ -48,14 +47,13 @@ export default function Drawer({ sectionId, navElements }: DrawerProps) {
         params: { charId, squadId }
       })
     } else {
-      const params = {
-        charId,
-        squadId,
-        isFreeKnowledges: availableFreeKnowledgePoints > 0
-      }
       router.push({
         pathname: "/squad/[squadId]/character/[charId]/update-knowledges",
-        params: toLocalParams(params)
+        params: {
+          charId,
+          squadId,
+          isFreeKnowledges: JSON.stringify(availableFreeKnowledgePoints > 0)
+        }
       })
     }
   }

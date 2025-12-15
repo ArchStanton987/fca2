@@ -5,15 +5,13 @@ import { router, useLocalSearchParams } from "expo-router"
 import { useExp } from "lib/character/progress/exp-provider"
 import { getLevelAndThresholds } from "lib/character/status/status-calc"
 
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import HeaderElement from "components/Header/HeaderElement"
 import ProgressionBar from "components/ProgressionBar/ProgressionBar"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { SearchParams } from "screens/ScreenParams"
 
 export default function HeaderProgression() {
-  const { squadId, charId } = useLocalSearchParams() as SearchParams<DrawerParams>
+  const { squadId, charId } = useLocalSearchParams<{ squadId: string; charId: string }>()
   const exp = useExp(charId)
 
   const { level, prev, next } = getLevelAndThresholds(exp.data)

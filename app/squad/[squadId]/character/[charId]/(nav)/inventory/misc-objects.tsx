@@ -9,7 +9,6 @@ import MiscObject from "lib/objects/data/misc-objects/MiscObject"
 import MiscObjDetails from "lib/objects/data/misc-objects/ui/MiscObjDetails"
 import MiscObjRow from "lib/objects/data/misc-objects/ui/MiscObjRow"
 
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import DrawerPage from "components/DrawerPage"
 import List from "components/List"
 import Section from "components/Section"
@@ -18,7 +17,6 @@ import { ComposedTitleProps } from "components/Section/Section.types"
 import Spacer from "components/Spacer"
 import PlusIcon from "components/icons/PlusIcon"
 import { useGetUseCases } from "providers/UseCasesProvider"
-import { SearchParams } from "screens/ScreenParams"
 import layout from "styles/layout"
 import { filterUnique } from "utils/array-utils"
 
@@ -27,7 +25,7 @@ const getTitle = (cb: (str: string) => void): ComposedTitleProps => [
 ]
 
 export default function MiscObjScreen() {
-  const { squadId, charId } = useLocalSearchParams() as SearchParams<DrawerParams>
+  const { squadId, charId } = useLocalSearchParams<{ squadId: string; charId: string }>()
   const useCases = useGetUseCases()
   const [selectedItem, setSelectedItem] = useState<MiscObject | null>(null)
   const [isAscSort, setIsAscSort] = useState(true)

@@ -8,11 +8,9 @@ import { useHealth } from "lib/character/health/health-provider"
 import { radStates } from "lib/character/health/health.const"
 import { useUpdateHealthActions } from "lib/character/health/update-health-store"
 
-import { DrawerParams } from "components/Drawer/Drawer.params"
 import HeaderElement from "components/Header/HeaderElement"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import { SearchParams } from "screens/ScreenParams"
 import colors from "styles/colors"
 
 const getColor = (health: Health) => {
@@ -22,7 +20,7 @@ const getColor = (health: Health) => {
 }
 
 export default function HeaderRads() {
-  const { squadId, charId } = useLocalSearchParams() as SearchParams<DrawerParams>
+  const { squadId, charId } = useLocalSearchParams<{ squadId: string; charId: string }>()
   const { data: health } = useHealth(charId)
 
   const healthActions = useUpdateHealthActions()
