@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react"
+import { ReactNode } from "react"
 import { Platform } from "react-native"
 
 import { Stack, router, useLocalSearchParams } from "expo-router"
@@ -7,13 +7,11 @@ import { NativeStackNavigationOptions } from "@react-navigation/native-stack"
 import { useQueries } from "@tanstack/react-query"
 import { useCurrCharStore } from "lib/character/character-store"
 import SubPlayables, { getPlayableOptions } from "lib/character/use-cases/sub-playables"
-import { useDatetime } from "lib/squad/use-cases/sub-squad"
-import Toast from "react-native-toast-message"
+import NotifyTimeChange from "lib/squad/use-cases/notify-time-change"
 
 import { ReactionProvider } from "providers/ReactionProvider"
 import LoadingScreen from "screens/LoadingScreen"
 import colors from "styles/colors"
-import { getDDMMYYYY, getHHMM } from "utils/date"
 
 const modalOptions: NativeStackNavigationOptions = {
   presentation: Platform.OS !== "web" ? "modal" : "card",
@@ -38,27 +36,14 @@ export default function CharStack() {
 
   const currCharId = useCurrCharStore(state => state.charId)
 
-  const { data: datetime } = useDatetime(squadId)
-  const [currDatetime, setCurrDatetime] = useState(() => datetime.toJSON())
-
   if (currCharId !== null && currCharId !== charId) {
     router.setParams({ charId: currCharId })
-  }
-
-  if (datetime.toJSON() !== currDatetime) {
-    setCurrDatetime(datetime.toJSON())
-    const newDate = getDDMMYYYY(datetime)
-    const newHour = getHHMM(datetime)
-    Toast.show({
-      type: "custom",
-      text1: `Le temps passe ! Nous sommes le ${newDate}, il est ${newHour}.`,
-      autoHide: Platform.OS === "web"
-    })
   }
 
   return (
     <>
       <SubPlayables playablesIds={[charId]} squadId={squadId} />
+      <NotifyTimeChange squadId={squadId} />
       <Loader charId={charId}>
         <ReactionProvider>
           <Stack
