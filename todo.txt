@@ -1,4 +1,3 @@
-- pb with critters abilities
 - flatten navigation
 - refacto actions : memo slides / refacto perf slides / remplacer slides par state machine
 

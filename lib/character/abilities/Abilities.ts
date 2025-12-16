@@ -67,9 +67,13 @@ export default class Abilities {
     const perksSymptoms = perks.map(t => perksMap[t as PerkId].symptoms)
     const innateSymptoms = [...traitsSymptoms, ...perksSymptoms].flat()
 
-    const initSpecial = payload.baseSPECIAL ? payload.baseSPECIAL : defaultSpecial
     const isCritter = templateId in critters
-    const initUpSkills = payload.upSkills ? payload.upSkills : defaultNullSkillsValues
+    const initSpecial = isCritter
+      ? critters[templateId].special
+      : payload.baseSPECIAL ?? defaultSpecial
+    const initUpSkills = isCritter
+      ? defaultNullSkillsValues
+      : payload.upSkills ?? defaultNullSkillsValues
 
     const special = { base: {}, mod: {}, curr: {} } as {
       base: Special
@@ -104,7 +108,11 @@ export default class Abilities {
       if (!isCritter) {
         secAttr.base[id] = getModAttribute(innateSymptoms, id, calc(this.special.base))
       }
-      const currWithInnate = getModAttribute(innateSymptoms, id, calc(this.special.curr))
+      const currWithInnate = getModAttribute(
+        innateSymptoms,
+        id,
+        isCritter ? secAttr.base[id] : calc(this.special.curr)
+      )
       secAttr.curr[id] = getModAttribute(symptoms, id, currWithInnate)
       secAttr.mod[id] = secAttr.curr[id] - secAttr.base[id]
     })
@@ -126,7 +134,11 @@ export default class Abilities {
         skills.base[id] = getModAttribute(innateSymptoms, id, calc(this.special.base))
       }
       skills.up[id] = initUpSkills[id]
-      const currWithInnate = getModAttribute(innateSymptoms, id, calc(this.special.curr))
+      const currWithInnate = getModAttribute(
+        innateSymptoms,
+        id,
+        isCritter ? skills.base[id] : calc(this.special.curr)
+      )
       const calcCurr = getModAttribute(symptoms, id, currWithInnate)
       skills.curr[id] = Math.max(calcCurr + skills.up[id], 1)
       skills.mod[id] = skills.curr[id] - skills.base[id] - skills.up[id]
