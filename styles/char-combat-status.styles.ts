@@ -10,6 +10,7 @@ const charCombatStatusStyles = StyleSheet.create({
     color: colors.terColor
   },
   dead: {
+    color: colors.terColor,
     textDecorationLine: "line-through"
   },
   wait: {

@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
     color: colors.terColor
   },
   dead: {
+    color: colors.terColor,
     textDecorationLine: "line-through"
   }
 })
