@@ -1,5 +1,5 @@
 import actions from "lib/combat/const/actions"
-import { CombatWeaponIndicator } from "lib/combat/ui/WeaponIndicator"
+import WeaponIndicator from "lib/combat/ui/WeaponIndicator"
 
 import Txt from "components/Txt"
 import {
@@ -31,7 +31,7 @@ export default function ActionInfo({ charId }: { charId: string }) {
 
   if (description) return <Txt>{description}</Txt>
   if (actionType === "weapon" && itemDbKey) {
-    return <CombatWeaponIndicator contenderId={actorId} />
+    return <WeaponIndicator contenderId={actorId} />
   }
   if (actionType === "movement") return <MovementInfo charId={actorId} />
   if (actionType === "item") return <ItemsActionInfo actorId={actorId} />

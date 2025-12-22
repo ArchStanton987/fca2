@@ -2,7 +2,7 @@ import { useCurrCharId } from "lib/character/character-store"
 import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import ActionIndicator from "lib/combat/ui/ActionIndicator"
 import RoundIndicator from "lib/combat/ui/RoundIndicator"
-import { CombatWeaponIndicator } from "lib/combat/ui/WeaponIndicator"
+import WeaponIndicator from "lib/combat/ui/WeaponIndicator"
 import ApVisualizer from "lib/combat/ui/action-points/ApVisualizer"
 
 import DrawerPage from "components/DrawerPage"
@@ -28,7 +28,7 @@ export default function InCombatRecapPage() {
           </>
         ) : null}
         <Spacer x={layout.globalPadding} />
-        <CombatWeaponIndicator contenderId={charId} />
+        <WeaponIndicator contenderId={charId} />
         <Spacer x={layout.globalPadding} />
         <Section
           title="santé"

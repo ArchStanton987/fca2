@@ -4,7 +4,7 @@ import { TouchableOpacity, View } from "react-native"
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import { useCurrCharId } from "lib/character/character-store"
 import actions from "lib/combat/const/actions"
-import { CombatWeaponIndicator } from "lib/combat/ui/WeaponIndicator"
+import WeaponIndicator from "lib/combat/ui/WeaponIndicator"
 import { useCombatWeapons } from "lib/inventory/use-sub-inv-cat"
 
 import List from "components/List"
@@ -102,7 +102,7 @@ function ActionTypeSlide({ slideIndex }: SlideProps) {
 
       <View style={{ width: 175 }}>
         {actionType === "weapon" ? (
-          <CombatWeaponIndicator style={{ flex: 1 }} contenderId={actorId} />
+          <WeaponIndicator style={{ flex: 1 }} contenderId={actorId} />
         ) : (
           <ScrollSection style={{ flex: 1 }} title="info">
             <ActionInfo charId={actorId} />

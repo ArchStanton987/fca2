@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native"
 
 import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
+import { WeaponInfoUi } from "lib/combat/ui/WeaponIndicator"
 import { useCombatState } from "lib/combat/use-cases/sub-combats"
 import { useGetPlayerCanReact } from "lib/combat/utils/combat-utils"
 import { DamageTypeId } from "lib/objects/data/weapons/weapons.types"
@@ -29,7 +30,6 @@ import colors from "styles/colors"
 import layout from "styles/layout"
 
 import PlayButton from "../PlayButton"
-import WeaponInfo from "../WeaponInfo"
 import VisualizeReactionSlide from "../score-result/VisualizeReactionSlide"
 import AwaitReactionSlide from "../wait-slides/AwaitReactionSlide"
 import AwaitTargetSlide from "../wait-slides/AwaitTargetSlide"
@@ -168,7 +168,7 @@ function DamageSlide({ slideIndex }: DamageSlideProps) {
             <Spacer y={layout.globalPadding} />
             <Section title={actionType === "weapon" ? "arme" : "objet"} style={{ flex: 1 }}>
               {actionType === "weapon" ? (
-                <WeaponInfo selectedWeapon={itemDbKey ?? ""} />
+                <WeaponInfoUi charId={actorId} weaponKey={itemDbKey ?? ""} />
               ) : (
                 <>
                   <Txt>{item?.data?.label}</Txt>

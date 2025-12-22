@@ -1,5 +1,5 @@
 import { useCurrCharId } from "lib/character/character-store"
-import { NoCombatWeaponIndicator } from "lib/combat/ui/WeaponIndicator"
+import WeaponIndicator from "lib/combat/ui/WeaponIndicator"
 import ApVisualizer from "lib/combat/ui/action-points/ApVisualizer"
 
 import DrawerPage from "components/DrawerPage"
@@ -16,7 +16,7 @@ export default function CombatRecapPage() {
       <ApVisualizer charId={charId} />
       <Spacer y={layout.globalPadding} />
       <Row style={{ flex: 1 }}>
-        <NoCombatWeaponIndicator charId={charId} withActions />
+        <WeaponIndicator contenderId={charId} withActions />
         <Spacer x={layout.globalPadding} />
         <Section
           title="santé"

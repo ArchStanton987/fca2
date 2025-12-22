@@ -18,7 +18,6 @@ import {
 
 import unarmedImg from "assets/images/unarmed.png"
 import Row from "components/Row"
-import Section from "components/Section"
 import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
@@ -131,14 +130,14 @@ function WeaponActions({ weaponKey, charId }: { weaponKey: string; charId: strin
   )
 }
 
-function WeaponInfoUi({ charId, weaponKey }: WeaponInfoUiProps) {
+export function WeaponInfoUi({ charId, weaponKey }: WeaponInfoUiProps) {
   const { data: abilities } = useAbilities(charId)
   const { data: info } = useCharInfo(charId, i => ({
     templateId: i.templateId,
     isCritter: i.isCritter
   }))
   const weapons = useCombatWeapons(charId)
-  const weapon = weapons.find(w => w.dbKey === weaponKey)
+  const weapon = weapons.find(w => w.dbKey === weaponKey) ?? weapons[0]
   if (!weapon || weapon.category !== "weapons") throw new Error("Item is not a weapon")
   const hasMalus = getHasStrengthMalus(weapon, abilities.special.curr)
   return (
@@ -153,10 +152,7 @@ function WeaponInfoUi({ charId, weaponKey }: WeaponInfoUiProps) {
         <AmmoIndicator charId={charId} weaponKey={weaponKey} />
       </Row>
 
-      <Spacer y={10} />
-
       <View style={{ alignSelf: "center" }}>
-        <Txt>{weapon.data.label}</Txt>
         <Row>
           <Txt style={styles.attr}>DEG</Txt>
           <Spacer x={10} />
@@ -189,68 +185,25 @@ function WeaponInfoUi({ charId, weaponKey }: WeaponInfoUiProps) {
   )
 }
 
-export function NoCombatWeaponIndicator({
-  charId,
+export default function WeaponIndicator({
+  contenderId,
   style,
   contentContainerStyle,
   withActions
 }: {
-  charId: string
-  withActions: boolean
-  style?: StyleProp<ViewStyle>
-  contentContainerStyle?: StyleProp<ViewStyle>
-}) {
-  const weapons = useCombatWeapons(charId)
-  const [selectedWeapon, setSelectedWeapon] = useState(() => weapons[0].dbKey)
-
-  const weaponIndex = weapons.findIndex(w => w.dbKey === selectedWeapon)
-  const wepaonDisplayIndex = weaponIndex + 1
-
-  const toggleWeapon = () => {
-    if (weapons.length < 2) return
-    const nextIndex = (weaponIndex + 1) % weapons.length
-    const { dbKey } = weapons[nextIndex]
-    setSelectedWeapon(dbKey)
-  }
-
-  return (
-    <>
-      {withActions ? (
-        <>
-          <WeaponActions charId={charId} weaponKey={selectedWeapon} />
-          <Spacer x={layout.globalPadding} />
-        </>
-      ) : null}
-
-      <Section
-        title={weapons.length > 1 ? `arme ${wepaonDisplayIndex} / ${weapons.length}` : "arme"}
-        style={[{ width: 175 }, style]}
-        contentContainerStyle={[{ justifyContent: "center", flex: 1 }, contentContainerStyle]}
-      >
-        <Pressable key={selectedWeapon} onPress={toggleWeapon} disabled={weapons.length < 2}>
-          <WeaponInfoUi charId={charId} weaponKey={selectedWeapon} />
-        </Pressable>
-      </Section>
-    </>
-  )
-}
-
-export function CombatWeaponIndicator({
-  contenderId,
-  style,
-  contentContainerStyle
-}: {
   contenderId: string
   style?: StyleProp<ViewStyle>
   contentContainerStyle?: StyleProp<ViewStyle>
+  withActions?: boolean
 }) {
   const { setForm } = useActionApi()
 
   const weapons = useCombatWeapons(contenderId)
-  const [selectedWeapon, setSelectedWeapon] = useState(() => weapons[0].dbKey)
+  const [selectedWeapon, setSelectedWeapon] = useState(weapons[0].dbKey)
 
   const weaponIndex = weapons.findIndex(w => w.dbKey === selectedWeapon)
   const wepaonDisplayIndex = weaponIndex + 1
+  const weaponLabel = weapons[weaponIndex]?.data.label ?? weapons[0]?.data.label ?? "arme"
 
   const toggleWeapon = () => {
     if (weapons.length < 2) return
@@ -261,14 +214,26 @@ export function CombatWeaponIndicator({
   }
 
   return (
-    <Section
-      title={weapons.length > 1 ? `arme ${wepaonDisplayIndex} / ${weapons.length}` : "arme"}
-      style={[{ width: 175 }, style]}
-      contentContainerStyle={[{ justifyContent: "center", flex: 1 }, contentContainerStyle]}
-    >
-      <Pressable key={selectedWeapon} onPress={toggleWeapon} disabled={weapons.length < 2}>
-        <WeaponInfoUi charId={contenderId} weaponKey={selectedWeapon} />
-      </Pressable>
-    </Section>
+    <>
+      {withActions ? (
+        <>
+          <WeaponActions charId={contenderId} weaponKey={selectedWeapon} />
+          <Spacer x={layout.globalPadding} />
+        </>
+      ) : null}
+      <ScrollSection
+        title={
+          weapons.length > 1
+            ? `${wepaonDisplayIndex}/${weapons.length} ${weaponLabel}`
+            : weaponLabel
+        }
+        style={[{ width: 175, maxWidth: 175, overflow: "hidden" }, style]}
+        contentContainerStyle={[{ justifyContent: "center", flex: 1 }, contentContainerStyle]}
+      >
+        <Pressable key={selectedWeapon} onPress={toggleWeapon} disabled={weapons.length < 2}>
+          <WeaponInfoUi charId={contenderId} weaponKey={selectedWeapon} />
+        </Pressable>
+      </ScrollSection>
+    </>
   )
 }
