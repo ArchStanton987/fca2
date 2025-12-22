@@ -717,7 +717,7 @@ const effectsMap: Record<EffectId, EffectData> = {
     length: 48,
     type: "poison",
     description:
-      "Les radrats n'ont pas une bonne hygiène bucco-dentaire... Vous voilà infecté suite à la morsure.",
+      "Cette bestiole n'a pas une bonne hygiène bucco-dentaire... Vous voilà infecté suite à la morsure.",
     nextEffectId: null
   },
   poisonMedBeast: {
@@ -730,7 +730,7 @@ const effectsMap: Record<EffectId, EffectData> = {
     length: 48,
     type: "poison",
     description:
-      "Les radrats n'ont pas une bonne hygiène bucco-dentaire... Vous voilà infecté suite à la morsure.",
+      "Cette bestiole n'a pas une bonne hygiène bucco-dentaire... Vous voilà infecté suite à la morsure.",
     nextEffectId: null
   },
   poisonRadRatVenom: {
@@ -743,7 +743,7 @@ const effectsMap: Record<EffectId, EffectData> = {
     length: 48,
     type: "poison",
     description:
-      "Les radrats n'ont pas une bonne hygiène bucco-dentaire... Vous voilà infecté suite à la morsure.",
+      "Cette bestiole n'a pas une bonne hygiène bucco-dentaire... Vous voilà infecté suite à la morsure.",
     nextEffectId: null
   },
 
