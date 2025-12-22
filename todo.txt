@@ -1,4 +1,4 @@
-- next buttons size
+- use store for equipped weapons
 - refacto actions : memo slides / refacto perf slides / remplacer slides par state machine
 - flatten navigation
 
