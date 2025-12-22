@@ -55,7 +55,7 @@ function LastnameInput() {
   if (isCritter) return null
   return (
     <>
-      <Txt>FIRSTNAME</Txt>
+      <Txt>LASTNAME</Txt>
       <TxtInput value={lastname} onChangeText={e => actions.setLastname(e)} />
     </>
   )

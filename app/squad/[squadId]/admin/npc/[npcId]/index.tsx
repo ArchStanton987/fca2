@@ -1,5 +1,5 @@
 import { Suspense } from "react"
-import { TouchableOpacity } from "react-native"
+import { StyleSheet, TouchableOpacity } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
@@ -14,7 +14,19 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import LoadingScreen from "screens/LoadingScreen"
+import colors from "styles/colors"
 import layout from "styles/layout"
+
+const styles = StyleSheet.create({
+  actionButton: {
+    padding: 8,
+    borderWidth: 2,
+    borderColor: colors.secColor,
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center"
+  }
+})
 
 function Screen() {
   const useCases = useGetUseCases()
@@ -62,14 +74,14 @@ function Screen() {
       <Spacer x={layout.globalPadding} />
 
       <ScrollSection style={{ width: 160 }} title="actions">
-        <TouchableOpacity onPress={play}>
+        <TouchableOpacity style={styles.actionButton} onPress={play}>
           <Txt>INCARNER</Txt>
         </TouchableOpacity>
 
-        <Spacer y={layout.globalPadding} />
+        <Spacer y={40} />
 
         {!isFighting && (
-          <TouchableOpacity onPress={deleteNpc}>
+          <TouchableOpacity style={styles.actionButton} onPress={deleteNpc}>
             <Txt>SUPPRIMER</Txt>
           </TouchableOpacity>
         )}

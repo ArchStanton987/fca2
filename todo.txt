@@ -8,13 +8,7 @@ test unarmed
 
 update healthChangeEntries with modifiers and effects (beasts...)
 
-beasts special & skills
 
-
-COMBAT :
-- [MED] assignation upSkills pour perso générés (>100)
-
-TODO: remove trap / thrown weapon after usage
 
 
 perks & traits page

@@ -1,4 +1,4 @@
-import { defaultSkillsValues } from "lib/character/abilities/skills/skills"
+import { defaultNullSkillsValues } from "lib/character/abilities/skills/skills"
 import { SkillId } from "lib/character/abilities/skills/skills.types"
 import { getUpSkillCost } from "lib/character/abilities/skills/utils/skills-utils"
 import { Special } from "lib/character/abilities/special/special.types"
@@ -17,7 +17,7 @@ import { CreateNpcForm } from "../create-npc-store"
 export const formToDbCharInfo = (payload: CreateNpcForm, squadId: string): DbCharInfo => ({
   speciesId: payload.speciesId,
   templateId: payload.templateId,
-  background: payload.background,
+  background: "other",
   firstname: payload.firstname,
   lastname: payload.lastname,
   description: payload.description,
@@ -86,12 +86,12 @@ export const getUpSkillsScores = (
   const skillPointsPerLevel = getSkillPointsPerLevel(special, traits || [])
   const unlockedSkillPoints = skillPointsPerLevel * (level - 1) + initSkillPoints
   let remainingSkillPoints = unlockedSkillPoints
-  const skills = { ...defaultSkillsValues }
+  const skills = { ...defaultNullSkillsValues }
   while (remainingSkillPoints > 0) {
     const isRandomSkill = getRandomArbitrary(0, 101) < 0.1 * 100
     let skillId
     if (isRandomSkill) {
-      const randomSkillIndex = getRandomArbitrary(0, Object.keys(defaultSkillsValues).length - 1)
+      const randomSkillIndex = getRandomArbitrary(0, Object.keys(defaultNullSkillsValues).length)
       skillId = Object.keys(skills)[randomSkillIndex] as SkillId
     } else {
       skillId = tagSkills[getRandomWeightedIndex(tagSkills)]

@@ -28,16 +28,21 @@ export default function createNpc({ db, store }: UseCasesConfig) {
   const squadRepo = repositoryMap[db].squadRepository
 
   return async ({ npc, squadId }: CreateNpcParams) => {
+    const level = parseInt(npc.level, 10)
+    if (Number.isNaN(level)) {
+      throw new Error("Invalid level")
+    }
+
     const baseSPECIAL = getSpecialFromTemplate(npc.templateId)
     const traits = getTraitsFromTemplate(npc.templateId)
-    const tagSkills = getTagSkillsFromTemplate(npc.level, npc.templateId)
+    const tagSkills = getTagSkillsFromTemplate(level, npc.templateId)
     const abilities = {
       baseSPECIAL,
-      upSkills: getUpSkillsScores(npc.level, tagSkills, baseSPECIAL, traits),
+      upSkills: getUpSkillsScores(level, tagSkills, baseSPECIAL, traits),
       traits: Object.fromEntries(traits.map(t => [t, t])),
       knowledges: {} as Record<KnowledgeId, KnowledgeLevelValue>
     }
-    const exp = getExpForLevel(npc.level)
+    const exp = getExpForLevel(level)
     const payload: DbPlayable = {
       info: formToDbCharInfo(npc, squadId),
       abilities,

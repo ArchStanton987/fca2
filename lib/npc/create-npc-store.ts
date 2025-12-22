@@ -4,7 +4,7 @@ import robots from "lib/npc/const/robots"
 import { create } from "zustand"
 import { useShallow } from "zustand/shallow"
 
-import { BackgroundId, TemplateId } from "../character/info/CharInfo"
+import { TemplateId } from "../character/info/CharInfo"
 import { SpeciesId } from "../character/playable.const"
 import npcTemplates from "./const/npc-templates"
 
@@ -13,11 +13,10 @@ type NpcTemplate = Exclude<TemplateId, "player">
 export type CreateNpcForm = {
   speciesId: SpeciesId
   templateId: NpcTemplate
-  background: BackgroundId
   firstname: string
   lastname: string
   description?: string
-  level: number
+  level: string
   isEnemy: boolean
 }
 
@@ -48,11 +47,10 @@ const readySpecies: Partial<SpeciesId>[] = ["beast", "human", "robot"]
 export const useCreateNpcStore = create<CreateNpcStore>()((set, _, store) => ({
   speciesId: "human" as SpeciesId,
   templateId: getRandomTemplate("human"),
-  background: "other",
   firstname: "",
   lastname: "",
   description: "",
-  level: 1,
+  level: "1",
   isEnemy: true,
   actions: {
     toggleType: () =>
@@ -66,7 +64,7 @@ export const useCreateNpcStore = create<CreateNpcStore>()((set, _, store) => ({
     setFirstname: (firstname: string) => set(() => ({ firstname })),
     setLastname: (lastname: string) => set(() => ({ lastname })),
     setDescription: (description: string) => set(() => ({ description })),
-    setLevel: (lvl: string) => set(() => ({ level: parseInt(lvl, 10) })),
+    setLevel: (level: string) => set(() => ({ level })),
     toggleHostile: () => set(state => ({ isEnemy: !state.isEnemy })),
     selectTemplate: (templateId: NpcTemplate) => set(() => ({ templateId })),
     reset: () => set(() => store.getInitialState())
@@ -86,7 +84,6 @@ export const useCreateNpcPayload = () =>
     useShallow(state => ({
       speciesId: state.speciesId,
       templateId: state.templateId,
-      background: state.background,
       firstname: state.firstname,
       lastname: state.lastname,
       description: state.description,
