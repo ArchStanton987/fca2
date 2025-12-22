@@ -2,13 +2,7 @@
 - refacto actions : memo slides / refacto perf slides / remplacer slides par state machine
 - flatten navigation
 
-check F4 system
-
 upgrade item selector (no category)
-amélio perf action
-
-migrations: 
-   meta : isCritter
 
 test chaque action / sous action
 test unarmed

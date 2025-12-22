@@ -203,6 +203,11 @@ export default function WeaponIndicator({
 
   const weaponIndex = weapons.findIndex(w => w.dbKey === selectedWeapon)
   const wepaonDisplayIndex = weaponIndex + 1
+
+  if (!weapons[weaponIndex]) {
+    setSelectedWeapon(weapons[0].dbKey)
+  }
+
   const weaponLabel = weapons[weaponIndex]?.data.label ?? weapons[0]?.data.label ?? "arme"
 
   const toggleWeapon = () => {
