@@ -36,7 +36,7 @@ export default function TabBar(props: BottomTabBarProps & { tabBarId: TabBarId }
 
   const toHome = () => {
     setCurrChar("")
-    if (!charIsAdmin) return router.push("/")
+    if (!charIsAdmin || isAdminTab) return router.push("/")
     return router.push({ pathname: "/squad/[squadId]/admin/datetime", params: { squadId } })
   }
 
