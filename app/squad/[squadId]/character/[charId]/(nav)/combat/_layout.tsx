@@ -1,7 +1,7 @@
 import { ReactNode } from "react"
 import { View } from "react-native"
 
-import { Stack, useLocalSearchParams } from "expo-router"
+import { Tabs, useLocalSearchParams } from "expo-router"
 
 import { useQueries, useQuery } from "@tanstack/react-query"
 import { useCurrCharId } from "lib/character/character-store"
@@ -94,6 +94,10 @@ function CombatProvider({
   )
 }
 
+function NoTab() {
+  return null
+}
+
 export default function CombatLayout() {
   const { squadId } = useLocalSearchParams<{ squadId: string }>()
   const charId = useCurrCharId()
@@ -106,28 +110,29 @@ export default function CombatLayout() {
       <View style={styles.drawerLayout}>
         <Drawer sectionId="combat" navElements={navElements} />
         <Spacer x={layout.globalPadding} />
-        <Stack
+        <Tabs
+          tabBar={NoTab}
           screenOptions={{
             headerShown: false,
-            contentStyle: { backgroundColor: colors.primColor, padding: 0 }
+            sceneStyle: { backgroundColor: colors.primColor, padding: 0 }
           }}
         >
-          <Stack.Protected guard={!isInCombat}>
-            <Stack.Screen name="recap" />
-          </Stack.Protected>
-          <Stack.Protected guard={isInCombat}>
-            <Stack.Screen name="combat-recap" />
-          </Stack.Protected>
-          <Stack.Protected guard={!isGameMaster}>
-            <Stack.Screen name="action" />
-          </Stack.Protected>
-          <Stack.Protected guard={isGameMaster}>
-            <Stack.Screen name="action-order" />
-            <Stack.Screen name="gm-action" />
-            <Stack.Screen name="gm-difficulty" />
-            <Stack.Screen name="gm-damage" />
-          </Stack.Protected>
-        </Stack>
+          <Tabs.Protected guard={!isInCombat}>
+            <Tabs.Screen name="recap" />
+          </Tabs.Protected>
+          <Tabs.Protected guard={isInCombat}>
+            <Tabs.Screen name="combat-recap" />
+          </Tabs.Protected>
+          <Tabs.Protected guard={!isGameMaster}>
+            <Tabs.Screen name="action" />
+          </Tabs.Protected>
+          <Tabs.Protected guard={isGameMaster}>
+            <Tabs.Screen name="action-order" />
+            <Tabs.Screen name="gm-action" options={{ freezeOnBlur: true }} />
+            <Tabs.Screen name="gm-difficulty" />
+            <Tabs.Screen name="gm-damage" />
+          </Tabs.Protected>
+        </Tabs>
       </View>
     </CombatProvider>
   )
