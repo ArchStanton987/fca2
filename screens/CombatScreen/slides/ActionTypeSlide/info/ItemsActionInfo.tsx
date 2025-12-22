@@ -39,7 +39,7 @@ const getItemList = (actionSubtype: string, i: Record<string, Item>) => {
     case "pickUp":
       return [{ title: "ajouter", data: {} as Record<string, Item> }]
     default:
-      return [{ title: "", data: {} as Record<string, Item> }]
+      return []
   }
 }
 
@@ -63,31 +63,32 @@ export default function ItemsActionInfo({ actorId }: { actorId: string }) {
   const { data: items } = useItems(actorId)
 
   const lists = getItemList(actionSubtype, items)
-
   return (
     <View>
-      <List
-        data={lists}
-        keyExtractor={el => el.title}
-        renderItem={el => (
-          <>
-            <Spacer y={10} />
-            <Txt style={styles.sectionTitle}>{el.item.title.toUpperCase()}</Txt>
-            <Spacer y={10} />
-            <List
-              data={Object.values(el.item.data)}
-              keyExtractor={item => item.dbKey}
-              renderItem={({ item }) => (
-                <ListItemSelectable
-                  isSelected={itemDbKey === item.dbKey}
-                  label={"count" in item ? `${item.data.label}(${item.count})` : item.data.label}
-                  onPress={() => onPressItem(item.dbKey)}
-                />
-              )}
-            />
-          </>
-        )}
-      />
+      {lists.length > 0 ? (
+        <List
+          data={lists}
+          keyExtractor={el => el.title}
+          renderItem={el => (
+            <>
+              <Spacer y={10} />
+              <Txt style={styles.sectionTitle}>{el.item.title.toUpperCase()}</Txt>
+              <Spacer y={10} />
+              <List
+                data={Object.values(el.item.data)}
+                keyExtractor={item => item.dbKey}
+                renderItem={({ item }) => (
+                  <ListItemSelectable
+                    isSelected={itemDbKey === item.dbKey}
+                    label={"count" in item ? `${item.data.label}(${item.count})` : item.data.label}
+                    onPress={() => onPressItem(item.dbKey)}
+                  />
+                )}
+              />
+            </>
+          )}
+        />
+      ) : null}
     </View>
   )
 }

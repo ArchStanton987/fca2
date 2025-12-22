@@ -1,3 +1,4 @@
+import { memo } from "react"
 import { StyleSheet, TouchableOpacity } from "react-native"
 
 import { useCurrCharId } from "lib/character/character-store"
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
   }
 })
 
-export default function PickTargetSlide({ slideIndex }: SlideProps) {
+function PickTargetSlide({ slideIndex }: SlideProps) {
   const charId = useCurrCharId()
   const { scrollTo } = useScrollTo()
 
@@ -123,3 +124,5 @@ export default function PickTargetSlide({ slideIndex }: SlideProps) {
     </DrawerSlide>
   )
 }
+
+export default memo(PickTargetSlide)

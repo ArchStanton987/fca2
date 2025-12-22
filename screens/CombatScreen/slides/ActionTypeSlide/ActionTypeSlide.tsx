@@ -1,3 +1,4 @@
+import { memo } from "react"
 import { TouchableOpacity, View } from "react-native"
 
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
@@ -30,7 +31,7 @@ import SubActionList from "./sub-action/SubActionList"
 
 const actionTypes = Object.values(actions).map(a => ({ id: a.id, label: a.label }))
 
-export default function ActionTypeSlide({ slideIndex }: SlideProps) {
+function ActionTypeSlide({ slideIndex }: SlideProps) {
   const charId = useCurrCharId()
 
   const formActorId = useActionActorId()
@@ -129,3 +130,5 @@ export default function ActionTypeSlide({ slideIndex }: SlideProps) {
     </DrawerSlide>
   )
 }
+
+export default memo(ActionTypeSlide)

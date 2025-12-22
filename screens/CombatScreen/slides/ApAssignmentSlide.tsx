@@ -1,3 +1,4 @@
+import { memo } from "react"
 import { StyleSheet } from "react-native"
 
 import { useAbilities } from "lib/character/abilities/abilities-provider"
@@ -44,12 +45,13 @@ const styles = StyleSheet.create({
   }
 })
 
-export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
+function ApAssignmentSlide({ slideIndex }: SlideProps) {
   const charId = useCurrCharId()
   const useCases = useGetUseCases()
   const formActorId = useActionActorId()
+  const actorId = formActorId === "" ? charId : formActorId
 
-  const { data: combatId } = useCombatId(formActorId)
+  const { data: combatId } = useCombatId(actorId)
   const { data: action } = useCombatState(combatId, s => s.action)
 
   const apCost = useActionApCost()
@@ -57,14 +59,13 @@ export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
   const actionSubtype = useActionSubtype()
   const itemDbKey = useActionItemDbKey()
 
-  const actorId = formActorId === "" ? charId : formActorId
   const item = useActionItem(actorId, itemDbKey)
   const { data: currAp } = useCombatStatus(actorId, s => s.currAp)
   const { data: maxAp } = useAbilities(actorId, a => a.secAttr.curr.actionPoints)
 
   const { setForm, reset } = useActionApi()
 
-  const { scrollTo } = useScrollTo()
+  const { scrollTo, resetSlider } = useScrollTo()
 
   const scrollNext = () => {
     scrollTo(slideIndex + 1)
@@ -93,6 +94,7 @@ export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
       await useCases.combat.doCombatAction({ combatId, action: payload, item })
       Toast.show({ type: "custom", text1: "Action réalisée" })
       reset()
+      resetSlider()
     } catch (error) {
       Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement de l'action" })
     }
@@ -209,3 +211,5 @@ export default function ApAssignmentSlide({ slideIndex }: SlideProps) {
     </DrawerSlide>
   )
 }
+
+export default memo(ApAssignmentSlide)

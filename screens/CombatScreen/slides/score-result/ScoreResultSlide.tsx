@@ -1,3 +1,5 @@
+import { memo } from "react"
+
 import { useAbilities, useSpecial } from "lib/character/abilities/abilities-provider"
 import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
@@ -34,7 +36,7 @@ import AwaitGmSlide from "../wait-slides/AwaitGmSlide"
 import ActionOutcome from "./ActionOutcome"
 import styles from "./ScoreResultSlide.styles"
 
-export default function ScoreResultSlide({ slideIndex }: SlideProps) {
+function ScoreResultSlide({ slideIndex }: SlideProps) {
   const charId = useCurrCharId()
   const useCases = useGetUseCases()
 
@@ -58,7 +60,7 @@ export default function ScoreResultSlide({ slideIndex }: SlideProps) {
 
   const { reset } = useActionApi()
 
-  const { scrollTo } = useScrollTo()
+  const { scrollTo, resetSlider } = useScrollTo()
 
   if (!action) return <SlideError error={slideErrors.noCombatError} />
   if (action.roll === undefined) return <AwaitGmSlide messageCase="difficulty" />
@@ -97,6 +99,7 @@ export default function ScoreResultSlide({ slideIndex }: SlideProps) {
     }
     try {
       await useCases.combat.doCombatAction({ combatId, action, item })
+      resetSlider()
       Toast.show({ type: "custom", text1: "Action réalisée !" })
       reset()
     } catch (error) {
@@ -198,3 +201,5 @@ export default function ScoreResultSlide({ slideIndex }: SlideProps) {
     </DrawerSlide>
   )
 }
+
+export default memo(ScoreResultSlide)

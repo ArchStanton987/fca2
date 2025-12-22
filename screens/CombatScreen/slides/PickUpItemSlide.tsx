@@ -1,3 +1,5 @@
+import { memo } from "react"
+
 import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { useCombatState } from "lib/combat/use-cases/sub-combats"
@@ -18,7 +20,7 @@ import { useActionActorId, useActionApi } from "providers/ActionFormProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 
-export default function PickUpItemSlide({ slideIndex }: SlideProps) {
+function PickUpItemSlide({ slideIndex }: SlideProps) {
   const charId = useCurrCharId()
 
   const useCases = useGetUseCases()
@@ -37,7 +39,7 @@ export default function PickUpItemSlide({ slideIndex }: SlideProps) {
   const barterConsumables = useBarterConsumables()
   const barterMiscObjects = useBarterMiscObjects()
 
-  const { scrollTo } = useScrollTo()
+  const { scrollTo, resetSlider } = useScrollTo()
 
   const scrollPrevious = () => {
     scrollTo(slideIndex - 1)
@@ -65,6 +67,7 @@ export default function PickUpItemSlide({ slideIndex }: SlideProps) {
       await useCases.combat.doCombatAction({ combatId, action })
       Toast.show({ type: "custom", text1: "Action réalisée" })
       reset()
+      resetSlider()
     } catch (error) {
       Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement de l'action" })
     }
@@ -76,3 +79,5 @@ export default function PickUpItemSlide({ slideIndex }: SlideProps) {
     </DrawerSlide>
   )
 }
+
+export default memo(PickUpItemSlide)

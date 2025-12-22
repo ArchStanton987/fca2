@@ -1,4 +1,4 @@
-import { ReactNode } from "react"
+import { ReactNode, memo } from "react"
 
 import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
@@ -31,7 +31,7 @@ function DifficultyReadyWrapper({ children, actorId }: { children: ReactNode; ac
   return children
 }
 
-export default function DiceRollSlide({ slideIndex }: SlideProps) {
+function DiceRollSlide({ slideIndex }: SlideProps) {
   const charId = useCurrCharId()
   const { scrollTo } = useScrollTo()
 
@@ -87,3 +87,5 @@ export default function DiceRollSlide({ slideIndex }: SlideProps) {
     </DrawerSlide>
   )
 }
+
+export default memo(DiceRollSlide)

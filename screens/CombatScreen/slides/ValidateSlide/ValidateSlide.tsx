@@ -1,4 +1,4 @@
-import { ReactNode } from "react"
+import { ReactNode, memo } from "react"
 import { StyleSheet, TouchableOpacity } from "react-native"
 
 import { useCurrCharId } from "lib/character/character-store"
@@ -11,6 +11,7 @@ import DrawerSlide from "components/Slides/DrawerSlide"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useActionActorId, useActionApi, useActionItem } from "providers/ActionFormProvider"
+import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 
@@ -44,7 +45,7 @@ function AwaitDamageWrapper({ children, actorId }: { children: ReactNode; actorI
   return children
 }
 
-export default function ValidateSlide() {
+function ValidateSlide() {
   const charId = useCurrCharId()
   const useCases = useGetUseCases()
   const { reset } = useActionApi()
@@ -54,11 +55,14 @@ export default function ValidateSlide() {
   const { data: action } = useCombatState(combatId, cs => cs.action)
   const item = useActionItem(actorId, action.itemDbKey ? action.itemDbKey : undefined)
 
+  const { resetSlider } = useScrollTo()
+
   const submit = async () => {
     try {
       await useCases.combat.doCombatAction({ combatId, action, item })
       Toast.show({ type: "custom", text1: "Action réalisée !" })
       reset()
+      resetSlider()
     } catch (err) {
       Toast.show({ type: "error", text1: "Echec lors de l'enregistrement de l'action" })
     }
@@ -78,3 +82,5 @@ export default function ValidateSlide() {
     </AwaitDamageWrapper>
   )
 }
+
+export default memo(ValidateSlide)

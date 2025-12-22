@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useState } from "react"
+import { ReactNode, memo, useCallback, useState } from "react"
 import { StyleSheet } from "react-native"
 
 import { useCurrCharId } from "lib/character/character-store"
@@ -66,17 +66,17 @@ function AwaitTargetWrapper({ children }: { children: ReactNode }) {
 function VisualizeReactionWrapper({
   children,
   combatId,
-  actorId,
-  scrollNext
+  actorId
 }: {
   children: ReactNode
   combatId: string
   actorId: string
-  scrollNext: () => void
 }) {
   const useCases = useGetUseCases()
   const [isReactionResultVisible, setIsReactionResultVisible] = useState(() => true)
 
+  const { resetSlider } = useScrollTo()
+  const { reset } = useActionApi()
   const { data: action } = useCombatState(combatId, state => state.action)
 
   const submitNoDamages = async () => {
@@ -88,7 +88,8 @@ function VisualizeReactionWrapper({
       healthEntriesChange: false
     }
     await useCases.combat.doCombatAction({ combatId, action: payload })
-    scrollNext()
+    reset()
+    resetSlider()
   }
 
   if (!!action.reactionRoll && isReactionResultVisible)
@@ -103,7 +104,7 @@ function VisualizeReactionWrapper({
   return children
 }
 
-export default function DamageSlide({ slideIndex }: DamageSlideProps) {
+function DamageSlide({ slideIndex }: DamageSlideProps) {
   const charId = useCurrCharId()
   const useCases = useGetUseCases()
 
@@ -152,7 +153,7 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
   // NO SUCCESSFUL REACTION
   return (
     <AwaitTargetWrapper>
-      <VisualizeReactionWrapper combatId={combatId} actorId={actorId} scrollNext={scrollNext}>
+      <VisualizeReactionWrapper combatId={combatId} actorId={actorId}>
         <DrawerSlide>
           <Section title="score de dégâts" contentContainerStyle={{ flex: 1, height: "100%" }}>
             <NumPad onPressKeyPad={onPressPad} />
@@ -206,3 +207,5 @@ export default function DamageSlide({ slideIndex }: DamageSlideProps) {
     </AwaitTargetWrapper>
   )
 }
+
+export default memo(DamageSlide)

@@ -1,5 +1,6 @@
-- flatten navigation
+- next buttons size
 - refacto actions : memo slides / refacto perf slides / remplacer slides par state machine
+- flatten navigation
 
 check F4 system
 
@@ -32,7 +33,7 @@ TODO: remove trap / thrown weapon after usage
 
 
 perks & traits page
-=> get perk LVL, calculate bonus for apkpropriate level. (in description ??)
+=> get perk LVL, calculate bonus for apropriate level. (in description ??)
 
 TODO: add levelup
   - change db model for perks (any perk can have a level)

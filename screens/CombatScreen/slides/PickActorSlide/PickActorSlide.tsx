@@ -1,3 +1,5 @@
+import { memo } from "react"
+
 import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId, useCombatStatuses } from "lib/character/combat-status/combat-status-provider"
 import { usePlayablesCharInfo } from "lib/character/info/info-provider"
@@ -19,7 +21,7 @@ import layout from "styles/layout"
 import NextButton from "../NextButton"
 import SelectActorButton from "./SelectActorButton"
 
-export default function PickActorSlide({ slideIndex }: SlideProps) {
+function PickActorSlide({ slideIndex }: SlideProps) {
   const charId = useCurrCharId()
   const useCases = useGetUseCases()
   const { scrollTo } = useScrollTo()
@@ -84,3 +86,5 @@ export default function PickActorSlide({ slideIndex }: SlideProps) {
     </DrawerSlide>
   )
 }
+
+export default memo(PickActorSlide)

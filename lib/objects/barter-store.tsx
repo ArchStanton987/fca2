@@ -179,7 +179,7 @@ export const useInInvCount = (charId: string, id: "caps" | AmmoType | Item["id"]
   if (id === "caps") {
     inInv = caps.data
   } else if (isKeyOf(id, ammoMap)) {
-    inInv = ammo.data[id]
+    inInv = ammo.data[id] ?? 0
   } else {
     inInv = itemCount.data
   }

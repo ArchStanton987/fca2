@@ -15,10 +15,11 @@ export default function ItemActions({ charId }: { charId: string }) {
   const { setActionSubtype } = useActionApi()
   const { data: currAp } = useCombatStatus(charId, s => s.currAp)
 
+  const data = Object.values(actions.item.subtypes)
   return (
     <ScrollSection style={{ flex: 1 }} title={title}>
       <List
-        data={Object.values(actions.item.subtypes)}
+        data={data}
         keyExtractor={item => item.id}
         renderItem={({ item }) => {
           const disabled = currAp < item.apCost

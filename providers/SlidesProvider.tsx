@@ -1,7 +1,10 @@
 import { ReactNode, createContext, useCallback, useContext, useMemo, useRef } from "react"
-import { ScrollView, useWindowDimensions } from "react-native"
-
-import { useFocusEffect } from "expo-router"
+import {
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  ScrollView,
+  useWindowDimensions
+} from "react-native"
 
 import { create } from "zustand"
 
@@ -30,7 +33,7 @@ const useSlidersStore = create<SlidesStoreType>(set => ({
 export const useSliderIndex = (id: SliderId) => useSlidersStore(state => state[id])
 export const useSetSliderIndex = () => useSlidersStore(state => state.actions.setSlideIndex)
 
-type SlidesContextType = { scrollTo: (i: number) => void }
+type SlidesContextType = { scrollTo: (i: number) => void; resetSlider: () => void }
 const SlidesContext = createContext({} as SlidesContextType)
 
 export function SlidesProvider({
@@ -45,23 +48,23 @@ export function SlidesProvider({
   const scrollRef = useRef<ScrollView>(null)
   const scrollIndex = useRef(0)
   const setSlideIndex = useSetSliderIndex()
-  const lastIndex = useSliderIndex(sliderId)
 
-  useFocusEffect(
-    useCallback(() => {
-      if (lastIndex) {
-        scrollRef?.current?.scrollTo({ x: lastIndex * slideWidth, animated: true })
-      }
-      return () => {
-        setSlideIndex(sliderId, scrollIndex.current)
-      }
-    }, [sliderId, setSlideIndex, slideWidth, lastIndex])
+  const onScroll = useCallback(
+    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const res = Math.round(e.nativeEvent.contentOffset.x / slideWidth)
+      scrollIndex.current = res
+      setSlideIndex(sliderId, res)
+    },
+    [slideWidth, setSlideIndex, sliderId]
   )
 
   const slidesApi = useMemo(
     () => ({
       scrollTo: (i: number, animated = true) => {
         scrollRef?.current?.scrollTo({ x: i * slideWidth, animated })
+      },
+      resetSlider: () => {
+        scrollRef?.current?.scrollTo({ x: 0 })
       }
     }),
     [slideWidth]
@@ -79,10 +82,7 @@ export function SlidesProvider({
           ref={scrollRef}
           bounces={false}
           scrollEventThrottle={1000}
-          onScroll={e => {
-            const res = Math.round(e.nativeEvent.contentOffset.x / slideWidth)
-            scrollIndex.current = res
-          }}
+          onScroll={onScroll}
         >
           {children}
         </ScrollView>

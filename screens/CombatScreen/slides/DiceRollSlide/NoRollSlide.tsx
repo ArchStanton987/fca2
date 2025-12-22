@@ -14,6 +14,7 @@ import {
   useActionItem,
   useActionItemDbKey
 } from "providers/ActionFormProvider"
+import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
 
@@ -22,6 +23,8 @@ export default function NoRollSlide() {
   const itemDbKey = useActionItemDbKey()
   const actorId = useActionActorId()
   const { reset } = useActionApi()
+
+  const { resetSlider } = useScrollTo()
 
   const { data: combatId } = useCombatId(actorId)
   const { data: action } = useCombatState(combatId, s => s.action)
@@ -32,6 +35,7 @@ export default function NoRollSlide() {
       await useCases.combat.doCombatAction({ combatId, action, item })
       Toast.show({ type: "custom", text1: "Action enregistrée !" })
       reset()
+      resetSlider()
     } catch (err) {
       Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement de l'action. " })
     }

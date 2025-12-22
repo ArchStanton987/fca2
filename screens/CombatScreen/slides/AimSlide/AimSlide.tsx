@@ -1,3 +1,5 @@
+import { memo } from "react"
+
 import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { limbsMap } from "lib/character/health/Health"
@@ -18,7 +20,7 @@ import NextButton from "../NextButton"
 import styles from "./AimSlide.styles"
 import AimSlideComponents from "./AimSlideComponents"
 
-export default function AimSlide({ slideIndex }: SlideProps) {
+function AimSlide({ slideIndex }: SlideProps) {
   const charId = useCurrCharId()
   const useCases = useGetUseCases()
   const aimZone = useActionAimZone()
@@ -72,3 +74,5 @@ export default function AimSlide({ slideIndex }: SlideProps) {
     </AimSlideComponents.TargetWrapper>
   )
 }
+
+export default memo(AimSlide)

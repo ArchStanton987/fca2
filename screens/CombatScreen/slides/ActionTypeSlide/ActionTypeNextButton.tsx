@@ -34,7 +34,7 @@ const toastMessages = {
 export default function ActionTypeNextButton({ charId, slideIndex }: ActionTypePlayButtonProps) {
   const useCases = useGetUseCases()
 
-  const { scrollTo } = useScrollTo()
+  const { scrollTo, resetSlider } = useScrollTo()
 
   const actionType = useActionType()
   const formActorId = useActionActorId()
@@ -74,6 +74,7 @@ export default function ActionTypeNextButton({ charId, slideIndex }: ActionTypeP
         await useCases.combat.doCombatAction({ combatId, action })
         Toast.show({ type: "custom", text1: toastMessages[actionType] })
         reset()
+        resetSlider()
       } catch (error) {
         Toast.show({ type: "error", text1: "Erreur lors de l'enregistrement de l'action" })
       }

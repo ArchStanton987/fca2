@@ -1,3 +1,4 @@
+import { memo } from "react"
 import { StyleSheet } from "react-native"
 
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
@@ -19,6 +20,7 @@ import {
   useActionItem,
   useActionItemDbKey
 } from "providers/ActionFormProvider"
+import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import layout from "styles/layout"
 
@@ -36,22 +38,25 @@ const styles = StyleSheet.create({
   score: {}
 })
 
-export default function ChallengeSlide() {
+function ChallengeSlide() {
   const useCases = useGetUseCases()
   const itemDbKey = useActionItemDbKey()
   const actorId = useActionActorId()
 
+  const { resetSlider } = useScrollTo()
+
   const { reset } = useActionApi()
   const { data: combatId } = useCombatId(actorId)
-  const { data: action } = useCombatState(combatId)
+  const { data: cs } = useCombatState(combatId)
   const consumable = useActionItem(actorId, itemDbKey)
 
   const submit = async (item: Consumable) => {
     try {
-      const payload = { ...action, actorId }
+      const payload = { ...cs.action, actorId }
       await useCases.combat.doCombatAction({ action: payload, combatId, item })
       Toast.show({ type: "custom", text1: "Action réalisée" })
       reset()
+      resetSlider()
     } catch (err) {
       Toast.show({ type: "custom", text1: "Erreur lors de l'enregistrement de l'action" })
     }
@@ -104,3 +109,5 @@ export default function ChallengeSlide() {
     </DrawerSlide>
   )
 }
+
+export default memo(ChallengeSlide)
