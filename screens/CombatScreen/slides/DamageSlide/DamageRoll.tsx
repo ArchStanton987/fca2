@@ -6,6 +6,6 @@ type DamageRollProps = {
 }
 
 export default function DamageRoll({ charId }: DamageRollProps) {
-  const damageRoll = useDamageRoll(charId)
+  const damageRoll = useDamageRoll(charId) ?? ""
   return <Txt style={{ fontSize: 36 }}>{damageRoll}</Txt>
 }

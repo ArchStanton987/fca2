@@ -120,11 +120,10 @@ export const getSkillFromAction = <T extends keyof typeof actions>({
       if (actionSubtype === "throw") return skillsMap.throw
       return null
     case "weapon":
-      if (item?.category !== "weapons") throw new Error("Item is not a weapon")
       if (actionSubtype === "throw") return skillsMap.throw
       if (actionSubtype === "hit") return skillsMap.melee
-      if (!item?.data?.skillId) throw new Error("No skill id found for given item")
-      return skillsMap[item.data.skillId]
+      if (item?.category === "weapons") return skillsMap?.[item?.data?.skillId]
+      return null
     default:
       return null
   }
@@ -170,11 +169,10 @@ export const getActorSkillFromAction = <T extends keyof typeof actions>(
     }
   }
   const skill = getSkillFromAction({ actionType, actionSubtype, item })
-  if (!skill) throw new Error("No skill found")
   const knowledges = getKnowledgesFromAction({ actionType, actionSubtype, item })
   const knowledgeBonus = getKnowledgesBonus(knowledges, abilities.knowledges)
-  const sumAbilities = abilities.skills.curr[skill.id] + knowledgeBonus
-  return { skillId: skill.id, skillLabel: skill.label, sumAbilities }
+  const sumAbilities = skill ? abilities.skills.curr[skill.id] + knowledgeBonus : 0
+  return { skillId: skill ? skill.id : null, skillLabel: skill?.label ?? "", sumAbilities }
 }
 
 // export const getItemWithSkillFromId = (itemDbKey: string | undefined, inventory: Inventory) => {

@@ -66,10 +66,10 @@ export const useDamageRoll = (charId: string) => {
   switch (actionSubtype) {
     case "basic":
     case "aim":
-      if (item?.category !== "weapons") throw new Error("Item is not a weapon.")
-      return item.data.damageBasic
+      if (item?.category !== "weapons") return 0
+      return item?.data?.damageBasic
     case "burst":
-      if (item?.category !== "weapons") throw new Error("Item is not a weapon.")
+      if (item?.category !== "weapons") return 0
       return item.data.damageBurst
     case "hit":
     case "throw": {

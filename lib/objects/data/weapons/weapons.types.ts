@@ -241,6 +241,7 @@ export type WeaponId =
   | "plastic"
   | "claymore"
   | "dynamite"
+  | "timeBomb"
   | "explosiveTrap"
   | "acidMineT86"
   | "t13mine"

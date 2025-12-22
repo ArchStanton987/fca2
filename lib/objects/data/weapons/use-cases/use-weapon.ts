@@ -1,4 +1,5 @@
 import { UseCasesConfig } from "lib/get-use-case.types"
+import drop from "lib/inventory/use-cases/drop"
 import repositoryMap from "lib/shared/db/get-repository"
 
 import Weapon from "../Weapon"
@@ -35,6 +36,14 @@ export default function useWeapon(config: UseCasesConfig) {
         itemsRepo.patchChild({ charId, dbKey: weapon.dbKey, childKey: "inMagazine" }, newInMag)
       )
     }
+
+    // HANDLE THROWN & TRAPS
+    const isThrown = weapon.data.skillId === "throw"
+    const isTrap = weapon.data.skillId === "trap"
+    if (isThrown || isTrap) {
+      promises.push(drop(config)({ charId, item: weapon }))
+    }
+
     return Promise.all(promises)
   }
 }

@@ -128,6 +128,9 @@ export default class Weapon implements ItemInterface {
       throw: THROW_AP_COST,
       hit: HIT_WITH_AP_COST
     }
+    if (this.data.skillId === "trap") {
+      apCosts.basic = abilities.secAttr.base.actionPoints
+    }
     if (traits.mrFast) {
       const { BASIC_AP_COST_MOD, SPECIAL_AP_COST_VALUE } = traitsMap.mrFast.consts
       apCosts.basic =

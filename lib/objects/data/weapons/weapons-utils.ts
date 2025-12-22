@@ -122,10 +122,10 @@ export const getWeaponActionLabel = (weapon: Weapon, actionId: WeaponActionId) =
       verb = "Frapper"
       break
     case "throw":
-      verb = "Lancer"
+      verb = "Utiliser (lancer)"
       break
     case "trap":
-      verb = "Poser"
+      verb = "Utiliser (poser)"
       break
     default:
       verb = "Utiliser"

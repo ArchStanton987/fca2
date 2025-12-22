@@ -1,4 +1,3 @@
-- use store for equipped weapons
 - refacto actions : memo slides / refacto perf slides / remplacer slides par state machine
 - flatten navigation
 
@@ -13,15 +12,7 @@ beasts special & skills
 
 
 COMBAT :
-- [MED] système HP / limbs HP (with crit part?)
 - [MED] assignation upSkills pour perso générés (>100)
-- [LOW] besoin recharger personnage lorsque nouveau combat
-- [LOW] bug lorsque clic sur perso dans dmg form
-
-
-
-BUG peut pas consommer objet créé. Peut pas porter clothing créé ???
-
 
 TODO: remove trap / thrown weapon after usage
 
