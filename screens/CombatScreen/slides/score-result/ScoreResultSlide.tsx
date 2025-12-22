@@ -195,7 +195,7 @@ function ScoreResultSlide({ slideIndex }: SlideProps) {
           title="suivant"
           contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}
         >
-          <NextButton size={45} onPress={submit} />
+          <NextButton onPress={submit} />
         </Section>
       </Col>
     </DrawerSlide>

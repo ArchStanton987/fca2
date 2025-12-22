@@ -203,7 +203,7 @@ function ApAssignmentSlide({ slideIndex }: SlideProps) {
             <Spacer y={layout.globalPadding} />
 
             <Section title="valider" contentContainerStyle={styles.centeredSection}>
-              <NextButton size={45} onPress={onPressNext} />
+              <NextButton onPress={onPressNext} />
             </Section>
           </Col>
         </Row>

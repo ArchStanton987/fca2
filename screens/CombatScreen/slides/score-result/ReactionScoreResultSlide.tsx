@@ -168,7 +168,7 @@ export default function ReactionScoreResultSlide() {
             title="suivant"
             contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}
           >
-            <NextButton size={45} onPress={submit} />
+            <NextButton onPress={submit} />
           </Section>
         </Col>
       </ReactionWrapper>

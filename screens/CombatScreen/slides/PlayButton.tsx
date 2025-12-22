@@ -1,8 +1,8 @@
 import { TouchableOpacity, TouchableOpacityProps } from "react-native"
 
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6"
-
 import colors from "styles/colors"
+
+import PlayIcon from "./PlayIcon"
 
 type NextButtonProps = TouchableOpacityProps & {
   size?: number
@@ -11,11 +11,7 @@ type NextButtonProps = TouchableOpacityProps & {
 export default function PlayButton({ size, disabled, ...rest }: NextButtonProps) {
   return (
     <TouchableOpacity disabled={disabled} {...rest}>
-      <FontAwesome6
-        name="circle-play"
-        size={size ?? 36}
-        color={disabled ? colors.terColor : colors.secColor}
-      />
+      <PlayIcon size={size} color={disabled ? colors.terColor : colors.secColor} />
     </TouchableOpacity>
   )
 }

@@ -112,10 +112,16 @@ function ActionTypeSlide({ slideIndex }: SlideProps) {
         <Spacer y={layout.globalPadding} />
 
         <Row>
-          <Section title="pa" style={{ flex: 1 }}>
-            <Row style={{ justifyContent: "center" }}>
-              <ApInfo contenderId={actorId} />
-            </Row>
+          <Section
+            title="pa"
+            style={{ flex: 1 }}
+            contentContainerStyle={{
+              justifyContent: "center",
+              alignItems: "center",
+              flex: 1
+            }}
+          >
+            <ApInfo contenderId={actorId} />
           </Section>
 
           <Spacer x={layout.globalPadding} />

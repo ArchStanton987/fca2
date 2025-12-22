@@ -80,7 +80,7 @@ function PickActorSlide({ slideIndex }: SlideProps) {
           title="suivant"
           contentContainerStyle={{ justifyContent: "center", alignItems: "center" }}
         >
-          <NextButton disabled={actorId === ""} size={45} onPress={() => submit()} />
+          <NextButton disabled={actorId === ""} onPress={() => submit()} />
         </Section>
       </Col>
     </DrawerSlide>

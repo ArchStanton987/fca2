@@ -158,7 +158,7 @@ export default function InitiativeScreen() {
         <Spacer y={layout.globalPadding} />
 
         <Section title="valider" style={{ flex: 1 }} contentContainerStyle={styles.scoreContainer}>
-          <NextButton onPress={onPressConfirm} size={55} disabled={isLoading || !isValid} />
+          <NextButton onPress={onPressConfirm} disabled={isLoading || !isValid} />
         </Section>
       </View>
     </DrawerPage>

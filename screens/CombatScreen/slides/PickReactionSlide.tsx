@@ -176,9 +176,9 @@ export default function PickReactionSlide({ slideIndex }: SlideProps) {
           contentContainerStyle={styles.centeredSection}
         >
           {reaction === "none" ? (
-            <PlayButton size={45} onPress={onPressNext} disabled={leftAp < 0} />
+            <PlayButton onPress={onPressNext} disabled={leftAp < 0} />
           ) : (
-            <NextButton size={45} onPress={onPressNext} disabled={leftAp < 0} />
+            <NextButton onPress={onPressNext} disabled={leftAp < 0} />
           )}
         </Section>
       </Col>
