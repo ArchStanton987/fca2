@@ -3,7 +3,7 @@ import { SkillId } from "lib/character/abilities/skills/skills.types"
 import { EffectId } from "lib/character/effects/effects.types"
 import { HealthModifiable, Modifier } from "lib/character/effects/symptoms.type"
 
-export type ConsumableType = "heal" | "kit" | "drugs"
+export type ConsumableType = "heal" | "kit" | "drugs" | "food"
 
 export type ConsumableData = {
   id: ConsumableId

@@ -60,7 +60,7 @@ const defaultForm: ConsumableFormType = {
 }
 
 const defaultModifier = { id: "rads", value: "0", operation: "add" } as const
-const consumableTypes: ConsumableType[] = ["heal", "kit", "drugs"]
+const consumableTypes: ConsumableType[] = ["heal", "food", "kit", "drugs"]
 const operationCycle: Operation[] = ["add", "mult", "abs"]
 
 export default function ConsumablesCreation() {
