@@ -12,17 +12,6 @@ import Spacer from "components/Spacer"
 const styles = StyleSheet.create({
   container: {
     flex: 1
-  },
-  squadContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    flex: 1,
-    padding: 10,
-    marginHorizontal: 50
-  },
-  squadLabel: {
-    textAlign: "center"
   }
 })
 
@@ -43,7 +32,7 @@ export default function Screen() {
 
   return (
     <ScrollView style={styles.container}>
-      <WelcomeHeader />
+      <WelcomeHeader message="Choisissez votre équipe" />
       <List
         data={squads}
         keyExtractor={e => e.id}

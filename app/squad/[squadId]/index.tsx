@@ -1,5 +1,4 @@
 import { ReactNode, useCallback } from "react"
-import { View } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
@@ -14,6 +13,7 @@ import WelcomeHeader from "lib/shared/ui/welcome/WelcomeHeader"
 import { getSquadOptions, useSquads } from "lib/squad/use-cases/sub-squad"
 
 import List from "components/List"
+import Row from "components/Row"
 import Spacer from "components/Spacer"
 import LoadingScreen from "screens/LoadingScreen"
 
@@ -62,9 +62,10 @@ export default function Screen() {
         <SubChar key={id} charId={id} />
       ))}
       <Loader squadMembers={squadMembers} squadId={squadId}>
-        <WelcomeHeader />
-        <View style={{ flexDirection: "row", justifyContent: "center" }}>
+        <WelcomeHeader message="Choisissez votre personnage" />
+        <Row>
           <List
+            style={{ flex: 1, justifyContent: "center" }}
             horizontal
             data={squadMembers}
             separator={<Spacer x={40} />}
@@ -73,7 +74,7 @@ export default function Screen() {
               <PickCharacterCard charId={item} onPress={() => toChar(item)} />
             )}
           />
-        </View>
+        </Row>
       </Loader>
     </>
   )

@@ -1,5 +1,5 @@
 import { ReactNode } from "react"
-import { Platform } from "react-native"
+import { Platform, StyleSheet } from "react-native"
 
 import { Stack, useLocalSearchParams } from "expo-router"
 
@@ -21,6 +21,10 @@ const modalOptions: NativeStackNavigationOptions = {
     paddingBottom: 5
   }
 }
+
+const styles = StyleSheet.create({
+  content: { backgroundColor: colors.primColor }
+})
 
 function Loader({ children, charId }: { children: ReactNode; charId: string }) {
   const isPending = useQueries({
@@ -51,10 +55,7 @@ export default function CharStack() {
         <ReactionProvider>
           <Stack
             key={currCharId ?? "none"}
-            screenOptions={{
-              headerShown: false,
-              contentStyle: { backgroundColor: colors.primColor, padding: 10 }
-            }}
+            screenOptions={{ headerShown: false, contentStyle: styles.content }}
           >
             <Stack.Screen name="(nav)" />
             <Stack.Screen name="(modal)/update-effects" options={modalOptions} />

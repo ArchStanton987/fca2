@@ -18,24 +18,22 @@ const styles = StyleSheet.create({
   },
   version: {
     fontSize: 8,
-    position: "absolute",
-    right: 0,
-    top: 5
+    textAlign: "center"
   }
 })
 
-export default function WelcomeHeader() {
+export default function WelcomeHeader({ message }: { message: string }) {
   return (
     <>
-      <Txt style={styles.version}>{getVersion()}</Txt>
       <Spacer y={30} />
       <Txt style={styles.title}>
         {"<"}Fallout Companion App{">"}
       </Txt>
+      <Txt style={styles.version}>{getVersion()}</Txt>
       <Spacer y={20} />
       <Txt style={styles.text}>Bienvenue !</Txt>
       <Spacer y={10} />
-      <Txt style={styles.text}>Choisissez votre équipe</Txt>
+      <Txt style={styles.text}>{message}</Txt>
       <Spacer y={20} />
     </>
   )

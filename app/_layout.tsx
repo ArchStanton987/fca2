@@ -8,9 +8,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { useFonts } from "expo-font"
 import * as ScreenOrientation from "expo-screen-orientation"
 import { StatusBar } from "expo-status-bar"
+import SafeView from "lib/common/ui/SafeView"
 import { toastConfig } from "lib/common/ui/toast"
 import ErrorUi from "lib/shared/ui/ErrorUi"
 import { ErrorBoundary } from "react-error-boundary"
+import { SafeAreaProvider } from "react-native-safe-area-context"
 import Toast from "react-native-toast-message"
 
 import fonts from "assets/fonts"
@@ -74,7 +76,12 @@ export default function RootLayout() {
                   <AdditionalElementsProvider>
                     <UseCasesProvider>
                       <StatusBar hidden />
-                      <Slot />
+                      <SafeAreaProvider>
+                        <StatusBar style="light" hidden />
+                        <SafeView>
+                          <Slot />
+                        </SafeView>
+                      </SafeAreaProvider>
                       <Toast config={toastConfig} />
                     </UseCasesProvider>
                   </AdditionalElementsProvider>

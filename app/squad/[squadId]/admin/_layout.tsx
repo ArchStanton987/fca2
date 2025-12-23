@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native"
+import { StyleSheet } from "react-native"
 
 import { Tabs, useLocalSearchParams } from "expo-router"
 
@@ -40,22 +40,20 @@ export default function Layout() {
   return (
     <>
       <SubPlayables playablesIds={playablesIds} squadId={squadId} />
-      <View style={{ padding: 10, flex: 1 }}>
-        <Tabs
-          tabBar={TabBarComponent}
-          screenOptions={{
-            tabBarHideOnKeyboard: true,
-            header: HeaderDatetime,
-            headerStyle: styles.headerStyle,
-            sceneStyle: styles.sceneStyle
-          }}
-        >
-          <Tabs.Screen name="datetime" options={{ title: "Horloge" }} />
-          <Tabs.Screen name="combats" options={{ title: "Combats" }} />
-          <Tabs.Screen name="npc" options={{ title: "PNJs" }} />
-          <Tabs.Screen name="creation" options={{ title: "Creation" }} />
-        </Tabs>
-      </View>
+      <Tabs
+        tabBar={TabBarComponent}
+        screenOptions={{
+          tabBarHideOnKeyboard: true,
+          header: HeaderDatetime,
+          headerStyle: styles.headerStyle,
+          sceneStyle: styles.sceneStyle
+        }}
+      >
+        <Tabs.Screen name="datetime" options={{ title: "Horloge" }} />
+        <Tabs.Screen name="combats" options={{ title: "Combats" }} />
+        <Tabs.Screen name="npc" options={{ title: "PNJs" }} />
+        <Tabs.Screen name="creation" options={{ title: "Creation" }} />
+      </Tabs>
     </>
   )
 }
