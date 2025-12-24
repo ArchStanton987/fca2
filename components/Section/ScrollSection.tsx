@@ -2,7 +2,6 @@ import { ScrollView, StyleProp, View, ViewStyle } from "react-native"
 
 import layout from "styles/layout"
 
-import Spacer from "../Spacer"
 import SmallLine from "../draws/Line/Line"
 import styles from "./ScrollSection.styles"
 import { TitleType, TitleVariant } from "./Section.types"
@@ -29,10 +28,11 @@ export default function ScrollSection({
   return (
     <View style={[styles.container, style]}>
       <SectionTopRow title={title} titleVariant={titleVariant} onPressTitle={onPressTitle} />
-      <ScrollView style={styles.scrollView} contentContainerStyle={contentContainerStyle}>
-        <Spacer y={layout.smallLineHeight} />
+      <ScrollView
+        style={[{ paddingTop: title ? 0 : layout.smallLineHeight }, styles.scrollView]}
+        contentContainerStyle={contentContainerStyle}
+      >
         {children}
-        <Spacer y={layout.smallLineHeight} />
       </ScrollView>
       <SmallLine bottom right />
       <SmallLine bottom left />

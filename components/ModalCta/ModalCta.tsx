@@ -2,7 +2,6 @@ import { TouchableOpacity, View } from "react-native"
 
 import { router } from "expo-router"
 
-import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 
 import styles from "./ModalCta.styles"
@@ -18,14 +17,15 @@ export default function ModalCta({
 }: ModalCtaProps) {
   return (
     <View style={styles.ctaContainer}>
-      <View style={styles.horizLine} />
+      <View style={[styles.line, { flex: 1 }]} />
       <TouchableOpacity style={[styles.cta, styles.ctaSec]} onPress={onPressCancel}>
         <Txt style={styles.ctaTextSec}>ANNULER</Txt>
       </TouchableOpacity>
-      <Spacer x={50} />
+      <View style={[styles.line, { width: 50 }]} />
       <TouchableOpacity style={styles.cta} onPress={onPressConfirm}>
         <Txt style={styles.ctaText}>CONFIRMER</Txt>
       </TouchableOpacity>
+      <View style={[styles.line, { flex: 1 }]} />
     </View>
   )
 }

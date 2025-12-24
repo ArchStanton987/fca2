@@ -17,8 +17,7 @@ const modalOptions: NativeStackNavigationOptions = {
   presentation: Platform.OS !== "web" ? "modal" : "card",
   animation: "slide_from_bottom",
   contentStyle: {
-    backgroundColor: colors.primColor,
-    paddingBottom: 5
+    backgroundColor: colors.primColor
   }
 }
 

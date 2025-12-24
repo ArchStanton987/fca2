@@ -6,7 +6,6 @@ import layout from "styles/layout"
 
 import { TitleType, TitleVariant } from "./Section/Section.types"
 import SectionTopRow from "./Section/SectionTopRow"
-import Spacer from "./Spacer"
 
 const styles = StyleSheet.create({
   container: {
@@ -33,9 +32,18 @@ export default function Section({
   return (
     <View style={[styles.container, style]}>
       <SectionTopRow title={title} titleVariant={titleVariant} />
-      <Spacer y={title ? layout.smallLineHeight : layout.smallLineHeight * 2} />
-      <View style={[{ paddingHorizontal: 5 }, contentContainerStyle]}>{children}</View>
-      <Spacer y={layout.smallLineHeight} />
+      <View
+        style={[
+          {
+            padding: 5,
+            paddingTop: title ? 0 : layout.smallLineHeight,
+            paddingBottom: layout.smallLineHeight
+          },
+          contentContainerStyle
+        ]}
+      >
+        {children}
+      </View>
       <SmallLine bottom right />
       <SmallLine bottom left />
     </View>

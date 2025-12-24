@@ -10,15 +10,15 @@ import BarterComponents from "lib/objects/ui/barter/BarterComponents"
 
 import AmountSelector from "components/AmountSelector"
 import List from "components/List"
-import ScrollableSection from "components/ScrollableSection"
 import Section from "components/Section"
+import ScrollSection from "components/Section/ScrollSection"
 import Selectable from "components/Selectable"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import ViewSection from "components/ViewSection"
 import { useCollectiblesData } from "providers/AdditionalElementsProvider"
 import GoBackButton from "screens/CombatScreen/slides/GoBackButton"
 import PlayButton from "screens/CombatScreen/slides/PlayButton"
+import layout from "styles/layout"
 
 import styles from "lib/objects/ui/barter/BarterComponents.styles"
 
@@ -40,8 +40,9 @@ export default function BarterSection({ onPressNext, onPressCancel }: BarterSect
 
   return (
     <View style={styles.row}>
-      <ScrollableSection title="CATEGORIES" style={styles.categoriesSection}>
+      <ScrollSection title="CATEGORIES" style={styles.categoriesSection}>
         <List
+          style={styles.categoriesContainer}
           data={Object.values(categories)}
           keyExtractor={c => c.id}
           renderItem={({ item }) => (
@@ -53,35 +54,40 @@ export default function BarterSection({ onPressNext, onPressCancel }: BarterSect
             </Selectable>
           )}
         />
-      </ScrollableSection>
-      <Spacer x={15} />
-      <ScrollableSection title="LISTE" style={styles.listSection}>
+      </ScrollSection>
+      <Spacer x={layout.globalPadding} />
+      <ScrollSection title="LISTE" style={styles.listSection}>
         <BarterComponents.ObjectsList />
-      </ScrollableSection>
-      <Spacer x={15} />
+      </ScrollSection>
+      <Spacer x={layout.globalPadding} />
       <View>
         {hasSearch && (
-          <ViewSection title="RECHERCHE" style={styles.searchSection}>
-            <BarterComponents.SearchInput />
-          </ViewSection>
+          <>
+            <Section title="RECHERCHE" style={styles.searchSection}>
+              <BarterComponents.SearchInput />
+            </Section>
+            <Spacer y={layout.globalPadding} />
+          </>
         )}
-        <ViewSection title="AJOUTER" style={styles.addSection}>
-          <View style={{ flex: 1, justifyContent: "space-evenly" }}>
-            <List
-              data={categories[category].selectors}
-              keyExtractor={item => item.toString()}
-              renderItem={({ item }) => (
-                <AmountSelector
-                  value={item}
-                  isSelected={selectedAmount === item}
-                  onPress={() => actions.selectAmount(item)}
-                />
-              )}
-              style={{ flexDirection: "row", justifyContent: "space-evenly" }}
-            />
-            <BarterComponents.ModButtons />
-          </View>
-        </ViewSection>
+        <Section
+          title="AJOUTER"
+          style={styles.addSection}
+          contentContainerStyle={styles.addSectionContainer}
+        >
+          <List
+            data={categories[category].selectors}
+            style={styles.amountContainer}
+            keyExtractor={item => item.toString()}
+            renderItem={({ item }) => (
+              <AmountSelector
+                value={item}
+                isSelected={selectedAmount === item}
+                onPress={() => actions.selectAmount(item)}
+              />
+            )}
+          />
+          <BarterComponents.ModButtons />
+        </Section>
         {onPressNext && onPressCancel ? (
           <>
             <Spacer y={5} />

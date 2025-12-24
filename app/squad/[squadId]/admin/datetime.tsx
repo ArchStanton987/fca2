@@ -9,10 +9,10 @@ import Toast from "react-native-toast-message"
 
 import AmountSelector from "components/AmountSelector"
 import List from "components/List"
+import Section from "components/Section"
 import Spacer from "components/Spacer"
 import TabPage from "components/TabPage"
 import Txt from "components/Txt"
-import ViewSection from "components/ViewSection"
 import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import { useGetUseCases } from "providers/UseCasesProvider"
@@ -98,7 +98,11 @@ export default function Screen() {
     <LoadPlayables playablesIds={npcsIds}>
       <TabPage>
         <View style={styles.row}>
-          <ViewSection title="NOUVELLE DATE" style={{ flex: 1 }}>
+          <Section
+            title="NOUVELLE DATE"
+            style={{ flex: 1 }}
+            contentContainerStyle={{ flex: 1, justifyContent: "space-evenly" }}
+          >
             <Spacer fullspace />
             <Txt style={{ textAlign: "center", fontSize: 35 }}>
               {getDDMMYYYY(newDate)} - {getHHMM(newDate)}
@@ -117,9 +121,13 @@ export default function Screen() {
               </TouchableOpacity>
             </View>
             <Spacer y={30} />
-          </ViewSection>
+          </Section>
           <Spacer x={15} />
-          <ViewSection title="MODIFICATION" style={{ width: 300 }}>
+          <Section
+            title="MODIFICATION"
+            style={{ width: 300 }}
+            contentContainerStyle={{ flex: 1, justifyContent: "space-evenly" }}
+          >
             <Spacer fullspace />
             <List
               data={timespans}
@@ -152,7 +160,7 @@ export default function Screen() {
               <PlusIcon size={62} onPress={() => onPressMod("plus")} />
             </View>
             <Spacer fullspace />
-          </ViewSection>
+          </Section>
         </View>
       </TabPage>
       <Spacer y={15} />

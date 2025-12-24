@@ -7,14 +7,14 @@ import Txt from "./Txt"
 
 const styles = StyleSheet.create({
   container: {
+    marginBottom: 15,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
     borderColor: colors.secColor,
-    width: 35,
-    height: 35,
-    padding: 0,
+    width: 50,
+    height: 50,
     backgroundColor: colors.primColor
   },
   isSelected: {

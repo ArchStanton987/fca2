@@ -18,7 +18,7 @@ import { RecapCategory, RecapEntry } from "lib/objects/ui/barter/RecapCategory"
 
 import List from "components/List"
 import ModalCta from "components/ModalCta/ModalCta"
-import ScrollableSection from "components/ScrollableSection"
+import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import ModalBody from "components/wrappers/ModalBody"
@@ -92,7 +92,8 @@ export default function BarterConfirmationModal() {
       <Txt style={{ textAlign: "center" }}>
         Vous êtes sur le point d&apos;effectuer les modifications suivantes :
       </Txt>
-      <ScrollableSection title="MODIFICATIONS" style={styles.section}>
+      <Spacer y={15} />
+      <ScrollSection title="MODIFICATIONS" style={styles.section}>
         {barterCaps !== 0 ? (
           <>
             <RecapCategory title="Caps" />
@@ -149,7 +150,7 @@ export default function BarterConfirmationModal() {
             />
           </>
         ) : null}
-      </ScrollableSection>
+      </ScrollSection>
       <Spacer y={15} />
       <ModalCta onPressConfirm={() => onPressConfirm()} />
     </ModalBody>

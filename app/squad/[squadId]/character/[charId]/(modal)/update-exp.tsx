@@ -9,10 +9,10 @@ import { useExp } from "lib/character/progress/exp-provider"
 import AmountSelector from "components/AmountSelector"
 import List from "components/List"
 import ModalCta from "components/ModalCta/ModalCta"
-import ScrollableSection from "components/ScrollableSection"
+import Section from "components/Section"
+import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
-import ViewSection from "components/ViewSection"
 import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import ModalBody from "components/wrappers/ModalBody"
@@ -31,7 +31,11 @@ const styles = StyleSheet.create({
     flex: 1
   },
   addSection: {
-    width: 280
+    width: 200
+  },
+  addSectionContainer: {
+    flex: 1,
+    justifyContent: "center"
   },
   iconsContainer: {
     flexDirection: "row",
@@ -47,7 +51,12 @@ const styles = StyleSheet.create({
   listItemContainerSelected: {
     backgroundColor: colors.terColor
   },
-  listItem: {}
+  listItem: {},
+  amountContainer: {
+    justifyContent: "space-evenly",
+    flexDirection: "row",
+    flexWrap: "wrap"
+  }
 })
 
 export default function UpdateExpModal() {
@@ -78,7 +87,7 @@ export default function UpdateExpModal() {
   return (
     <ModalBody>
       <View style={styles.row}>
-        <ScrollableSection title="STATUT" style={styles.statusSection}>
+        <ScrollSection title="STATUT" style={styles.statusSection}>
           <TouchableOpacity
             key="exp"
             style={[styles.listItemContainer, styles.listItemContainerSelected]}
@@ -86,9 +95,9 @@ export default function UpdateExpModal() {
             <Txt style={styles.listItem}>EXP</Txt>
             <Spacer y={5} />
           </TouchableOpacity>
-        </ScrollableSection>
+        </ScrollSection>
         <Spacer x={15} />
-        <ViewSection title="TOTAL" style={styles.listSection}>
+        <Section title="TOTAL" style={styles.listSection}>
           <>
             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
               <Txt>actuel : </Txt>
@@ -103,9 +112,13 @@ export default function UpdateExpModal() {
               <Txt>{newValue}</Txt>
             </View>
           </>
-        </ViewSection>
+        </Section>
         <Spacer x={15} />
-        <ViewSection title="MODIFIER" style={styles.addSection}>
+        <Section
+          title="MODIFIER"
+          style={styles.addSection}
+          contentContainerStyle={styles.addSectionContainer}
+        >
           <View style={{ flex: 1, justifyContent: "space-evenly" }}>
             <List
               data={[1, 5, 20, 100]}
@@ -117,17 +130,14 @@ export default function UpdateExpModal() {
                   onPress={() => setSelectedAmount(item)}
                 />
               )}
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-evenly"
-              }}
+              style={styles.amountContainer}
             />
             <View style={styles.iconsContainer}>
               <MinusIcon size={62} onPress={() => onPressIcon("minus")} />
               <PlusIcon size={62} onPress={() => onPressIcon("plus")} />
             </View>
           </View>
-        </ViewSection>
+        </Section>
       </View>
       <ModalCta onPressConfirm={onPressConfirm} />
     </ModalBody>

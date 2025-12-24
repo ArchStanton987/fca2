@@ -1,4 +1,6 @@
 /* eslint-disable import/prefer-default-export */
+import { View } from "react-native"
+
 import { useCurrCharId } from "lib/character/character-store"
 import { limbsMap } from "lib/character/health/Health"
 import { useCurrHp, useHealth, useLimbHp, useRads } from "lib/character/health/health-provider"
@@ -124,10 +126,10 @@ function HealthUpdateButtons() {
     actions.onPressMod(sign, init, catMaxHp)
   }
   return (
-    <>
+    <View style={styles.iconsContainer}>
       <MinusIcon size={62} onPress={() => onPressIcon("minus")} />
       <PlusIcon size={62} onPress={() => onPressIcon("plus")} />
-    </>
+    </View>
   )
 }
 
@@ -138,6 +140,7 @@ function AmountsList() {
     <List
       data={[1, 5, 20, 100]}
       keyExtractor={item => item.toString()}
+      style={styles.amountContainer}
       renderItem={({ item }) => (
         <AmountSelector
           value={item}
@@ -145,10 +148,6 @@ function AmountsList() {
           onPress={() => actions.selectAmount(item)}
         />
       )}
-      style={{
-        flexDirection: "row",
-        justifyContent: "space-evenly"
-      }}
     />
   )
 }

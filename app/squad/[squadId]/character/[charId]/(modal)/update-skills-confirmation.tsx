@@ -9,7 +9,7 @@ import { SkillId, SkillsValues } from "lib/character/abilities/skills/skills.typ
 import { useCurrCharId } from "lib/character/character-store"
 
 import ModalCta from "components/ModalCta/ModalCta"
-import ScrollableSection from "components/ScrollableSection"
+import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import ModalBody from "components/wrappers/ModalBody"
@@ -32,19 +32,19 @@ export default function UpdateSkillsConfirmation() {
   }
   return (
     <ModalBody>
-      <Spacer y={30} />
+      <Spacer y={10} />
       <Txt style={{ textAlign: "center" }}>
         Vous êtes sur le point d&apos;effectuer les modifications suivantes :
       </Txt>
-      <Spacer y={30} />
-      <ScrollableSection title="COMPETENCES" style={{ flex: 1, width: 300, alignSelf: "center" }}>
+      <Spacer y={15} />
+      <ScrollSection title="COMPETENCES" style={{ flex: 1, width: 300, alignSelf: "center" }}>
         {modifiedSkills.map(skill => (
           <View key={skill.id} style={{ flexDirection: "row", justifyContent: "space-between" }}>
             <Txt>{skillsMap[skill.id as SkillId].label}</Txt>
             <Txt>+{skill.value}</Txt>
           </View>
         ))}
-      </ScrollableSection>
+      </ScrollSection>
       <Spacer y={15} />
       <ModalCta onPressConfirm={onPressConfirm} />
     </ModalBody>

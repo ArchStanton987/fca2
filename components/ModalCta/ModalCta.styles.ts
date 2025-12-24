@@ -1,13 +1,20 @@
 import { StyleSheet } from "react-native"
 
 import colors from "styles/colors"
+import layout from "styles/layout"
+
+const ctaHeight = 44
 
 const styles = StyleSheet.create({
+  line: {
+    height: 1,
+    backgroundColor: colors.secColor
+  },
   ctaContainer: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 15
+    marginTop: layout.globalPadding
   },
   buttonsContainer: {
     flexDirection: "row",
@@ -21,8 +28,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secColor,
     borderWidth: 1,
     borderColor: colors.secColor,
-    paddingVertical: 12,
-    width: 120
+    width: 120,
+    height: ctaHeight
   },
   horizLine: {
     position: "absolute",

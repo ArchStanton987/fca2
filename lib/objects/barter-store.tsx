@@ -31,6 +31,15 @@ type Category = {
   data: Record<string, { id: string; label: string }>
 }
 
+const defaultAmounts: Record<InventoryCategory, number> = {
+  weapons: 1,
+  clothings: 1,
+  consumables: 1,
+  miscObjects: 1,
+  ammo: 5,
+  caps: 5
+}
+
 export const getCategoriesMap = (
   allItems: AdditionalElContextType
 ): Record<InventoryCategory, Category> => ({
@@ -45,20 +54,20 @@ export const getCategoriesMap = (
     id: "clothings",
     label: "Armures",
     selectors: [1, 5],
-    hasSearch: false,
+    hasSearch: true,
     data: allItems.clothings
   },
   consumables: {
     id: "consumables",
     label: "Consommables",
     selectors: [1, 5, 20],
-    hasSearch: false,
+    hasSearch: true,
     data: allItems.consumables
   },
   miscObjects: {
     id: "miscObjects",
     label: "Objets",
-    selectors: [1, 5, 20, 100],
+    selectors: [1, 5, 20],
     hasSearch: true,
     data: allItems.miscObjects
   },
@@ -109,11 +118,13 @@ const useBarterStore = create<BarterStore>()((set, get, store) => ({
   },
   actions: {
     selectCategory: cat =>
-      set(() => {
+      set(state => {
+        const amount = defaultAmounts[cat]
+        let { selectedItem } = state
         if (cat === "caps") {
-          get().actions.selectItem("caps")
+          selectedItem = "caps"
         }
-        return { category: cat }
+        return { ...state, category: cat, amount, selectedItem }
       }),
     selectAmount: amount => set(() => ({ amount })),
     selectItem: id => set(() => ({ selectedItem: id })),

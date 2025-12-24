@@ -11,16 +11,17 @@ import {
 
 import List from "components/List"
 import ModalCta from "components/ModalCta/ModalCta"
-import ScrollableSection from "components/ScrollableSection"
+import Section from "components/Section"
+import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import TxtInput from "components/TxtInput"
-import ViewSection from "components/ViewSection"
 import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import ModalBody from "components/wrappers/ModalBody"
 import { useCollectiblesData } from "providers/AdditionalElementsProvider"
 import colors from "styles/colors"
+import layout from "styles/layout"
 
 const styles = StyleSheet.create({
   row: {
@@ -42,12 +43,15 @@ const styles = StyleSheet.create({
     backgroundColor: colors.terColor
   },
   searchSection: {
-    width: 280,
-    height: 90
+    width: 200
   },
   addSection: {
-    width: 280,
+    width: 200,
     flex: 1
+  },
+  addSectionContainer: {
+    flex: 1,
+    justifyContent: "center"
   },
   iconsContainer: {
     flexDirection: "row",
@@ -94,7 +98,7 @@ export default function UpdateEffectsModal() {
   return (
     <ModalBody>
       <View style={styles.row}>
-        <ScrollableSection title="LISTE" style={styles.listSection}>
+        <ScrollSection title="LISTE" style={styles.listSection}>
           <List
             data={visibleEffects}
             keyExtractor={item => item.id}
@@ -112,18 +116,22 @@ export default function UpdateEffectsModal() {
               )
             }}
           />
-        </ScrollableSection>
-        <Spacer x={15} />
+        </ScrollSection>
+        <Spacer x={layout.globalPadding} />
         <View>
-          <ViewSection title="RECHERCHE" style={styles.searchSection}>
+          <Section title="RECHERCHE" style={styles.searchSection}>
             <TxtInput value={searchValue} onChangeText={e => actions.setSearch(e)} />
-          </ViewSection>
-          <ViewSection title="AJOUTER" style={styles.addSection}>
+          </Section>
+          <Section
+            title="AJOUTER"
+            style={styles.addSection}
+            contentContainerStyle={styles.addSectionContainer}
+          >
             <View style={styles.iconsContainer}>
-              <MinusIcon onPress={actions.update} />
-              <PlusIcon onPress={actions.update} />
+              <MinusIcon size={62} onPress={actions.update} />
+              <PlusIcon size={62} onPress={actions.update} />
             </View>
-          </ViewSection>
+          </Section>
         </View>
       </View>
       <ModalCta onPressConfirm={onPressConfirm} onPressCancel={onPressCancel} />

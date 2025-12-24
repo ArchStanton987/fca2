@@ -1,11 +1,13 @@
 import { Platform, StyleSheet, View, ViewProps } from "react-native"
 
+import layout from "styles/layout"
+
 const createStyles = () =>
   StyleSheet.create({
     tabPage: {
       flex: 1,
       flexDirection: "row",
-      marginTop: Platform.OS === "web" ? 0 : 25
+      marginTop: Platform.OS === "web" ? 0 : 20 + layout.globalPadding
     }
   })
 

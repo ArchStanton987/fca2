@@ -10,7 +10,7 @@ import { useCurrCharId } from "lib/character/character-store"
 import { useProgress } from "lib/character/progress/progress-provider"
 
 import ModalCta from "components/ModalCta/ModalCta"
-import ScrollableSection from "components/ScrollableSection"
+import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import MinusIcon from "components/icons/MinusIcon"
@@ -133,7 +133,7 @@ export default function UpdateSkillsModal() {
       <Spacer y={10} />
       <Txt style={{ textAlign: "center" }}>Points de compétence à répartir : {toAssignCount}</Txt>
       <Spacer y={10} />
-      <ScrollableSection title="COMPETENCES" style={{ flex: 1 }}>
+      <ScrollSection title="COMPETENCES" style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
         {Object.values(skillsMap).map(skill => {
           const baseValue = base[skill.id]
           const upValue = up[skill.id]
@@ -153,7 +153,7 @@ export default function UpdateSkillsModal() {
             />
           )
         })}
-      </ScrollableSection>
+      </ScrollSection>
       <Spacer y={20} />
       <ModalCta onPressCancel={onCancel} onPressConfirm={onConfirm} />
     </ModalBody>

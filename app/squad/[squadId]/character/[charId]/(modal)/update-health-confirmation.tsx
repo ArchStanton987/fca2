@@ -14,7 +14,7 @@ import {
 
 import List from "components/List"
 import ModalCta from "components/ModalCta/ModalCta"
-import ScrollableSection from "components/ScrollableSection"
+import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import ModalBody from "components/wrappers/ModalBody"
@@ -52,12 +52,12 @@ export default function UpdateHealthConfirmationModal() {
 
   return (
     <ModalBody>
-      <Spacer y={30} />
+      <Spacer y={10} />
       <Txt style={{ textAlign: "center" }}>
         Vous êtes sur le point d&apos;effectuer les modifications suivantes :
       </Txt>
-      <Spacer y={30} />
-      <ScrollableSection title="SANTE" style={{ flex: 1, width: 300, alignSelf: "center" }}>
+      <Spacer y={15} />
+      <ScrollSection title="SANTE" style={{ flex: 1, width: 300, alignSelf: "center" }}>
         {rads !== 0 ? <ListElement label="RADS" count={rads} /> : null}
         {currHp !== 0 ? <ListElement label="PV" count={currHp} /> : null}
         <List
@@ -67,8 +67,8 @@ export default function UpdateHealthConfirmationModal() {
             <ListElement label={limbsMap[item.id].label} count={item.count} />
           )}
         />
-      </ScrollableSection>
-      <Spacer y={15} />
+      </ScrollSection>
+      <Spacer y={10} />
       <ModalCta onPressConfirm={onPressConfirm} />
     </ModalBody>
   )

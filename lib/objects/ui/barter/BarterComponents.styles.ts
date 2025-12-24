@@ -10,16 +10,27 @@ const styles = StyleSheet.create({
   categoriesSection: {
     width: 120
   },
+  amountContainer: {
+    justifyContent: "space-evenly",
+    flexDirection: "row",
+    flexWrap: "wrap"
+  },
+  categoriesContainer: {
+    paddingTop: 5
+  },
   listSection: {
     flex: 1
   },
   searchSection: {
-    width: 200,
-    height: 90
+    width: 200
   },
   addSection: {
     width: 200,
     flex: 1
+  },
+  addSectionContainer: {
+    flex: 1,
+    justifyContent: "space-evenly"
   },
   centeredSection: {
     flexDirection: "row",
