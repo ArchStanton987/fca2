@@ -1,11 +1,11 @@
 import { View, useWindowDimensions } from "react-native"
 
-import layout from "styles/layout"
+import { getSlideWidth } from "./slide.utils"
 
 export default function DrawerSlide({ children }: { children: React.ReactNode }) {
   const { width } = useWindowDimensions()
 
-  const slideWidth = width - layout.drawerWidth - layout.globalPadding * 3
+  const slideWidth = getSlideWidth(width)
 
   return <View style={{ width: slideWidth, flexDirection: "row" }}>{children}</View>
 }
