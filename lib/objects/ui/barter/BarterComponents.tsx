@@ -1,11 +1,13 @@
 import { useMemo } from "react"
-import { View } from "react-native"
 
 import { useCurrCharId } from "lib/character/character-store"
+import AmountSelectorList from "lib/common/ui/AmountSelectorList"
+import ModQuantityButtons from "lib/common/ui/ModQuantityButtons"
 import { Item } from "lib/inventory/item.mappers"
 import {
   getCategoriesMap,
   useBarterActions,
+  useBarterAmount,
   useBarterCategory,
   useBarterInput,
   useBarterItemCount,
@@ -16,14 +18,50 @@ import { AmmoType } from "lib/objects/data/ammo/ammo.types"
 
 import List from "components/List"
 import Row from "components/Row"
+import Section from "components/Section"
 import Selectable from "components/Selectable"
 import Txt from "components/Txt"
 import TxtInput from "components/TxtInput"
-import MinusIcon from "components/icons/MinusIcon"
-import PlusIcon from "components/icons/PlusIcon"
 import { useCollectiblesData } from "providers/AdditionalElementsProvider"
 
 import styles from "./BarterComponents.styles"
+
+function Categories() {
+  const actions = useBarterActions()
+  const category = useBarterCategory()
+  const allCollectibles = useCollectiblesData()
+  const categories = getCategoriesMap(allCollectibles)
+  return (
+    <List
+      style={styles.categoriesContainer}
+      data={Object.values(categories)}
+      keyExtractor={c => c.id}
+      renderItem={({ item }) => (
+        <Selectable
+          isSelected={category === item.id}
+          onPress={() => actions.selectCategory(item.id)}
+        >
+          <Txt style={styles.listItem}>{item.label}</Txt>
+        </Selectable>
+      )}
+    />
+  )
+}
+
+function Selectors() {
+  const actions = useBarterActions()
+  const category = useBarterCategory()
+  const allCollectibles = useCollectiblesData()
+  const categories = getCategoriesMap(allCollectibles)
+  const selectedAmount = useBarterAmount()
+  return (
+    <AmountSelectorList
+      items={categories[category].selectors}
+      onPressAmount={actions.selectAmount}
+      selectedAmount={selectedAmount}
+    />
+  )
+}
 
 function ModButtons() {
   const charId = useCurrCharId()
@@ -31,10 +69,23 @@ function ModButtons() {
   const selectedItem = useBarterSelectedItem()
   const inInv = useInInvCount(charId, selectedItem ?? "")
   return (
-    <View style={styles.iconsContainer}>
-      <MinusIcon size={62} onPress={() => actions.onPressMod("minus", inInv)} />
-      <PlusIcon size={62} onPress={() => actions.onPressMod("plus", inInv)} />
-    </View>
+    <ModQuantityButtons
+      onPressPlus={() => actions.onPressMod("plus", inInv)}
+      onPressMinus={() => actions.onPressMod("minus", inInv)}
+    />
+  )
+}
+
+function ModQuantity() {
+  return (
+    <Section
+      title="+/-"
+      style={styles.addSection}
+      contentContainerStyle={styles.addSectionContainer}
+    >
+      <Selectors />
+      <ModButtons />
+    </Section>
   )
 }
 
@@ -84,7 +135,11 @@ function ListItemHeader() {
 function SearchInput() {
   const input = useBarterInput()
   const actions = useBarterActions()
-  return <TxtInput value={input} onChangeText={e => actions.setInput(e)} />
+  return (
+    <Section title="recherche">
+      <TxtInput value={input} onChangeText={e => actions.setInput(e)} />
+    </Section>
+  )
 }
 
 function ObjectsList() {
@@ -116,6 +171,14 @@ function ObjectsList() {
   )
 }
 
-const BarterComponents = { ModButtons, ListItemRow, ListItemHeader, SearchInput, ObjectsList }
+const BarterComponents = {
+  ModQuantity,
+  Categories,
+  ModButtons,
+  ListItemRow,
+  ListItemHeader,
+  SearchInput,
+  ObjectsList
+}
 
 export default BarterComponents

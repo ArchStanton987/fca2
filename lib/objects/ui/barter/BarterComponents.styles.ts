@@ -7,9 +7,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flex: 1
   },
-  categoriesSection: {
-    width: 120
-  },
   amountContainer: {
     justifyContent: "space-evenly",
     flexDirection: "row",
@@ -21,16 +18,14 @@ const styles = StyleSheet.create({
   listSection: {
     flex: 1
   },
-  searchSection: {
-    width: 200
-  },
+  searchSection: {},
   addSection: {
-    width: 200,
     flex: 1
   },
   addSectionContainer: {
     flex: 1,
-    justifyContent: "space-evenly"
+    justifyContent: "space-evenly",
+    paddingHorizontal: 0
   },
   centeredSection: {
     flexDirection: "row",

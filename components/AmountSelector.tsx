@@ -1,5 +1,5 @@
 import React from "react"
-import { StyleSheet, TouchableOpacity, TouchableOpacityProps } from "react-native"
+import { StyleSheet, TouchableOpacity } from "react-native"
 
 import colors from "styles/colors"
 
@@ -7,14 +7,14 @@ import Txt from "./Txt"
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 15,
+    margin: 5,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
     borderColor: colors.secColor,
-    width: 50,
-    height: 50,
+    width: 45,
+    height: 45,
     backgroundColor: colors.primColor
   },
   isSelected: {
@@ -22,18 +22,19 @@ const styles = StyleSheet.create({
   }
 })
 
-type AmountSelectorProps = TouchableOpacityProps & {
+type AmountSelectorProps = {
   value: number | string
   isSelected: boolean
+  onPress: () => void
 }
 
 export default function AmountSelector({
   value,
   isSelected = false,
-  ...rest
+  onPress
 }: AmountSelectorProps) {
   return (
-    <TouchableOpacity style={[styles.container, isSelected && styles.isSelected]} {...rest}>
+    <TouchableOpacity style={[styles.container, isSelected && styles.isSelected]} onPress={onPress}>
       <Txt>{value}</Txt>
     </TouchableOpacity>
   )

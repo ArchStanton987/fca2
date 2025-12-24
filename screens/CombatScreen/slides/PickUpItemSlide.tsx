@@ -1,4 +1,5 @@
 import { memo } from "react"
+import { StyleSheet } from "react-native"
 
 import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
@@ -9,18 +10,51 @@ import {
   useBarterClothings,
   useBarterConsumables,
   useBarterMiscObjects,
-  useBarterWeapons
+  useBarterWeapons,
+  useHasSearch
 } from "lib/objects/barter-store"
-import BarterSection from "lib/objects/ui/barter/BarterSection"
+import Barter from "lib/objects/ui/barter/BarterComponents"
 import Toast from "react-native-toast-message"
 
+import Col from "components/Col"
+import Section from "components/Section"
+import ScrollSection from "components/Section/ScrollSection"
 import DrawerSlide from "components/Slides/DrawerSlide"
 import { SlideProps } from "components/Slides/Slide.types"
+import Spacer from "components/Spacer"
 import { useActionActorId, useActionApi } from "providers/ActionFormProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
+import layout from "styles/layout"
 
-function PickUpItemSlide({ slideIndex }: SlideProps) {
+import GoBackButton from "./GoBackButton"
+import PlayButton from "./PlayButton"
+
+const styles = StyleSheet.create({
+  modCol: {
+    width: 170
+  },
+  ctaSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-evenly"
+  },
+  extend: {
+    flex: 1
+  }
+})
+
+function Search() {
+  const hasSearch = useHasSearch()
+  return hasSearch ? (
+    <>
+      <Barter.SearchInput />
+      <Spacer y={layout.globalPadding} />
+    </>
+  ) : null
+}
+
+function CtaSection({ slideIndex }: { slideIndex: number }) {
   const charId = useCurrCharId()
 
   const useCases = useGetUseCases()
@@ -74,8 +108,31 @@ function PickUpItemSlide({ slideIndex }: SlideProps) {
   }
 
   return (
+    <Section contentContainerStyle={styles.ctaSection}>
+      <GoBackButton onPress={onPressCancel} />
+      <PlayButton onPress={onPressNext} />
+    </Section>
+  )
+}
+
+function PickUpItemSlide({ slideIndex }: SlideProps) {
+  return (
     <DrawerSlide>
-      <BarterSection onPressCancel={onPressCancel} onPressNext={onPressNext} />
+      <ScrollSection title="catégories">
+        <Barter.Categories />
+      </ScrollSection>
+      <Spacer x={layout.globalPadding} />
+      <Col style={styles.extend}>
+        <Search />
+        <ScrollSection title="LISTE" style={styles.extend}>
+          <Barter.ObjectsList />
+        </ScrollSection>
+      </Col>
+      <Spacer x={layout.globalPadding} />
+      <Col style={styles.modCol}>
+        <Barter.ModQuantity />
+        <CtaSection slideIndex={slideIndex} />
+      </Col>
     </DrawerSlide>
   )
 }

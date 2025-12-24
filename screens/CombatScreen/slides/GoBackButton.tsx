@@ -1,8 +1,8 @@
 import { TouchableOpacity, TouchableOpacityProps } from "react-native"
 
-import Ionicons from "@expo/vector-icons/Ionicons"
-
 import colors from "styles/colors"
+
+import PreviousIcon from "./PreviousIcon"
 
 type NextButtonProps = TouchableOpacityProps & {
   size?: number
@@ -11,11 +11,7 @@ type NextButtonProps = TouchableOpacityProps & {
 export default function GoBackButton({ size, disabled, ...rest }: NextButtonProps) {
   return (
     <TouchableOpacity disabled={disabled} {...rest}>
-      <Ionicons
-        name="chevron-back-circle"
-        size={size ?? 36}
-        color={disabled ? colors.terColor : colors.secColor}
-      />
+      <PreviousIcon size={size} color={disabled ? colors.terColor : colors.secColor} />
     </TouchableOpacity>
   )
 }

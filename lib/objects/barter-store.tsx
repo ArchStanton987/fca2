@@ -40,6 +40,8 @@ const defaultAmounts: Record<InventoryCategory, number> = {
   caps: 5
 }
 
+const withSearchCategories = ["weapons", "clothings", "consumables", "miscObjects"]
+
 export const getCategoriesMap = (
   allItems: AdditionalElContextType
 ): Record<InventoryCategory, Category> => ({
@@ -196,3 +198,6 @@ export const useInInvCount = (charId: string, id: "caps" | AmmoType | Item["id"]
   }
   return inInv
 }
+
+export const useHasSearch = () =>
+  useBarterStore(state => withSearchCategories.includes(state.category))
