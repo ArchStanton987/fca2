@@ -1,6 +1,7 @@
 import { SkillId } from "lib/character/abilities/skills/skills.types"
 import { SpecialId } from "lib/character/abilities/special/special.types"
 import { TraitId } from "lib/character/abilities/traits/traits.types"
+import { WeaponTagId } from "lib/objects/data/weapons/weapons.types"
 
 export type HumanTemplate = {
   templateId: string
@@ -9,7 +10,7 @@ export type HumanTemplate = {
   tagSkills: Partial<Record<SkillId, number>>
   special: Record<SpecialId, { min: number; max: number }>
   traits?: Partial<Record<TraitId, number>>
-  weaponTags?: string[]
+  weaponTags?: WeaponTagId[]
 }
 
 const humanTemplates: Record<string, HumanTemplate> = {

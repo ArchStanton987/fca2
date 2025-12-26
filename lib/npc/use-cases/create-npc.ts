@@ -5,13 +5,16 @@ import {
 } from "lib/character/abilities/knowledges/knowledge-types"
 import { getExpForLevel } from "lib/character/status/status-calc"
 import { UseCasesConfig } from "lib/get-use-case.types"
+import barter from "lib/inventory/use-cases/barter"
 import repositoryMap from "lib/shared/db/get-repository"
 import { getSquad } from "lib/squad/use-cases/sub-squad"
 
+import humanTemplates from "../const/human-templates"
 import { CreateNpcForm } from "../create-npc-store"
 import {
   formToDbCharInfo,
   getDbHealth,
+  getEquippedObjects,
   getSpecialFromTemplate,
   getTagSkillsFromTemplate,
   getTraitsFromTemplate,
@@ -23,7 +26,8 @@ export type CreateNpcParams = {
   squadId: string
 }
 
-export default function createNpc({ db, store }: UseCasesConfig) {
+export default function createNpc(config: UseCasesConfig) {
+  const { db, store } = config
   const playableRepo = repositoryMap[db].playableRepository
   const squadRepo = repositoryMap[db].squadRepository
 
@@ -55,9 +59,19 @@ export default function createNpc({ db, store }: UseCasesConfig) {
     const creationRef = await playableRepo.add({}, payload)
     const key = creationRef?.key
     if (!key) throw new Error("Failed to create NPC")
+
+    if (!payload.info.isCritter) {
+      const items = getEquippedObjects(
+        level,
+        tagSkills,
+        humanTemplates[npc.templateId]?.weaponTags ?? []
+      )
+      await barter(config)({ charId: key, caps: 0, ammo: {}, items })
+    }
+
     const squad = getSquad(store, squadId)
     const prevNpcs = squad.npcs
     const newNpcs = { ...prevNpcs, [key]: key }
-    return squadRepo.patchChild({ id: squadId, childKey: "npc" }, newNpcs)
+    await squadRepo.patchChild({ id: squadId, childKey: "npc" }, newNpcs)
   }
 }

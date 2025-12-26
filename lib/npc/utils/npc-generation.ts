@@ -8,6 +8,9 @@ import { DbCharInfo, TemplateId } from "lib/character/info/CharInfo"
 import { getInitSkillsPoints, getSkillPointsPerLevel } from "lib/character/progress/progress-utils"
 import { getLevelAndThresholds } from "lib/character/status/status-calc"
 import { getRandomArbitrary } from "lib/common/utils/dice-calc"
+import clothingsMap from "lib/objects/data/clothings/clothings"
+import weaponsMap from "lib/objects/data/weapons/weapons"
+import { WeaponTagId } from "lib/objects/data/weapons/weapons.types"
 import { getRandomWeightedIndex } from "lib/shared/utils/math-utils"
 
 import humanTemplates from "../const/human-templates"
@@ -106,37 +109,35 @@ export const getUpSkillsScores = (
   return skills
 }
 
-// export const getEquipedObjects = (
-//   level: number,
-//   calcTagSkills: SkillId[],
-//   { weaponTags }: HumanTemplate
-// ): DbEquipedObjects => {
-//   const equipedObjects = {} as DbEquipedObjects
-//   const tierAccess = Math.max(1, Math.round(level / 2.5))
-//   const skillsWithWeapons = ["melee", "smallGuns", "bigGuns", "unarmed"]
-//   const firstMartialSkill = calcTagSkills.find(s => skillsWithWeapons.includes(s))
-//   if (firstMartialSkill) {
-//     const tags = weaponTags ?? []
-//     const weapons = Object.values(weaponsMap)
-//       .filter(w => calcTagSkills.includes(w.skill))
-//       .filter(w => 6 - w.frequency <= tierAccess)
-//       .filter(w => w.tags.some(t => tags.includes(t)))
+export const getEquippedObjects = (
+  level: number,
+  calcTagSkills: SkillId[],
+  weaponTags: WeaponTagId[]
+) => {
+  const items: Record<string, number> = {}
+  const tierAccess = Math.max(1, Math.round(level / 2.5))
+  const skillsWithWeapons = ["melee", "smallGuns", "bigGuns", "unarmed"]
+  const firstMartialSkill = calcTagSkills.find(s => skillsWithWeapons.includes(s))
+  if (firstMartialSkill) {
+    const tags = weaponTags ?? []
+    const weapons = Object.values(weaponsMap)
+      .filter(w => calcTagSkills.includes(w.skillId))
+      .filter(w => 6 - w.frequency <= tierAccess)
+      .filter(w => (tags.length > 0 ? w.tags?.some(t => tags.includes(t)) : true))
 
-//     const weapon = weapons[getRandomArbitrary(0, weapons.length - 1)] ?? { id: "unarmed" }
-//     const inMagazine = weapon?.magazine ?? undefined
-//     const dbWeapon = inMagazine ? { id: weapon.id, inMagazine } : { id: weapon.id }
-//     equipedObjects.weapons = { main: dbWeapon }
-//   }
+    const weapon = weapons[getRandomArbitrary(0, weapons.length)]
+    items[weapon.id] = 1
+  }
 
-//   const clothings = Object.values(clothingsMap)
-//     .filter(c => c.tier <= tierAccess)
-//     .filter(c => c.protects.includes("torso"))
-//   const clothing = clothings[getRandomArbitrary(0, clothings.length - 1)]
-//   if (clothing) {
-//     equipedObjects.clothings = { main: { id: clothing.id } }
-//   }
-//   return equipedObjects
-// }
+  const clothings = Object.values(clothingsMap)
+    .filter(c => c.tier <= tierAccess)
+    .filter(c => c.protects.includes("torso"))
+  const clothing = clothings[getRandomArbitrary(0, clothings.length)]
+  if (clothing) {
+    items[clothing.id] = 1
+  }
+  return items
+}
 
 export const getDbHealth = (
   exp: number,
