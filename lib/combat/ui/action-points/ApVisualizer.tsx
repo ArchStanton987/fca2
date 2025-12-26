@@ -7,15 +7,14 @@ import { useCombatState } from "lib/combat/use-cases/sub-combats"
 import CheckBox from "components/CheckBox/CheckBox"
 import List from "components/List"
 import Section from "components/Section"
-import Spacer from "components/Spacer"
 import { useGetUseCases } from "providers/UseCasesProvider"
 import colors from "styles/colors"
-import layout from "styles/layout"
 
 const styles = StyleSheet.create({
   checkboxContainer: {
     justifyContent: "space-between",
-    paddingHorizontal: 15
+    alignSelf: "stretch",
+    marginVertical: 5
   }
 })
 
@@ -43,7 +42,6 @@ function ApVisualizerUi({ apArr, currAp, maxAp, handleSetAp }: ApVisualizerProps
           />
         )}
       />
-      <Spacer y={layout.globalPadding} />
     </Section>
   )
 }

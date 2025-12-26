@@ -36,7 +36,7 @@ export default function Section({
         style={[
           {
             padding: 5,
-            paddingTop: title ? 0 : layout.smallLineHeight,
+            paddingTop: title ? 2 : layout.smallLineHeight,
             paddingBottom: layout.smallLineHeight
           },
           contentContainerStyle

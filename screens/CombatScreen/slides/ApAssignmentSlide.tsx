@@ -37,7 +37,11 @@ import NextButton from "./NextButton"
 const styles = StyleSheet.create({
   checkboxContainer: {
     justifyContent: "space-between",
-    paddingHorizontal: 15
+    alignSelf: "stretch",
+    marginVertical: 5
+  },
+  extend: {
+    flex: 1
   },
   centeredSection: {
     justifyContent: "center",
@@ -148,8 +152,8 @@ function ApAssignmentSlide({ slideIndex }: SlideProps) {
 
   return (
     <DrawerSlide>
-      <Col style={{ flex: 1 }}>
-        <Section title="Points d'action">
+      <Col style={styles.extend}>
+        <Section title="Points d'action" contentContainerStyle={styles.centeredSection}>
           <List
             data={apArr}
             horizontal
@@ -164,16 +168,15 @@ function ApAssignmentSlide({ slideIndex }: SlideProps) {
               />
             )}
           />
-          <Spacer y={layout.globalPadding} />
         </Section>
 
         <Spacer y={layout.globalPadding} />
 
-        <Row style={{ flex: 1 }}>
+        <Row style={styles.extend}>
           <Section
             title="modifier coût d'action"
-            style={{ flex: 1 }}
-            contentContainerStyle={[styles.centeredSection, { flex: 1 }]}
+            style={styles.extend}
+            contentContainerStyle={[styles.centeredSection, styles.extend]}
           >
             <Row style={{ alignItems: "center" }}>
               <MinusIcon onPress={() => incApCost("remove")} />
@@ -187,7 +190,11 @@ function ApAssignmentSlide({ slideIndex }: SlideProps) {
           <Spacer x={layout.globalPadding} />
 
           <Col style={{ width: 120 }}>
-            <Section style={{ flex: 1 }} title="PA" contentContainerStyle={styles.centeredSection}>
+            <Section
+              title="PA"
+              style={styles.extend}
+              contentContainerStyle={[styles.extend, styles.centeredSection]}
+            >
               <Row>
                 <Txt
                   style={{

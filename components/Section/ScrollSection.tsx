@@ -29,7 +29,7 @@ export default function ScrollSection({
     <View style={[styles.container, style]}>
       <SectionTopRow title={title} titleVariant={titleVariant} onPressTitle={onPressTitle} />
       <ScrollView
-        style={[{ paddingTop: title ? 0 : layout.smallLineHeight }, styles.scrollView]}
+        style={[styles.scrollView, { paddingTop: title ? 2 : layout.smallLineHeight }]}
         contentContainerStyle={contentContainerStyle}
       >
         {children}
