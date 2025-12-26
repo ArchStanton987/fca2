@@ -65,7 +65,7 @@ export default function UpdateKnowledgesModal() {
     })
     router.push({
       pathname: "/squad/[squadId]/character/[charId]/update-knowledges-confirmation",
-      params: { charId, squadId }
+      params: { charId, squadId, modifiedKnowledges: JSON.stringify(modifiedKnowledges) }
     })
   }
 

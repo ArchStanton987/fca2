@@ -6,6 +6,7 @@ import { router, useLocalSearchParams } from "expo-router"
 import { useAbilities } from "lib/character/abilities/abilities-provider"
 import skillsMap from "lib/character/abilities/skills/skills"
 import { SkillId } from "lib/character/abilities/skills/skills.types"
+import { getDownSkillCost, getUpSkillCost } from "lib/character/abilities/skills/utils/skills-utils"
 import { useCurrCharId } from "lib/character/character-store"
 import { useProgress } from "lib/character/progress/progress-provider"
 
@@ -99,7 +100,7 @@ function Row({ label, skillId, values, onModSkill, canAdd, canRemove }: RowProps
 export default function UpdateSkillsModal() {
   const { squadId } = useLocalSearchParams<{ squadId: string }>()
   const charId = useCurrCharId()
-  const { availableSkillPoints, usedSkillsPoints } = useProgress(charId)
+  const { availableSkillPoints } = useProgress(charId)
   const {
     data: { base, up }
   } = useAbilities(charId, abilities => ({
@@ -108,14 +109,15 @@ export default function UpdateSkillsModal() {
   }))
 
   const [newUpSkills, setNewUpskills] = useState(up)
-
-  const assignedCount = Object.values(newUpSkills).reduce((acc, val) => acc + val, 0)
-  const toAssignCount = usedSkillsPoints + availableSkillPoints - assignedCount
+  const [remaining, setRemaining] = useState(() => availableSkillPoints)
 
   const onModSkill = (modType: "plus" | "minus", skillId: SkillId) => {
-    if (toAssignCount === 0 && modType === "plus") return
+    const newScore = base[skillId] + newUpSkills[skillId]
+    const cost = modType === "plus" ? getUpSkillCost(newScore) : getDownSkillCost(newScore)
+    if (remaining < cost && modType === "plus") return
     if (modType === "minus" && newUpSkills[skillId] === up[skillId]) return
     setNewUpskills(prev => ({ ...prev, [skillId]: prev[skillId] + (modType === "plus" ? 1 : -1) }))
+    setRemaining(prev => (modType === "plus" ? prev - cost : prev + cost))
   }
 
   const onCancel = () => router.dismiss(1)
@@ -126,20 +128,19 @@ export default function UpdateSkillsModal() {
     })
   }
 
-  // TODO: manage case when skill score > 100
-
   return (
     <ModalBody>
       <Spacer y={10} />
-      <Txt style={{ textAlign: "center" }}>Points de compétence à répartir : {toAssignCount}</Txt>
+      <Txt style={{ textAlign: "center" }}>Points de compétence à répartir : {remaining}</Txt>
       <Spacer y={10} />
-      <ScrollSection title="COMPETENCES" style={{ flex: 1 }} contentContainerStyle={{ flex: 1 }}>
+      <ScrollSection title="COMPETENCES" style={{ flex: 1 }}>
         {Object.values(skillsMap).map(skill => {
           const baseValue = base[skill.id]
           const upValue = up[skill.id]
           const newUp = newUpSkills[skill.id] - up[skill.id]
           const values = { baseValue, upValue, newUp }
-          const canAdd = toAssignCount > 0
+          const cost = getUpSkillCost(baseValue + newUpSkills[skill.id])
+          const canAdd = remaining >= cost
           const canRemove = newUpSkills[skill.id] > up[skill.id]
           return (
             <Row

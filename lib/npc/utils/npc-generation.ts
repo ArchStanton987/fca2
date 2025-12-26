@@ -60,7 +60,7 @@ export const getTraitsFromTemplate = (templateId: TemplateId) => {
 }
 
 const getMaxTagSkills = (level: number) => Math.round(level / 5) + 2
-const getMaxSkillScore = (level: number) => 80 + level * 5
+const getMaxSkillScore = (level: number) => 60 + level * 5
 
 export const getTagSkillsFromTemplate = (level: number, templateId: TemplateId) => {
   if (!(templateId in humanTemplates)) return []
