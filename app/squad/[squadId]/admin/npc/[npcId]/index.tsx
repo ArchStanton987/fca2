@@ -74,6 +74,7 @@ function Screen() {
       <Spacer x={layout.globalPadding} />
 
       <ScrollSection style={{ width: 160 }} title="actions">
+        <Spacer y={20} />
         <TouchableOpacity style={styles.actionButton} onPress={play}>
           <Txt>INCARNER</Txt>
         </TouchableOpacity>

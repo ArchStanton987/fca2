@@ -1,4 +1,4 @@
-import { TouchableOpacity } from "react-native"
+import { StyleSheet, TouchableOpacity } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
@@ -13,8 +13,20 @@ import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import { useGetUseCases } from "providers/UseCasesProvider"
+import colors from "styles/colors"
 import layout from "styles/layout"
 import { getDDMMYYYY, getHHMM } from "utils/date"
+
+const styles = StyleSheet.create({
+  actionButton: {
+    padding: 8,
+    borderWidth: 2,
+    borderColor: colors.secColor,
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center"
+  }
+})
 
 const getIsValidCombatId = (combatId: string) =>
   combatId !== undefined && combatId !== "" && combatId !== "index"
@@ -88,19 +100,20 @@ function Screen() {
       <Spacer x={layout.globalPadding} />
 
       <ScrollSection style={{ width: 160 }} title="actions">
+        <Spacer y={20} />
         {isFightActive ? (
-          <TouchableOpacity onPress={adminEndFight}>
+          <TouchableOpacity style={styles.actionButton} onPress={adminEndFight}>
             <Txt>CLOTURER</Txt>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity onPress={startFight}>
+          <TouchableOpacity style={styles.actionButton} onPress={startFight}>
             <Txt>DÉMARRER</Txt>
           </TouchableOpacity>
         )}
 
-        <Spacer y={layout.globalPadding} />
+        <Spacer y={40} />
 
-        <TouchableOpacity onPress={deleteCombat}>
+        <TouchableOpacity style={styles.actionButton} onPress={deleteCombat}>
           <Txt>SUPPRIMER</Txt>
         </TouchableOpacity>
       </ScrollSection>
