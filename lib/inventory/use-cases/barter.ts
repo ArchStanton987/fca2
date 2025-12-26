@@ -103,7 +103,7 @@ export default function barter(config: UseCasesConfig) {
     if (Object.keys(ammo).length > 0) {
       const charAmmo = getAmmo(store, charId)
       const newAmmo = Object.fromEntries(
-        Object.entries(ammo).map(([type, count]) => [type, charAmmo[type as AmmoType] + count])
+        Object.entries(ammo).map(([type, count]) => [type, charAmmo[type as AmmoType] ?? 0 + count])
       )
       promises.push(updateAmmo(config)({ charId, ammo: newAmmo }))
     }

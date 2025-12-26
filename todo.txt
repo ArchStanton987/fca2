@@ -1,4 +1,3 @@
-- refacto actions : memo slides / refacto perf slides / remplacer slides par state machine
 - flatten navigation
 
 upgrade item selector (no category)
