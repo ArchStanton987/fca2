@@ -69,8 +69,9 @@ function WithActionRedirections({ children }: { children: ReactNode }) {
 
   const defaultPlayingId = getDefaultPlayingId(contendersCombatStatus)
   const isDefaultPlayer = typeof defaultPlayingId === "string" && defaultPlayingId === charId
+  const isOverriden = combatState.actorIdOverride !== ""
   const isOverrideId = combatState.actorIdOverride === charId
-  const isPlaying = isOverrideId || isDefaultPlayer
+  const isPlaying = isOverriden ? isOverrideId : isDefaultPlayer
 
   if (canReact)
     return (
