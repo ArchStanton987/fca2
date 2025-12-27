@@ -25,7 +25,7 @@ import SlideError, { slideErrors } from "screens/CombatScreen/slides/SlideError"
 import ValidateSlide from "screens/CombatScreen/slides/ValidateSlide/ValidateSlide"
 import ScoreResultSlide from "screens/CombatScreen/slides/score-result/ScoreResultSlide"
 
-const attackSubtypes = ["hit", "throw", "basic", "aim", "burst"]
+export const attackSubtypes = ["hit", "throw", "basic", "aim", "burst"]
 
 function SlideList() {
   const actionType = useActionType()
