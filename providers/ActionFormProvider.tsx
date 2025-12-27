@@ -8,6 +8,7 @@ import { ActionStore, createActionStore } from "lib/combat/action-store"
 import { combatStateOptions } from "lib/combat/use-cases/sub-combats"
 import { getActorSkillFromAction, getSkillFromAction } from "lib/combat/utils/combat-utils"
 import { useCombatWeapons, useItem } from "lib/inventory/use-sub-inv-cat"
+import { reactions } from "lib/reaction/reactions.const"
 import { StoreApi, useStore } from "zustand"
 
 const ActionContext = createContext<StoreApi<ActionStore>>({} as StoreApi<ActionStore>)
@@ -102,4 +103,21 @@ export const useActionSkillScore = (actorId: string) => {
   }))
   return getActorSkillFromAction({ actionType, actionSubtype, item }, abilities, charInfo)
     .sumAbilities
+}
+
+export const useAvailableReactions = () => {
+  const actorId = useActionActorId()
+  const itemDbKey = useActionItemDbKey()
+  const item = useActionItem(actorId, itemDbKey)
+  const actionSubtype = useActionSubtype()
+
+  const isWeapon = item?.category === "weapons"
+  const isMelee = isWeapon && item.data.skillId === "melee"
+  const isUnarmed = isWeapon && item.data.skillId === "unarmed"
+  const isHit = actionSubtype === "hit"
+  const isThrown = actionSubtype === "throw"
+
+  const isParriable = (isMelee || isUnarmed || isHit) && !isThrown
+
+  return isParriable ? reactions : reactions.filter(r => r.id !== "parry")
 }
