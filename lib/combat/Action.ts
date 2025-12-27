@@ -69,22 +69,21 @@ export default class Action {
       this.roll = payload.roll
     }
 
-    const actionIsNotAggressive = !Action.getActionIsAggressive(payload)
-    const isRollMissed = !!this.roll && Action.getIsRollMissed(this.roll)
-    if (actionIsNotAggressive || isRollMissed) {
-      this.reactionRoll = false
-      this.targetId = false
-      this.rawDamage = false
-      this.damageType = false
-      this.damageLocalizationScore = false
-      this.healthChangeEntries = false
-    } else {
+    const actionIsAggressive = Action.getActionIsAggressive(payload)
+    if (actionIsAggressive) {
       this.reactionRoll = payload.reactionRoll
       this.targetId = payload.targetId
       this.rawDamage = payload.rawDamage
       this.damageType = payload.damageType
       this.damageLocalizationScore = payload.damageLocalizationScore
       this.healthChangeEntries = payload.healthChangeEntries
+    } else {
+      this.reactionRoll = false
+      this.targetId = false
+      this.rawDamage = false
+      this.damageType = false
+      this.damageLocalizationScore = false
+      this.healthChangeEntries = false
     }
 
     const hasNoItem = Action.getActionHasNoItem(payload)
