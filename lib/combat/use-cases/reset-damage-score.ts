@@ -5,10 +5,9 @@ export type ResetDifficultyParams = {
   combatId: string
 }
 
-export default function resetDifficulty({ db }: UseCasesConfig) {
+export default function resetDamageScore({ db }: UseCasesConfig) {
   const actionRepo = repositoryMap[db].actionRepository
 
   return ({ combatId }: ResetDifficultyParams) =>
-    // @ts-ignore
-    actionRepo.patchChild({ combatId, childKey: "roll" }, { difficulty: null })
+    actionRepo.deleteChild({ combatId, childKey: "rawDamage" })
 }

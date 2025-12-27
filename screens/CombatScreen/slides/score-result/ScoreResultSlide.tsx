@@ -181,7 +181,7 @@ function ScoreResultSlide({ slideIndex }: SlideProps) {
       </Section>
 
       <Spacer x={layout.globalPadding} />
-      <Col style={{ width: 100 }}>
+      <Col style={{ width: 120 }}>
         <Section style={{ flex: 1 }} contentContainerStyle={styles.centeredSection}>
           <ActionOutcome
             isCritFail={isCritFail}

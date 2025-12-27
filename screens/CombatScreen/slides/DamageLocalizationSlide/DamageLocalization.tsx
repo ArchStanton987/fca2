@@ -2,11 +2,13 @@ import { ReactNode, useCallback } from "react"
 import { ActivityIndicator, TouchableOpacity } from "react-native"
 
 import { useIsMutating, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId } from "lib/character/combat-status/combat-status-provider"
 import { limbsMap } from "lib/character/health/Health"
 import { LimbId } from "lib/character/health/health.const"
 import { TemplateId } from "lib/character/info/CharInfo"
 import { useCharInfo } from "lib/character/info/info-provider"
+import { useCombatState } from "lib/combat/use-cases/sub-combats"
 import { getBodyPart } from "lib/combat/utils/combat-utils"
 import { delay } from "lib/shared/utils/fn-utils"
 
@@ -42,8 +44,14 @@ function TargetIsNotAPlayableSlide({ onPressNext }: { onPressNext: () => void })
 }
 
 function Score() {
+  const currCharId = useCurrCharId()
+  const { data: combatId } = useCombatId(currCharId)
+  const { data: savedScore } = useCombatState(
+    combatId,
+    c => c.action.damageLocalizationScore ?? null
+  )
   const score = useActionDamageLocScore() ?? "-"
-  return <Txt style={styles.score}>{score}</Txt>
+  return <Txt style={styles.score}>{savedScore ?? score}</Txt>
 }
 
 function DamageLocNumPad() {
@@ -71,9 +79,13 @@ const useLocResult = (score: string, targetTemplateId: string = "") =>
 
 function LimbResult() {
   const damageLocScore = useActionDamageLocScore() ?? ""
+  const actorId = useActionActorId()
+  const { data: combatId } = useCombatId(actorId)
+  const { data: savedDice } = useCombatState(combatId, c => c.action.damageLocalizationScore)
   const targetId = useActionTargetId() ?? ""
   const { data: targetTemplateId } = useCharInfo(targetId, i => i.templateId)
-  const query = useLocResult(damageLocScore, targetTemplateId)
+  const score = typeof savedDice === "number" ? savedDice.toString() : damageLocScore
+  const query = useLocResult(score, targetTemplateId)
   const isMutating = useIsMutating({ mutationKey: ["GET_LOC"] }) > 0
   if (isMutating) return <ActivityIndicator color={colors.secColor} size="large" />
   if (query.isError || !query.data) return <Txt>-</Txt>
@@ -107,22 +119,24 @@ const useSetLocResult = () => {
 function Submit({ onSuccess }: { onSuccess: () => void }) {
   const queryClient = useQueryClient()
   const useCases = useGetUseCases()
-  const { setForm } = useActionApi()
+  const { setRoll } = useActionApi()
 
   const actorId = useActionActorId()
   const { data: combatId } = useCombatId(actorId)
+  const { data: savedDice } = useCombatState(combatId, c => c.action.damageLocalizationScore)
 
   const damageLocScore = useActionDamageLocScore() ?? ""
   const targetId = useActionTargetId() ?? ""
   const { data: targetTemplateId } = useCharInfo(targetId, i => i.templateId)
-  const dice = damageLocScore ? parseInt(damageLocScore, 10) : 0
+  const formDice = damageLocScore ? parseInt(damageLocScore, 10) : 0
+  const dice = typeof savedDice === "number" ? savedDice : formDice
   const isScoreValid = !Number.isNaN(dice) && dice > 0 && dice < 101
 
   const setLocalization = useSetLocResult()
 
-  const reset = () => {
-    setForm({ damageLocalizationScore: undefined })
-    // queryClient.setQueryData(getDamageLocQk(damageLocScore, templateId), result)
+  const reset = async () => {
+    await useCases.combat.resetDamageLoc({ combatId })
+    setRoll("clear", "damageLocalizationScore")
   }
 
   const submit = async () => {

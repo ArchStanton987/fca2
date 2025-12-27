@@ -36,7 +36,7 @@ import NextButton from "./NextButton"
 
 const styles = StyleSheet.create({
   checkboxContainer: {
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     alignSelf: "stretch",
     marginVertical: 5
   },

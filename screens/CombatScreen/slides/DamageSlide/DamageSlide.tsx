@@ -112,11 +112,14 @@ function DamageSlide({ slideIndex }: DamageSlideProps) {
   const itemDbKey = useActionItemDbKey()
   const actionType = useActionType()
 
-  const { setForm, setRoll } = useActionApi()
+  const { setRoll } = useActionApi()
 
   const formActorId = useActionActorId()
   const actorId = formActorId === "" ? charId : formActorId
   const { data: combatId } = useCombatId(actorId)
+  const { data: savedScore } = useCombatState(combatId, c =>
+    typeof c.action.rawDamage === "number" ? c.action.rawDamage : null
+  )
   const item = useActionItem(actorId, itemDbKey)
 
   const { scrollTo } = useScrollTo()
@@ -125,8 +128,9 @@ function DamageSlide({ slideIndex }: DamageSlideProps) {
     scrollTo(slideIndex + 1)
   }
 
-  const resetField = () => {
-    setForm({ rawDamage: "" })
+  const resetField = async () => {
+    await useCases.combat.resetDamageScore({ combatId })
+    setRoll("clear", "rawDamage")
   }
 
   const onPressPad = useCallback(
@@ -136,7 +140,7 @@ function DamageSlide({ slideIndex }: DamageSlideProps) {
     [setRoll]
   )
 
-  const parsedScore = parseInt(rawDamage ?? "", 10)
+  const parsedScore = typeof savedScore === "number" ? savedScore : parseInt(rawDamage ?? "", 10)
   const isValid = !Number.isNaN(parsedScore) && parsedScore >= 0 && parsedScore < 1000
 
   const submitDamages = async () => {
@@ -166,7 +170,11 @@ function DamageSlide({ slideIndex }: DamageSlideProps) {
               <DamageRoll charId={actorId} />
             </Section>
             <Spacer y={layout.globalPadding} />
-            <Section title={actionType === "weapon" ? "arme" : "objet"} style={{ flex: 1 }}>
+            <Section
+              title={actionType === "weapon" ? "arme" : "objet"}
+              style={{ flex: 1 }}
+              contentContainerStyle={{ alignItems: "center", justifyContent: "center", flex: 1 }}
+            >
               {actionType === "weapon" ? (
                 <WeaponInfoUi charId={actorId} weaponKey={itemDbKey ?? ""} />
               ) : (

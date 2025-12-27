@@ -1,3 +1,4 @@
+import { useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { useCombatState } from "lib/combat/use-cases/sub-combats"
 import { getRollFinalScore } from "lib/combat/utils/combat-utils"
 
@@ -7,6 +8,7 @@ import Section from "components/Section"
 import DrawerSlide from "components/Slides/DrawerSlide"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
+import { useActionTargetId } from "providers/ActionFormProvider"
 import layout from "styles/layout"
 
 import NextButton from "../NextButton"
@@ -24,13 +26,15 @@ export default function VisualizeReactionSlide({
   skipDamage: () => void
 }) {
   const { data: action } = useCombatState(combatId, state => state.action)
+  const targetId = useActionTargetId()
+  const { data: opponentBonus = 0 } = useCombatStatus(targetId ?? "", cs => cs.actionBonus)
 
   if (!action?.roll || !action?.reactionRoll)
     return <SlideError error={slideErrors.noDiceRollError} />
 
   const actorScore = getRollFinalScore(action.roll)
   const { opponentDice, opponentSumAbilities } = action.reactionRoll
-  const opponentScore = opponentSumAbilities - opponentDice
+  const opponentScore = opponentSumAbilities - opponentDice + opponentBonus
   const actorReactionScore = actorScore - opponentScore
   const actionHasFailed = actorReactionScore < 0
 
@@ -72,7 +76,7 @@ export default function VisualizeReactionSlide({
 
       <Spacer x={layout.globalPadding} />
 
-      <Col>
+      <Col style={{ width: 120 }}>
         <Section
           title="résultat"
           style={{ flex: 1 }}

@@ -8,6 +8,7 @@ import { ActionStore, createActionStore } from "lib/combat/action-store"
 import { combatStateOptions } from "lib/combat/use-cases/sub-combats"
 import { getActorSkillFromAction, getSkillFromAction } from "lib/combat/utils/combat-utils"
 import { useCombatWeapons, useItem } from "lib/inventory/use-sub-inv-cat"
+import Weapon from "lib/objects/data/weapons/Weapon"
 import { reactions } from "lib/reaction/reactions.const"
 import { StoreApi, useStore } from "zustand"
 
@@ -106,9 +107,9 @@ export const useActionSkillScore = (actorId: string) => {
 }
 
 export const useAvailableReactions = () => {
-  const actorId = useActionActorId()
-  const itemDbKey = useActionItemDbKey()
-  const item = useActionItem(actorId, itemDbKey)
+  const actorId = useActionActorId() ?? ""
+  const itemDbKey = useActionItemDbKey() ?? ""
+  const item = useActionItem(actorId, itemDbKey) ?? Weapon.getUnarmed()
   const actionSubtype = useActionSubtype()
 
   const isWeapon = item?.category === "weapons"

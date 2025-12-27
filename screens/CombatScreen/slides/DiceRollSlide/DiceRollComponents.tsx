@@ -1,5 +1,6 @@
 import { ReactNode } from "react"
 
+import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId, useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import difficultyArray from "lib/combat/const/difficulty"
 import { useCombatState } from "lib/combat/use-cases/sub-combats"
@@ -9,6 +10,7 @@ import Section from "components/Section"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import {
+  useActionApi,
   useActionSkill,
   useActionSkillScore,
   useActorDiceScore
@@ -20,8 +22,13 @@ import NextButton from "../NextButton"
 import styles from "./DiceRollSlide.styles"
 
 function DiceScore() {
+  const currCharId = useCurrCharId()
+  const { data: combatId } = useCombatId(currCharId)
+  const { data: savedScore } = useCombatState(combatId, c =>
+    c.action.roll ? c.action.roll.dice : null
+  )
   const actorDiceScore = useActorDiceScore()
-  return <Txt style={styles.score}>{actorDiceScore}</Txt>
+  return <Txt style={styles.score}>{savedScore ?? actorDiceScore}</Txt>
 }
 
 function SkillLabelSection({ actorId, children }: { actorId: string; children: ReactNode }) {
@@ -59,22 +66,24 @@ function Difficulty({ actorId }: { actorId: string }) {
 
 function Submit({ actorId, onSubmit }: { actorId: string; onSubmit: () => void }) {
   const useCases = useGetUseCases()
-
+  const { setRoll } = useActionApi()
   const { data: combatId } = useCombatId(actorId)
   const { data: combatStatus } = useCombatStatus(actorId)
   const actorDiceScore = useActorDiceScore()
   const {
-    data: { action, difficulty }
+    data: { action, difficulty, savedDice }
   } = useCombatState(combatId, cs => ({
     difficulty: cs.action.roll ? cs.action.roll.difficulty : 0,
-    action: cs.action
+    action: cs.action,
+    savedDice: cs.action.roll ? cs.action.roll.dice : null
   }))
 
   const bonus = getRollBonus(combatStatus, action)
   const skillId = useActionSkill(actorId)?.id
   const sumAbilities = useActionSkillScore(actorId)
 
-  const dice = actorDiceScore ? parseInt(actorDiceScore, 10) : 0
+  const formDice = actorDiceScore ? parseInt(actorDiceScore, 10) : 0
+  const dice = savedDice ?? formDice
   const isValid = !Number.isNaN(dice) && dice > 0 && dice < 101
 
   const onPressConfirm = async () => {
@@ -89,7 +98,20 @@ function Submit({ actorId, onSubmit }: { actorId: string; onSubmit: () => void }
     await useCases.combat.updateRoll({ combatId, payload: { ...roll } })
     onSubmit()
   }
-  return <NextButton onPress={() => onPressConfirm()} size={55} disabled={!isValid} />
+
+  const reset = async () => {
+    await useCases.combat.resetDiceRoll({ combatId })
+    setRoll("clear", "actorDiceScore")
+  }
+
+  return (
+    <NextButton
+      onLongPress={() => reset()}
+      onPress={() => onPressConfirm()}
+      size={55}
+      disabled={!isValid}
+    />
+  )
 }
 
 const DiceRoll = { DiceScore, SkillLabelSection, AbilitiesScore, Difficulty, Submit }

@@ -150,7 +150,7 @@ export default function ReactionScoreResultSlide() {
         </Section>
 
         <Spacer x={layout.globalPadding} />
-        <Col style={{ width: 100 }}>
+        <Col style={{ width: 120 }}>
           <Section
             title="résultat"
             style={{ flex: 1 }}

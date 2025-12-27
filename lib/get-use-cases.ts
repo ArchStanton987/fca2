@@ -26,7 +26,11 @@ import doCombatAction, { CombatActionParams } from "./combat/use-cases/do-combat
 import endWait, { EndWaitParams } from "./combat/use-cases/end-wait"
 import pickTarget, { PickTargetParams } from "./combat/use-cases/pick-target"
 import prepareAction, { PrepareActionParams } from "./combat/use-cases/prepare-action"
+import resetDamageLoc from "./combat/use-cases/reset-damage-loc"
+import resetDamageScore from "./combat/use-cases/reset-damage-score"
+import resetDiceRoll from "./combat/use-cases/reset-dice-roll"
 import resetDifficulty, { ResetDifficultyParams } from "./combat/use-cases/reset-difficulty"
+import resetReactionRoll from "./combat/use-cases/reset-reaction-roll"
 import saveAction, { SaveActionParams } from "./combat/use-cases/save-action"
 import saveReaction, { SaveReactionParams } from "./combat/use-cases/save-reaction"
 import setDifficulty, { SetDifficultyParams } from "./combat/use-cases/set-difficulty"
@@ -106,6 +110,10 @@ export default function getUseCases(config: UseCasesConfig) {
       saveAction: (data: SaveActionParams) => saveAction(config)(data),
       setDifficulty: (data: SetDifficultyParams) => setDifficulty(config)(data),
       resetDifficulty: (data: ResetDifficultyParams) => resetDifficulty(config)(data),
+      resetDamageLoc: (data: ResetDifficultyParams) => resetDamageLoc(config)(data),
+      resetDamageScore: (data: ResetDifficultyParams) => resetDamageScore(config)(data),
+      resetDiceRoll: (data: ResetDifficultyParams) => resetDiceRoll(config)(data),
+      resetReactionRoll: (data: ResetDifficultyParams) => resetReactionRoll(config)(data),
       pickTarget: (data: PickTargetParams) => pickTarget(config)(data),
       updateRoll: (data: UpdateRollParams) => updateRoll(config)(data),
       saveReaction: (data: SaveReactionParams) => saveReaction(config)(data),
