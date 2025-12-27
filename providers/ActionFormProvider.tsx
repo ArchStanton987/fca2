@@ -8,8 +8,6 @@ import { ActionStore, createActionStore } from "lib/combat/action-store"
 import { combatStateOptions } from "lib/combat/use-cases/sub-combats"
 import { getActorSkillFromAction, getSkillFromAction } from "lib/combat/utils/combat-utils"
 import { useCombatWeapons, useItem } from "lib/inventory/use-sub-inv-cat"
-import Weapon from "lib/objects/data/weapons/Weapon"
-import { reactions } from "lib/reaction/reactions.const"
 import { StoreApi, useStore } from "zustand"
 
 const ActionContext = createContext<StoreApi<ActionStore>>({} as StoreApi<ActionStore>)
@@ -106,19 +104,28 @@ export const useActionSkillScore = (actorId: string) => {
     .sumAbilities
 }
 
-export const useAvailableReactions = () => {
-  const actorId = useActionActorId() ?? ""
-  const itemDbKey = useActionItemDbKey() ?? ""
-  const item = useActionItem(actorId, itemDbKey) ?? Weapon.getUnarmed()
-  const actionSubtype = useActionSubtype()
+// TODO: fix data unavailable issue
+// export const useAvailableReactions = () => {
+//   const currCharId = useCurrCharId()
+//   const { data: combatId } = useCombatId(currCharId)
+//   const { data: combatState } = useCombatState(combatId, cs => ({
+//     actorId: cs.actorIdOverride ?? cs.action.actorId,
+//     itemDbKey: cs.action.itemDbKey ? cs.action.itemDbKey : "",
+//     actionSubtype: cs.action.actionSubtype
+//   }))
+//   const { actorId, itemDbKey, actionSubtype } = combatState
+//   const items = useCombatWeapons(actorId)
+//   const item = items.find(i => i.dbKey === itemDbKey)
 
-  const isWeapon = item?.category === "weapons"
-  const isMelee = isWeapon && item.data.skillId === "melee"
-  const isUnarmed = isWeapon && item.data.skillId === "unarmed"
-  const isHit = actionSubtype === "hit"
-  const isThrown = actionSubtype === "throw"
+//   if (!item) return reactions
 
-  const isParriable = (isMelee || isUnarmed || isHit) && !isThrown
+//   const isWeapon = item?.category === "weapons"
+//   const isMelee = isWeapon && item.data.skillId === "melee"
+//   const isUnarmed = isWeapon && item.data.skillId === "unarmed"
+//   const isHit = actionSubtype === "hit"
+//   const isThrown = actionSubtype === "throw"
 
-  return isParriable ? reactions : reactions.filter(r => r.id !== "parry")
-}
+//   const isParriable = (isMelee || isUnarmed || isHit) && !isThrown
+
+//   return isParriable ? reactions : reactions.filter(r => r.id !== "parry")
+// }

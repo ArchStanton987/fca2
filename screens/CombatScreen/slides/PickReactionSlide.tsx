@@ -7,7 +7,7 @@ import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId, useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { useCharInfo } from "lib/character/info/info-provider"
 import { useGetReactionAbilities } from "lib/combat/utils/combat-utils"
-import { reactionsRecord } from "lib/reaction/reactions.const"
+import { reactions, reactionsRecord } from "lib/reaction/reactions.const"
 
 import Col from "components/Col"
 import List from "components/List"
@@ -19,7 +19,6 @@ import { SlideProps } from "components/Slides/Slide.types"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import HealthFigure from "components/draws/HealthFigure/HealthFigure"
-import { useAvailableReactions } from "providers/ActionFormProvider"
 import { useReactionApi, useReactionForm } from "providers/ReactionProvider"
 import { useScrollTo } from "providers/SlidesProvider"
 import { useGetUseCases } from "providers/UseCasesProvider"
@@ -76,7 +75,8 @@ export default function PickReactionSlide({ slideIndex }: SlideProps) {
   const { apCost } = reactionsRecord[reaction]
   const leftAp = combatStatus.currAp - apCost
 
-  const reactions = useAvailableReactions()
+  // TODO: fix data unavailable issue
+  // const reactions = useAvailableReactions()
 
   const onSetReaction = (newReaction: keyof typeof reactionsRecord) => {
     setReactionForm({ reaction: newReaction })
