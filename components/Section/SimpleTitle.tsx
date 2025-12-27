@@ -1,6 +1,7 @@
 import { TouchableOpacity, View } from "react-native"
 
 import Txt from "components/Txt"
+import layout from "styles/layout"
 
 import { SimpleTitleProps } from "./Section.types"
 import styles from "./SimpleTitle.styles"
@@ -12,7 +13,8 @@ export default function SimpleTitle(props: SimpleTitleProps) {
     titleVariant = "default",
     textStyle,
     lineStyle,
-    onPress
+    onPress,
+    parentWidth
   } = props
 
   const handleOnPress = () => {
@@ -25,9 +27,22 @@ export default function SimpleTitle(props: SimpleTitleProps) {
   return (
     <>
       <View style={[styles.horizLine, titlePosition !== "left" && styles.extend, lineStyle]} />
-      <TouchableOpacity disabled={!onPress} style={styles.button} onPress={handleOnPress}>
+      <TouchableOpacity
+        disabled={!onPress}
+        style={[
+          styles.button,
+          {
+            maxWidth: parentWidth - 2 * layout.smallLineHeight
+          }
+        ]}
+        onPress={handleOnPress}
+      >
         {hasText ? (
-          <Txt style={[styles[titleVariant], textStyle]} numberOfLines={1}>
+          <Txt
+            ellipsizeMode="tail"
+            style={[styles[titleVariant], textStyle, { maxWidth: parentWidth }]}
+            numberOfLines={1}
+          >
             {title.toUpperCase()}
           </Txt>
         ) : null}

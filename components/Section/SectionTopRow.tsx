@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { StyleSheet, View } from "react-native"
 
 import SmallLine from "components/draws/Line/Line"
@@ -41,12 +42,24 @@ export default function SectionTopRow(props: {
   const isComposedTitle = Array.isArray(title)
   const hasNoTitle = title === undefined
 
+  const [w, setW] = useState(0)
+
   return (
-    <View style={styles.container}>
+    <View
+      style={styles.container}
+      onLayout={e => {
+        setW(e.nativeEvent.layout.width)
+      }}
+    >
       <SmallLine top left style={styles.smallLine} />
       <SmallLine top right style={styles.smallLine} />
       {isSimpleTitle ? (
-        <SimpleTitle title={title} titleVariant={titleVariant} onPress={onPressTitle} />
+        <SimpleTitle
+          parentWidth={w}
+          title={title}
+          titleVariant={titleVariant}
+          onPress={onPressTitle}
+        />
       ) : null}
       {isComposedTitle ? <ComposedTitle title={title} /> : null}
       {hasNoTitle ? <View style={[styles.horizLine, styles.extend]} /> : null}

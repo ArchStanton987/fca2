@@ -10,6 +10,7 @@ export type SimpleTitleProps = {
   lineStyle?: StyleProp<ViewStyle>
   spacerWidth?: number
   onPress?: (str: string) => void
+  parentWidth: number
 }
 
 export type ComposedTitleProps = (SimpleTitleProps & { containerStyle?: StyleProp<ViewStyle> })[]
