@@ -8,14 +8,15 @@ import { useDatetime, useSquadNpcs } from "lib/squad/use-cases/sub-squad"
 import Toast from "react-native-toast-message"
 
 import AmountSelector from "components/AmountSelector"
+import DrawerPage from "components/DrawerPage"
 import List from "components/List"
 import Section from "components/Section"
 import Spacer from "components/Spacer"
-import TabPage from "components/TabPage"
 import Txt from "components/Txt"
 import MinusIcon from "components/icons/MinusIcon"
 import PlusIcon from "components/icons/PlusIcon"
 import { useGetUseCases } from "providers/UseCasesProvider"
+import drawerStyles from "styles/DrawerLayout.styles"
 import colors from "styles/colors"
 import { getDDMMYYYY, getHHMM } from "utils/date"
 
@@ -96,7 +97,7 @@ export default function Screen() {
 
   return (
     <LoadPlayables playablesIds={npcsIds}>
-      <TabPage>
+      <DrawerPage style={drawerStyles.drawerLayout}>
         <View style={styles.row}>
           <Section
             title="NOUVELLE DATE"
@@ -162,8 +163,7 @@ export default function Screen() {
             <Spacer fullspace />
           </Section>
         </View>
-      </TabPage>
-      <Spacer y={15} />
+      </DrawerPage>
     </LoadPlayables>
   )
 }

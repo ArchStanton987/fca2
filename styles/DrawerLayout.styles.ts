@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     marginTop: Platform.OS === "web" ? globalPadding : headerHeight + globalPadding,
-    marginBottom: globalPadding + 5
+    marginBottom: globalPadding
   }
 })
 

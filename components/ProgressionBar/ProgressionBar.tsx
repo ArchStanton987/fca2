@@ -30,7 +30,7 @@ export default function ProgressionBar(props: ProgressionBarProps) {
     color = colors.secColor
   } = props
 
-  const innerWidth = ((value - min) / (max - min)) * width
+  const innerWidth = ((value - min) / (max - min)) * width - 1
 
   return (
     <View
