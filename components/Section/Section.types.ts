@@ -13,6 +13,8 @@ export type SimpleTitleProps = {
   parentWidth: number
 }
 
-export type ComposedTitleProps = (SimpleTitleProps & { containerStyle?: StyleProp<ViewStyle> })[]
+export type ComposedTitleProps = (Omit<SimpleTitleProps, "parentWidth"> & {
+  containerStyle?: StyleProp<ViewStyle>
+})[]
 
 export type TitleType = string | ComposedTitleProps

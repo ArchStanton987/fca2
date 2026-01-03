@@ -61,7 +61,7 @@ export default function SectionTopRow(props: {
           onPress={onPressTitle}
         />
       ) : null}
-      {isComposedTitle ? <ComposedTitle title={title} /> : null}
+      {isComposedTitle ? <ComposedTitle parentWidth={w} title={title} /> : null}
       {hasNoTitle ? <View style={[styles.horizLine, styles.extend]} /> : null}
     </View>
   )

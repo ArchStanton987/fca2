@@ -24,7 +24,13 @@ const styles = StyleSheet.create({
   }
 })
 
-export default function ComposedTitle({ title }: { title: ComposedTitleProps }) {
+export default function ComposedTitle({
+  title,
+  parentWidth
+}: {
+  title: ComposedTitleProps
+  parentWidth: number
+}) {
   return (
     <List
       data={title}
@@ -33,7 +39,7 @@ export default function ComposedTitle({ title }: { title: ComposedTitleProps }) 
       style={styles.container}
       renderItem={({ item }) => (
         <View style={[styles.titlePartContainer, item.containerStyle]}>
-          <SimpleTitle {...item} />
+          <SimpleTitle parentWidth={parentWidth} {...item} />
         </View>
       )}
     />

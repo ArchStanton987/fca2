@@ -43,7 +43,7 @@ const getTitle = (cb: (str: WeaponSortableKey) => void): ComposedTitleProps => [
   {
     title: "comp",
     onPress: () => cb("skill"),
-    containerStyle: { width: 37 },
+    containerStyle: { width: 40 },
     lineStyle: { minWidth: 0 },
     spacerWidth: 5
   },
