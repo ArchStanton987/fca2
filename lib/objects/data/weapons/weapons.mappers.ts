@@ -24,8 +24,8 @@ export default class WeaponMappers {
       value: payload.value,
       frequency: payload.frequency,
       skillId: payload.skillId,
-      knowledges: Object.values(payload.knowledges),
-      tags: Object.values(payload.tags),
+      knowledges: Object.values(payload.knowledges ?? {}),
+      tags: Object.values(payload.tags ?? {}),
       isTwoHanded: payload.isTwoHanded,
       effects: payload.effects,
       modifiers: payload.modifiers

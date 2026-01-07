@@ -29,13 +29,18 @@ export default class Weapon implements ItemInterface {
   inMagazine: number | null
   data: WeaponData
 
-  static dbToData = (payload: Partial<DbWeaponData>): Partial<WeaponData> => ({
-    ...payload,
-    knowledges: payload.knowledges
-      ? (Object.keys(payload.knowledges ?? {}) as KnowledgeId[])
-      : undefined,
-    tags: payload.tags ? (Object.keys(payload.tags ?? {}) as WeaponTagId[]) : undefined
-  })
+  static dbToData = (payload: Partial<DbWeaponData>): Partial<WeaponData> => {
+    const result = {
+      ...payload,
+      knowledges: payload.knowledges
+        ? (Object.keys(payload.knowledges ?? {}) as KnowledgeId[])
+        : undefined,
+      tags: payload.tags ? (Object.keys(payload.tags ?? {}) as WeaponTagId[]) : undefined
+    }
+    if (result.knowledges === undefined) delete result.knowledges
+    if (result.tags === undefined) delete result.tags
+    return result
+  }
 
   static getDamageEst(secAttr: Abilities["secAttr"], weapon: Weapon) {
     const { damageBasic, damageBurst } = weapon.data
@@ -64,7 +69,7 @@ export default class Weapon implements ItemInterface {
     this.dbKey = payload.key
     this.category = payload.category
     this.isEquipped = payload.isEquipped
-    this.data = Object.assign(allWeapons[this.id], Weapon.dbToData(payload.data ?? {}))
+    this.data = { ...allWeapons[this.id], ...Weapon.dbToData(payload.data ?? {}) }
     const { inMagazine = 0 } = payload
     this.inMagazine = this.data.ammoType !== null ? inMagazine : null
   }
