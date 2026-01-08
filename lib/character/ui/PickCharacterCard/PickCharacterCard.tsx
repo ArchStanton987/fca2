@@ -1,7 +1,8 @@
 import { StyleSheet, TouchableOpacity, TouchableOpacityProps } from "react-native"
 
-import { useCharInfo } from "lib/character/info/info-provider"
-import { useExp } from "lib/character/progress/exp-provider"
+import { useQuery } from "@tanstack/react-query"
+import { getCharInfoOptions } from "lib/character/info/info-provider"
+import { getExpOptions } from "lib/character/progress/exp-provider"
 
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
@@ -25,14 +26,14 @@ const styles = StyleSheet.create({
 })
 
 export default function PickCharacterCard({ charId, ...rest }: PickCharacterCardProps) {
-  const { data: exp } = useExp(charId)
-  const { data: fullname } = useCharInfo(charId, data => data.fullname)
+  const exp = useQuery(getExpOptions(charId))
+  const info = useQuery(getCharInfoOptions(charId))
 
   return (
     <TouchableOpacity style={styles.container} {...rest}>
-      <Txt>{fullname}</Txt>
+      <Txt>{info?.data?.fullname ?? ""}</Txt>
       <Spacer y={15} />
-      <Txt>exp: {exp}</Txt>
+      <Txt>exp: {exp.data ?? 0}</Txt>
     </TouchableOpacity>
   )
 }
