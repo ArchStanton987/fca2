@@ -249,7 +249,7 @@ export default class Health {
   get crippledEffects() {
     const { limbs } = this
     return Object.entries(limbs).reduce((acc, [id, hp]) => {
-      const hasHp = hp === 0
+      const hasHp = hp > 0
       if (hasHp) return acc
       const effectId = limbsMap[id as LimbId].crippledEffectId
       const data = new Effect({ id: effectId })

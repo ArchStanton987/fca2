@@ -10,8 +10,11 @@ import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import HealthFigure from "components/draws/HealthFigure/HealthFigure"
 
+import { useHealth } from "../health-provider"
+
 export default function HealthSection({ charId }: { charId: string }) {
-  const { data: effects } = useCharEffects(charId, data => Object.values(data))
+  const { data: effects } = useCharEffects(charId)
+  const { data: health } = useHealth(charId)
 
   return (
     <View style={{ width: 160 }}>
@@ -25,7 +28,7 @@ export default function HealthSection({ charId }: { charId: string }) {
 
       <ScrollSection title="effets en cours" style={{ flex: 1 }}>
         <List
-          data={effects}
+          data={Object.values({ ...effects, ...health.calculatedEffects })}
           horizontal
           keyExtractor={item => item.dbKey || item.id}
           style={{ flexWrap: "wrap", flex: 1 }}

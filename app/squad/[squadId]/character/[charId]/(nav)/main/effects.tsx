@@ -7,6 +7,7 @@ import { useCurrCharId } from "lib/character/character-store"
 import Effect from "lib/character/effects/Effect"
 import { useCharEffects } from "lib/character/effects/effects-provider"
 import EffectRow from "lib/character/effects/ui/EffectRow"
+import { useHealth } from "lib/character/health/health-provider"
 
 import DrawerPage from "components/DrawerPage"
 import List from "components/List"
@@ -52,6 +53,7 @@ export default function EffectsScreen() {
 
   const [selectedId, setSelectedId] = useState<Effect["id"] | null>(null)
 
+  const { data: health } = useHealth(charId)
   const { data: effects } = useCharEffects(charId)
 
   const onPressAdd = () =>
@@ -70,7 +72,7 @@ export default function EffectsScreen() {
     <DrawerPage>
       <ScrollSection style={{ flex: 1 }} title={title}>
         <List
-          data={Object.values(effects)}
+          data={Object.values({ ...effects, ...health.calculatedEffects })}
           keyExtractor={item => item.dbKey || item.id}
           renderItem={({ item }) => (
             <EffectRow

@@ -77,7 +77,7 @@ export default function UpdateKnowledgesModal() {
         </Txt>
       ) : null}
       <Txt style={{ textAlign: "center" }}>
-        Points de connaissances {isFreeKnowledges ? "gratuits" : ""} à répartir : {remainingPoints}
+        Points de connaissances{isFreeKnowledges ? " gratuits " : " "}à répartir : {remainingPoints}
       </Txt>
       <Spacer y={20} />
       <ListHeader />
