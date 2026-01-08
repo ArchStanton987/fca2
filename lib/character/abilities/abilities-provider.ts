@@ -13,7 +13,7 @@ export const getDbAbilitiesOptions = (charId: string, enabled = true) =>
 export const sortKnowledges = (knowledges: Partial<Record<KnowledgeId, KnowledgeLevelValue>>) =>
   Object.entries(knowledges)
     .map(([id, value]) => ({ id, value }))
-    .sort((a, b) => a.value + b.value)
+    .sort((a, b) => b.value - a.value)
 
 export function useAbilities<TData = Abilities>(id: string, select?: (data: Abilities) => TData) {
   return useSuspenseQuery({ ...getDbAbilitiesOptions(id), select })

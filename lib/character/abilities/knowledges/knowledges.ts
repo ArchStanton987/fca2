@@ -144,7 +144,7 @@ const knowledgesCategories = Array.from(new Set(knowledgesList.map(k => k.catego
 
 export const knowledgesByCategory = knowledgesCategories.map(category => ({
   title: category,
-  data: knowledgesList.filter(k => k.category === category)
+  data: knowledgesList.filter(k => k.category === category && !k.isDeprecated)
 }))
 
 export default knowledgesMap
