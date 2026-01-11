@@ -13,10 +13,6 @@ const getStyles = (color: string = colors.secColor) =>
       borderColor: color,
       backgroundColor: colors.primColor
     },
-    content: {
-      height: 10,
-      width: 10
-    },
     checked: {
       backgroundColor: color
     }

@@ -30,7 +30,12 @@ export default function CheckBox(props: CheckBoxProps) {
       {...rest}
     >
       <View
-        style={[styles.content, style, isChecked && styles.checked, isChecked && checkedStyle]}
+        style={[
+          { height: size * 0.45, width: size * 0.45 },
+          style,
+          isChecked && styles.checked,
+          isChecked && checkedStyle
+        ]}
       />
     </TouchableOpacity>
   )

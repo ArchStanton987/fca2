@@ -1,7 +1,7 @@
 import { StyleSheet, View } from "react-native"
 
 import { useAbilities } from "lib/character/abilities/abilities-provider"
-import { useCarry, useClothings, useWeapons } from "lib/inventory/use-sub-inv-cat"
+import { useCarry, useClothings, useMiscObjects, useWeapons } from "lib/inventory/use-sub-inv-cat"
 
 import List from "components/List"
 import Section from "components/Section"
@@ -35,12 +35,21 @@ function ClothingsListHeader() {
     </>
   )
 }
+function MiscListHeader() {
+  return (
+    <>
+      <Txt>DIVERS :</Txt>
+      <Spacer y={5} />
+    </>
+  )
+}
 
 export default function EquipedObjSection({ charId }: { charId: string }) {
   const { data: currSecAttr } = useAbilities(charId, a => a.secAttr.curr)
   const { normalCarryWeight, tempCarryWeight, maxCarryWeight, maxPlace } = currSecAttr
-  const { data: equipedWeapons } = useWeapons(charId, { isEquipped: true })
-  const { data: equipedClothings } = useClothings(charId, true)
+  const { data: equippedWeapons } = useWeapons(charId, { isEquipped: true })
+  const { data: equippedClothings } = useClothings(charId, true)
+  const { data: equippedMisc } = useMiscObjects(charId, true)
   const { weight, place } = useCarry(charId)
 
   return (
@@ -61,7 +70,7 @@ export default function EquipedObjSection({ charId }: { charId: string }) {
 
       <ScrollSection title="équipement" style={{ flex: 1 }}>
         <List
-          data={Object.values(equipedWeapons)}
+          data={Object.values(equippedWeapons)}
           ListHeaderComponent={WeaponsListHeader}
           keyExtractor={item => item.dbKey}
           renderItem={({ item }) => (
@@ -71,11 +80,23 @@ export default function EquipedObjSection({ charId }: { charId: string }) {
           )}
         />
 
-        <Spacer y={10} />
+        <Spacer y={layout.globalPadding} />
 
         <List
-          data={Object.values(equipedClothings)}
+          data={Object.values(equippedClothings)}
           ListHeaderComponent={ClothingsListHeader}
+          keyExtractor={item => item.dbKey}
+          renderItem={({ item }) => (
+            <View style={styles.equObjRow}>
+              <Txt>- {item.data.label}</Txt>
+            </View>
+          )}
+        />
+        <Spacer y={layout.globalPadding} />
+
+        <List
+          data={Object.values(equippedMisc)}
+          ListHeaderComponent={MiscListHeader}
           keyExtractor={item => item.dbKey}
           renderItem={({ item }) => (
             <View style={styles.equObjRow}>

@@ -14,11 +14,11 @@ export default function DeleteInput(props: DeleteInputProps) {
   const { isSelected, onPress, style } = props
   return (
     <TouchableOpacity
-      style={[{ justifyContent: "center", alignItems: "flex-end", width: 32 }, style]}
+      style={[{ justifyContent: "center", alignItems: "flex-end", width: 40 }, style]}
       onPress={onPress}
       disabled={!isSelected}
     >
-      {isSelected && <AntDesign name="delete" size={17} color={colors.secColor} />}
+      {isSelected && <AntDesign name="delete" size={25} color={colors.secColor} />}
     </TouchableOpacity>
   )
 }

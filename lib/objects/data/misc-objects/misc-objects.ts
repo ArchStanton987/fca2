@@ -10,7 +10,10 @@ const miscObjectsMap: Record<MiscObjectId, MiscObjectData> = {
     place: 0,
     weight: 0,
     symptoms: [
-      { id: "maxPlace", operation: "add", value: 50 },
+      { id: "maxPlace", operation: "add", value: 80 },
+      { id: "normalCarryWeight", operation: "add", value: 80 },
+      { id: "tempCarryWeight", operation: "add", value: 80 },
+      { id: "maxCarryWeight", operation: "add", value: 80 },
       { id: "stealth", operation: "add", value: -40 },
       { id: "barter", operation: "add", value: 15 }
     ]
