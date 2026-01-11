@@ -254,8 +254,8 @@ const consumablesMap: Record<ConsumableId, ConsumableData> = {
     od: false,
     addict: "10-24",
     value: 300,
-    place: 1,
-    weight: 1,
+    place: 0.2,
+    weight: 0.2,
     description: `Une seringue contenant un antidote artisanal contre le poison. Un liquide blanchâtre dans lequel flottent des morceaux de chair de radscorpion. Baaaark !`,
     tags: ["heal"],
     maxUsage: 1

@@ -159,7 +159,7 @@ export const getAmmoCarry = (ammo: AmmoSet) =>
     { place: 0, weight: 0 }
   )
 
-export const getCapsCarry = (qty: number) => ({ weight: qty * 0.02, place: qty * 0.02 })
+export const getCapsCarry = (qty: number) => ({ weight: qty * 0.02, place: qty * 0.005 })
 
 export function useCarry(charId: string) {
   const itemsCarryOptions = queryOptions({ ...getItemsOptions(charId), select: getItemsCarry })
@@ -172,7 +172,7 @@ export function useCarry(charId: string) {
         (acc, { data }) => {
           if (!data) return acc
           const { place = 0, weight = 0 } = data
-          return { place: round(acc.place + place, 1), weight: round(acc.weight + weight, 1) }
+          return { place: round(acc.place + place, 4), weight: round(acc.weight + weight, 4) }
         },
         { weight: 0, place: 0 }
       )

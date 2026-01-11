@@ -358,7 +358,7 @@ export const useGetPlayerCanReact = (charId: string) => {
   const { data: combatState } = useCombatState(combatStatus.combatId, state => ({
     isTarget: state.action.targetId === charId,
     isAwaitingReaction:
-      !!state.action.damageLocalizationScore && state.action.reactionRoll === undefined
+      Action.getIsRollSucess(state.action.roll) && state.action.reactionRoll === undefined
   }))
   if (!canDodge) return false
   if (!combatState.isTarget || !combatState.isAwaitingReaction) return false

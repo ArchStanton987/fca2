@@ -54,6 +54,18 @@ export default class Action {
     return sumAbilities - dice + bonus - targetArmorClass - difficulty < 0
   }
 
+  static getIsRollSucess = (roll?: Partial<Roll> | false) => {
+    if (roll === false || roll === undefined) return false
+    const { sumAbilities, dice, bonus, difficulty, targetArmorClass = 0 } = roll
+    const hasNotRolled =
+      sumAbilities === undefined ||
+      dice === undefined ||
+      bonus === undefined ||
+      difficulty === undefined
+    if (hasNotRolled) return false
+    return sumAbilities - dice + bonus - targetArmorClass - difficulty > 0
+  }
+
   constructor(payload: DbAction) {
     const { actionType, actionSubtype } = payload
     this.actionType = actionType ?? ""
