@@ -11,7 +11,7 @@ export default function TxtInput({ style, ...rest }: TextInputProps) {
           padding: 5,
           backgroundColor: colors.terColor,
           color: colors.secColor,
-          height: 30,
+          // height: 30,
           fontFamily: "monofonto"
         },
         style

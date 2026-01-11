@@ -105,7 +105,12 @@ function Description() {
   return (
     <>
       <Txt>DESCRIPTION</Txt>
-      <TxtInput value={description} onChangeText={e => actions.setDescription(e)} multiline />
+      <TxtInput
+        numberOfLines={3}
+        value={description}
+        onChangeText={e => actions.setDescription(e)}
+        multiline
+      />
     </>
   )
 }

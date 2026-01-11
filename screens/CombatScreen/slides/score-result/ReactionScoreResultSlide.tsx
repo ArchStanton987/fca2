@@ -8,7 +8,6 @@ import { useCurrCharId } from "lib/character/character-store"
 import { useCombatId, useCombatStatus } from "lib/character/combat-status/combat-status-provider"
 import { getCritFailureThreshold } from "lib/combat/const/crit"
 import { useCombatState } from "lib/combat/use-cases/sub-combats"
-import { getRollBonus } from "lib/combat/utils/combat-utils"
 
 import Col from "components/Col"
 import Row from "components/Row"
@@ -70,7 +69,7 @@ export default function ReactionScoreResultSlide() {
   const actorFinalScore = sumAbilities - dice + bonus - targetArmorClass - difficulty
 
   const { opponentSumAbilities, opponentDice } = reactionRoll
-  const opponentBonus = getRollBonus(opponentCombatStatus, action)
+  const opponentBonus = opponentCombatStatus.actionBonus ?? 0
   const opponentScore = opponentSumAbilities - opponentDice + opponentBonus
   const isCritFail = opponentDice >= getCritFailureThreshold(special.curr)
   const isCrit = opponentDice < critChance

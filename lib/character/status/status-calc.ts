@@ -14,7 +14,7 @@ export const getLevelAndThresholds = (exp: number) => {
 export const getExpForLevel = (level: number) => {
   let total = 0
   for (let i = 1; i < level; i += 1) {
-    total += i * 1000
+    total += i * 1000 + 1
   }
   return total
 }

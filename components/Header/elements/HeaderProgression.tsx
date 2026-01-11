@@ -2,8 +2,9 @@ import { TouchableOpacity } from "react-native"
 
 import { router, useLocalSearchParams } from "expo-router"
 
+import { useQuery } from "@tanstack/react-query"
 import { useCurrCharId } from "lib/character/character-store"
-import { useExp } from "lib/character/progress/exp-provider"
+import { getExpOptions } from "lib/character/progress/exp-provider"
 import { getLevelAndThresholds } from "lib/character/status/status-calc"
 
 import HeaderElement from "components/Header/HeaderElement"
@@ -14,9 +15,9 @@ import Txt from "components/Txt"
 export default function HeaderProgression() {
   const { squadId } = useLocalSearchParams<{ squadId: string }>()
   const charId = useCurrCharId()
-  const exp = useExp(charId)
+  const exp = useQuery(getExpOptions(charId)).data ?? 0
 
-  const { level, prev, next } = getLevelAndThresholds(exp.data)
+  const { level, prev, next } = getLevelAndThresholds(exp)
 
   const onPress = () => {
     router.push({
@@ -30,7 +31,7 @@ export default function HeaderProgression() {
       <HeaderElement>
         <Txt style={{ fontSize: 12 }}>NIV:{level}</Txt>
         <Spacer x={5} />
-        <ProgressionBar value={exp.data} min={prev} max={next} width={40} />
+        <ProgressionBar value={exp} min={prev} max={next} width={40} />
       </HeaderElement>
     </TouchableOpacity>
   )

@@ -1,5 +1,3 @@
-import { FlatList } from "react-native"
-
 import { router, useLocalSearchParams } from "expo-router"
 
 import {
@@ -12,8 +10,9 @@ import KnowledgeRow, {
 } from "lib/character/abilities/knowledges/ui/KnowledgeRow"
 import { useCurrCharId } from "lib/character/character-store"
 
+import List from "components/List"
 import ModalCta from "components/ModalCta/ModalCta"
-import Section from "components/Section"
+import ScrollSection from "components/Section/ScrollSection"
 import Spacer from "components/Spacer"
 import Txt from "components/Txt"
 import ModalBody from "components/wrappers/ModalBody"
@@ -50,10 +49,9 @@ export default function UpdateKnowledgesConfirmationModal() {
         Vous êtes sur le point d&apos;effectuer les modifications suivantes :
       </Txt>
       <Spacer y={20} />
-      <Section style={{ flex: 1 }}>
-        <FlatList
+      <ScrollSection style={{ flex: 1 }}>
+        <List
           ListHeaderComponent={ListHeader}
-          stickyHeaderIndices={[0]}
           ListFooterComponent={ListFooter}
           data={knowledgesList}
           keyExtractor={item => item.id}
@@ -61,7 +59,7 @@ export default function UpdateKnowledgesConfirmationModal() {
             <KnowledgeRow isEditable={false} id={item.id} value={item.value} />
           )}
         />
-      </Section>
+      </ScrollSection>
       <ModalCta onPressCancel={cancel} onPressConfirm={confirm} />
     </ModalBody>
   )
