@@ -17,7 +17,7 @@ export default (): ExpoConfig => ({
   name: getAppName(),
   slug: "fca2",
   scheme: "fca2",
-  version: "3.0.0",
+  version: "3.0.1",
   orientation: "landscape",
   icon: "./assets/icon.png",
   userInterfaceStyle: "light",
@@ -32,7 +32,7 @@ export default (): ExpoConfig => ({
   assetBundlePatterns: ["**/*"],
   ios: {
     supportsTablet: true,
-    buildNumber: "3.0.0"
+    buildNumber: "3.0.1"
   },
   android: {
     adaptiveIcon: {
@@ -40,7 +40,7 @@ export default (): ExpoConfig => ({
       backgroundColor: "#021000"
     },
     package: getUniqueIdentifier(),
-    versionCode: 510020200
+    versionCode: 540030001
   },
   androidStatusBar: {
     hidden: true
