@@ -6,8 +6,8 @@ import { TraitId } from "./traits/traits.types"
 
 export type DbAbilities = {
   baseSPECIAL?: Special
-  traits?: Partial<Record<TraitId, TraitId>>
-  perks?: Partial<Record<PerkId, PerkId>>
+  traits?: TraitId[]
+  perks?: PerkId[]
   knowledges?: Partial<Record<KnowledgeId, KnowledgeLevelValue>>
   upSkills?: SkillsValues
 }

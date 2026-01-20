@@ -43,7 +43,7 @@ export default function createNpc(config: UseCasesConfig) {
     const abilities = {
       baseSPECIAL,
       upSkills: getUpSkillsScores(level, tagSkills, baseSPECIAL, traits),
-      traits: Object.fromEntries(traits.map(t => [t, t])),
+      traits,
       knowledges: {} as Record<KnowledgeId, KnowledgeLevelValue>
     }
     const exp = getExpForLevel(level)

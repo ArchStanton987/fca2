@@ -146,7 +146,7 @@ export default class Abilities {
     this.skills = skills
 
     this.knowledges = payload.knowledges ?? {}
-    this.perks = payload.perks ?? {}
-    this.traits = payload.traits ?? {}
+    this.perks = Object.fromEntries(payload.perks?.map(e => [e, e]) ?? [])
+    this.traits = Object.fromEntries(payload.traits?.map(e => [e, e]) ?? [])
   }
 }
