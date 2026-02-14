@@ -101,26 +101,3 @@ Un costeau, un physique, un dur. Ce n'est pas un tendre et c'est un coriace. Dé
 ### Nitro
 
 Petit, chêtif et très laid, mais pas innofensif. Nitro est un rapide, il dégaine avant tout le monde. Il a un penchant assez malsain pour les explosifs.
-
-## Missions précédentes
-
-### La mine abandonnée
-
-Les joueurs se sont vus confier la mission de voler une cargaison d'explosifs dans une carrière abandonnée. La cargaison appartenait à des Khans et se situait dans une de leur planque gardée par des novices.
-
-### Moonshine
-
-Les joueurs sont envoyés à la rencontre de Moonshine à Cedar Springs. Moonshine leur demande leur aide pour participer et truquer des combats. Ayant réuni un joli pactole, Moonshine part installer sa distillerie et promet aux joueurs de payer Meduza et de les inviter à venir voir le travail fini.
-
-### Le nid de radscorpions
-
-Le chef côtelette en a marre de cuisiner "des culs de brahamines". Il rêve de cuisiner un ragout de radscorpion. Il envoie les joueurs récupérer des glandes de venin de radscorpion dans une grotte. Grâce à de la dynamique, les joueurs parviennent à éliminer un radscorpion géant et à récupérer les glandes.
-
-### Divertissement pour petits et grands
-
-Le chef côtelette est nostalgique d'un jouet qu'il possédait étant gamin. Un "nukie", une peluche en forme de Nuka Cola, qui selon lui "a des vertus". Il envoie les joueurs dans Nuka World Junior, un parc d'attraction désafecté pour essayer d'en trouver. Les joueurs déjouent les pièges des robots et trouvent 2 nukies. Après les avoirs remis à Chef Côtelette, celui-ci leur montre qu'il s'agit d'un minijeu où il faut répéter une séquence musicale. En cas de succès, le nukie s'ouvre et laisse tomber un mentats.
-
-## Consignes pour les scénarios
-
-Les scénarios peuvent être très court et très simple, du type se rendre vers un donjon, le nettoyer et récupérer un trésor. Ces missions peuvent être liées aux tâches basiques de survie de la tribu. Ils peuvent aussi être plus complexes, et présenter des personnages hauts en couleurs qui vont rendre l'aventure amusante. On utilise les marqueurs habituels de l'univers de fallout (humour, cynisme, etc.).
-Bien qu'étant des raiders Jackals, pour la facilité et la richesse des aventures, les joueurs ne sont pas juste des fous qui attaquent tout le monde à vue. Ils vont parfois devoir questionner, infiltrer, négocier, soudoyer ou encore voler. Toutefois, leurs armes préférée restent la violence et la discrétion. Il est donc intéressant de proposer plusieurs manières de résoudre un scénario.

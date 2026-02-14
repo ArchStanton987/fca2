@@ -1,3 +1,7 @@
+- bug : peut pas modifier temps
+- bug : peut pas créer de combat
+- bug : AP cost pour action avec arme (Nitro)
+
 - flatten navigation
 
 upgrade item selector (no category)
@@ -22,32 +26,4 @@ TODO: collectibles UI
 TODO: sound
 
 
-
-NOTES POUR LES JOUEURS :
-
-CAPS
-Les capsules ont un poids et une place
-
-PV
-- "nouveau" système de PV :
-  - 1 pool de PV général (meurt si trop bas)
-  - 1 pool par partie du corps :
-    - Si 0, alors infirmité. Ne peut avoir < 0
-    - certaines parties du corps sont "vitales" : fera toujours baisser pool PV si prend des dégâts
-=> impact sur les combats :
-  - s'acharner sur un bras ou une patte peut ne pas tuer l'adversaire
-
-- modifs dans les connaissances :
-  suppression de :
-    - "Corps à corps"
-    - "Armes de lancer"
-    - "Armes à feu"
-=> trop générique, peut donner de trop gros bonus
-=> "remplacé" par spé par type d'armes (tranchantes, contondantes, perforantes, ou sous-type)
-
-Pour NITRO :
-- doit réattribuer compétences (avait armes de lancer + armes à feu)
-
-Objets divers :
-peuvent être équipés (aujourd'hui juste pour brahmine)
 
