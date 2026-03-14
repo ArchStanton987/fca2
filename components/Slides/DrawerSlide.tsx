@@ -1,11 +1,9 @@
-import { View, useWindowDimensions } from "react-native"
+import { View } from "react-native"
 
-import { getSlideWidth } from "./slide.utils"
+import { useSlideWidth } from "./slide.utils"
 
 export default function DrawerSlide({ children }: { children: React.ReactNode }) {
-  const { width } = useWindowDimensions()
-
-  const slideWidth = getSlideWidth(width)
+  const slideWidth = useSlideWidth()
 
   return <View style={{ width: slideWidth, flexDirection: "row" }}>{children}</View>
 }

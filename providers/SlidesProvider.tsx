@@ -1,15 +1,10 @@
 import { ReactNode, createContext, useCallback, useContext, useMemo, useRef } from "react"
-import {
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  ScrollView,
-  useWindowDimensions
-} from "react-native"
+import { NativeScrollEvent, NativeSyntheticEvent, ScrollView } from "react-native"
 
 import { create } from "zustand"
 
 import DrawerPage from "components/DrawerPage"
-import { getSlideWidth } from "components/Slides/slide.utils"
+import { useSlideWidth } from "components/Slides/slide.utils"
 
 type SliderId = "actionSlider" | "reactionSlider" | "gmActionSlider"
 
@@ -43,8 +38,7 @@ export function SlidesProvider({
   children: ReactNode
   sliderId: SliderId
 }) {
-  const { width } = useWindowDimensions()
-  const slideWidth = getSlideWidth(width)
+  const slideWidth = useSlideWidth()
   const scrollRef = useRef<ScrollView>(null)
   const scrollIndex = useRef(0)
   const setSlideIndex = useSetSliderIndex()

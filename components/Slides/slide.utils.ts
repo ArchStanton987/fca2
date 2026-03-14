@@ -1,9 +1,13 @@
 /* eslint-disable import/prefer-default-export */
-import { Platform } from "react-native"
+import { Dimensions, Platform } from "react-native"
+
+import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 import layout from "styles/layout"
 
-export const getSlideWidth = (width: number) =>
-  Platform.OS === "web"
-    ? width - layout.drawerWidth - layout.globalPadding - 6
-    : width - layout.drawerWidth - layout.globalPadding
+export const useSlideWidth = () => {
+  const { left, right } = useSafeAreaInsets()
+  const { width } = Dimensions.get("screen")
+  const slideWidth = width - layout.drawerWidth - layout.globalPadding - left - right
+  return Platform.OS === "web" ? slideWidth - 6 : slideWidth
+}
